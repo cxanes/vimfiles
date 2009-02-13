@@ -1,0 +1,39 @@
+Standard Template Library (STL)
+
+Resource: (v3.3)
+
+    http://www.sgi.com/tech/stl/download.html
+
+Command: 
+
+    ctags -R -f ~/stl.tags --c++-kinds=+p --fields=+iaS --extra=+q --language-force=c++ .
+
+Reference: 
+
+    1. |omnicppcomplete| -> |omnicpp-faq|
+
+        1)  Download SGI's STL from SGI's site
+            (http://www.sgi.com/tech/stl/download.html)
+        2)  Replace all __STL_BEGIN_NAMESPACE by "namespace std {" and
+            __STL_END_NAMESPACE by "}" from header and source files. (with Vim,
+            or with tar and sed or another tool)
+
+            shell:
+                shell$ chmod u+w *
+                shell$ vim *
+
+            Vim:
+                :bufdo %s/\<__STL_BEGIN_NAMESPACE\>/namespace std {/ge
+                :bufdo %s/\<__STL_END_NAMESPACE\>/}/ge
+                :wa
+
+        3)  Remove the space between keyword 'operator' and operator (e.g. +,-,*).
+
+            Vim:
+                :%s/\<operator /operator/g
+
+        4)  Run ctags and put the generated tags file in a directory eg:
+            ~/MyTags/stl.tags
+        5)  set tags+=~/MyTags/stl.tags
+
+    2. http://tech.groups.yahoo.com/group/vim/message/84581

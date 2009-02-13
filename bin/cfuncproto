@@ -1,0 +1,105 @@
+#!/usr/bin/perl
+
+# Author: Frank Chang <frank.nevermind@gmail.com>
+#
+# Print prototype of given function
+
+use strict;
+use warnings;
+
+use Shell qw(man);
+use Env qw(PATH PATHEXT);
+use Switch;
+
+# sub exists_bin ($) #{{{
+{
+    my @path = split /:/, $PATH;
+    sub exists_bin ($)
+    {
+        my $bin = shift;
+        for my $dir (@path) {
+            return 1 if -x "$dir/$bin";
+            if (lc $^O eq 'cygwin' && $PATHEXT !~ /^\s*$/) {
+                for my $ext (split /;/, $PATHEXT) {
+                    return 1 if -x "$dir/$bin.$ext";
+                }
+            }
+        }
+        return 0;
+    }
+}
+#}}}
+sub read_file ($) #{{{
+{
+    my $filename = shift;
+    my $fh;
+    if ($filename =~ /\.gz$/o) {
+        open $fh, "gunzip -c $filename |" or return 0;
+    }
+    else {
+        open $fh, "$filename" or return 0;
+    }
+    return $fh;
+}
+#}}}
+sub strip($) #{{{
+{
+    my $func = shift;
+    if ($func =~ s/^\.BI\s+//i) {
+        $func =~ s/(?:"([^"]+)"|([^"\s]+))\s*/defined $1 ? $1 : $2/ge;
+    }
+    else {
+        $func =~ s/^\.\w+\s+//;
+        $func =~ s/\\f.//g;
+    }
+    $func =~ s/^\s+//;
+    chomp $func;
+    return $func;
+}
+#}}}
+sub man_files ($) #{{{
+{
+    my $func = shift;
+    return () if $func =~ /^\s*$/o;
+    return grep { !/^\s*$/ } map { chomp; $_ } man('-WS2:3:2x:3x:3p', $func, '2>/dev/null');
+}
+#}}}
+sub get_prototype ($) #{{{
+{
+    my $func = shift;
+
+    my @prototypes = ();
+    for my $filename (man_files($func)) {
+        my $fh = read_file($filename);
+        next if not $fh;
+        my $in_synopsis = 0;
+        LINE: while (<$fh>) {
+            if ($in_synopsis) {
+                switch ($_) {
+                    case /\b\Q$func\E\b/ { push @prototypes, strip($_); }
+                    case /^\.SH\b/io     { last LINE;                   }
+                }
+            }
+            elsif (/^\.SH SYNOPSIS\b/io) {
+                $in_synopsis = 1;
+            }
+        }
+        close $fh;
+    }
+    return @prototypes;
+}
+#}}}
+
+exit if not @ARGV;
+for ('man', 'gunzip') {
+    exit if not exists_bin($_);
+}
+
+$" = "\n";
+our @prototypes = ();
+for (@ARGV) {
+    @prototypes = get_prototype($_);
+    print "@prototypes\n" if @prototypes;
+}
+
+# vim: set fdm=marker :

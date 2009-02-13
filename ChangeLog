@@ -1,0 +1,1051 @@
+2009-02-14  Frank Chang  <frank.nevermind@gmail.com>
+
+	* doc/vcscommand.txt,plugin/vcscommand.vim,plugin/vcscvs.vim
+	* plugin/vcsgit.vim,plugin/vcssvk.vim,plugin/vcssvn.vim
+	* syntax/CVSAnnotate.vim,syntax/SVKAnnotate.vim,syntax/SVNAnnotate.vim
+	* syntax/vcscommit.vim:
+	  Updated vcscommand.vim
+	  <http://vim.sourceforge.net/scripts/script.php?script_id=90> to version
+	  Beta29.
+
+	* plugin/vcshg.vim,plugin/vcssccs.vim
+	* syntax/SCCSAnnotate.vim,syntax/HGAnnotate.vim:
+	  Removed script vcsnursery
+	  <http://vim.sourceforge.net/scripts/script.php?script_id=1898>.
+
+	* .git:
+	  Started using Git <http://git-scm.com/> to maintain runtime files.
+
+2009-02-13  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc (g:Bookmarks_menu):
+	  Unlet variable 'g:Bookmarks_menu'.
+
+	* ~/.vimrc (&guioptions):
+	  Include menu bar.
+
+	* _vimrc:
+	  Moved ~/.vimrc to _vimrc.
+	* ~/.vimrc:
+	  Now it only sources _vimrc.
+
+	* _vimrc (:Vimrc):
+	  Edit _vimrc instead of ~/.vimrc.
+
+	* _vimrc (:Gvimrc,:GVimrc):
+	  Removed commands :Gvimrc and :GVimrc.
+
+2009-02-09  Frank Chang  <frank.nevermind@gmail.com>
+
+	* eclim/ftplugin/java/eclim_complete.vim (Abbreviations):
+	  Removed the feature of abbreviations.
+
+	* ~/.vimrc
+	  (g:EclimShowCurrentError,g:EclimShowCurrentErrorBalloon,g:EclimMakeQfFilter):
+	  Set variables
+	  g:EclimShowCurrentError, g:EclimShowCurrentErrorBalloon, and
+	  g:EclimMakeQfFilter to 0.
+
+	* ftplugin/java_cfg.vim,ftplugin/perl_cfg.vim,
+	  ftplugin/ruby_cfg.vim,ftplugin/python_cfg.vim (b:run_command_{&ft}):
+	  Unlet variable b:run_command_{&ft} first to avoid E705 (Variable name
+	  conflicts with existing function).
+
+	* ~/.vimrc (VimEnter):
+	  Don't change the current directory to home directory when entering Vim
+	  and the buffer is unamed.
+
+	* ~/.vimrc,plugin/myutils.vim:
+	  Reduced executing time.
+
+	* plugin/eclim.vim:
+	  Moved this script to tools/Eclim.vim.
+	* ~/.vimrc (:LoadEclim):
+	  Load eclim.vim only when we need it.
+
+	* plugin/Bookmarks.vim:
+	  Reduced executing time.
+
+	* ~/.vimrc (*s:SetMakeprgFT):
+	  Set local option 'makeprg' according to variable b:set_makeprg_{&ft}.
+	* ftplugin/dot_cfg.vim (b:set_makeprg_dot):
+	  Added variable 'b:set_makeprg_dot'.
+	* ftplugin/tex_cfg.vim (b:set_makeprg_tex):
+	  Added variable 'b:set_makeprg_tex'.
+
+	* ~/.vimrc (dot):
+	  Removed autocmd for setting makeprg (:compiler dot) for filetype 'dot'.
+	* ~/.vimrc (tex):
+	  Removed autocmd for setting makeprg for filetype 'tex'.
+
+	* ~/.vimrc (g:Bookmarks_menu):
+	  Set variable 'g:Bookmarks_menu' to 0 to avoid creating menu.
+
+	* ~/.vimrc (&guioptions):
+	  Exclude menu bar.
+
+	* plugin/myutils.vim (Calc):
+	  Don't check python support (has('python')) until first executing.
+
+	* bin/color-selector:
+	  Return '[r, g, b]' instead of '#RRGGBB'.
+	* plugin/myutils.vim (*ColorSelector):
+	  If user has set variable 'g:color_selector_format' to other 
+	  format (default is '#%02X%02X%02X'), use this to format output.
+
+	* plugin/Bookmarks.vim (:ShowBookmarks, :RemoveBookmark, :OpenBookmark)
+	* plugin/Bookmarks.vim (:EditBookmark, :SetBookmarkKeyword, :RemoveBookmarkKeyword):
+	  Added alias commands.
+
+2009-02-08  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/Bookmarks.vim:
+	  Rewrote plugin. Now bookmarks accept keyword.
+	* plugin/FileExplorer.vim (*Bookmarks_GetPath):
+	  Open FileExplorer by given number or keyword of bookmarks.
+
+	* ~/.vimrc (<Leader>cd):
+	  Added new map (<Leader>cd) to change current working directory.
+
+	* ftplugin/vim_cfg.vim (*VimExpandTagCallback):
+	  Added new ExpandTagCallback() function for filetype vim.
+
+2009-02-06  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ftplugin/xml.vim:
+	  Updated xmledit <http://www.vim.org/scripts/script.php?script_id=301>
+	  to version 82.
+
+2009-02-05  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/supertab.vim:
+	  Updated supertab.vim <http://www.vim.org/scripts/script.php?script_id=1643>
+	  to version 0.49.
+
+2009-02-01  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/eclim.vim,eclim:
+	  Bring Eclipse functionality to the Vim editor
+	  <http://eclim.sourceforge.net/>.
+	* ~/.vimrc (eclim):
+	  Added settings for eclim.
+
+	* ~/.vimrc (xmledit): 
+	  Added settings for xmledit <http://www.vim.org/scripts/script.php?script_id=301>.
+
+	* ~/.vimrc (VimEnter):
+	  When entering Vim and the buffer is unamed, change the current directory to home
+	  directory.
+
+	* keywords/java:
+	  The keywords of java.
+	* ftplugin/java_cfg.vim:
+	  Add supports for java.
+
+	* bin/makeprg (javac):
+	  Add supports for java.
+
+	* plugin/myutils.vim (*Shellescape):
+	  In MS Windows, don't enclose double quote (") when there is no space in
+	  string.
+
+	* plugin/myutils.vim (*Run):
+	  Detect variable b:run_command and b:run_command_{&ft} for self-defined
+	  running command.
+
+	* ftplugin/java_cfg.vim (b:run_command_java):
+	  Added running command for java using in funtion Run().
+
+
+2009-01-31  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ftplugin/xml.vim:
+	  Updated xmledit <http://www.vim.org/scripts/script.php?script_id=301>
+	  to version 81.
+
+2009-01-20  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc (*SetIncludeExpr):
+	  Set option 'includeexpr' using variable 'g:alternateSearchPath' defined
+	  in plugin a.vim <http://www.vim.org/scripts/script.php?script_id=31>, so
+	  command like 'gf' could work even the file under the cursor is in the
+	  different directory.
+
+2009-01-19  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/supertab.vim:
+	  Updated supertab.vim <http://www.vim.org/scripts/script.php?script_id=1643>
+	  to version 0.48 (my patch has been accepted).
+
+2009-01-15  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.19.
+
+	* syntax/lyx.vim,filetype.vim:
+	  Add syntax and new file type for Lyx (v1.6.1)
+	  <http://www.lyx.org>.
+
+2009-01-14  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.18.
+
+2009-01-12  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/supertab.vim:
+	  Updated supertab.vim <http://www.vim.org/scripts/script.php?script_id=1643>
+	  to version 0.47 (my modified version).
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.17.
+
+	* autoload/dbext.vim,autoload/dbext_dbi.vim,doc/dbext.txt,doc/dbext_gpl.dat,plugin/dbext.vim:
+	  Updated dbext.vim <http://www.vim.org/scripts/script.php?script_id=356>
+	  to version 9.00.
+
+	* keywords/c:
+	  The keywords of C.
+	* ftplugin/c_cfg.vim ('dict'):
+	  Added file 'keywords/c' to option 'dict'.
+
+	* keywords/cpp:
+	  The keywords of C++0x.
+	* ftplugin/cpp_cfg.vim ('dict'):
+	  Added file 'keywords/cpp' to option 'dict'.
+
+	* tags/wx.tags:
+	  Add new tag file for wxWidgets <http://www.wxwidgets.org>
+	* ftplugin/cpp_cfg.vim ('tags'):
+	  Added file 'tags/wx.tags' to option 'tags'.
+
+2009-01-11  Frank Chang  <frank.nevermind@gmail.com>
+
+	* tools/SdcvServer.py:
+	  Import popen2 module only when the platform is not win32.
+
+	* tags/stl.tags:
+	  Removed the space between keyword 'operator' and operator (e.g. +,-,*).
+
+2009-01-09  Frank Chang  <frank.nevermind@gmail.com>
+
+	* templates/c/header.snip,templates/cpp/header.snip:
+	  Added underscore when lower case is followed by upper case.
+
+2009-01-04  Frank Chang  <frank.nevermind@gmail.com>
+
+	* colors/molokai.vim:
+	  Added new colorscheme file molokai.vim
+	  <http://www.vim.org/scripts/script.php?script_id=2340>.
+
+2008-12-31  Frank Chang  <frank.nevermind@gmail.com>
+
+	* bin/start_debug.bat:
+	  Added new batch file to start debugger using clewn 
+	  <http://clewn.sourceforge.net/>.
+
+2008-12-28  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc (*Cygpath):
+	  Checked if the variable 'b:prev_cygpath' exists.
+
+	* doc/clewn.txt, macros/clewn_mappings.vim,syntax/gdbvar.vim:
+	  Added new plugin 'clewn' for debugging <http://clewn.sourceforge.net/>.
+
+2008-12-25  Frank Chang  <frank.nevermind@gmail.com>
+
+	* bin/colors-selector.bat,bin/image-viewer.bat,bin/preview.bat,
+	  plugin/myutils.vim (*ShowImage):
+	  Changed the installed path of Python to Python26.
+
+2008-12-24  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/SwapParams.vim (s:delimit):
+	  Assigned delimits ',=+-/|\~%^' to s:delimit.
+
+	* plugin/myutils (:Enclose):
+	  Added new commend ':Enclose' to enclose selected test by braces.
+
+	* plugin/myutils.vim (*Run):
+	  Bug fixed: shellescaped the commend.
+
+2008-12-22  Frank Chang  <frank.nevermind@gmail.com>
+
+	* bin/cfunc ($angle_quote):
+	  Made variable '$angle_quote' be global.
+
+	* bin/cfunc (*show_skeleton):
+	  Changed the output format of skeleton. The return type is followed by a
+	  '\n'.
+
+2008-12-21  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ftplugin/c_cfg.vim (:CFuncProto,:CFuncSkel):
+	  Added complete setting '-complete=file' to command :CFuncProto and :CFuncSkel.
+
+2008-12-20  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/snippetsEmu.vim (snippetsEmu_ExpandTagCallback):
+	  Added new callback handler to dectect whether to expand tag or not.
+	* ~/.vimrc (g:snippetsEmu_ExpandTagCallback):
+	  Assigned ExpandTagCallback() function to the variable
+	  g:snippetsEmu_ExpandTagCallback.
+	* ftplugin/c_cfg.vim (*CExpandTagCallback):
+	  Added new ExpandTagCallback() function for filetype c.
+
+2008-12-19  Frank Chang  <frank.nevermind@gmail.com>
+
+	* snippets/tex/__init__.vim (<Leader>t):
+	  Changed mapping '<Leader>t' to <Leader>cc'.
+
+2008-12-18  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ftplugin/tex_cfg.vim (:MakeXeTeX):
+	  Added new command ':MakeXeTeX' to compile tex file using XeTeX.
+
+2008-12-14  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/FileExplorer.vim (*Fullpath):
+	  Bug fixed. The fullpath of 'D:' (in Windows) is wrong.
+
+	* plugin/FileExplorer.vim (:Cwd):
+	  Added new command 'Cwd' to change current working directory.
+
+	* plugin/ColorSchemeMenuMaker.vim,plugin/ColorSchemes.vim:
+	  Removed files to generate ColorSchemes menu.
+
+2008-12-12  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/Bookmarks.vim (:Bookmarks,:BookmarksThis,:BookmarksRemove):
+	  Divide command ':Bookmarks' to several commands.
+
+2008-12-11  Frank Chang  <frank.nevermind@gmail.com>
+
+	* after/syntax/python.vim:
+	  Added new syntax 'syn sync minlines=300'
+
+	* colors/wombat.vim (Todo):
+	  Changed the forground of highlighting 'Todo' to '#000000'
+
+	* ~/.vimrc (EnhCommentifyUseSyntax):
+	  Set variable 'EnhCommentifyUseSyntax' to 1.
+	  Syntax-awared comments.
+
+
+2008-12-10  Frank Chang  <frank.nevermind@gmail.com>
+
+	* after/syntax/vim.vim (vimFuncBodyList):
+	  Added new group 'vimAugroupKey' to cluster 'vimFuncBodyList'.
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.16.
+
+	* autoload/wikidpad.vim:
+	  Edit wiki page of wikidPad <http://wikidpad.sourceforge.net/> in Vim.
+
+2008-12-09  Frank Chang  <frank.nevermind@gmail.com>
+
+	* snippets:
+	  Moved directory from 'autoload/snippets' to 'snippets'.
+	* plugin/snippetsEmu.vim (snippetsEmu_load_dir):
+	  Changed the default values of variables 'snippetsEmu_load_dir'
+	  'snippets'.
+
+	* templates/*:
+	  Changed '«' to '<{' and '»' to '}>'.
+
+2008-12-08  Frank Chang  <frank.nevermind@gmail.com>
+	* syntax/wikidpad.vim (wikiInsertionValue,wikiInsertionAppendix):
+	  Changed the syntax items 'wikiInsertionValue' and 'wikiInsertionAppendix'
+	  to contain character ';'.
+
+2008-12-07  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/snippetsEmu.vim (snippetsEmu_start_tag,snippetsEmu_end_tag):
+	  Changed the default values of variables 'snippetsEmu_start_tag' and
+	  'snippetsEmu_end_tag' to '<{' and '}>', respectively.
+	* autoload/snippets/*:
+	  Changed '«' to '<{' and '»' to '}>'.
+	* ~/.vimrc (snippetsEmu_start_tag,snippetsEmu_end_tag):
+	  Changed the values of variables 'snippetsEmu_start_tag' and
+	  'snippetsEmu_end_tag' to '<{' and '}>', respectively.
+
+	* ~/.vimrc (netrw_home):
+	  Changed the value of variable 'netrw_home' to home directory ($HOME).
+
+	* keywords/perl:
+	  Added new keywords for perl 5.10.
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.15.
+
+2008-12-05  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/Bookmarks.vim (*Bookmarks_Select):
+	  Rename plugin NavMenu.vim to Bookmarks.vim. Make function s:Select()
+	  global.
+	* plugin/FileExplorer.vim (*FileExplorer):
+	  If directory begins with double '/' (e.g. //1) and function
+	  Bookmarks_Select() exists, use it to explore bookmarked directory (1 in
+	  the previous example).
+
+	* ~/.vimrc (no_buffers_menu,did_install_syntax_menu):
+	  Avoid Syntax and Buffers menus.
+	* ~/.vimrc (:Rename):
+	  Delete alternate buffer.
+
+2008-12-03  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.14.
+
+2008-11-26  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/myutils.vim (*OpenFile):
+	  Add new function OpenFile() to open file according to the file
+	  association.
+
+	* plugin/FileExplorer.vim (*ShowHelp, *Resolve, *BuildFileTreeIntra):
+	  Now directories can be filtered out. resolve() doesn't work when
+	  filename contains multibyte characters and the encoding is not the same
+	  as the one which operating system uses.
+
+	* ~/.vimrc (*FileExplorer_OpenFunc):
+	  Open files that is not text-based.
+
+	* ~/.vimrc (:OpenOneTabpageForEachBuffer,:Tball):
+	  Renamed command OpenOneTabpageForEachBuffer to Tball.
+
+	* ~/.vimrc (:Sbuffer,:Tbuffer):
+	  Renamed command Sbuffer to Tbuffer.
+
+2008-11-24  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/FileExplorer.vim:
+	  Show help and symbol links in FileExplorer window. Each tabpage has its
+	  own FileExplorer. Open file in different window (previous, new splited or
+	  new tabpage).
+
+2008-11-20  Frank Chang  <frank.nevermind@gmail.com>
+
+	* doc/bufexplorer.txt,plugin/bufexplorer.vim:
+	  Updated bufexplorer.vim <http://www.vim.org/scripts/script.php?script_id=42>
+	  to version 7.2.2.
+
+	* colors/zenburn.vim:
+	  Updated zenburn.vim <http://www.vim.org/scripts/script.php?script_id=415>
+	  to version 2.4.
+
+	* ~/.vimrc (changelog):
+	  Make mapping for create new changelog entry (<F6>) in local.
+
+2008-10-30  Frank Chang  <frank.nevermind@gmail.com>
+
+	* autoload/dbext.vim,autoload/dbext_dbi.vim,doc/dbext.txt,doc/dbext_gpl.dat,plugin/dbext.vim:
+	  Updated dbext.vim <http://www.vim.org/scripts/script.php?script_id=356>
+	  to version 8.00.
+
+	* plugin/AlignPlugin.vim,plugin/AlignMapsPlugin.vim,plugin/cecutil.vim,
+	  doc/Align.txt, autoload/Align.vim, autoload/AlignMaps.vim:
+	  Updated Align.vim <http://www.vim.org/scripts/script.php?script_id=294>
+	  to version 34/40.
+
+	* .vimrc (*.m):
+	  Change the default filetype of .m file to matlab.
+
+	* syntax/matlab.vim:
+	  Added new syntax file for matlab (MatlabFilesEdition, version 1.1)
+	  <http://www.vim.org/scripts/script.php?script_id=2407>.
+
+2008-10-28  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/myutils.vim (*CNewLine):
+	  Don't insert newline when the character under the cursor is '`'.
+
+	* plugin/myutils.vim (*CNewLine):
+	  Move to end of line using "\<End>", not "\<C-O>A".
+
+	* bin/makeprg (g++):
+	  Use g++ 4 compiler (g++-4) in cygwin.
+
+2008-10-15  Frank Chang  <frank.nevermind@gmail.com>
+
+	* bin/latexmk.pl:
+	  Updated latexmk <http://www.phys.psu.edu/~collins/software/latexmk-jcc/>
+	  to version 4.01.
+
+	* ftplugin/xml.vim:
+	  Updated xmledit <http://www.vim.org/scripts/script.php?script_id=301>
+	  to version 75.
+
+2008-10-13  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ftplugin/xml.vim:
+	  Updated xmledit <http://www.vim.org/scripts/script.php?script_id=301>
+	  to version 66.
+
+2008-10-07  Frank Chang  <frank.nevermind@gmail.com>
+
+	* autoload/PIM/Account.vim (*NewEntry):
+	  Mapped "<F6>" in insert mode to open new entry.
+
+2008-10-06  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.13.
+
+	* ~/.vimrc (<F6>):
+	  Mapped "<Tab>" to command NewChangelogEntry to open new changelog entry
+	  in filetype changelog.
+
+2008-10-04  Frank Chang  <frank.nevermind@gmail.com>
+
+	* autoload/PIM/Account.vim (*MoveOrCompleteKey):
+	  Mapped "<Tab>" to function MoveOrCompleteKey() to perform searching next
+	  completed item when popup menu is visible.
+
+2008-10-01  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc (:language):
+	  :language message C
+	  for all systems.
+
+	* templates/c/header.snip,templates/cpp/header.snip:
+	  Added a new template for file type C and C++.
+
+2008-09-30  Frank Chang  <frank.nevermind@gmail.com>
+
+	* syntax/python.vim:
+	  Updated python.vim <http://www.vim.org/scripts/script.php?script_id=790>
+	  to version 2.6.3.
+
+	* ftplugin/c_cfg.vim ('path'):
+	  Appended directory '~/local/include' to 'path' if it exists.
+
+	* ftplugin/perl_cfg.vim (<Leader>sf), ftplugin/vim_cfg.vim (<Leader>sf):
+	  Made mapping '<Leader>sf' (StripFunc) effective in the current buffer
+	  only.
+
+	* plugin/myutils.vim (*StripFunc):
+	  New default mapping '<Leader>sf' in normal mode for striping enclosing 
+	  function (e.g. foo(bar) -> bar).
+
+	* ~/.vimrc ('suffixesadd'):
+	  Appended suffix '.m' to 'suffixesadd' when editing *.m file.
+
+2008-09-24  Frank Chang  <frank.nevermind@gmail.com>
+
+	* syntax/python.vim:
+	  Updated python.vim <http://www.vim.org/scripts/script.php?script_id=790>
+	  to version 2.6.2.
+
+2008-09-22  Frank Chang  <frank.nevermind@gmail.com>
+
+	* syntax/python.vim:
+	  Updated python.vim <http://www.vim.org/scripts/script.php?script_id=790>
+	  to version 2.6.1.
+
+	* autoload/dbext.vim,autoload/dbext_dbi.vim,doc/dbext.txt,doc/dbext_gpl.dat,plugin/dbext.vim:
+	  Updated dbext.vim <http://www.vim.org/scripts/script.php?script_id=356>
+	  to version 7.00.
+
+	* plugin/NoteManger.vim:
+	  Removed detection for executable file 'sqlite3'.
+
+2008-09-18  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc (VCSCommandMapPrefix):
+	 Assigned variable 'VCSCommandMapPrefix' to '<Leader>v' instead of
+	 remapping all default mappings.
+
+	* ~/.vimrc (EmacsModeDetect),plugin/EmacsModeDetect.vim:
+	 Moved function EmacsModeDetect() from ~/.vimrc to standalone plugin
+	 EmacsModeDetect.vim.
+
+	* plugin/SuperEnter.vim (*Super__Enter):
+	  Continuously searched backward to find line containing number or bullet
+	  and stopped searching when given line doesn't have prepending spaces.
+
+2008-09-17  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc (*EmacsGetFileVariables1):
+	  Escaped non-blank line.
+
+	* plugin/myutils.vim (*MoveToMap):
+	  Go to Normal mode by pressing <C-\><C-N> instead of <ESC>. 
+
+2008-09-13  Frank Chang  <frank.nevermind@gmail.com>
+
+	* syntax/perl.vim (perlSubName,perlSubPrototype,perlSubAttrMaybe):
+	  Highlighted the comment after sub name, prototype or attribute.
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.12.
+
+2008-09-11  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.11.
+
+2008-09-10  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc:
+	 Deleted last command in command history when some mappings involving
+	 command are pressed.
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.10.
+
+	* autoload/PIM/Account.vim:
+	  Renamed file Bill.vin to Account.vim.
+	* ~/.vimrc (:Account):
+	  Change command 'Bill' to 'Account'.
+	* tags/bill_categories:
+	  Removed these files out of runtime directory.
+
+	* autoload/PIM/Log.vim (*PIM#Log#Open,*LogInit):
+	  Add new argument to specify category file.
+	* tags/log_categories:
+	  Removed these files out of runtime directory.
+
+2008-09-09  Frank Chang  <frank.nevermind@gmail.com>
+
+	* autoload/PIM/Bill.vim:
+	  Added some new features: Sub-categories, Bill Summary, Query
+	* autoload/PIM/Bill_old.vim:
+	  Old version of Bill.vim
+	* autoload/Braces.vim:
+	  Provided the function to simulate the brace expansion functionality of
+	  bash.
+	* tags/bill_categories:
+	  Now it has hierarchy categories.
+
+	* ~/.vimrc (:Bill,:Log):
+	  Changed the function name. Add
+
+	* autoload/PIM/Log.vim (*PIM#Log#Open,*LogInit):
+	  Changed the function name.
+
+2008-09-06  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/fuzzyfinder.vim:
+	  Updated fuzzyfinder.vim <http://www.vim.org/scripts/script.php?script_id=1984>
+	  to version 2.9.
+
+2008-09-05  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ftplugin/perl_cfg.vim:
+	  Added new mapping '<Leader>sf' to strip function.
+
+2008-09-04  Frank Chang  <frank.nevermind@gmail.com>
+
+	* doc/bufexplorer.txt,plugin/bufexplorer.vim:
+	  Updated bufexplorer.vim <http://www.vim.org/scripts/script.php?script_id=42>
+	  to version 7.2.1.
+
+2008-09-01  Frank Chang  <frank.nevermind@gmail.com>
+
+	* keywords/python:
+	  Added built-in functions.
+
+2008-08-31  Frank Chang  <frank.nevermind@gmail.com>
+
+	* after/ftplugin/python_map.vim (*MenuBuilder):
+	  Changed the regex to search class and function definition.
+
+	* ~/.vimrc:
+	  Changed default colorscheme to 'wombat2'.
+
+2008-08-29  Frank Chang  <frank.nevermind@gmail.com>
+
+	* autoload/PIM/Bill.vim:
+	  Plugin for Bill.
+	* ~/.vimrc (:Bill):
+	  Command to open Bill.
+	* tags/bill_categories:
+	  Dict for Bill.
+
+	* autoload/PIM/Log.vim:
+	  Plugin for Log.
+	* ~/.vimrc (:Log):
+	  Command to open Log.
+	* tags/log_categories:
+	  Dict for Log.
+
+2008-08-27  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/Dict.vim (:Dict):
+	  Bug fixed. Call function Dict#Dict() when executing command 'Dict'.
+
+2008-08-26  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/fuzzyfinder.vim:
+	  Added new plugin fuzzyfinder.vim
+	  <http://www.vim.org/scripts/script.php?script_id=1984>: Fuzzy/Partial
+	  pattern explorer for buffer/file/MRU/command/favorite/tag/etc. 
+
+2008-08-21  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/stlrefvim.vim,doc/stlrefvim.txt:
+	  Added new plugin stlrefvim
+	  <http://www.vim.org/scripts/script.php?script_id=2353> for providing a
+	  reference manual for the C++ standard template library (STL)
+	* ~/.vimrc: 
+	  Added new mapping '<Leader>ti' and '<Leader>taa' for query using 
+	  stlrefvim.
+
+2008-08-20  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc (*GetCwd):
+	  If function pathshorten() exists, use it. Leading '~' and '.' characters
+	  are kept.
+
+2008-08-19  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc (*GetPath):
+	 Bug fixed: Don't escape ' ' and '\' before sending path to function
+	 Cygpath().
+	 (*Cygpath): Changed variable name 'last_cygpath' to 'prev_cygpath', and
+	 made it buffer variable.
+
+2008-08-18  Frank Chang  <frank.nevermind@gmail.com>
+
+	* colors/torte.vim:
+	  Removed color scheme 'torte' (it has already been in the vim system dir), 
+	  refresh the ColorSchemes menu.
+
+	* syntax/wikidpad.vim,filetype.vim:
+	  Add syntax and new file type for WikidPad (v1.8rc14)
+	  <http://wikidpad.python-hosting.com/>.
+
+2008-08-17  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc:
+	 Removed mapping (<Leader>z) for (un)commenting line in insert 
+	 mode (EnhCommentify.vim).
+
+	* ~/.vimrc (*GetCwd):
+	 Changed the maximun length of the cwd path.
+
+2008-08-16  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/myutils.vim (*ShowImage):
+	  Bug fixed.
+
+	* plugin/bufexplorer.vim,doc/bufexplorer.txt:
+	  Updated bufexplorer.vim <http://www.vim.org/scripts/script.php?script_id=42>
+	  to version 7.2.0.
+
+	* bin/tex2img.pl:
+	  Added new program 'tex2img.pl' with same functionality as 'tex2img' but
+	  writing in perl.
+
+	* autoload/myutils.vim (*myutils#Seq,*GetString):
+	  Removed funtion GetString() funtion script.
+
+2008-08-11  Frank Chang  <frank.nevermind@gmail.com>
+
+	* VIM:
+	  Updated Vim to version 7.2. I compiled vim (Make_cyg.mak) by myself.
+
+	* ~/.vim (*UpdateRuntimeFiles,:UpdateRuntimeFiles):
+	  Added new command 'UpdateRuntimeFiles' to update runtime files using
+	  rsync.
+
+	* after/syntax/vim.vim (synstack):
+	  Removed syntax keyword 'synstack', since it has already been included in
+	  new version of syntax/vim.vim (vim72).
+
+	* colors/*.vim:
+	  Removed some color schemes, refresh the ColorSchemes menu.
+
+	* autoload/Main.vim (*Man#Main):
+	  Bug fixed: Default mapping for <2-LeftMouse> should be mapped before
+	  initial funtion applied.
+	  (*InfoInput): If there is no argument for command :Info or :ManInfo (filetyp is 'info'),
+	  default is '(dir)'.
+
+	* autoload/myutils.vim (*myutils#GetOptVals):
+	  Added the 'newtab' value for the 'switchbuf' option (vim72).
+
+	* plugin/myutils.vim (*ParseCmdArgs):
+	  Added new function ParseCmdArgs().
+	
+	* autoload/Man.vim (*Man#SimpleArgsParser):
+	  Wrapped function ParseCmdArgs() in function Man#SimpleArgsParser().
+
+	* ~/.vimrc (*ManBufInfo):
+	  Only convert b:man_buf_info to a String when it is not a String.
+
+	* plugin/myutils.vim (:Seq,*InsertSeq):
+	  Parsed arguments using function ParseCmdArgs().
+
+	* autoload/Dict.vim,plugin/Dict.vim:
+	  Moved functions in Dict.vim to autoload.
+
+	* autoload/Template.vim,plugin/Template.vim:
+	  Moved functions in Template.vim to autoload.
+
+	* plugin/myutils.vim (*Run):
+	  Bug fixed: Copy arguments of the function first.
+
+	* plugin/vstplugin.vim (*vst#vst#VST_AuxiliaryMappings):
+	  Comment out the calling of funtion vst#vst#VST_AuxiliaryMappings() to
+	  avoid autoload/vst/vst.vim being loaded.
+
+	* ~/.vimrc (*EmacsModeDetect):
+	  Return if there are no non-whitespace characters in buffer.
+	
+	* plugin/myutils.vim (:Run,*Run):
+	  Parsed arguments using function ParseCmdArgs(). Escaped arguments.
+
+2008-08-10  Frank Chang  <frank.nevermind@gmail.com>
+
+	* autoload/dbext.vim,autoload/dbext_dbi.vim,doc/dbext.txt,doc/dbext_gpl.dat,plugin/dbext.vim:
+	  Updated dbext.vim <http://www.vim.org/scripts/script.php?script_id=356>
+	  to version 6.20.
+
+2008-08-08  Frank Chang  <frank.nevermind@gmail.com>
+
+	* syntax/perl.com:
+	  Updated perl.vim <http://www.vim.org/scripts/script.php?script_id=2300>
+	  to version 0.11.
+
+2008-08-07  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/manpageviewPlugin.vim,autoload/manpageview.vim:
+	* syntax/man.vim,syntax/mankey.vim,syntax/info.vim:
+	* syntax/manphp.vim,doc/manpageview.txt:
+	  Removed plugin ManPageView
+	  <http://www.vim.org/scripts/script.php?script_id=489>.
+
+	* autoload/Man.vim,plugin/Man.vim:
+	  Added my own plugin for reading documentation (man, info, perldoc, pydoc, ri).
+	* ~/.vimrc (&keywords):
+	  Added setting for Man plugin.
+	* ftplugin/ruby_cfg.vim (man_setting_ruby,*ManInput,:Man):
+	  Removed buffer command 'RubyDoc'. Added setting for Man plugin.
+	* plugin/myutils.vim (*PyDoc,*RubyDoc):
+	  Removed command 'PyDoc' and 'RubyDoc'.
+	* autoload/myutils.vim (*myutils#PyDoc,*myutils#RubyDoc):
+	  Removed function PyDoc() and RubyDoc().
+	* ~/.vimrc (*ManBufInfo,man_buf_info):
+	  Added info in statusline for Man plugin.
+
+	* colors/deveiate.vim:
+	  Added new colorscheme DevEiate
+	  <http://www.vim.org/scripts/script.php?script_id=2277>.
+
+2008-08-03  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/TempBuffer.vim (*CreateSharedTempBuffer,*CreateTempBuffer):
+	  Moved function CreateTempBuffer() and CreateSharedTempBuffer() out of 
+	  plugin/myutils.vim to be a standalone script.
+
+	* ~/.vimrc (&statusline,*StlBufInfo):
+	  Added new function StlBufInfo() into option 'statusline'. If the buffer
+	  variable 'g:stl_buf_info' exist and is not empty, it will be shown in
+	  the statusline.
+
+2008-08-01  Frank Chang  <frank.nevermind@gmail.com>
+
+	* autoload/myutils.vim (*ShowMatch):
+	  Bug fixed: Return when 'pattern' is empty string.
+
+	* colors/oceandeep2.vim:
+	  Make highlight group 'Ignore' really invisible.
+
+2008-07-31  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc (perl_want_scope_in_variables, perl_extended_vars):
+	  Added 2 new variables 'perl_want_scope_in_variables' and
+	  'perl_extended_vars' to highlight perl script.
+
+	* after/syntax/perl.vim:
+	  Added syntax for Moose module if it is used in script.
+	* keywords/perl_moose:
+	  The keywords of Moose module.
+	* ftplugin/perl_cfg.vim:
+	  Added file 'keywords/perl_moose' to option 'dict' if Moose module is
+	  used.
+
+	* bin/pronounce (*MW):
+	  Changed query address to 'http://www.merriam-webster.com/dictionary/'.
+
+2008-07-30  Frank Chang  <frank.nevermind@gmail.com>
+
+	* syntax/perl.vim:
+	  Improved perl syntax highlighting
+	  <http://www.vim.org/scripts/script.php?script_id=2300>.
+
+	* plugin/myutils.vim (:Filter):
+	  Added new command 'Filter'. It works like |:range!|, but redirect the
+	  output to temporary window. The default range is whole buffer ('%').
+
+2008-07-29  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc (*RemoveLastPathComponent):
+	 Added new mapping <M-w> in commandline to remove last path component.
+
+2008-07-28  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/myutils.vim (*HungryDelete):
+	  Bug fixed: Leave only one blank line when all lines are blank.
+
+	* bin/pronounce (*DICT):
+	  Added new pronounce site: Dictionary.com
+	  <http://dictionary.reference.com/>.
+
+	* ~/.vimrc (EnhCommentify):
+	  Changed mapping from '<Leader>x' to '<Leader>z' to comment or 
+	  uncomment lines.
+
+2008-07-27  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/myutils.vim (*HungryDelete):
+	  Rewrote function HungryDelete() to handle multibyte characters.
+
+2008-07-25  Frank Chang  <frank.nevermind@gmail.com>
+
+	* keywords/python:
+	  The keywords of python.
+
+	* ftplugin/python_cfg.vim:
+	  Added file 'keywords/python' to option 'dict'.
+
+2008-07-21  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ~/.vimrc:
+	  Set option 'display' to 'lastline'.
+	  Ref: http://tech.groups.yahoo.com/group/vim/message/93367
+
+	* plugin/myutils.vim (*Calc):
+	  Bug fixed.
+
+	* autoload/myutils.vim (*PyDoc,*RubyDoc):
+	  Changed function CreateTempBuffer() to CreateSharedTempBuffer().
+
+	* ftplugin/ruby_cfg.vim:
+	  Bug fixed.
+
+2008-07-20  Frank Chang  <frank.nevermind@gmail.com>
+
+	* keywords/ruby:
+	  The keywords of ruby: reserved words and commonly-used functions
+
+	* ftplugin/ruby_cfg.vim:
+	  Added file 'keywords/ruby' to option 'dict', and added '?', '!', and '='
+	  to option 'isk'.
+
+	* plugin/myutils.vim (*CreateTempBuffer,*CreateSharedTempBuffer):
+	  Each temp buffer is associated with individual buffer.
+
+	* autoload/myutils.vim (*RiBufInit):
+	  Changed Highlighting.
+
+	* plugin/myutils.vim (:RubyDoc):
+	  Command RubyDoc can use fast version of ri program.
+	* plugin/myutils.vim (*myutils#RubyDoc):
+	  Function RubyDoc can use fast version of ri program.
+
+	* plugin/Dict.vim (*Dict):
+	  Changed function CreateTempBuffer() to CreateSharedTempBuffer().
+
+2008-07-19  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ftplugin/ruby_cfg.vim (*RCT_RubyComplete,*RCT_complete,*RCT_get_class):
+	  Added new function RCT_get_class(). Changed the content of complete
+	  item.
+
+	* autoload/snippets/ruby:
+	  Added new snippets for ruby.
+
+2008-07-18  Frank Chang  <frank.nevermind@gmail.com>
+
+	* autoload/NoteManger.vim (*PyStrToVim):
+	  Used different method to send python string back to Vim.
+
+	* bin/{rbtest,rct-complete,rct-doc,rct-fork,rct-fork-client,rct-meth-args,ruby-toggle-file,xmpfilter}
+	* lib/ruby/{rcodetools/*method_analyzer.rb,ruby_toggle_file.rb}:
+	  rcodetools 0.7.0 <http://eigenclass.org/hiki/rcodetools>
+	  TDD/BDD++, automagic assertions, 100% accurate completion, doc/code browsing...
+	* ftplugin/ruby_cfg.vim:
+	  Modified and added the functions oringinally defined in
+	  rcodetools-0.7.0/rcodetools.vim to ruby_cfg.vim
+	    - Method completion
+		- Code Browsing
+
+	* bin/{fastri-server,fri,ri-emacs}
+	* lib/ruby/fastri/*:
+	  fastri 0.3.1 <http://eigenclass.org/hiki.rb?fastri>
+	  faster, smarter RI docs for Ruby, DRb-enabled
+
+	* ~/.vimrc ($PATH,$RUBYLIB):
+	  Added lib/ruby to $RUBYLIB
+
+	* plugin/myutils.vim (*Shellescape):
+	  Moved function Shellescape() from autoload/myutils.vim to
+	  plugin/myutils.vim to be a global function.
+
+2008-07-17  Frank Chang  <frank.nevermind@gmail.com>
+
+	* ftplugin/ruby_cfg.vim:
+	  Changed setting 'tabstop' and 'shiftwidth' to 2.
+
+2008-07-16  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/myutils.vim (:RubyDoc):
+	  Add new command `RubyDoc' to use `ri' (Ruby interactive reference)
+	  in Vim.
+	* autoload/myutils.vim (*myutils#RubyDoc,*RiBufInit):
+	  Main function called by command `RubyDoc'.
+	* ~/.vimrc (ri_cmd):
+	  Assigned the command of executing `ri' to variable g:ri_cmd if `ri'
+	  cannot be found under $PATH.
+
+	* autoload/myutils.vim (*myutils#PyDoc):
+	  Bug fixed: Remove extra empty line in buffer `-PyDoc-`.
+
+	* autoload/myutils.vim (*Shellescape):
+	  Added new function s:Shellescape(), the modified version of
+	  shellescape(), which deals with the special case when `shell' is cmd.exe
+	  but the setting `shellslash' is on.
+
+2008-07-14  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/SwapParams.vim (s:delimit):
+	  Added '=' to s:delimit.
+	* plugin/SwapParams.vim (*SwapParamsPos):
+	  Boundary condition: The parameter is in the begin or end of line.
+
+2008-07-03  Frank Chang  <frank.nevermind@gmail.com>
+
+	* plugin/SwapParams.vim (leftBrackets, rightBrackets):
+	  Added '{' and '}' to s:leftBrackets and s:rightBrackets, respectively.
+
+2008-06-29  Frank Chang  <frank.nevermind@gmail.com>
+
+	* autoload/NotePanel.vim (*UnsetNoteListFolding):
+	  Set 'fdm' back to its global setting.
+
+2008-06-28  Frank Chang  <frank.nevermind@gmail.com>
+
+	* autoload/NoteManger.vim: Added new command 'NMSetf'. 
+	  Set 'filetype' in all sub-panels of note-panel ('Info' and
+	  'Description').
+	* autoload/NoteManger.vim: Added Setf().
+	* autoload/NoteManger.vim (NotePanel): Added NotePanel::SetBufFileType_() 
+	  and NotePanel::SetBufFileType_(). 
+
+	* autoload/NotePanel.vim (*PyStrToVim): Fixed output for unprintable
+	  characters (\t).

@@ -1,0 +1,17 @@
+C Standard Library (libc)
+
+Resource: (dietlibc-0.31)
+
+    http://www.fefe.de/dietlibc/
+
+Command: 
+
+    ctags -R -f ~/cstd.tags --c++-kinds=+p --fields=+iaS --extra=+q -I__THROW -I__attribute__ assert.h assert.h ctype.h errno.h float.h inttypes.h limits.h locale.h math.h setjmp.h signal.h stdarg.h stdbool.h stddef.h stdint.h stdio.h stdlib.h string.h time.h wchar.h wctype.h complex.h fenv.h tgmath.h iso646.h
+
+The following files don't exist:
+
+    complex.h
+    fenv.h
+    tgmath.h
+    iso646.h
+

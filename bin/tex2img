@@ -1,0 +1,388 @@
+#!/bin/bash
+
+# Author: Frank Chang <frank.nevermind@gmail.com>
+
+Exist () #{{{
+{
+    local IFS
+    if [ -z "$1" ]; then
+        return 1
+    elif [ "${1:0:1}" == "/" ]; then
+        if [ -e "$1" ]; then
+            return 0
+        else
+            return 1
+        fi
+    else
+        IFS=:
+        for dir in $PATH; do
+            if [ -e "$dir/$1" ]; then
+                return 0
+            fi
+        done
+        return 1
+    fi
+    # which "$1" 2> /dev/null > /dev/null
+    # return $?
+}
+#}}}
+ErrorMesg () #{{{
+{
+    echo "$PROGRAM: error: $1"
+}
+#}}}
+ProgramCheck () #{{{
+{
+    while [ -n "$1" ]; do
+        if ! Exist "$1"; then
+            ErrorMesg "\"$1\" doesn't exist."
+            exit 1
+        fi
+        shift
+    done
+}
+#}}}
+RunAndCheck () #{{{
+{
+    if ! $* > /dev/null 2>&1
+    then
+        ErrorMesg "$*"
+        exit 1
+    fi
+}
+#}}}
+
+Main() #{{{
+{
+    GlobalSetting
+    Init
+    OptProc "$@"
+    TeXConv
+}
+#}}}
+PrintUsage () #{{{
+{
+cat <<EOF
+Usage: $PROGRAM [OPTIONS] [FILE]
+Generate image from TeX FILE.
+TeX file contains only the body of the document (without preamble).
+
+If FILE is omitted, read TeX code from stdin.
+
+Options:
+    -p <preamble>   The file containing specified preamble.
+    -x <preamble>   The file containing extra preamble
+
+    -t <tex>        Generate image fomr <tex> code directly.
+                    FILE will be ignored.
+
+    -o <file>       Place the output into <file>.
+
+                    The image format is detected by the extension
+                    of <file>.
+
+                    If <file> is omitted, view the image directly
+                    using program "$IMG_VIEWER" (specified by the 
+                    environment variable \$IMG_VIEWER).
+
+    -c <type>       <type> = 1: dvipng   (default if divpng exists and
+                                          output format is not eps)
+                    <type> = 2: dvips
+
+                    If output format is eps, always use dvips.
+
+    -m <opts>       Options which are passed to 'convert'.
+
+    -h              Print this help and exit.
+
+EOF
+    exit 1
+}
+#}}}
+CreateTeXFile () #{{{
+{
+    local tex_file
+    tex_file="$TEMP_DIR/$INPUT"
+    CreatePreamble "$tex_file" "$2" "$3"
+#     cat >> "$tex_file" <<'EOF'
+# \begin{document}
+# EOF
+    echo '\begin{document}' >> "$tex_file"
+    cat "$1" >> "$tex_file"
+    echo '\end{document}'   >> "$tex_file"
+#     cat >> "$tex_file" <<'EOF'
+# \end{document}
+# EOF
+}
+#}}}
+CreatePreamble () #{{{
+{
+    local tex_dir tex_file make_dump preamble0 preamble preamble_file tex_fmt
+
+    # tex_dir="$(dirname "$1")"
+    # tex_file="$(basename "$1")"
+
+    tex_fmt='preamble'
+    tex_dir="${1%/*}"
+    tex_file="${1##*/}"
+
+    preamble0="$tex_dir/preamble0.tex"
+    preamble1="$tex_dir/preamble1.tex"
+    preamble="$tex_dir/preamble.tex"
+    make_dump=0
+
+    if [ ! -e "$preamble0" ] || [ "$0" -nt "$preamble0" ]; then
+        cat > "$preamble0" <<'EOF'
+\documentclass[12pt]{article}
+\usepackage{type1cm}
+\usepackage{amsmath,amsmath,amsthm,amssymb}
+\usepackage[divps]{graphicx}
+\usepackage{color}
+\pagestyle{empty}
+EOF
+    fi
+
+    preamble_file="${2:-$preamble0}"
+    if [ -n "$3" ] && [ -e "$3" ]; then
+        cp -f "$preamble_file" "$preamble1"
+        # extra preamble
+        cat "$3" >> "$preamble1"
+    else
+        preamble1="$preamble_file"
+    fi
+
+    if [ ! -e "$preamble" ] \
+        || ! Exist cmp || ! cmp -s "$preamble1" "$preamble";
+    then
+        make_dump=1
+        cp -f "$preamble1" "$preamble"
+    fi
+
+    pushd "$tex_dir" > /dev/null
+    # http://magic.aladdin.cs.cmu.edu/2007/11/02/precompiled-preamble-for-latex/
+    if [ $make_dump -eq 0 ] && [ -e "${tex_fmt}.fmt" ]; then
+        echo "%&$tex_fmt" > "$tex_file"
+    else
+        cat "$preamble" > "$tex_file"
+        if latex -ini -interaction=batchmode -jobname "$tex_fmt" \
+            "&latex $tex_file\dump" > /dev/null
+        then
+            if [ -f "${tex_fmt}.fmt" ]; then
+                echo "%&$tex_fmt" > "$tex_file"
+            fi
+        fi
+    fi
+    popd > /dev/null
+}
+#}}}
+GlobalSetting () #{{{
+{
+    CURR_DIR="$PWD"
+    # PROGRAM="$(basename "$0")"
+    PROGRAM="${0##*/}"
+    TEMP_DIR="/tmp/$PROGRAM.tmp"
+    INPUTPRE='image'
+    INPUT="$INPUTPRE.tex"
+    OUTFILE=''
+    IMG_VIEWER0="preview"
+    if [ "$OSTYPE" == 'cygwin' ]; then
+        IMG_VIEWER0="$IMG_VIEWER0.bat"
+        if [ -d 'C:/texmf/miktex/bin' ]; then
+            PATH="/cygdrive/c/texmf/miktex/bin:$PATH"
+        fi
+        export TEXINPUTS=".;$(cygpath -w "$CURR_DIR");$TEXINPUTS"
+    else
+        export TEXINPUTS=".:$CURR_DIR:$TEXINPUTS"
+    fi
+    IMG_VIEWER="${IMG_VIEWER:-$IMG_VIEWER0}"
+    POS=''
+    CONV_TYPE='1'
+    CONV_OPTS=''
+}
+#}}}
+Init () #{{{
+{
+    ProgramCheck latex
+
+    if ! [ -d "$TEMP_DIR" ]; then 
+        mkdir "$TEMP_DIR"
+    fi
+    eval rm -f "$TEMP_DIR/$INPUTPRE*"
+}
+#}}}
+OptProc () #{{{
+{
+    local tex_text tex_file preamble extra_preamble
+
+    tex_text=''
+    preamble=''
+    extra_preamble=''
+
+    if Exist dvipng; then
+        CONV_TYPE='1'
+    else
+        CONV_TYPE='2'
+    fi
+
+    while getopts ':p:t:o:l:x:c:m:h' opt; do
+        case $opt in
+            p ) preamble="$OPTARG"       ;;
+            t ) tex_text="$OPTARG"       ;;
+            o ) OUTFILE="$OPTARG"        ;;
+            l ) POS="$OPTARG"            ;;
+            x ) extra_preamble="$OPTARG" ;;
+            c ) CONV_TYPE="$OPTARG"      ;;
+            m ) CONV_OPTS="$OPTARG"      ;;
+            h ) PrintUsage
+                exit 0                   ;;
+           \? ) ErrorMesg "Unkown option: -$OPTARG"
+                echo "Type \"$PROGRAM -h\" to see possible options"
+                exit 1                   ;;
+        esac
+    done
+    shift $(($OPTIND - 1))
+
+    tex_file="${1--}"
+    if [ "$OSTYPE" = 'cygwin' ]; then
+        if [ -n "$tex_file" ] && [ "$tex_file" != '-' ]; then
+            tex_file="$(cygpath "$tex_file")"
+        fi
+        if [ -n "$OUTFILE" ]; then
+            OUTFILE="$(cygpath "$OUTFILE")"
+        fi
+        if [ -n "$preamble" ]; then
+            preamble="$(cygpath "$preamble")"
+        fi
+    fi
+
+    if [ -n "$OUTFILE" ] && [ "${OUTFILE:0:1}" != '/' ]; then
+        OUTFILE="$CURR_DIR/$OUTFILE"
+    fi
+    if [ -n "$preamble" ] && [ "${preamble:0:1}" != '/' ]; then
+        preamble="$CURR_DIR/$preamble"
+    fi
+
+    if [ -n "$preamble" ] && [ ! -e "$preamble" ]; then
+        ErrorMesg "The preamble file '$preamble' doesn't exist."
+        exit 1
+    fi
+
+    if [ -n "$extra_preamble" ] && [ ! -e "$extra_preamble" ]; then
+        ErrorMesg "The extra preamble file '$extra_preamble' doesn't exist."
+        exit 1
+    fi
+
+    if [ -n "$tex_text" ]; then
+        echo "$tex_text" | CreateTeXFile '-' "$preamble" "$extra_preamble"
+    else
+        if [ -z "$tex_file" ]; then
+            ErrorMesg 'The input filename is empty.'
+            exit 1
+        elif [ "$tex_file" != '-' ] && [ ! -e "$tex_file" ]; then
+            ErrorMesg "The input file '$tex_file' doesn't exist."
+            exit 1
+        fi
+        CreateTeXFile "$tex_file" "$preamble" "$extra_preamble"
+    fi
+}
+#}}}
+DviToEps () #{{{
+{
+    ProgramCheck dvips
+    RunAndCheck dvips -q -o "$1.ps" "$1.dvi"
+
+    if Exist /usr/bin/ps2epsi; then
+        RunAndCheck /usr/bin/ps2epsi "$1.ps" "$1.eps"
+    else
+        ProgramCheck ps2epsi
+        RunAndCheck ps2epsi "$1.ps" "$1.eps"
+    fi
+}
+#}}}
+ImgToImg () #{{{
+{
+    ProgramCheck convert
+    RunAndCheck convert "$@"
+}
+#}}}
+DviToPng () #{{{
+{
+    if Exist /usr/bin/dvipng; then
+        RunAndCheck /usr/bin/dvipng -bgWhite -Ttight \
+            --noghostscript -l1 -Q8 "$1.dvi"
+    elif Exist dvipng; then
+        RunAndCheck dvipng -bgWhite -Ttight \
+            --noghostscript -l1 -Q8 "$1.dvi"
+    else
+        ProgramCheck /usr/bin/dvipng dvipng
+    fi
+}
+#}}}
+TeXConv () #{{{
+{
+    local infile_name outfile_ext
+
+    infile_nam="${INPUT%.*}"
+
+    cd "$TEMP_DIR"
+    # RunAndCheck latex -parse-first-line -interaction=batchmode "$infile_nam.tex"
+    if ! latex -parse-first-line -interaction=batchmode "$infile_nam.tex" > /dev/null 2>&1
+    then
+        if [ ! -e "$infile_nam.dvi" ]; then
+            ErrorMesg "latex -parse-first-line -interaction=batchmode \"$infile_nam.tex\""
+            exit 1
+        fi
+    fi
+
+    if [ -n "$OUTFILE" ]; then
+        outfile_ext="${OUTFILE##*.}"
+        if [ "$outfile_ext" = 'eps' ]; then
+            DviToEps "$infile_nam"
+        elif [ "$CONV_TYPE" = '1' ]; then
+            DviToPng "$infile_nam"
+            if [ "$outfile_ext" = 'png' ] && [ -z "$CONV_OPTS" ]; then
+                mv -f "${infile_nam}1.png" "$OUTFILE"
+            else
+                ImgToImg $CONV_OPTS "${infile_nam}1.png" "$OUTFILE"
+            fi
+        else
+            DviToEps "$infile_nam"
+            ImgToImg $CONV_OPTS "${infile_nam}.eps"  "$OUTFILE"
+        fi
+    else
+        ProgramCheck "$IMG_VIEWER" 
+        if [ "$CONV_TYPE" = '1' ]; then
+            DviToPng "$infile_nam"
+            if [ -n "$CONV_OPTS" ]; then
+                ImgToImg $CONV_OPTS "${infile_nam}1.png" "${infile_nam}.png"
+                mv -f "${infile_nam}.png" "${infile_nam}1.png"
+            fi
+        else
+            DviToEps "$infile_nam"
+            ImgToImg $CONV_OPTS "${infile_nam}.eps" "${infile_nam}1.png"
+        fi
+
+        # In win32, Vim uses DeleteFile()
+        # <http://msdn2.microsoft.com/en-us/library/aa363915(VS.85).aspx> to
+        # delete output tempfile, but it fails when file is still open for
+        # normal I/O.
+        #
+        # We redirect STDIN and STDERR to /dev/null, so the output tempfile
+        # created by Vim can be deleted successfully.
+        if [ "$IMG_VIEWER" = "$IMG_VIEWER0" ]; then
+            if [ -n "$POS" ]; then
+                "$IMG_VIEWER" -s "${infile_nam}1.png" -p "$POS" >/dev/null 2>&1 &
+            else
+                "$IMG_VIEWER" -s "${infile_nam}1.png" >/dev/null 2>&1 &
+            fi
+        else
+            "$IMG_VIEWER" "${infile_nam}1.png" >/dev/null 2>&1 &
+        fi
+    fi
+}
+#}}}
+
+#===================================
+Main "$@"
+
+# vim: fdm=marker :

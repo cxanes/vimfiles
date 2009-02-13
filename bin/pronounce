@@ -1,0 +1,182 @@
+#!/bin/bash
+
+# Author: Frank Chang <frank.nevermind@gmail.com>
+
+Exist ()
+{
+    which "$1" 2> /dev/null > /dev/null
+    return $?
+}
+
+HAS_LAME=''
+if Exist 'lame'; then
+    HAS_LAME='1'
+fi
+
+Play()
+{
+    if [ "$OSTYPE" = 'cygwin' ]; then
+        if [ "${1##*.}" = 'mp3' ] && [ -n '$HAS_LAME' ]; then
+            # Microsoft WAVE soundfile format: 
+            #   http://ccrma.stanford.edu/courses/422/projects/WaveFormat/
+            wget -T 10 -t 5 -w 1 -q -O - "$1" | lame --mp3input --decode --silent - - | \
+            perl -e '
+                binmode STDIN;
+                binmode STDOUT;
+                my $wav = do { local $/; <> };
+                sub Size ($) { pack q{L}, shift(); }
+                my $size = length($wav) - 44;
+                substr $wav, 40, 4, Size($size);
+                substr $wav, 4,  4, Size($size+36);
+                print $wav;
+            ' > /dev/dsp
+        else
+            wget -T 10 -t 5 -w 1 -q -O - "$1" | perl -pe1 -0777 > /dev/dsp
+        fi
+    else
+        mplayer -quiet "$1" >/dev/null 2>&1
+        return $?
+    fi
+}
+
+WAV=''
+
+Pronounce()
+{
+    local dict word
+    dict="$1"
+    word="$2"
+
+    if [ -z "$word" ]; then
+        return -1
+    fi
+
+    WAV=''
+    $dict "$word"
+
+    if [ -z "$WAV" ]; then
+        return -1
+    fi
+
+    Play "$WAV"
+    return $?
+}
+
+# http://www.m-w.com/dictionary/
+MW()
+{
+    local word mw_url sound_url cmd wav
+
+    WAV=''
+    word="$1"
+    # mw_url='http://www.m-w.com/dictionary/'
+    mw_url='http://www.merriam-webster.com/dictionary/'
+    sound_url='http://cougar.eb.com/soundc11/'
+
+    cmd='
+        $w = lc shift();
+        @f = (); 
+        while(<>) {
+            if (m{/cgi-bin/audio\.pl\?((\w)\w*\.wav)=(\w+)}i) {
+                my ($wav, $dir, $word) = ($1, $2, lc $3);
+
+                if    ($wav =~ m{^bix}) { $dir = q{bix}; }
+                elsif ($wav =~ m{^gg} ) { $dir = q{gg};  }
+
+                if ($word eq $w) {
+                    print "$dir/$wav";
+                    exit
+                };
+
+                push @f, "$dir/$wav";
+            }
+        };
+        print $f[0] if @f;
+    '
+    wav="$(wget -T 10 -t 3 -w 1 -q -O - "$mw_url$word" | perl -e "$cmd" "$word")"
+
+    if [ -n "$wav" ]; then
+        WAV="$sound_url$wav"
+    fi
+}
+
+# http://query.nytimes.com/search/
+NY()
+{
+    local word ny_url cmd
+
+    WAV=''
+    word="$1"
+    ny_url='http://query.nytimes.com/search/query?srchst=ref&query='
+
+    cmd='
+        if (/\bplayItNew\('\''(http:[^'\'']+?\.wav)'\''\)/) { 
+            print $1;
+            exit;
+        }
+    '
+
+    WAV="$(wget -T 10 -t 3 -w 1 -q -O - "$ny_url$word" | perl -ne "$cmd")"
+}
+
+# http://dictionary.reference.com/
+DICT()
+{
+    local word dict_url cmd
+    
+    word="$1"
+    dict_url='http://dictionary.reference.com/browse/'
+
+    cmd='
+        if (/"soundUrl=([^"]+)"/i) {
+            my $wav = $1;
+            $wav =~ s{%([0-9a-f][0-9a-f])}{chr(hex($1))}gie;
+            print $wav;
+            exit;
+        }
+    '
+
+    WAV=''
+    WAV="$(wget -T 10 -t 3 -w 1 -q -O - "$dict_url$word" | perl -ne "$cmd")"
+}
+
+Usage()
+{
+    if [ -n "$HAS_LAME" ]; then
+        echo "Usage: ${0##*/} [-m|-n|-d] word"
+    else
+        echo "Usage: ${0##*/} [-m|-n] word"
+    fi
+    echo 'Options:'
+    echo '  -m: Merriam-Webster    <http://www.merriam-webster.com/> (default)'
+    echo '  -n: The New York Times <http://www.nytimes.com/>'
+    if [ -n "$HAS_LAME" ]; then
+        echo '  -d: Dictionary.com     <http://dictionary.reference.com/>'
+    fi
+}
+
+DICT='MW'
+while getopts ":mnhd" opt; do
+    case $opt in
+        m  ) DICT='MW' ;;
+        n  ) DICT='NY' ;;
+        h  ) Usage
+             exit 0 ;;
+        d  ) if [ -n "$HAS_LAME" ]; then
+                 DICT='DICT'
+             else
+                 Usage
+                 exit 1
+             fi ;;
+        \? ) Usage
+             exit 1 ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+if [ -z "$1" ]; then
+    Usage
+    exit 1
+fi
+
+Pronounce "$DICT" "$1"

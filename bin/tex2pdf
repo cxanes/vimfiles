@@ -1,0 +1,114 @@
+#!/bin/bash
+
+# Author: Frank Chang <frank.nevermind@gmail.com>
+
+PROGRAM="$(basename $0)"
+
+Exist () #{{{
+{
+    which "$1" 2> /dev/null > /dev/null
+    return $?
+}
+#}}}
+ErrorMesg () #{{{
+{
+    echo "$PROGRAM: error: $1"
+}
+#}}}
+ProgramCheck () #{{{
+{
+    if ! Exist "$1"; then
+        if [ -n "$2" ]; then
+            ErrorMesg "\"$1\" doesn't exist: $2"
+        else
+            ErrorMesg "\"$1\" doesn't exist."
+        fi
+        cd "$CURR_DIR"
+        exit 1
+    fi
+}
+#}}}
+RunAndCheck () #{{{
+{
+    if ! $*
+    then
+        cd "$CURR_DIR"
+        exit 1
+    fi
+}
+#}}}
+
+PDFLATEX=pdflatex
+CWTEX=0
+STAGE=3
+TEX_TEMP='temp'
+
+COMPILE_TIME=1
+while getopts ':cps:t:' opt; do #{{{
+    case $opt in
+        c ) ProgramCheck 'cwtex'
+            CWTEX=1               ;;
+        p ) PDFLATEX=latex        ;;
+        s ) STAGE=$OPTARG         ;;
+        t ) COMPILE_TIME=$OPTARG  ;;
+    esac
+done
+shift $(($OPTIND - 1))
+#}}}
+
+FILENAME="$1"
+SHELLSLASH='/'
+
+if [ "$OSTYPE" = 'cygwin' ]; then
+    if [ -d 'C:/texmf/miktex/bin' ]; then
+        PATH="/cygdrive/c/texmf/miktex/bin:$PATH"
+        FILENAME="$(cygpath -w "$1")"
+        SHELLSLASH="\\"
+    else
+        FILENAME="$1"
+    fi
+fi
+
+FILE_DIR="$(dirname "$FILENAME")"
+CURR_DIR="$(pwd)"
+
+cd "$FILE_DIR"
+
+OUTFILE="${FILENAME%.*}"
+INC_FIG=''
+if [ -d 'fig' ]; then
+    export TEXINPUTS="fig;$TEXINPUTS"
+    INC_FIG='fig'
+fi
+
+if ! [ -d "$TEX_TEMP" ]; then
+    mkdir "$TEX_TEMP"
+fi
+
+if [ $CWTEX -eq 1 ]; then
+    RunAndCheck cwtex -c -d="$TEX_TEMP" "$FILENAME"
+    FILENAME="$TEX_TEMP$SHELLSLASH$(basename "$OUTFILE")"
+fi
+
+ProgramCheck $PDFLATEX
+until [ $((COMPILE_TIME--)) -eq 0 ]; do
+    RunAndCheck $PDFLATEX -file-line-error -interaction=nonstopmode -aux-directory="$TEX_TEMP" \
+        -include-directory="$FIG" "$FILENAME"
+done
+
+if [ $PDFLATEX != pdflatex ]; then
+    if [ $STAGE -gt 1 ]; then
+        ProgramCheck dvips
+        RunAndCheck dvips "$OUTFILE.dvi"
+        mv "$OUTFILE.dvi" "$TEX_TEMP"
+    fi
+    if [ $STAGE -gt 2 ]; then
+        ProgramCheck ps2pdf
+        RunAndCheck ps2pdf "$OUTFILE.ps" "$OUTFILE.pdf"
+        mv "$OUTFILE.ps" "$TEX_TEMP"
+    fi
+fi
+
+cd "$CURR_DIR"
+
+# vim: fdm=marker :

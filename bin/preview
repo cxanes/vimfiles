@@ -1,0 +1,141 @@
+#!/usr/bin/env python
+
+import wx
+import sys
+
+class PreviewFrame(wx.Frame):
+    def __init__(self, filename, pos):
+        image = wx.Image(filename, wx.BITMAP_TYPE_ANY)
+        scrollbar_size = wx.Size(wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X),
+                wx.SystemSettings.GetMetric(wx.SYS_HSCROLL_Y))
+        image_size = image.GetSize()
+        default_size  = wx.Size(800, 600)
+
+        if sys.platform == "win32":
+            self.max_size = image_size + (scrollbar_size[0]/2, scrollbar_size[1]/2)
+        else:
+            self.max_size = image_size
+        size = list(self.max_size)
+        if size[0] > default_size.width:
+            size[0] = default_size.width
+
+        if size[1] > default_size.height:
+            size[1] = default_size.height
+
+        style = wx.RESIZE_BORDER
+        if sys.platform != "win32":
+            style |= wx.CAPTION | wx.CLOSE_BOX | wx.SYSTEM_MENU
+            
+        wx.Frame.__init__(self, None, pos=pos, size=size, style=style)
+        self.SetMaxSize(self.max_size)
+
+        window = wx.ScrolledWindow(self, -1, size=self.GetClientSize())
+        window.SetScrollbars(1, 1, image.GetWidth(), image.GetHeight())
+        window.EnableScrolling(True, True)
+
+        sb = wx.StaticBitmap(window, -1, wx.BitmapFromImage(image))
+        self.window = window
+
+        if sys.platform != "win32":
+            self.window.SetFocus()
+        else:
+            sb.SetFocus()
+
+        self.BindCommonEvt(sb)
+        self.BindCommonEvt(self)
+        self.Bind(wx.EVT_MOTION, self.OnMotion)
+        self.Bind(wx.EVT_SIZE,   self.OnSize)
+
+    def BindCommonEvt(self, window):
+        window.Bind(wx.EVT_CHAR,       self.OnChar)
+        window.Bind(wx.EVT_LEFT_DOWN,  self.OnDown)
+        window.Bind(wx.EVT_LEFT_UP,    self.OnUp)
+        window.Bind(wx.EVT_RIGHT_DOWN, self.OnDown)
+        window.Bind(wx.EVT_RIGHT_UP,   self.OnUp)
+
+    def OnChar(self, evt):
+        if evt.GetKeyCode() == wx.WXK_RETURN or evt.GetKeyCode() == wx.WXK_ESCAPE: 
+            self.Close(True)
+        else:
+            evt.Skip()
+
+    def OnDown(self, evt):
+        self.pos = self.window.CalcScrolledPosition(evt.GetPosition())
+        if evt.RightIsDown():
+            self.pos -= self.window.CalcUnscrolledPosition((0,0))
+        self.CaptureMouse()
+        evt.StopPropagation()
+
+    def OnUp(self, evt):
+        if self.HasCapture():
+            self.ReleaseMouse()
+        self.Refresh()
+        evt.StopPropagation()
+
+    def OnMotion(self, evt):
+        if evt.Dragging():
+            if evt.LeftIsDown():
+                self.SetPosition(self.GetScreenPosition() + evt.GetPosition() - self.pos)
+            elif evt.RightIsDown():
+                pos = evt.GetPosition() - self.pos
+                self.window.Scroll(pos.x, pos.y)
+            evt.StopPropagation()
+        evt.Skip()
+
+    def OnSize(self, evt):
+        if self.max_size == self.GetSize():
+            self.window.SetClientSize(self.GetClientSize())
+        else:
+            self.window.SetSize(self.GetClientSize())
+
+        self.Refresh()
+
+if __name__ == '__main__':
+    import sys
+    import getopt
+    import re
+    import os
+
+    program = os.path.basename(sys.argv[0])
+    def Usage():
+        print """Usage: %s [-p pos] [[-s] image] 
+
+Options:
+    -p 'x+y'        Open on position x and y
+    -s image        The image filename
+
+Keys:
+    <Return>|<ESC>  Exit
+    <Left-Mouse>    Move the window
+    <Right-Mouse>   Scroll the window""" % program
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "p:s:h")
+    except getopt.GetoptError, err:
+        print "%s: %s" % (program, err)
+        print "Try '%s -h' for more information." % program
+        sys.exit(1)
+
+    filename = None
+    pos = wx.DefaultPosition
+
+    for o, a in opts:
+        if o in "-h":
+            Usage()
+            exit(0)
+        elif o in "-p":
+            if re.match(r'^\d+\+\d+$', a) != None:
+                pos = map(lambda v: int(v), a.split('+'))
+        elif o in "-s":
+            filename = a
+
+    if not filename:
+        if len(args) > 0:
+            filename = args[0]
+        else:
+            exit(2)
+
+    app = wx.PySimpleApp()
+    frm = PreviewFrame(filename, pos=pos)
+    frm.Show()
+    app.MainLoop()

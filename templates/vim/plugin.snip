@@ -1,0 +1,18 @@
+" ``If2(expand("%:t"), '')``<{}>
+" Last Modified: ``strftime('%Y-%m-%d %H:%M:%S')``
+"        Author: ``exists('g:USER_INFO') ? g:USER_INFO['name'] : '<{}>'````exists('g:USER_INFO') ? ' <' . g:USER_INFO['email'] . '>' : ''``
+
+" Load Once {{{
+if exists('loaded_``If2(expand("%:t:r"), "<{plugin}>")``')
+  finish
+endif
+let loaded_``If2(expand("%:t:r"), "<{plugin}>")`` = 1
+
+let s:save_cpo = &cpo
+set cpo&vim
+"}}}
+<{}>
+" Restore {{{
+let &cpo = s:save_cpo
+unlet s:save_cpo
+" vim: fdm=marker :

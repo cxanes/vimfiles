@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Ref: latexmk.pl 
+#   <http://macromates.com/svn/Bundles/trunk/Bundles/Latex.tmbundle/Support/bin/latexmk.pl>
+#   <http://www.phys.psu.edu/~collins/software/latexmk-jcc/>
+#   <http://www.ctan.org/tex-archive/help/Catalogue/entries/latexmk.html>
+
+Exist () #{{{
+{
+    which "$1" 2> /dev/null > /dev/null
+    return $?
+}
+#}}}
+ErrorMesg () #{{{
+{
+    echo "$PROGRAM: error: $1"
+}
+#}}}
+ProgramCheck () #{{{
+{
+    if ! Exist "$1"; then
+        if [ -n "$2" ]; then
+            ErrorMesg "\"$1\" doesn't exist: $2"
+        else
+            ErrorMesg "\"$1\" doesn't exist."
+        fi
+        cd "$CURR_DIR"
+        exit 1
+    fi
+}
+#}}}
+
+if [ "$OSTYPE" = 'cygwin' ]; then
+    if [ -d '/cygdrive/c/texmf/miktex/bin' ]; then
+        PATH=/cygdrive/c/texmf/miktex/bin:$PATH
+    fi
+fi
+ProgramCheck latexmk.pl
+exec perl -S latexmk.pl "$@"
+
+# vim: fdm=marker :

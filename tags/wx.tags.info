@@ -1,0 +1,16 @@
+wxWidgets <http://www.wxwidgets.org>
+
+Resource: (v2.8.9)
+
+    http://www.wxwidgets.org/downloads/
+
+Command: 
+
+    ctags -R -f ~/wx.tags --c++-kinds=+p --fields=+iaS --extra=+q --language-force=c++ wx
+
+Reference: 
+
+    1. The version I use:
+
+        http://prdownloads.sourceforge.net/wxwindows/wxMSW-2.8.9.zip
+

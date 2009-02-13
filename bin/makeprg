@@ -1,0 +1,110 @@
+#!/bin/bash
+
+# Author: Frank Chang <frank.nevermind@gmail.com>
+
+# CAUTION: This program should be used only in VIM.
+#
+# Usage: 'makeprg' FILETYPE FILE [arguments]
+
+Exist () #{{{
+{
+    which "$1" 2> /dev/null > /dev/null
+    return $?
+}
+#}}}
+
+FILETYPE=''
+
+while getopts ':t:' opt; do
+    case $opt in
+        t ) FILETYPE=$OPTARG ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+FILENAME="$1"
+FILE_DIR="$(dirname "$FILENAME")"
+
+# Working directory may not be the same as the directory 
+# that contains the editing file. (VIM)
+
+shift
+if [ -z "$FILENAME" ]; then
+    make
+    exit
+elif [ -e "$FILE_DIR/Makefile" ] || [ -e "$FILE_DIR/makefile" ]; then
+    make -C "$FILE_DIR" -s $@
+    exit
+elif [ -e "Makefile" ] || [ -e "makefile" ]; then
+    make $@
+    exit
+fi
+
+SUFFIX="${FILENAME##*.}"
+OUTFILE="${FILENAME%.*}"
+
+PRE_ARG=''
+SUF_ARG=''
+IS_SUF='0'
+
+while [ -n "$1" ]; do
+    if [ "$1" = '%' ]; then
+        IS_SUF="1"
+        shift
+        continue
+    fi
+    if [ "$IS_SUF" = '0' ]; then
+        PRE_ARG="$PRE_ARG \"$1\""
+    else
+        SUF_ARG="$SUF_ARG \"$1\""
+    fi
+    shift
+done
+
+# specical cases
+if [ "$SUFFIX" = "ctx" ]; then
+    FILETYPE=''
+fi
+
+if [ -z "$FILETYPE" ]; then
+    case $SUFFIX in
+        cc | cpp ) FILETYPE=cpp  ;;
+               c ) FILETYPE=c    ;;
+             ctx ) FILETYPE=ctx  ;;
+             tex ) FILETYPE=tex  ;;
+              pl ) FILETYPE=perl ;;
+              mp ) FILETYPE=mp   ;;
+            java ) FILETYPE=java ;;
+    esac
+fi
+
+if [ $OSTYPE = 'cygwin' ]; then
+    GPP='g++-4'
+else
+    GPP='g++'
+fi
+
+case $FILETYPE in
+     cpp ) eval exec $GPP -Wall -o "\"$OUTFILE\"" $PRE_ARG "\"$FILENAME\"" $SUF_ARG ;;
+       c ) eval exec gcc -Wall -o "\"$OUTFILE\"" $PRE_ARG "\"$FILENAME\"" $SUF_ARG ;;
+     ctx ) cd "$FILE_DIR"
+           eval exec tex2pdf -c $PRE_ARG "\"${FILENAME##*/}\"" ;;
+     tex ) cd "$FILE_DIR"
+           if Exist latexmk; then
+               rc="$(dirname "$0")/../latexmkrc"
+               if [ -e "$rc" ]; then
+                   eval exec latexmk -r "\"$rc\"" -silent $PRE_ARG "\"${FILENAME##*/}\""
+               else
+                   eval exec latexmk -silent $PRE_ARG "\"${FILENAME##*/}\""
+               fi
+           else
+               eval exec tex2pdf $PRE_ARG "\"${FILENAME##*/}\""
+           fi ;;
+    perl ) eval exec perl -Wc "\"$FILENAME\"" ;;
+      mp ) cd "$FILE_DIR"
+           eval exec mpost -interaction=batchmode -quiet $PRE_ARG "\"${FILENAME##*/}\"" > /dev/null ;;
+    java ) cd "$FILE_DIR"
+           eval exec javac $PRE_ARG "\"${FILENAME##*/}\"" ;;
+esac
+
+# vim: fdm=marker :

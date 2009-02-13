@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Send text to VIM Demo</title>
+	
+	<meta name="Author" content="Frank Chang" />
+	<meta name="Copyright" content="Copyright (C) January 29, 2008 Frank Chang" />
+
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <script type="text/javascript" src="FF-Send-Key-to-Vim.js"></script>
+    <script type="text/javascript">
+    <!--
+        function $(id) {
+            return document.getElementById(id);
+        }
+
+        function sendText(key) {
+            var vim_servername = $("servername").value;
+            vimSendText(vim_servername, key);
+        }
+    //-->
+    </script>
+
+    <style type="text/css">
+        #servername {
+            vertical-align: middle;
+            width: 5em;
+        }
+    </style>
+</head>
+<body>
+    <div id="prompt">
+        Send following text to VIM &rarr; 
+        Servername: <input type="text" id="servername" value="GVIM" />
+    </div>
+    <textarea id="send_text" cols="50" rows="10"></textarea>
+    <br />
+    <button onclick="sendText($('send_text').value); return false;">Send</button>
+</body>
+</html>

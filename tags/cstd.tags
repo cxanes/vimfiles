@@ -1,0 +1,2000 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.7	//
+ARG_MAX	limits.h	71;"	d
+BUFSIZ	stdio.h	138;"	d
+BUS_ADRALN	signal.h	/^  BUS_ADRALN = 1,		\/* Invalid address alignment.  *\/$/;"	e	enum:__anon19
+BUS_ADRALN	signal.h	387;"	d
+BUS_ADRERR	signal.h	/^  BUS_ADRERR,			\/* Non-existant physical address.  *\/$/;"	e	enum:__anon19
+BUS_ADRERR	signal.h	389;"	d
+BUS_OBJERR	signal.h	/^  BUS_OBJERR			\/* Object specific hardware error.  *\/$/;"	e	enum:__anon19
+BUS_OBJERR	signal.h	391;"	d
+CHAR_BIT	limits.h	23;"	d
+CHAR_MAX	limits.h	32;"	d
+CHAR_MAX	limits.h	33;"	d
+CHAR_MAX	limits.h	37;"	d
+CHAR_MAX	limits.h	38;"	d
+CHAR_MIN	limits.h	30;"	d
+CHAR_MIN	limits.h	31;"	d
+CHAR_MIN	limits.h	35;"	d
+CHAR_MIN	limits.h	36;"	d
+CHILD_MAX	limits.h	72;"	d
+CLD_CONTINUED	signal.h	/^  CLD_CONTINUED			\/* Stopped child has continued.  *\/$/;"	e	enum:__anon21
+CLD_CONTINUED	signal.h	415;"	d
+CLD_DUMPED	signal.h	/^  CLD_DUMPED,			\/* Child terminated abnormally.  *\/$/;"	e	enum:__anon21
+CLD_DUMPED	signal.h	409;"	d
+CLD_EXITED	signal.h	/^  CLD_EXITED = 1,		\/* Child has exited.  *\/$/;"	e	enum:__anon21
+CLD_EXITED	signal.h	405;"	d
+CLD_KILLED	signal.h	/^  CLD_KILLED,			\/* Child was killed.  *\/$/;"	e	enum:__anon21
+CLD_KILLED	signal.h	407;"	d
+CLD_STOPPED	signal.h	/^  CLD_STOPPED,			\/* Child has stopped.  *\/$/;"	e	enum:__anon21
+CLD_STOPPED	signal.h	413;"	d
+CLD_TRAPPED	signal.h	/^  CLD_TRAPPED,			\/* Traced child has trapped.  *\/$/;"	e	enum:__anon21
+CLD_TRAPPED	signal.h	411;"	d
+CLK_TCK	time.h	72;"	d
+CLOCKS_PER_SEC	time.h	50;"	d
+CLOCK_MONOTONIC	time.h	14;"	d
+CLOCK_MONOTONIC_HR	time.h	18;"	d
+CLOCK_PROCESS_CPUTIME_ID	time.h	15;"	d
+CLOCK_REALTIME	time.h	13;"	d
+CLOCK_REALTIME_HR	time.h	17;"	d
+CLOCK_THREAD_CPUTIME_ID	time.h	16;"	d
+DBL_DIG	float.h	44;"	d
+DBL_DIG	float.h	45;"	d
+DBL_EPSILON	float.h	47;"	d
+DBL_EPSILON	float.h	48;"	d
+DBL_MANT_DIG	float.h	41;"	d
+DBL_MANT_DIG	float.h	42;"	d
+DBL_MAX	float.h	62;"	d
+DBL_MAX	float.h	63;"	d
+DBL_MAX_10_EXP	float.h	65;"	d
+DBL_MAX_10_EXP	float.h	66;"	d
+DBL_MAX_EXP	float.h	59;"	d
+DBL_MAX_EXP	float.h	60;"	d
+DBL_MIN	float.h	53;"	d
+DBL_MIN	float.h	54;"	d
+DBL_MIN_10_EXP	float.h	56;"	d
+DBL_MIN_10_EXP	float.h	57;"	d
+DBL_MIN_EXP	float.h	50;"	d
+DBL_MIN_EXP	float.h	51;"	d
+E2BIG	errno.h	12;"	d
+E2BIG	errno.h	148;"	d
+E2BIG	errno.h	285;"	d
+E2BIG	errno.h	422;"	d
+E2BIG	errno.h	574;"	d
+EACCES	errno.h	154;"	d
+EACCES	errno.h	18;"	d
+EACCES	errno.h	291;"	d
+EACCES	errno.h	428;"	d
+EACCES	errno.h	580;"	d
+EADDRINUSE	errno.h	239;"	d
+EADDRINUSE	errno.h	327;"	d
+EADDRINUSE	errno.h	532;"	d
+EADDRINUSE	errno.h	55;"	d
+EADDRINUSE	errno.h	666;"	d
+EADDRNOTAVAIL	errno.h	240;"	d
+EADDRNOTAVAIL	errno.h	328;"	d
+EADDRNOTAVAIL	errno.h	533;"	d
+EADDRNOTAVAIL	errno.h	56;"	d
+EADDRNOTAVAIL	errno.h	667;"	d
+EADV	errno.h	109;"	d
+EADV	errno.h	204;"	d
+EADV	errno.h	362;"	d
+EADV	errno.h	473;"	d
+EADV	errno.h	635;"	d
+EAFNOSUPPORT	errno.h	238;"	d
+EAFNOSUPPORT	errno.h	326;"	d
+EAFNOSUPPORT	errno.h	531;"	d
+EAFNOSUPPORT	errno.h	54;"	d
+EAFNOSUPPORT	errno.h	665;"	d
+EAGAIN	errno.h	152;"	d
+EAGAIN	errno.h	289;"	d
+EAGAIN	errno.h	40;"	d
+EAGAIN	errno.h	426;"	d
+EAGAIN	errno.h	578;"	d
+EALREADY	errno.h	263;"	d
+EALREADY	errno.h	315;"	d
+EALREADY	errno.h	43;"	d
+EALREADY	errno.h	551;"	d
+EALREADY	errno.h	682;"	d
+EBADE	errno.h	188;"	d
+EBADE	errno.h	381;"	d
+EBADE	errno.h	490;"	d
+EBADE	errno.h	619;"	d
+EBADE	errno.h	99;"	d
+EBADF	errno.h	14;"	d
+EBADF	errno.h	150;"	d
+EBADF	errno.h	287;"	d
+EBADF	errno.h	424;"	d
+EBADF	errno.h	576;"	d
+EBADFD	errno.h	116;"	d
+EBADFD	errno.h	214;"	d
+EBADFD	errno.h	372;"	d
+EBADFD	errno.h	498;"	d
+EBADFD	errno.h	644;"	d
+EBADMSG	errno.h	210;"	d
+EBADMSG	errno.h	355;"	d
+EBADMSG	errno.h	481;"	d
+EBADMSG	errno.h	641;"	d
+EBADMSG	errno.h	84;"	d
+EBADR	errno.h	100;"	d
+EBADR	errno.h	189;"	d
+EBADR	errno.h	382;"	d
+EBADR	errno.h	491;"	d
+EBADR	errno.h	620;"	d
+EBADRQC	errno.h	103;"	d
+EBADRQC	errno.h	192;"	d
+EBADRQC	errno.h	385;"	d
+EBADRQC	errno.h	494;"	d
+EBADRQC	errno.h	623;"	d
+EBADSLT	errno.h	104;"	d
+EBADSLT	errno.h	193;"	d
+EBADSLT	errno.h	386;"	d
+EBADSLT	errno.h	495;"	d
+EBADSLT	errno.h	624;"	d
+EBFONT	errno.h	106;"	d
+EBFONT	errno.h	195;"	d
+EBFONT	errno.h	388;"	d
+EBFONT	errno.h	496;"	d
+EBFONT	errno.h	626;"	d
+EBUSY	errno.h	157;"	d
+EBUSY	errno.h	21;"	d
+EBUSY	errno.h	294;"	d
+EBUSY	errno.h	431;"	d
+EBUSY	errno.h	583;"	d
+ECANCELED	errno.h	132;"	d
+ECANCELED	errno.h	266;"	d
+ECANCELED	errno.h	406;"	d
+ECANCELED	errno.h	693;"	d
+ECANCELLED	errno.h	560;"	d
+ECHILD	errno.h	151;"	d
+ECHILD	errno.h	15;"	d
+ECHILD	errno.h	288;"	d
+ECHILD	errno.h	425;"	d
+ECHILD	errno.h	577;"	d
+ECHRNG	errno.h	178;"	d
+ECHRNG	errno.h	373;"	d
+ECHRNG	errno.h	452;"	d
+ECHRNG	errno.h	611;"	d
+ECHRNG	errno.h	91;"	d
+ECOMM	errno.h	111;"	d
+ECOMM	errno.h	206;"	d
+ECOMM	errno.h	364;"	d
+ECOMM	errno.h	475;"	d
+ECOMM	errno.h	637;"	d
+ECONNABORTED	errno.h	244;"	d
+ECONNABORTED	errno.h	332;"	d
+ECONNABORTED	errno.h	537;"	d
+ECONNABORTED	errno.h	60;"	d
+ECONNABORTED	errno.h	671;"	d
+ECONNREFUSED	errno.h	259;"	d
+ECONNREFUSED	errno.h	340;"	d
+ECONNREFUSED	errno.h	546;"	d
+ECONNREFUSED	errno.h	679;"	d
+ECONNREFUSED	errno.h	68;"	d
+ECONNRESET	errno.h	245;"	d
+ECONNRESET	errno.h	333;"	d
+ECONNRESET	errno.h	538;"	d
+ECONNRESET	errno.h	61;"	d
+ECONNRESET	errno.h	672;"	d
+EDEADLK	errno.h	16;"	d
+EDEADLK	errno.h	186;"	d
+EDEADLK	errno.h	357;"	d
+EDEADLK	errno.h	460;"	d
+EDEADLK	errno.h	602;"	d
+EDEADLOCK	errno.h	105;"	d
+EDEADLOCK	errno.h	194;"	d
+EDEADLOCK	errno.h	387;"	d
+EDEADLOCK	errno.h	461;"	d
+EDEADLOCK	errno.h	625;"	d
+EDESTADDRREQ	errno.h	229;"	d
+EDESTADDRREQ	errno.h	317;"	d
+EDESTADDRREQ	errno.h	45;"	d
+EDESTADDRREQ	errno.h	523;"	d
+EDESTADDRREQ	errno.h	656;"	d
+EDOM	errno.h	174;"	d
+EDOM	errno.h	311;"	d
+EDOM	errno.h	38;"	d
+EDOM	errno.h	448;"	d
+EDOM	errno.h	600;"	d
+EDOTDOT	errno.h	113;"	d
+EDOTDOT	errno.h	208;"	d
+EDOTDOT	errno.h	367;"	d
+EDOTDOT	errno.h	480;"	d
+EDOTDOT	errno.h	640;"	d
+EDQUOT	errno.h	273;"	d
+EDQUOT	errno.h	348;"	d
+EDQUOT	errno.h	483;"	d
+EDQUOT	errno.h	690;"	d
+EDQUOT	errno.h	75;"	d
+EEXIST	errno.h	158;"	d
+EEXIST	errno.h	22;"	d
+EEXIST	errno.h	295;"	d
+EEXIST	errno.h	432;"	d
+EEXIST	errno.h	584;"	d
+EFAULT	errno.h	155;"	d
+EFAULT	errno.h	19;"	d
+EFAULT	errno.h	292;"	d
+EFAULT	errno.h	429;"	d
+EFAULT	errno.h	581;"	d
+EFBIG	errno.h	168;"	d
+EFBIG	errno.h	305;"	d
+EFBIG	errno.h	32;"	d
+EFBIG	errno.h	442;"	d
+EFBIG	errno.h	594;"	d
+EHOSTDOWN	errno.h	260;"	d
+EHOSTDOWN	errno.h	343;"	d
+EHOSTDOWN	errno.h	548;"	d
+EHOSTDOWN	errno.h	680;"	d
+EHOSTDOWN	errno.h	71;"	d
+EHOSTUNREACH	errno.h	261;"	d
+EHOSTUNREACH	errno.h	344;"	d
+EHOSTUNREACH	errno.h	549;"	d
+EHOSTUNREACH	errno.h	681;"	d
+EHOSTUNREACH	errno.h	72;"	d
+EIDRM	errno.h	177;"	d
+EIDRM	errno.h	356;"	d
+EIDRM	errno.h	451;"	d
+EIDRM	errno.h	610;"	d
+EIDRM	errno.h	81;"	d
+EILSEQ	errno.h	221;"	d
+EILSEQ	errno.h	401;"	d
+EILSEQ	errno.h	463;"	d
+EILSEQ	errno.h	651;"	d
+EILSEQ	errno.h	89;"	d
+EINIT	errno.h	254;"	d
+EINPROGRESS	errno.h	264;"	d
+EINPROGRESS	errno.h	314;"	d
+EINPROGRESS	errno.h	42;"	d
+EINPROGRESS	errno.h	552;"	d
+EINPROGRESS	errno.h	683;"	d
+EINTR	errno.h	145;"	d
+EINTR	errno.h	282;"	d
+EINTR	errno.h	419;"	d
+EINTR	errno.h	571;"	d
+EINTR	errno.h	9;"	d
+EINVAL	errno.h	163;"	d
+EINVAL	errno.h	27;"	d
+EINVAL	errno.h	300;"	d
+EINVAL	errno.h	437;"	d
+EINVAL	errno.h	589;"	d
+EIO	errno.h	10;"	d
+EIO	errno.h	146;"	d
+EIO	errno.h	283;"	d
+EIO	errno.h	420;"	d
+EIO	errno.h	572;"	d
+EISCONN	errno.h	247;"	d
+EISCONN	errno.h	335;"	d
+EISCONN	errno.h	540;"	d
+EISCONN	errno.h	63;"	d
+EISCONN	errno.h	674;"	d
+EISDIR	errno.h	162;"	d
+EISDIR	errno.h	26;"	d
+EISDIR	errno.h	299;"	d
+EISDIR	errno.h	436;"	d
+EISDIR	errno.h	588;"	d
+EISNAM	errno.h	121;"	d
+EISNAM	errno.h	252;"	d
+EISNAM	errno.h	399;"	d
+EISNAM	errno.h	510;"	d
+EISNAM	errno.h	688;"	d
+EKEYEXPIRED	errno.h	134;"	d
+EKEYEXPIRED	errno.h	270;"	d
+EKEYEXPIRED	errno.h	408;"	d
+EKEYEXPIRED	errno.h	515;"	d
+EKEYEXPIRED	errno.h	695;"	d
+EKEYREJECTED	errno.h	136;"	d
+EKEYREJECTED	errno.h	272;"	d
+EKEYREJECTED	errno.h	410;"	d
+EKEYREJECTED	errno.h	517;"	d
+EKEYREJECTED	errno.h	697;"	d
+EKEYREVOKED	errno.h	135;"	d
+EKEYREVOKED	errno.h	271;"	d
+EKEYREVOKED	errno.h	409;"	d
+EKEYREVOKED	errno.h	516;"	d
+EKEYREVOKED	errno.h	696;"	d
+EL2HLT	errno.h	185;"	d
+EL2HLT	errno.h	380;"	d
+EL2HLT	errno.h	459;"	d
+EL2HLT	errno.h	618;"	d
+EL2HLT	errno.h	98;"	d
+EL2NSYNC	errno.h	179;"	d
+EL2NSYNC	errno.h	374;"	d
+EL2NSYNC	errno.h	453;"	d
+EL2NSYNC	errno.h	612;"	d
+EL2NSYNC	errno.h	92;"	d
+EL3HLT	errno.h	180;"	d
+EL3HLT	errno.h	375;"	d
+EL3HLT	errno.h	454;"	d
+EL3HLT	errno.h	613;"	d
+EL3HLT	errno.h	93;"	d
+EL3RST	errno.h	181;"	d
+EL3RST	errno.h	376;"	d
+EL3RST	errno.h	455;"	d
+EL3RST	errno.h	614;"	d
+EL3RST	errno.h	94;"	d
+ELIBACC	errno.h	123;"	d
+ELIBACC	errno.h	216;"	d
+ELIBACC	errno.h	393;"	d
+ELIBACC	errno.h	500;"	d
+ELIBACC	errno.h	646;"	d
+ELIBBAD	errno.h	124;"	d
+ELIBBAD	errno.h	217;"	d
+ELIBBAD	errno.h	391;"	d
+ELIBBAD	errno.h	501;"	d
+ELIBBAD	errno.h	647;"	d
+ELIBEXEC	errno.h	127;"	d
+ELIBEXEC	errno.h	220;"	d
+ELIBEXEC	errno.h	389;"	d
+ELIBEXEC	errno.h	504;"	d
+ELIBEXEC	errno.h	650;"	d
+ELIBMAX	errno.h	126;"	d
+ELIBMAX	errno.h	219;"	d
+ELIBMAX	errno.h	402;"	d
+ELIBMAX	errno.h	503;"	d
+ELIBMAX	errno.h	649;"	d
+ELIBSCN	errno.h	125;"	d
+ELIBSCN	errno.h	218;"	d
+ELIBSCN	errno.h	403;"	d
+ELIBSCN	errno.h	502;"	d
+ELIBSCN	errno.h	648;"	d
+ELNRNG	errno.h	182;"	d
+ELNRNG	errno.h	377;"	d
+ELNRNG	errno.h	456;"	d
+ELNRNG	errno.h	615;"	d
+ELNRNG	errno.h	95;"	d
+ELOOP	errno.h	223;"	d
+ELOOP	errno.h	341;"	d
+ELOOP	errno.h	556;"	d
+ELOOP	errno.h	607;"	d
+ELOOP	errno.h	69;"	d
+EMEDIUMTYPE	errno.h	131;"	d
+EMEDIUMTYPE	errno.h	268;"	d
+EMEDIUMTYPE	errno.h	405;"	d
+EMEDIUMTYPE	errno.h	513;"	d
+EMEDIUMTYPE	errno.h	692;"	d
+EMFILE	errno.h	165;"	d
+EMFILE	errno.h	29;"	d
+EMFILE	errno.h	302;"	d
+EMFILE	errno.h	439;"	d
+EMFILE	errno.h	591;"	d
+EMLINK	errno.h	172;"	d
+EMLINK	errno.h	309;"	d
+EMLINK	errno.h	36;"	d
+EMLINK	errno.h	446;"	d
+EMLINK	errno.h	598;"	d
+EMSGSIZE	errno.h	230;"	d
+EMSGSIZE	errno.h	318;"	d
+EMSGSIZE	errno.h	46;"	d
+EMSGSIZE	errno.h	524;"	d
+EMSGSIZE	errno.h	657;"	d
+EMULTIHOP	errno.h	112;"	d
+EMULTIHOP	errno.h	209;"	d
+EMULTIHOP	errno.h	366;"	d
+EMULTIHOP	errno.h	478;"	d
+EMULTIHOP	errno.h	639;"	d
+ENAMETOOLONG	errno.h	211;"	d
+ENAMETOOLONG	errno.h	342;"	d
+ENAMETOOLONG	errno.h	555;"	d
+ENAMETOOLONG	errno.h	603;"	d
+ENAMETOOLONG	errno.h	70;"	d
+ENAVAIL	errno.h	120;"	d
+ENAVAIL	errno.h	251;"	d
+ENAVAIL	errno.h	398;"	d
+ENAVAIL	errno.h	509;"	d
+ENAVAIL	errno.h	687;"	d
+ENETDOWN	errno.h	241;"	d
+ENETDOWN	errno.h	329;"	d
+ENETDOWN	errno.h	534;"	d
+ENETDOWN	errno.h	57;"	d
+ENETDOWN	errno.h	668;"	d
+ENETRESET	errno.h	243;"	d
+ENETRESET	errno.h	331;"	d
+ENETRESET	errno.h	536;"	d
+ENETRESET	errno.h	59;"	d
+ENETRESET	errno.h	670;"	d
+ENETUNREACH	errno.h	242;"	d
+ENETUNREACH	errno.h	330;"	d
+ENETUNREACH	errno.h	535;"	d
+ENETUNREACH	errno.h	58;"	d
+ENETUNREACH	errno.h	669;"	d
+ENFILE	errno.h	164;"	d
+ENFILE	errno.h	28;"	d
+ENFILE	errno.h	301;"	d
+ENFILE	errno.h	438;"	d
+ENFILE	errno.h	590;"	d
+ENOANO	errno.h	102;"	d
+ENOANO	errno.h	191;"	d
+ENOANO	errno.h	384;"	d
+ENOANO	errno.h	493;"	d
+ENOANO	errno.h	622;"	d
+ENOBUFS	errno.h	246;"	d
+ENOBUFS	errno.h	334;"	d
+ENOBUFS	errno.h	539;"	d
+ENOBUFS	errno.h	62;"	d
+ENOBUFS	errno.h	673;"	d
+ENOCSI	errno.h	184;"	d
+ENOCSI	errno.h	379;"	d
+ENOCSI	errno.h	458;"	d
+ENOCSI	errno.h	617;"	d
+ENOCSI	errno.h	97;"	d
+ENODATA	errno.h	197;"	d
+ENODATA	errno.h	390;"	d
+ENODATA	errno.h	466;"	d
+ENODATA	errno.h	628;"	d
+ENODATA	errno.h	86;"	d
+ENODEV	errno.h	160;"	d
+ENODEV	errno.h	24;"	d
+ENODEV	errno.h	297;"	d
+ENODEV	errno.h	434;"	d
+ENODEV	errno.h	586;"	d
+ENOENT	errno.h	143;"	d
+ENOENT	errno.h	280;"	d
+ENOENT	errno.h	417;"	d
+ENOENT	errno.h	569;"	d
+ENOENT	errno.h	7;"	d
+ENOEXEC	errno.h	13;"	d
+ENOEXEC	errno.h	149;"	d
+ENOEXEC	errno.h	286;"	d
+ENOEXEC	errno.h	423;"	d
+ENOEXEC	errno.h	575;"	d
+ENOKEY	errno.h	133;"	d
+ENOKEY	errno.h	269;"	d
+ENOKEY	errno.h	407;"	d
+ENOKEY	errno.h	514;"	d
+ENOKEY	errno.h	694;"	d
+ENOLCK	errno.h	187;"	d
+ENOLCK	errno.h	358;"	d
+ENOLCK	errno.h	462;"	d
+ENOLCK	errno.h	604;"	d
+ENOLCK	errno.h	78;"	d
+ENOLINK	errno.h	108;"	d
+ENOLINK	errno.h	203;"	d
+ENOLINK	errno.h	361;"	d
+ENOLINK	errno.h	472;"	d
+ENOLINK	errno.h	634;"	d
+ENOMEDIUM	errno.h	130;"	d
+ENOMEDIUM	errno.h	267;"	d
+ENOMEDIUM	errno.h	404;"	d
+ENOMEDIUM	errno.h	512;"	d
+ENOMEDIUM	errno.h	691;"	d
+ENOMEM	errno.h	153;"	d
+ENOMEM	errno.h	17;"	d
+ENOMEM	errno.h	290;"	d
+ENOMEM	errno.h	427;"	d
+ENOMEM	errno.h	579;"	d
+ENOMSG	errno.h	176;"	d
+ENOMSG	errno.h	354;"	d
+ENOMSG	errno.h	450;"	d
+ENOMSG	errno.h	609;"	d
+ENOMSG	errno.h	80;"	d
+ENONET	errno.h	107;"	d
+ENONET	errno.h	200;"	d
+ENONET	errno.h	359;"	d
+ENONET	errno.h	465;"	d
+ENONET	errno.h	631;"	d
+ENOPKG	errno.h	201;"	d
+ENOPKG	errno.h	392;"	d
+ENOPKG	errno.h	470;"	d
+ENOPKG	errno.h	632;"	d
+ENOPKG	errno.h	88;"	d
+ENOPROTOOPT	errno.h	232;"	d
+ENOPROTOOPT	errno.h	320;"	d
+ENOPROTOOPT	errno.h	48;"	d
+ENOPROTOOPT	errno.h	526;"	d
+ENOPROTOOPT	errno.h	659;"	d
+ENOSPC	errno.h	169;"	d
+ENOSPC	errno.h	306;"	d
+ENOSPC	errno.h	33;"	d
+ENOSPC	errno.h	443;"	d
+ENOSPC	errno.h	595;"	d
+ENOSR	errno.h	199;"	d
+ENOSR	errno.h	353;"	d
+ENOSR	errno.h	468;"	d
+ENOSR	errno.h	630;"	d
+ENOSR	errno.h	82;"	d
+ENOSTR	errno.h	196;"	d
+ENOSTR	errno.h	351;"	d
+ENOSTR	errno.h	469;"	d
+ENOSTR	errno.h	627;"	d
+ENOSTR	errno.h	87;"	d
+ENOSYM	errno.h	521;"	d
+ENOSYS	errno.h	222;"	d
+ENOSYS	errno.h	369;"	d
+ENOSYS	errno.h	557;"	d
+ENOSYS	errno.h	605;"	d
+ENOSYS	errno.h	79;"	d
+ENOTBLK	errno.h	156;"	d
+ENOTBLK	errno.h	20;"	d
+ENOTBLK	errno.h	293;"	d
+ENOTBLK	errno.h	430;"	d
+ENOTBLK	errno.h	582;"	d
+ENOTCONN	errno.h	248;"	d
+ENOTCONN	errno.h	336;"	d
+ENOTCONN	errno.h	541;"	d
+ENOTCONN	errno.h	64;"	d
+ENOTCONN	errno.h	675;"	d
+ENOTDIR	errno.h	161;"	d
+ENOTDIR	errno.h	25;"	d
+ENOTDIR	errno.h	298;"	d
+ENOTDIR	errno.h	435;"	d
+ENOTDIR	errno.h	587;"	d
+ENOTEMPTY	errno.h	226;"	d
+ENOTEMPTY	errno.h	345;"	d
+ENOTEMPTY	errno.h	554;"	d
+ENOTEMPTY	errno.h	606;"	d
+ENOTEMPTY	errno.h	73;"	d
+ENOTNAM	errno.h	119;"	d
+ENOTNAM	errno.h	250;"	d
+ENOTNAM	errno.h	397;"	d
+ENOTNAM	errno.h	508;"	d
+ENOTNAM	errno.h	686;"	d
+ENOTSOCK	errno.h	228;"	d
+ENOTSOCK	errno.h	316;"	d
+ENOTSOCK	errno.h	44;"	d
+ENOTSOCK	errno.h	522;"	d
+ENOTSOCK	errno.h	655;"	d
+ENOTSUP	errno.h	236;"	d
+ENOTSUP	errno.h	324;"	d
+ENOTSUP	errno.h	52;"	d
+ENOTSUP	errno.h	559;"	d
+ENOTSUP	errno.h	663;"	d
+ENOTTY	errno.h	166;"	d
+ENOTTY	errno.h	303;"	d
+ENOTTY	errno.h	30;"	d
+ENOTTY	errno.h	440;"	d
+ENOTTY	errno.h	592;"	d
+ENOTUNIQ	errno.h	115;"	d
+ENOTUNIQ	errno.h	213;"	d
+ENOTUNIQ	errno.h	394;"	d
+ENOTUNIQ	errno.h	497;"	d
+ENOTUNIQ	errno.h	643;"	d
+ENXIO	errno.h	11;"	d
+ENXIO	errno.h	147;"	d
+ENXIO	errno.h	284;"	d
+ENXIO	errno.h	421;"	d
+ENXIO	errno.h	573;"	d
+EOF	stdio.h	136;"	d
+EOPNOTSUPP	errno.h	235;"	d
+EOPNOTSUPP	errno.h	323;"	d
+EOPNOTSUPP	errno.h	51;"	d
+EOPNOTSUPP	errno.h	529;"	d
+EOPNOTSUPP	errno.h	662;"	d
+EOVERFLOW	errno.h	114;"	d
+EOVERFLOW	errno.h	212;"	d
+EOVERFLOW	errno.h	371;"	d
+EOVERFLOW	errno.h	486;"	d
+EOVERFLOW	errno.h	642;"	d
+EPERM	errno.h	142;"	d
+EPERM	errno.h	279;"	d
+EPERM	errno.h	416;"	d
+EPERM	errno.h	568;"	d
+EPERM	errno.h	6;"	d
+EPFNOSUPPORT	errno.h	237;"	d
+EPFNOSUPPORT	errno.h	325;"	d
+EPFNOSUPPORT	errno.h	530;"	d
+EPFNOSUPPORT	errno.h	53;"	d
+EPFNOSUPPORT	errno.h	664;"	d
+EPIPE	errno.h	173;"	d
+EPIPE	errno.h	310;"	d
+EPIPE	errno.h	37;"	d
+EPIPE	errno.h	447;"	d
+EPIPE	errno.h	599;"	d
+EPROCLIM	errno.h	346;"	d
+EPROTO	errno.h	207;"	d
+EPROTO	errno.h	365;"	d
+EPROTO	errno.h	476;"	d
+EPROTO	errno.h	638;"	d
+EPROTO	errno.h	85;"	d
+EPROTONOSUPPORT	errno.h	233;"	d
+EPROTONOSUPPORT	errno.h	321;"	d
+EPROTONOSUPPORT	errno.h	49;"	d
+EPROTONOSUPPORT	errno.h	527;"	d
+EPROTONOSUPPORT	errno.h	660;"	d
+EPROTOTYPE	errno.h	231;"	d
+EPROTOTYPE	errno.h	319;"	d
+EPROTOTYPE	errno.h	47;"	d
+EPROTOTYPE	errno.h	525;"	d
+EPROTOTYPE	errno.h	658;"	d
+ERANGE	errno.h	175;"	d
+ERANGE	errno.h	312;"	d
+ERANGE	errno.h	39;"	d
+ERANGE	errno.h	449;"	d
+ERANGE	errno.h	601;"	d
+EREFUSED	errno.h	544;"	d
+EREMCHG	errno.h	117;"	d
+EREMCHG	errno.h	215;"	d
+EREMCHG	errno.h	368;"	d
+EREMCHG	errno.h	499;"	d
+EREMCHG	errno.h	645;"	d
+EREMDEV	errno.h	255;"	d
+EREMOTE	errno.h	202;"	d
+EREMOTE	errno.h	350;"	d
+EREMOTE	errno.h	485;"	d
+EREMOTE	errno.h	633;"	d
+EREMOTE	errno.h	77;"	d
+EREMOTEIO	errno.h	122;"	d
+EREMOTEIO	errno.h	253;"	d
+EREMOTEIO	errno.h	400;"	d
+EREMOTEIO	errno.h	511;"	d
+EREMOTEIO	errno.h	689;"	d
+EREMOTERELEASE	errno.h	547;"	d
+ERESTART	errno.h	128;"	d
+ERESTART	errno.h	224;"	d
+ERESTART	errno.h	395;"	d
+ERESTART	errno.h	505;"	d
+ERESTART	errno.h	652;"	d
+EROFS	errno.h	171;"	d
+EROFS	errno.h	308;"	d
+EROFS	errno.h	35;"	d
+EROFS	errno.h	445;"	d
+EROFS	errno.h	597;"	d
+ERREMOTE	errno.h	360;"	d
+ESHUTDOWN	errno.h	256;"	d
+ESHUTDOWN	errno.h	337;"	d
+ESHUTDOWN	errno.h	542;"	d
+ESHUTDOWN	errno.h	65;"	d
+ESHUTDOWN	errno.h	676;"	d
+ESOCKTNOSUPPORT	errno.h	234;"	d
+ESOCKTNOSUPPORT	errno.h	322;"	d
+ESOCKTNOSUPPORT	errno.h	50;"	d
+ESOCKTNOSUPPORT	errno.h	528;"	d
+ESOCKTNOSUPPORT	errno.h	661;"	d
+ESPIPE	errno.h	170;"	d
+ESPIPE	errno.h	307;"	d
+ESPIPE	errno.h	34;"	d
+ESPIPE	errno.h	444;"	d
+ESPIPE	errno.h	596;"	d
+ESRCH	errno.h	144;"	d
+ESRCH	errno.h	281;"	d
+ESRCH	errno.h	418;"	d
+ESRCH	errno.h	570;"	d
+ESRCH	errno.h	8;"	d
+ESRMNT	errno.h	110;"	d
+ESRMNT	errno.h	205;"	d
+ESRMNT	errno.h	363;"	d
+ESRMNT	errno.h	474;"	d
+ESRMNT	errno.h	636;"	d
+ESTALE	errno.h	265;"	d
+ESTALE	errno.h	349;"	d
+ESTALE	errno.h	484;"	d
+ESTALE	errno.h	684;"	d
+ESTALE	errno.h	76;"	d
+ESTRPIPE	errno.h	129;"	d
+ESTRPIPE	errno.h	225;"	d
+ESTRPIPE	errno.h	370;"	d
+ESTRPIPE	errno.h	506;"	d
+ESTRPIPE	errno.h	653;"	d
+ETIME	errno.h	198;"	d
+ETIME	errno.h	352;"	d
+ETIME	errno.h	467;"	d
+ETIME	errno.h	629;"	d
+ETIME	errno.h	83;"	d
+ETIMEDOUT	errno.h	258;"	d
+ETIMEDOUT	errno.h	339;"	d
+ETIMEDOUT	errno.h	545;"	d
+ETIMEDOUT	errno.h	678;"	d
+ETIMEDOUT	errno.h	67;"	d
+ETOOMANYREFS	errno.h	257;"	d
+ETOOMANYREFS	errno.h	338;"	d
+ETOOMANYREFS	errno.h	543;"	d
+ETOOMANYREFS	errno.h	66;"	d
+ETOOMANYREFS	errno.h	677;"	d
+ETXTBSY	errno.h	167;"	d
+ETXTBSY	errno.h	304;"	d
+ETXTBSY	errno.h	31;"	d
+ETXTBSY	errno.h	441;"	d
+ETXTBSY	errno.h	593;"	d
+EUCLEAN	errno.h	118;"	d
+EUCLEAN	errno.h	249;"	d
+EUCLEAN	errno.h	396;"	d
+EUCLEAN	errno.h	507;"	d
+EUCLEAN	errno.h	685;"	d
+EUNATCH	errno.h	183;"	d
+EUNATCH	errno.h	378;"	d
+EUNATCH	errno.h	457;"	d
+EUNATCH	errno.h	616;"	d
+EUNATCH	errno.h	96;"	d
+EUSERS	errno.h	227;"	d
+EUSERS	errno.h	347;"	d
+EUSERS	errno.h	482;"	d
+EUSERS	errno.h	654;"	d
+EUSERS	errno.h	74;"	d
+EWOULDBLOCK	errno.h	262;"	d
+EWOULDBLOCK	errno.h	313;"	d
+EWOULDBLOCK	errno.h	41;"	d
+EWOULDBLOCK	errno.h	553;"	d
+EWOULDBLOCK	errno.h	608;"	d
+EXDEV	errno.h	159;"	d
+EXDEV	errno.h	23;"	d
+EXDEV	errno.h	296;"	d
+EXDEV	errno.h	433;"	d
+EXDEV	errno.h	585;"	d
+EXFULL	errno.h	101;"	d
+EXFULL	errno.h	190;"	d
+EXFULL	errno.h	383;"	d
+EXFULL	errno.h	492;"	d
+EXFULL	errno.h	621;"	d
+EXIT_FAILURE	stdlib.h	91;"	d
+EXIT_SUCCESS	stdlib.h	92;"	d
+FILE	stdio.h	/^typedef struct __stdio_file FILE;$/;"	t	typeref:struct:__stdio_file
+FILENAME_MAX	stdio.h	176;"	d
+FLAG_SAVEMASK	setjmp.h	119;"	d
+FLT_DIG	float.h	13;"	d
+FLT_DIG	float.h	14;"	d
+FLT_EPSILON	float.h	19;"	d
+FLT_EPSILON	float.h	20;"	d
+FLT_MANT_DIG	float.h	10;"	d
+FLT_MANT_DIG	float.h	11;"	d
+FLT_MAX	float.h	34;"	d
+FLT_MAX	float.h	35;"	d
+FLT_MAX_10_EXP	float.h	37;"	d
+FLT_MAX_10_EXP	float.h	38;"	d
+FLT_MAX_EXP	float.h	31;"	d
+FLT_MAX_EXP	float.h	32;"	d
+FLT_MIN	float.h	25;"	d
+FLT_MIN	float.h	26;"	d
+FLT_MIN_10_EXP	float.h	28;"	d
+FLT_MIN_10_EXP	float.h	29;"	d
+FLT_MIN_EXP	float.h	22;"	d
+FLT_MIN_EXP	float.h	23;"	d
+FLT_RADIX	float.h	7;"	d
+FLT_RADIX	float.h	8;"	d
+FLT_ROUNDS	float.h	16;"	d
+FLT_ROUNDS	float.h	17;"	d
+FOPEN_MAX	stdio.h	177;"	d
+FPE_FLTDIV	signal.h	/^  FPE_FLTDIV,			\/* Floating point divide by zero.  *\/$/;"	e	enum:__anon17
+FPE_FLTDIV	signal.h	363;"	d
+FPE_FLTINV	signal.h	/^  FPE_FLTINV,			\/* Floating point invalid operation.  *\/$/;"	e	enum:__anon17
+FPE_FLTINV	signal.h	371;"	d
+FPE_FLTOVF	signal.h	/^  FPE_FLTOVF,			\/* Floating point overflow.  *\/$/;"	e	enum:__anon17
+FPE_FLTOVF	signal.h	365;"	d
+FPE_FLTRES	signal.h	/^  FPE_FLTRES,			\/* Floating point inexact result.  *\/$/;"	e	enum:__anon17
+FPE_FLTRES	signal.h	369;"	d
+FPE_FLTSUB	signal.h	/^  FPE_FLTSUB			\/* Subscript out of range.  *\/$/;"	e	enum:__anon17
+FPE_FLTSUB	signal.h	373;"	d
+FPE_FLTUND	signal.h	/^  FPE_FLTUND,			\/* Floating point underflow.  *\/$/;"	e	enum:__anon17
+FPE_FLTUND	signal.h	367;"	d
+FPE_INTDIV	signal.h	/^  FPE_INTDIV = 1,		\/* Integer divide by zero.  *\/$/;"	e	enum:__anon17
+FPE_INTDIV	signal.h	359;"	d
+FPE_INTOVF	signal.h	/^  FPE_INTOVF,			\/* Integer overflow.  *\/$/;"	e	enum:__anon17
+FPE_INTOVF	signal.h	361;"	d
+HUGE_VAL	math.h	75;"	d
+HUGE_VALF	math.h	79;"	d
+ILL_BADSTK	signal.h	/^  ILL_BADSTK			\/* Internal stack error.  *\/$/;"	e	enum:__anon16
+ILL_BADSTK	signal.h	353;"	d
+ILL_COPROC	signal.h	/^  ILL_COPROC,			\/* Coprocessor error.  *\/$/;"	e	enum:__anon16
+ILL_COPROC	signal.h	351;"	d
+ILL_ILLADR	signal.h	/^  ILL_ILLADR,			\/* Illegal addressing mode.  *\/$/;"	e	enum:__anon16
+ILL_ILLADR	signal.h	343;"	d
+ILL_ILLOPC	signal.h	/^  ILL_ILLOPC = 1,		\/* Illegal opcode.  *\/$/;"	e	enum:__anon16
+ILL_ILLOPC	signal.h	339;"	d
+ILL_ILLOPN	signal.h	/^  ILL_ILLOPN,			\/* Illegal operand.  *\/$/;"	e	enum:__anon16
+ILL_ILLOPN	signal.h	341;"	d
+ILL_ILLTRP	signal.h	/^  ILL_ILLTRP,			\/* Illegal trap. *\/$/;"	e	enum:__anon16
+ILL_ILLTRP	signal.h	345;"	d
+ILL_PRVOPC	signal.h	/^  ILL_PRVOPC,			\/* Privileged opcode.  *\/$/;"	e	enum:__anon16
+ILL_PRVOPC	signal.h	347;"	d
+ILL_PRVREG	signal.h	/^  ILL_PRVREG,			\/* Privileged register.  *\/$/;"	e	enum:__anon16
+ILL_PRVREG	signal.h	349;"	d
+INT16_C	stdint.h	57;"	d
+INT32_C	stdint.h	58;"	d
+INT64_C	stdint.h	60;"	d
+INT64_C	stdint.h	62;"	d
+INT8_C	stdint.h	56;"	d
+INTMAX_C	stdint.h	77;"	d
+INTMAX_C	stdint.h	80;"	d
+INT_MAX	limits.h	50;"	d
+INT_MIN	limits.h	49;"	d
+IOV_MAX	limits.h	90;"	d
+JB_BP	setjmp.h	15;"	d
+JB_BX	setjmp.h	12;"	d
+JB_CR	setjmp.h	179;"	d
+JB_DI	setjmp.h	14;"	d
+JB_F2	setjmp.h	67;"	d
+JB_F3	setjmp.h	68;"	d
+JB_F4	setjmp.h	69;"	d
+JB_F5	setjmp.h	70;"	d
+JB_F6	setjmp.h	71;"	d
+JB_F7	setjmp.h	72;"	d
+JB_F8	setjmp.h	73;"	d
+JB_F9	setjmp.h	74;"	d
+JB_FP	setjmp.h	157;"	d
+JB_FP	setjmp.h	65;"	d
+JB_FPRS	setjmp.h	180;"	d
+JB_GPR1	setjmp.h	175;"	d
+JB_GPR2	setjmp.h	176;"	d
+JB_GPRS	setjmp.h	178;"	d
+JB_LR	setjmp.h	177;"	d
+JB_PC	setjmp.h	158;"	d
+JB_PC	setjmp.h	17;"	d
+JB_PC	setjmp.h	32;"	d
+JB_PC	setjmp.h	64;"	d
+JB_R12	setjmp.h	27;"	d
+JB_R13	setjmp.h	28;"	d
+JB_R14	setjmp.h	29;"	d
+JB_R15	setjmp.h	30;"	d
+JB_RBP	setjmp.h	26;"	d
+JB_RBX	setjmp.h	25;"	d
+JB_RSP	setjmp.h	31;"	d
+JB_S0	setjmp.h	58;"	d
+JB_S1	setjmp.h	59;"	d
+JB_S2	setjmp.h	60;"	d
+JB_S3	setjmp.h	61;"	d
+JB_S4	setjmp.h	62;"	d
+JB_S5	setjmp.h	63;"	d
+JB_SI	setjmp.h	13;"	d
+JB_SIZE	setjmp.h	182;"	d
+JB_SIZE	setjmp.h	187;"	d
+JB_SIZE	setjmp.h	18;"	d
+JB_SIZE	setjmp.h	33;"	d
+JB_SP	setjmp.h	156;"	d
+JB_SP	setjmp.h	16;"	d
+JB_SP	setjmp.h	66;"	d
+LC_ADDRESS	locale.h	/^  LC_ADDRESS = 9,$/;"	e	enum:__anon1
+LC_ADDRESS	locale.h	28;"	d
+LC_ALL	locale.h	/^  LC_ALL = 6,$/;"	e	enum:__anon1
+LC_ALL	locale.h	22;"	d
+LC_COLLATE	locale.h	/^  LC_COLLATE = 3,$/;"	e	enum:__anon1
+LC_COLLATE	locale.h	16;"	d
+LC_CTYPE	locale.h	/^  LC_CTYPE = 0,$/;"	e	enum:__anon1
+LC_CTYPE	locale.h	10;"	d
+LC_IDENTIFICATION	locale.h	/^  LC_IDENTIFICATION = 12$/;"	e	enum:__anon1
+LC_IDENTIFICATION	locale.h	34;"	d
+LC_MEASUREMENT	locale.h	/^  LC_MEASUREMENT = 11,$/;"	e	enum:__anon1
+LC_MEASUREMENT	locale.h	32;"	d
+LC_MESSAGES	locale.h	/^  LC_MESSAGES = 5,$/;"	e	enum:__anon1
+LC_MESSAGES	locale.h	20;"	d
+LC_MONETARY	locale.h	/^  LC_MONETARY = 4,$/;"	e	enum:__anon1
+LC_MONETARY	locale.h	18;"	d
+LC_NAME	locale.h	/^  LC_NAME = 8,$/;"	e	enum:__anon1
+LC_NAME	locale.h	26;"	d
+LC_NUMERIC	locale.h	/^  LC_NUMERIC = 1,$/;"	e	enum:__anon1
+LC_NUMERIC	locale.h	12;"	d
+LC_PAPER	locale.h	/^  LC_PAPER = 7,$/;"	e	enum:__anon1
+LC_PAPER	locale.h	24;"	d
+LC_TELEPHONE	locale.h	/^  LC_TELEPHONE = 10,$/;"	e	enum:__anon1
+LC_TELEPHONE	locale.h	30;"	d
+LC_TIME	locale.h	/^  LC_TIME = 2,$/;"	e	enum:__anon1
+LC_TIME	locale.h	14;"	d
+LDBL_DIG	float.h	72;"	d
+LDBL_DIG	float.h	73;"	d
+LDBL_EPSILON	float.h	75;"	d
+LDBL_EPSILON	float.h	76;"	d
+LDBL_MANT_DIG	float.h	69;"	d
+LDBL_MANT_DIG	float.h	70;"	d
+LDBL_MAX	float.h	90;"	d
+LDBL_MAX	float.h	91;"	d
+LDBL_MAX_10_EXP	float.h	93;"	d
+LDBL_MAX_10_EXP	float.h	94;"	d
+LDBL_MAX_EXP	float.h	87;"	d
+LDBL_MAX_EXP	float.h	88;"	d
+LDBL_MIN	float.h	81;"	d
+LDBL_MIN	float.h	82;"	d
+LDBL_MIN_10_EXP	float.h	84;"	d
+LDBL_MIN_10_EXP	float.h	85;"	d
+LDBL_MIN_EXP	float.h	78;"	d
+LDBL_MIN_EXP	float.h	79;"	d
+LINE_MAX	limits.h	83;"	d
+LINK_MAX	limits.h	74;"	d
+LLONG_MAX	limits.h	57;"	d
+LLONG_MIN	limits.h	58;"	d
+LONG_MAX	limits.h	54;"	d
+LONG_MIN	limits.h	53;"	d
+L_ctermid	stdio.h	182;"	d
+L_tmpnam	stdio.h	169;"	d
+MAX_CANON	limits.h	75;"	d
+MAX_INPUT	limits.h	76;"	d
+MB_CUR_MAX	stdlib.h	96;"	d
+MB_LEN_MAX	limits.h	87;"	d
+MC_G1	setjmp.h	102;"	d
+MC_G2	setjmp.h	103;"	d
+MC_G3	setjmp.h	104;"	d
+MC_G4	setjmp.h	105;"	d
+MC_G5	setjmp.h	106;"	d
+MC_G6	setjmp.h	107;"	d
+MC_G7	setjmp.h	108;"	d
+MC_NGREG	setjmp.h	117;"	d
+MC_NPC	setjmp.h	100;"	d
+MC_O0	setjmp.h	109;"	d
+MC_O1	setjmp.h	110;"	d
+MC_O2	setjmp.h	111;"	d
+MC_O3	setjmp.h	112;"	d
+MC_O4	setjmp.h	113;"	d
+MC_O5	setjmp.h	114;"	d
+MC_O6	setjmp.h	115;"	d
+MC_O7	setjmp.h	116;"	d
+MC_PC	setjmp.h	99;"	d
+MC_TSTATE	setjmp.h	98;"	d
+MC_Y	setjmp.h	101;"	d
+MINSIGSTKSZ	signal.h	206;"	d
+M_1_PI	math.h	16;"	d
+M_1_PIl	math.h	30;"	d
+M_2_PI	math.h	17;"	d
+M_2_PIl	math.h	31;"	d
+M_2_SQRTPI	math.h	18;"	d
+M_2_SQRTPIl	math.h	32;"	d
+M_E	math.h	8;"	d
+M_El	math.h	22;"	d
+M_LN10	math.h	12;"	d
+M_LN10l	math.h	26;"	d
+M_LN2	math.h	11;"	d
+M_LN2l	math.h	25;"	d
+M_LOG10E	math.h	10;"	d
+M_LOG10El	math.h	24;"	d
+M_LOG2E	math.h	9;"	d
+M_LOG2El	math.h	23;"	d
+M_PI	math.h	13;"	d
+M_PI_2	math.h	14;"	d
+M_PI_2l	math.h	28;"	d
+M_PI_4	math.h	15;"	d
+M_PI_4l	math.h	29;"	d
+M_PIl	math.h	27;"	d
+M_SQRT1_2	math.h	20;"	d
+M_SQRT1_2l	math.h	34;"	d
+M_SQRT2	math.h	19;"	d
+M_SQRT2l	math.h	33;"	d
+NAME_MAX	limits.h	77;"	d
+NGROUPS_MAX	limits.h	70;"	d
+NR_OPEN	limits.h	68;"	d
+NSIG	signal.h	13;"	d
+NULL	stddef.h	22;"	d
+NULL	stddef.h	24;"	d
+NULL	stddef.h	26;"	d
+OPEN_MAX	limits.h	73;"	d
+PASS_MAX	limits.h	66;"	d
+PATH_MAX	limits.h	78;"	d
+PIPE_BUF	limits.h	79;"	d
+POLL_ERR	signal.h	/^  POLL_ERR,			\/* I\/O error.  *\/$/;"	e	enum:__anon22
+POLL_ERR	signal.h	427;"	d
+POLL_HUP	signal.h	/^  POLL_HUP			\/* Device disconnected.  *\/$/;"	e	enum:__anon22
+POLL_HUP	signal.h	431;"	d
+POLL_IN	signal.h	/^  POLL_IN = 1,			\/* Data input available.  *\/$/;"	e	enum:__anon22
+POLL_IN	signal.h	421;"	d
+POLL_MSG	signal.h	/^  POLL_MSG,			\/* Input message available.   *\/$/;"	e	enum:__anon22
+POLL_MSG	signal.h	425;"	d
+POLL_OUT	signal.h	/^  POLL_OUT,			\/* Output buffers available.  *\/$/;"	e	enum:__anon22
+POLL_OUT	signal.h	423;"	d
+POLL_PRI	signal.h	/^  POLL_PRI,			\/* High priority input available.  *\/$/;"	e	enum:__anon22
+POLL_PRI	signal.h	429;"	d
+PRIX16	inttypes.h	101;"	d
+PRIX32	inttypes.h	102;"	d
+PRIX64	inttypes.h	103;"	d
+PRIX8	inttypes.h	100;"	d
+PRIXFAST16	inttypes.h	111;"	d
+PRIXFAST32	inttypes.h	112;"	d
+PRIXFAST64	inttypes.h	113;"	d
+PRIXFAST8	inttypes.h	110;"	d
+PRIXLEAST16	inttypes.h	106;"	d
+PRIXLEAST32	inttypes.h	107;"	d
+PRIXLEAST64	inttypes.h	108;"	d
+PRIXLEAST8	inttypes.h	105;"	d
+PRIXMAX	inttypes.h	122;"	d
+PRIXPTR	inttypes.h	131;"	d
+PRId16	inttypes.h	21;"	d
+PRId32	inttypes.h	22;"	d
+PRId64	inttypes.h	23;"	d
+PRId8	inttypes.h	20;"	d
+PRIdFAST16	inttypes.h	31;"	d
+PRIdFAST32	inttypes.h	32;"	d
+PRIdFAST64	inttypes.h	33;"	d
+PRIdFAST8	inttypes.h	30;"	d
+PRIdLEAST16	inttypes.h	26;"	d
+PRIdLEAST32	inttypes.h	27;"	d
+PRIdLEAST64	inttypes.h	28;"	d
+PRIdLEAST8	inttypes.h	25;"	d
+PRIdMAX	inttypes.h	117;"	d
+PRIdPTR	inttypes.h	126;"	d
+PRIi16	inttypes.h	37;"	d
+PRIi32	inttypes.h	38;"	d
+PRIi64	inttypes.h	39;"	d
+PRIi8	inttypes.h	36;"	d
+PRIiFAST16	inttypes.h	47;"	d
+PRIiFAST32	inttypes.h	48;"	d
+PRIiFAST64	inttypes.h	49;"	d
+PRIiFAST8	inttypes.h	46;"	d
+PRIiLEAST16	inttypes.h	42;"	d
+PRIiLEAST32	inttypes.h	43;"	d
+PRIiLEAST64	inttypes.h	44;"	d
+PRIiLEAST8	inttypes.h	41;"	d
+PRIiMAX	inttypes.h	118;"	d
+PRIiPTR	inttypes.h	127;"	d
+PRIo16	inttypes.h	53;"	d
+PRIo32	inttypes.h	54;"	d
+PRIo64	inttypes.h	55;"	d
+PRIo8	inttypes.h	52;"	d
+PRIoFAST16	inttypes.h	63;"	d
+PRIoFAST32	inttypes.h	64;"	d
+PRIoFAST64	inttypes.h	65;"	d
+PRIoFAST8	inttypes.h	62;"	d
+PRIoLEAST16	inttypes.h	58;"	d
+PRIoLEAST32	inttypes.h	59;"	d
+PRIoLEAST64	inttypes.h	60;"	d
+PRIoLEAST8	inttypes.h	57;"	d
+PRIoMAX	inttypes.h	119;"	d
+PRIoPTR	inttypes.h	128;"	d
+PRIu16	inttypes.h	69;"	d
+PRIu32	inttypes.h	70;"	d
+PRIu64	inttypes.h	71;"	d
+PRIu8	inttypes.h	68;"	d
+PRIuFAST16	inttypes.h	79;"	d
+PRIuFAST32	inttypes.h	80;"	d
+PRIuFAST64	inttypes.h	81;"	d
+PRIuFAST8	inttypes.h	78;"	d
+PRIuLEAST16	inttypes.h	74;"	d
+PRIuLEAST32	inttypes.h	75;"	d
+PRIuLEAST64	inttypes.h	76;"	d
+PRIuLEAST8	inttypes.h	73;"	d
+PRIuMAX	inttypes.h	120;"	d
+PRIuPTR	inttypes.h	129;"	d
+PRIx16	inttypes.h	85;"	d
+PRIx32	inttypes.h	86;"	d
+PRIx64	inttypes.h	87;"	d
+PRIx8	inttypes.h	84;"	d
+PRIxFAST16	inttypes.h	95;"	d
+PRIxFAST32	inttypes.h	96;"	d
+PRIxFAST64	inttypes.h	97;"	d
+PRIxFAST8	inttypes.h	94;"	d
+PRIxLEAST16	inttypes.h	90;"	d
+PRIxLEAST32	inttypes.h	91;"	d
+PRIxLEAST64	inttypes.h	92;"	d
+PRIxLEAST8	inttypes.h	89;"	d
+PRIxMAX	inttypes.h	121;"	d
+PRIxPTR	inttypes.h	130;"	d
+P_tmpdir	stdio.h	170;"	d
+RAND_MAX	stdlib.h	94;"	d
+RTSIG_MAX	limits.h	81;"	d
+SA_INTERRUPT	signal.h	149;"	d
+SA_NOCLDSTOP	signal.h	144;"	d
+SA_NOCLDWAIT	signal.h	147;"	d
+SA_NODEFER	signal.h	145;"	d
+SA_NOMASK	signal.h	199;"	d
+SA_ONESHOT	signal.h	200;"	d
+SA_ONSTACK	signal.h	142;"	d
+SA_RESETHAND	signal.h	146;"	d
+SA_RESTART	signal.h	143;"	d
+SA_SIGINFO	signal.h	148;"	d
+SCHAR_MAX	limits.h	26;"	d
+SCHAR_MIN	limits.h	25;"	d
+SCNd16	inttypes.h	138;"	d
+SCNd32	inttypes.h	139;"	d
+SCNd64	inttypes.h	140;"	d
+SCNd8	inttypes.h	137;"	d
+SCNdFAST16	inttypes.h	148;"	d
+SCNdFAST32	inttypes.h	149;"	d
+SCNdFAST64	inttypes.h	150;"	d
+SCNdFAST8	inttypes.h	147;"	d
+SCNdLEAST16	inttypes.h	143;"	d
+SCNdLEAST32	inttypes.h	144;"	d
+SCNdLEAST64	inttypes.h	145;"	d
+SCNdLEAST8	inttypes.h	142;"	d
+SCNdMAX	inttypes.h	218;"	d
+SCNdPTR	inttypes.h	225;"	d
+SCNi16	inttypes.h	154;"	d
+SCNi32	inttypes.h	155;"	d
+SCNi64	inttypes.h	156;"	d
+SCNi8	inttypes.h	153;"	d
+SCNiFAST16	inttypes.h	164;"	d
+SCNiFAST32	inttypes.h	165;"	d
+SCNiFAST64	inttypes.h	166;"	d
+SCNiFAST8	inttypes.h	163;"	d
+SCNiLEAST16	inttypes.h	159;"	d
+SCNiLEAST32	inttypes.h	160;"	d
+SCNiLEAST64	inttypes.h	161;"	d
+SCNiLEAST8	inttypes.h	158;"	d
+SCNiMAX	inttypes.h	219;"	d
+SCNiPTR	inttypes.h	226;"	d
+SCNo16	inttypes.h	186;"	d
+SCNo32	inttypes.h	187;"	d
+SCNo64	inttypes.h	188;"	d
+SCNo8	inttypes.h	185;"	d
+SCNoFAST16	inttypes.h	196;"	d
+SCNoFAST32	inttypes.h	197;"	d
+SCNoFAST64	inttypes.h	198;"	d
+SCNoFAST8	inttypes.h	195;"	d
+SCNoLEAST16	inttypes.h	191;"	d
+SCNoLEAST32	inttypes.h	192;"	d
+SCNoLEAST64	inttypes.h	193;"	d
+SCNoLEAST8	inttypes.h	190;"	d
+SCNoMAX	inttypes.h	220;"	d
+SCNoPTR	inttypes.h	227;"	d
+SCNu16	inttypes.h	170;"	d
+SCNu32	inttypes.h	171;"	d
+SCNu64	inttypes.h	172;"	d
+SCNu8	inttypes.h	169;"	d
+SCNuFAST16	inttypes.h	180;"	d
+SCNuFAST32	inttypes.h	181;"	d
+SCNuFAST64	inttypes.h	182;"	d
+SCNuFAST8	inttypes.h	179;"	d
+SCNuLEAST16	inttypes.h	175;"	d
+SCNuLEAST32	inttypes.h	176;"	d
+SCNuLEAST64	inttypes.h	177;"	d
+SCNuLEAST8	inttypes.h	174;"	d
+SCNuMAX	inttypes.h	221;"	d
+SCNuPTR	inttypes.h	228;"	d
+SCNx16	inttypes.h	202;"	d
+SCNx32	inttypes.h	203;"	d
+SCNx64	inttypes.h	204;"	d
+SCNx8	inttypes.h	201;"	d
+SCNxFAST16	inttypes.h	212;"	d
+SCNxFAST32	inttypes.h	213;"	d
+SCNxFAST64	inttypes.h	214;"	d
+SCNxFAST8	inttypes.h	211;"	d
+SCNxLEAST16	inttypes.h	207;"	d
+SCNxLEAST32	inttypes.h	208;"	d
+SCNxLEAST64	inttypes.h	209;"	d
+SCNxLEAST8	inttypes.h	206;"	d
+SCNxMAX	inttypes.h	222;"	d
+SCNxPTR	inttypes.h	229;"	d
+SEEK_CUR	stdio.h	165;"	d
+SEEK_END	stdio.h	166;"	d
+SEEK_SET	stdio.h	164;"	d
+SEGV_ACCERR	signal.h	/^  SEGV_ACCERR			\/* Invalid permissions for mapped object.  *\/$/;"	e	enum:__anon18
+SEGV_ACCERR	signal.h	381;"	d
+SEGV_MAPERR	signal.h	/^  SEGV_MAPERR = 1,		\/* Address not mapped to object.  *\/$/;"	e	enum:__anon18
+SEGV_MAPERR	signal.h	379;"	d
+SHRT_MAX	limits.h	42;"	d
+SHRT_MIN	limits.h	41;"	d
+SIGABRT	signal.h	26;"	d
+SIGALRM	signal.h	32;"	d
+SIGBUS	signal.h	37;"	d
+SIGCHLD	signal.h	41;"	d
+SIGCLD	signal.h	128;"	d
+SIGCONT	signal.h	42;"	d
+SIGEV_MAX_SIZE	signal.h	477;"	d
+SIGEV_NONE	signal.h	473;"	d
+SIGEV_PAD_SIZE	signal.h	479;"	d
+SIGEV_SIGNAL	signal.h	472;"	d
+SIGEV_THREAD	signal.h	474;"	d
+SIGEV_THREAD_ID	signal.h	475;"	d
+SIGFPE	signal.h	28;"	d
+SIGHUP	signal.h	21;"	d
+SIGILL	signal.h	24;"	d
+SIGINT	signal.h	22;"	d
+SIGIO	signal.h	53;"	d
+SIGIOT	signal.h	27;"	d
+SIGKILL	signal.h	29;"	d
+SIGPIPE	signal.h	31;"	d
+SIGPOLL	signal.h	129;"	d
+SIGPROF	signal.h	51;"	d
+SIGPWR	signal.h	54;"	d
+SIGQUIT	signal.h	23;"	d
+SIGRTMAX	signal.h	138;"	d
+SIGRTMIN	signal.h	133;"	d
+SIGSEGV	signal.h	30;"	d
+SIGSTKFLT	signal.h	40;"	d
+SIGSTKSZ	signal.h	207;"	d
+SIGSTOP	signal.h	43;"	d
+SIGSYS	signal.h	55;"	d
+SIGTERM	signal.h	33;"	d
+SIGTRAP	signal.h	25;"	d
+SIGTSTP	signal.h	44;"	d
+SIGTTIN	signal.h	45;"	d
+SIGTTOU	signal.h	46;"	d
+SIGUNUSED	signal.h	34;"	d
+SIGURG	signal.h	47;"	d
+SIGUSR1	signal.h	38;"	d
+SIGUSR2	signal.h	39;"	d
+SIGVTALRM	signal.h	50;"	d
+SIGWINCH	signal.h	52;"	d
+SIGXCPU	signal.h	48;"	d
+SIGXFSZ	signal.h	49;"	d
+SIG_BLOCK	signal.h	210;"	d
+SIG_DFL	signal.h	235;"	d
+SIG_ERR	signal.h	237;"	d
+SIG_IGN	signal.h	236;"	d
+SIG_SETMASK	signal.h	212;"	d
+SIG_UNBLOCK	signal.h	211;"	d
+SI_ASYNCIO	signal.h	/^  SI_ASYNCIO,			\/* Sent by AIO completion.  *\/$/;"	e	enum:__anon15
+SI_ASYNCIO	signal.h	322;"	d
+SI_ASYNCNL	signal.h	/^  SI_ASYNCNL = -6,		\/* Sent by asynch name lookup completion.  *\/$/;"	e	enum:__anon15
+SI_ASYNCNL	signal.h	318;"	d
+SI_KERNEL	signal.h	/^  SI_KERNEL = 0x80		\/* Send by kernel.  *\/$/;"	e	enum:__anon15
+SI_KERNEL	signal.h	332;"	d
+SI_MAX_SIZE	signal.h	244;"	d
+SI_MESGQ	signal.h	/^  SI_MESGQ,			\/* Sent by real time mesq state change.  *\/$/;"	e	enum:__anon15
+SI_MESGQ	signal.h	324;"	d
+SI_PAD_SIZE	signal.h	246;"	d
+SI_PAD_SIZE	signal.h	248;"	d
+SI_QUEUE	signal.h	/^  SI_QUEUE,			\/* Sent by sigqueue.  *\/$/;"	e	enum:__anon15
+SI_QUEUE	signal.h	328;"	d
+SI_SIGIO	signal.h	/^  SI_SIGIO,			\/* Sent by queued SIGIO. *\/$/;"	e	enum:__anon15
+SI_SIGIO	signal.h	320;"	d
+SI_TIMER	signal.h	/^  SI_TIMER,			\/* Sent by timer expiration.  *\/$/;"	e	enum:__anon15
+SI_TIMER	signal.h	326;"	d
+SI_USER	signal.h	/^  SI_USER,			\/* Sent by kill, sigsend, raise.  *\/$/;"	e	enum:__anon15
+SI_USER	signal.h	330;"	d
+SSIZE_MAX	limits.h	64;"	d
+SSIZE_MIN	limits.h	63;"	d
+SS_DISABLE	signal.h	204;"	d
+SS_ONSTACK	signal.h	203;"	d
+TIMER_ABSTIME	time.h	25;"	d
+TMP_MAX	stdio.h	179;"	d
+TRAP_BRKPT	signal.h	/^  TRAP_BRKPT = 1,		\/* Process breakpoint.  *\/$/;"	e	enum:__anon20
+TRAP_BRKPT	signal.h	397;"	d
+TRAP_TRACE	signal.h	/^  TRAP_TRACE			\/* Process trace trap.  *\/$/;"	e	enum:__anon20
+TRAP_TRACE	signal.h	399;"	d
+UCHAR_MAX	limits.h	27;"	d
+UINT16_C	stdint.h	67;"	d
+UINT32_C	stdint.h	68;"	d
+UINT64_C	stdint.h	70;"	d
+UINT64_C	stdint.h	72;"	d
+UINT8_C	stdint.h	66;"	d
+UINTMAX_C	stdint.h	78;"	d
+UINTMAX_C	stdint.h	81;"	d
+UINT_MAX	limits.h	51;"	d
+ULLONG_MAX	limits.h	61;"	d
+ULONG_MAX	limits.h	55;"	d
+USHRT_MAX	limits.h	44;"	d
+USHRT_MAX	limits.h	46;"	d
+WCHAR_MAX	wchar.h	20;"	d
+WCHAR_MIN	wchar.h	19;"	d
+WEOF	wchar.h	23;"	d
+_ASSERT_H	assert.h	2;"	d
+_CTYPE_H	ctype.h	2;"	d
+_ERRNO_H	errno.h	2;"	d
+_FLOAT_H	float.h	2;"	d
+_INTTYPES_H	inttypes.h	2;"	d
+_IOFBF	stdio.h	142;"	d
+_IOLBF	stdio.h	141;"	d
+_IONBF	stdio.h	140;"	d
+_JMPBUF_UNWINDS	setjmp.h	54;"	d
+_LIMITS_H	limits.h	2;"	d
+_LOCALE_H	locale.h	2;"	d
+_MATH_H	math.h	2;"	d
+_NSIG	signal.h	16;"	d
+_NSIG_WORDS	signal.h	434;"	d
+_POSIX_PATH_MAX	limits.h	86;"	d
+_SETJMP_H	setjmp.h	2;"	d
+_SIGNAL_H	signal.h	2;"	d
+_STDARG_H	stdarg.h	2;"	d
+_STDBOOL_H	stdbool.h	2;"	d
+_STDDEF_H	stddef.h	2;"	d
+_STDINT_H	stdint.h	2;"	d
+_STDIO_H	stdio.h	2;"	d
+_STDLIB_H	stdlib.h	2;"	d
+_STRING_H	string.h	2;"	d
+_TIME_H	time.h	2;"	d
+_WCHAR_H	wchar.h	2;"	d
+_WCTYPE_H	wctype.h	2;"	d
+__ASSERT_FUNCTION	assert.h	9;"	d
+__INT_MAX__	limits.h	13;"	d
+__JB_GPR10	setjmp.h	47;"	d
+__JB_GPR11	setjmp.h	48;"	d
+__JB_GPR12	setjmp.h	49;"	d
+__JB_GPR13	setjmp.h	50;"	d
+__JB_GPR14	setjmp.h	51;"	d
+__JB_GPR15	setjmp.h	52;"	d
+__JB_GPR6	setjmp.h	43;"	d
+__JB_GPR7	setjmp.h	44;"	d
+__JB_GPR8	setjmp.h	45;"	d
+__JB_GPR9	setjmp.h	46;"	d
+__JMP_BUF_SP	setjmp.h	167;"	d
+__LONG_MAX__	limits.h	17;"	d
+__LONG_MAX__	limits.h	19;"	d
+__PRI64_PREFIX	inttypes.h	10;"	d
+__PRIPTR_PREFIX	inttypes.h	11;"	d
+__SCHAR_MAX__	limits.h	7;"	d
+__SHRT_MAX__	limits.h	10;"	d
+__SYS_NERR	errno.h	138;"	d
+__SYS_NERR	errno.h	275;"	d
+__SYS_NERR	errno.h	412;"	d
+__SYS_NERR	errno.h	562;"	d
+__SYS_NERR	errno.h	698;"	d
+__WANT_POSIX1B_SIGNALS__	signal.h	8;"	d
+__anon23::sig	signal.h	/^  unsigned long sig[_NSIG_WORDS];$/;"	m	struct:__anon23	access:public
+__anon27::quot	stdlib.h	/^typedef struct { int quot,rem; } div_t;$/;"	m	struct:__anon27	access:public
+__anon27::rem	stdlib.h	/^typedef struct { int quot,rem; } div_t;$/;"	m	struct:__anon27	access:public
+__anon28::quot	stdlib.h	/^typedef struct { long quot,rem; } ldiv_t;$/;"	m	struct:__anon28	access:public
+__anon28::rem	stdlib.h	/^typedef struct { long quot,rem; } ldiv_t;$/;"	m	struct:__anon28	access:public
+__anon29::quot	stdlib.h	/^typedef struct { long long quot,rem; } lldiv_t;$/;"	m	struct:__anon29	access:public
+__anon29::rem	stdlib.h	/^typedef struct { long long quot,rem; } lldiv_t;$/;"	m	struct:__anon29	access:public
+__anon2::fpregs	setjmp.h	/^  long fpregs[4];$/;"	m	struct:__anon2	access:public
+__anon2::gregs	setjmp.h	/^  long int gregs[10];$/;"	m	struct:__anon2	access:public
+__anon30::count	wchar.h	/^  int count;$/;"	m	struct:__anon30	access:public
+__anon30::sofar	wchar.h	/^  unsigned long sofar;$/;"	m	struct:__anon30	access:public
+__anon3::__fp	setjmp.h	/^    void * __fp;	\/* The frame pointer.  *\/$/;"	m	struct:__anon3	access:public
+__anon3::__fpc_csr	setjmp.h	/^    int __fpc_csr;	\/* Floating point status register.  *\/$/;"	m	struct:__anon3	access:public
+__anon3::__fpregs	setjmp.h	/^    double __fpregs[6];	\/* Callee-saved floating point registers.  *\/$/;"	m	struct:__anon3	access:public
+__anon3::__gp	setjmp.h	/^    void * __gp;	\/* The global pointer.  *\/$/;"	m	struct:__anon3	access:public
+__anon3::__pc	setjmp.h	/^    void * __pc;	\/* Program counter.  *\/$/;"	m	struct:__anon3	access:public
+__anon3::__regs	setjmp.h	/^    int __regs[8];	\/* Callee-saved registers s0 through s7.  *\/$/;"	m	struct:__anon3	access:public
+__anon3::__sp	setjmp.h	/^    void * __sp;	\/* Stack pointer.  *\/$/;"	m	struct:__anon3	access:public
+__band_t	signal.h	/^typedef int32_t __band_t;$/;"	t
+__band_t	signal.h	/^typedef long __band_t;$/;"	t
+__bool_true_false_are_defined	stdbool.h	11;"	d
+__dtostr	stdlib.h	/^extern int __dtostr(double d,char *buf,unsigned int maxlen,unsigned int prec,unsigned int prec2,int g) __THROW;$/;"	p	signature:(double d,char *buf,unsigned int maxlen,unsigned int prec,unsigned int prec2,int g)
+__errno_location	errno.h	/^extern int *__errno_location(void);$/;"	p	signature:(void)
+__fp	setjmp.h	/^    void * __fp;	\/* The frame pointer.  *\/$/;"	m	struct:__anon3	access:public
+__fpc_csr	setjmp.h	/^    int __fpc_csr;	\/* Floating point status register.  *\/$/;"	m	struct:__anon3	access:public
+__fpregs	setjmp.h	/^    double __fpregs[6];	\/* Callee-saved floating point registers.  *\/$/;"	m	struct:__anon3	access:public
+__gp	setjmp.h	/^    void * __gp;	\/* The global pointer.  *\/$/;"	m	struct:__anon3	access:public
+__isleap	time.h	/^int __isleap(int year);$/;"	p	signature:(int year)
+__jmp_buf	setjmp.h	/^  } __jmp_buf[1];$/;"	t	typeref:struct:__anon3
+__jmp_buf	setjmp.h	/^typedef double __jmp_buf[21];$/;"	t
+__jmp_buf	setjmp.h	/^typedef int __jmp_buf[24];$/;"	t
+__jmp_buf	setjmp.h	/^typedef int __jmp_buf[3];$/;"	t
+__jmp_buf	setjmp.h	/^typedef long __jmp_buf[40];$/;"	t
+__jmp_buf	setjmp.h	/^typedef long __jmp_buf[58] __attribute__ ((__aligned__(8)));$/;"	t
+__jmp_buf	setjmp.h	/^typedef long __jmp_buf[6];$/;"	t
+__jmp_buf	setjmp.h	/^typedef long __jmp_buf[70] __attribute__ ((__aligned__(16)));$/;"	t
+__jmp_buf	setjmp.h	/^typedef long __jmp_buf[8];$/;"	t
+__jmp_buf	setjmp.h	/^typedef long int __jmp_buf[17];$/;"	t
+__jmp_buf	setjmp.h	/^} __jmp_buf[1];$/;"	t	typeref:struct:__anon2
+__jmp_buf	setjmp.h	/^} __jmp_buf[1];$/;"	t	typeref:struct:__sparc64_jmp_buf
+__jmp_buf_tag	setjmp.h	/^typedef struct __jmp_buf_tag {	\/* C++ doesn't like tagless structs.  *\/$/;"	s
+__jmp_buf_tag::__jmpbuf	setjmp.h	/^  __jmp_buf __jmpbuf;		\/* Calling environment.  *\/$/;"	m	struct:__jmp_buf_tag	access:public
+__jmp_buf_tag::__mask_was_saved	setjmp.h	/^  int __mask_was_saved;		\/* Saved the signal mask?  *\/$/;"	m	struct:__jmp_buf_tag	access:public
+__jmp_buf_tag::__saved_mask	setjmp.h	/^  sigset_t __saved_mask;	\/* Saved signal mask.  *\/$/;"	m	struct:__jmp_buf_tag	access:public
+__jmpbuf	setjmp.h	/^  __jmp_buf __jmpbuf;		\/* Calling environment.  *\/$/;"	m	struct:__jmp_buf_tag	access:public
+__lltostr	stdlib.h	/^__extension__ int __lltostr(char *s, unsigned int size, unsigned long long i, unsigned int base, int UpCase) __THROW;$/;"	p	signature:(char *s, unsigned int size, unsigned long long i, unsigned int base, int UpCase)
+__ltostr	stdlib.h	/^extern int __ltostr(char *s, unsigned int size, unsigned long i, unsigned int base, int UpCase) __THROW;$/;"	p	signature:(char *s, unsigned int size, unsigned long i, unsigned int base, int UpCase)
+__mask_was_saved	setjmp.h	/^  int __mask_was_saved;		\/* Saved the signal mask?  *\/$/;"	m	struct:__jmp_buf_tag	access:public
+__pc	setjmp.h	/^    void * __pc;	\/* Program counter.  *\/$/;"	m	struct:__anon3	access:public
+__pure	time.h	/^time_t timegm(struct tm *timeptr) __THROW __attribute_dontuse__ __pure ;$/;"	v
+__pure	time.h	/^time_t timelocal(struct tm *timeptr) __THROW __attribute_dontuse__ __pure;$/;"	v
+__regs	setjmp.h	/^    int __regs[8];	\/* Callee-saved registers s0 through s7.  *\/$/;"	m	struct:__anon3	access:public
+__saved_mask	setjmp.h	/^  sigset_t __saved_mask;	\/* Saved signal mask.  *\/$/;"	m	struct:__jmp_buf_tag	access:public
+__set_errno	errno.h	715;"	d
+__sig_atomic_t	setjmp.h	210;"	d
+__sighandler_t	signal.h	/^typedef sighandler_t __sighandler_t;	\/* shoot the glibc people! *\/$/;"	t
+__sigsetjmp	setjmp.h	/^extern int __sigsetjmp(jmp_buf __env,int __savemask) __THROW;$/;"	p	signature:(jmp_buf __env,int __savemask)
+__sp	setjmp.h	/^    void * __sp;	\/* Stack pointer.  *\/$/;"	m	struct:__anon3	access:public
+__sparc64_jmp_buf	setjmp.h	/^typedef struct __sparc64_jmp_buf {$/;"	s
+__sparc64_jmp_buf::__anon4::__anon5::__anon6::dregs	setjmp.h	/^	unsigned long	dregs[32];$/;"	m	union:__sparc64_jmp_buf::__anon4::__anon5::__anon6	access:public
+__sparc64_jmp_buf::__anon4::__anon5::__anon6::qregs	setjmp.h	/^	long double	qregs[16];$/;"	m	union:__sparc64_jmp_buf::__anon4::__anon5::__anon6	access:public
+__sparc64_jmp_buf::__anon4::__anon5::__anon6::sregs	setjmp.h	/^	unsigned int	sregs[32];$/;"	m	union:__sparc64_jmp_buf::__anon4::__anon5::__anon6	access:public
+__sparc64_jmp_buf::__anon4::__anon5::__anon7::mcfq_addr	setjmp.h	/^	unsigned long	*mcfq_addr;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5::__anon7	access:public
+__sparc64_jmp_buf::__anon4::__anon5::__anon7::mcfq_insn	setjmp.h	/^	unsigned int	mcfq_insn;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5::__anon7	access:public
+__sparc64_jmp_buf::__anon4::__anon5::mcfpu_enab	setjmp.h	/^      unsigned char	mcfpu_enab;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+__sparc64_jmp_buf::__anon4::__anon5::mcfpu_fprs	setjmp.h	/^      unsigned long	mcfpu_fprs;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+__sparc64_jmp_buf::__anon4::__anon5::mcfpu_fq	setjmp.h	/^      } *mcfpu_fq;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	typeref:struct:__sparc64_jmp_buf::__anon4::__anon5::__anon7	access:public
+__sparc64_jmp_buf::__anon4::__anon5::mcfpu_fregs	setjmp.h	/^      } mcfpu_fregs;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	typeref:union:__sparc64_jmp_buf::__anon4::__anon5::__anon6	access:public
+__sparc64_jmp_buf::__anon4::__anon5::mcfpu_fsr	setjmp.h	/^      unsigned long	mcfpu_fsr;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+__sparc64_jmp_buf::__anon4::__anon5::mcfpu_gsr	setjmp.h	/^      unsigned long	mcfpu_gsr;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+__sparc64_jmp_buf::__anon4::__anon5::mcfpu_qcnt	setjmp.h	/^      unsigned char	mcfpu_qcnt;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+__sparc64_jmp_buf::__anon4::__anon5::mcfpu_qentsz	setjmp.h	/^      unsigned char	mcfpu_qentsz;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+__sparc64_jmp_buf::__anon4::mc_fp	setjmp.h	/^    unsigned long	mc_fp;$/;"	m	struct:__sparc64_jmp_buf::__anon4	access:public
+__sparc64_jmp_buf::__anon4::mc_fpregs	setjmp.h	/^    } mc_fpregs;$/;"	m	struct:__sparc64_jmp_buf::__anon4	typeref:struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+__sparc64_jmp_buf::__anon4::mc_gregs	setjmp.h	/^    unsigned long	mc_gregs[MC_NGREG];$/;"	m	struct:__sparc64_jmp_buf::__anon4	access:public
+__sparc64_jmp_buf::__anon4::mc_i7	setjmp.h	/^    unsigned long	mc_i7;$/;"	m	struct:__sparc64_jmp_buf::__anon4	access:public
+__sparc64_jmp_buf::uc_flags	setjmp.h	/^  unsigned long uc_flags;$/;"	m	struct:__sparc64_jmp_buf	access:public
+__sparc64_jmp_buf::uc_link	setjmp.h	/^  struct __sparc64_jmp_buf *uc_link;$/;"	m	struct:__sparc64_jmp_buf	typeref:struct:__sparc64_jmp_buf::__sparc64_jmp_buf	access:public
+__sparc64_jmp_buf::uc_mcontext	setjmp.h	/^  } uc_mcontext;$/;"	m	struct:__sparc64_jmp_buf	typeref:struct:__sparc64_jmp_buf::__anon4	access:public
+__sparc64_jmp_buf::uc_sigmask	setjmp.h	/^  sigset_t uc_sigmask;$/;"	m	struct:__sparc64_jmp_buf	access:public
+__va_copy	stdarg.h	15;"	d
+_addr	signal.h	/^      void *_addr; \/* faulting insn\/memory ref. *\/$/;"	m	struct:siginfo::__anon8::__anon13	access:public
+_attribute	signal.h	/^      void*_attribute; \/* really pthread_attr_t *\/$/;"	m	struct:sigevent::__anon25::__anon26	access:public
+_band	signal.h	/^      __band_t _band;	\/* POLL_IN, POLL_OUT, POLL_MSG *\/$/;"	m	struct:siginfo::__anon8::__anon14	access:public
+_fd	signal.h	/^      int32_t _fd;$/;"	m	struct:siginfo::__anon8::__anon14	access:public
+_function	signal.h	/^      void(*_function)(sigval_t);$/;"	m	struct:sigevent::__anon25::__anon26	access:public
+_kill	signal.h	/^    } _kill;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon9	access:public
+_pad	signal.h	/^    int32_t _pad[SIGEV_PAD_SIZE];$/;"	m	union:sigevent::__anon25	access:public
+_pad	signal.h	/^    int32_t _pad[SI_PAD_SIZE];$/;"	m	union:siginfo::__anon8	access:public
+_pid	signal.h	/^      pid_t _pid;		\/* sender's pid *\/$/;"	m	struct:siginfo::__anon8::__anon11	access:public
+_pid	signal.h	/^      pid_t _pid;		\/* sender's pid *\/$/;"	m	struct:siginfo::__anon8::__anon9	access:public
+_pid	signal.h	/^      pid_t _pid;		\/* which child *\/$/;"	m	struct:siginfo::__anon8::__anon12	access:public
+_rt	signal.h	/^    } _rt;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon11	access:public
+_sa_handler	signal.h	/^    sighandler_t _sa_handler;$/;"	m	union:sigaction::__anon24	access:public
+_sa_sigaction	signal.h	/^    void (*_sa_sigaction)(int, siginfo_t*, void*);$/;"	m	union:sigaction::__anon24	access:public
+_sifields	signal.h	/^  } _sifields;$/;"	m	struct:siginfo	typeref:union:siginfo::__anon8	access:public
+_sigchld	signal.h	/^    } _sigchld;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon12	access:public
+_sigev_thread	signal.h	/^    } _sigev_thread;$/;"	m	union:sigevent::__anon25	typeref:struct:sigevent::__anon25::__anon26	access:public
+_sigev_un	signal.h	/^  } _sigev_un;$/;"	m	struct:sigevent	typeref:union:sigevent::__anon25	access:public
+_sigfault	signal.h	/^    } _sigfault;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon13	access:public
+_sigpoll	signal.h	/^    } _sigpoll;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon14	access:public
+_sigval	signal.h	/^      sigval_t _sigval;$/;"	m	struct:siginfo::__anon8::__anon11	access:public
+_status	signal.h	/^      int32_t _status;		\/* exit code *\/$/;"	m	struct:siginfo::__anon8::__anon12	access:public
+_stime	signal.h	/^      clock_t _stime;$/;"	m	struct:siginfo::__anon8::__anon12	access:public
+_tid	signal.h	/^    int32_t _tid;$/;"	m	union:sigevent::__anon25	access:public
+_timer	signal.h	/^    } _timer;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon10	access:public
+_timer1	signal.h	/^      uint32_t _timer1;$/;"	m	struct:siginfo::__anon8::__anon10	access:public
+_timer2	signal.h	/^      uint32_t _timer2;$/;"	m	struct:siginfo::__anon8::__anon10	access:public
+_u	signal.h	/^  } _u;$/;"	m	struct:sigaction	typeref:union:sigaction::__anon24	access:public
+_uid	signal.h	/^      uid_t _uid;		\/* sender's uid *\/$/;"	m	struct:siginfo::__anon8::__anon11	access:public
+_uid	signal.h	/^      uid_t _uid;		\/* sender's uid *\/$/;"	m	struct:siginfo::__anon8::__anon12	access:public
+_uid	signal.h	/^      uid_t _uid;		\/* sender's uid *\/$/;"	m	struct:siginfo::__anon8::__anon9	access:public
+_utime	signal.h	/^      clock_t _utime;$/;"	m	struct:siginfo::__anon8::__anon12	access:public
+abort	stdlib.h	/^void abort(void) __THROW;$/;"	p	signature:(void)
+abs	stdlib.h	/^int abs(int i) __THROW __attribute__((__const__));$/;"	p	signature:(int i)
+acos	math.h	/^double acos(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+acosh	math.h	/^double acosh(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+asctime	time.h	/^char *asctime(const struct tm *timeptr) __THROW;$/;"	p	signature:(const struct tm *timeptr)
+asctime_r	time.h	/^char *asctime_r(const struct tm *timeptr, char *buf) __THROW;$/;"	p	signature:(const struct tm *timeptr, char *buf)
+asin	math.h	/^double asin(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+asinh	math.h	/^double asinh(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+assert	assert.h	18;"	d
+assert	assert.h	20;"	d
+atan	math.h	/^double atan(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+atan2	math.h	/^double atan2(double x, double y) __THROW __attribute__((__const__));$/;"	p	signature:(double x, double y)
+atanh	math.h	/^double atanh(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+atexit	stdlib.h	/^int atexit(void (*function)(void)) __THROW;$/;"	p	signature:(void (*function)(void))
+atof	stdlib.h	/^double atof(const char *nptr) __THROW;$/;"	p	signature:(const char *nptr)
+atoi	stdlib.h	/^int atoi(const char *nptr) __THROW;$/;"	p	signature:(const char *nptr)
+atol	stdlib.h	/^long int atol(const char *nptr) __THROW;$/;"	p	signature:(const char *nptr)
+atoll	stdlib.h	/^__extension__ long long int atoll(const char *nptr);$/;"	p	signature:(const char *nptr)
+bool	stdbool.h	8;"	d
+bsearch	stdlib.h	/^void *bsearch(const void *key, const void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));$/;"	p	signature:(const void *key, const void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *))
+btowc	wchar.h	/^wint_t btowc(int);$/;"	p	signature:(int)
+ceil	math.h	/^double ceil(double x) __attribute__((__const__));$/;"	p	signature:(double x)
+clearenv	stdlib.h	/^int clearenv(void);$/;"	p	signature:(void)
+clearerr	stdio.h	/^void clearerr(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+clearerr_unlocked	stdio.h	/^void clearerr_unlocked(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+clock	time.h	/^clock_t clock(void);$/;"	p	signature:(void)
+clock_getres	time.h	/^int clock_getres(clockid_t clock_id,struct timespec*res);$/;"	p	signature:(clockid_t clock_id,struct timespec*res)
+clock_gettime	time.h	/^int clock_gettime(clockid_t clock_id,struct timespec*tp);$/;"	p	signature:(clockid_t clock_id,struct timespec*tp)
+clock_nanosleep	time.h	/^int clock_nanosleep(clockid_t clock_id, int flags,const struct timespec *rqtp, struct timespec *rmtp);$/;"	p	signature:(clockid_t clock_id, int flags,const struct timespec *rqtp, struct timespec *rmtp)
+clock_settime	time.h	/^int clock_settime(clockid_t clock_id,const struct timespec*tp);$/;"	p	signature:(clockid_t clock_id,const struct timespec*tp)
+copysign	math.h	/^double copysign(double value, double sign) __attribute__((__const__));$/;"	p	signature:(double value, double sign)
+cos	math.h	/^double cos(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+cosh	math.h	/^double cosh(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+count	wchar.h	/^  int count;$/;"	m	struct:__anon30	access:public
+ctermid	stdio.h	/^char* ctermid(char* s); \/* returns "\/dev\/tty" *\/$/;"	p	signature:(char* s)
+ctime	time.h	/^char *ctime(const time_t *timep) __THROW;$/;"	p	signature:(const time_t *timep)
+ctime_r	time.h	/^char *ctime_r(const time_t *timep, char* buf) __THROW;$/;"	p	signature:(const time_t *timep, char* buf)
+currency_symbol	locale.h	/^  char *currency_symbol;	\/* Local currency symbol.  *\/$/;"	m	struct:lconv	access:public
+decimal_point	locale.h	/^  char *decimal_point;$/;"	m	struct:lconv	access:public
+difftime	time.h	/^double difftime(time_t time1, time_t time0) __THROW __attribute__((__const__));$/;"	p	signature:(time_t time1, time_t time0)
+div	stdlib.h	/^div_t div(int numerator, int denominator);$/;"	p	signature:(int numerator, int denominator)
+div_t	stdlib.h	/^typedef struct { int quot,rem; } div_t;$/;"	t	typeref:struct:__anon27
+drand48	stdlib.h	/^double drand48(void) __THROW;$/;"	p	signature:(void)
+dregs	setjmp.h	/^	unsigned long	dregs[32];$/;"	m	union:__sparc64_jmp_buf::__anon4::__anon5::__anon6	access:public
+erand48	stdlib.h	/^double erand48(randbuf buf) __THROW;$/;"	p	signature:(randbuf buf)
+erf	math.h	/^double erf(double x);$/;"	p	signature:(double x)
+erfc	math.h	/^double erfc(double x);$/;"	p	signature:(double x)
+exit	stdlib.h	/^void exit(int status) __THROW __attribute__((__noreturn__));$/;"	p	signature:(int status)
+exp	math.h	/^double exp(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+exp10	math.h	/^double exp10(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+exp2	math.h	/^double exp2(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+expm1	math.h	/^double expm1(double x) __THROW __attribute__((__const__));$/;"	p	signature:(double x)
+fabs	math.h	/^double fabs(double x) __THROW __attribute__((__const__));$/;"	p	signature:(double x)
+false	stdbool.h	10;"	d
+fclose	stdio.h	/^int fclose(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+fclose_unlocked	stdio.h	/^int fclose_unlocked(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+fdopen	stdio.h	/^FILE *fdopen (int fildes, const char *mode) __THROW;$/;"	p	signature:(int fildes, const char *mode)
+fdprintf	stdio.h	/^int fdprintf(int fd, const char *format, ...) __THROW __attribute__((__format__(__printf__,2,3)));$/;"	p	signature:(int fd, const char *format, ...)
+feof	stdio.h	/^int feof(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+feof_unlocked	stdio.h	/^int feof_unlocked(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+ferror	stdio.h	/^int ferror(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+ferror_unlocked	stdio.h	/^int ferror_unlocked(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+fflush	stdio.h	/^int fflush(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+fflush_unlocked	stdio.h	/^int fflush_unlocked(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+ffsl	string.h	/^int ffsl(long i) __THROW;$/;"	p	signature:(long i)
+ffsll	string.h	/^int ffsll(long long i) __THROW;$/;"	p	signature:(long long i)
+fgetc	stdio.h	/^int fgetc(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+fgetc_unlocked	stdio.h	/^int fgetc_unlocked(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+fgetpos	stdio.h	/^int fgetpos(FILE *stream, fpos_t *pos) __THROW;$/;"	p	signature:(FILE *stream, fpos_t *pos)
+fgets	stdio.h	/^char *fgets(char *s, int size, FILE *stream) __THROW;$/;"	p	signature:(char *s, int size, FILE *stream)
+fgets_unlocked	stdio.h	/^char *fgets_unlocked(char *s, int size, FILE *stream) __THROW;$/;"	p	signature:(char *s, int size, FILE *stream)
+fgetwc	wchar.h	/^wint_t fgetwc(FILE *);$/;"	p	signature:(FILE *)
+fgetws	wchar.h	/^wchar_t* fgetws(wchar_t *__restrict__, int, FILE *__restrict__);$/;"	p	signature:(wchar_t *__restrict__, int, FILE *__restrict__)
+fileno	stdio.h	/^int fileno(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+fileno_unlocked	stdio.h	/^int fileno_unlocked(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+finite	math.h	/^int finite(double d) __attribute__((__const__));$/;"	p	signature:(double d)
+flockfile	stdio.h	/^void flockfile(FILE* f) __THROW;$/;"	p	signature:(FILE* f)
+floor	math.h	/^double floor(double x) __attribute__((__const__));$/;"	p	signature:(double x)
+fmod	math.h	/^double fmod(double x, double y) __THROW __attribute__((__const__));$/;"	p	signature:(double x, double y)
+fopen	stdio.h	/^FILE *fopen (const char *path, const char *mode) __THROW;$/;"	p	signature:(const char *path, const char *mode)
+fpregs	setjmp.h	/^  long fpregs[4];$/;"	m	struct:__anon2	access:public
+fprintf	stdio.h	/^int fprintf(FILE *stream, const char *format, ...) __THROW __attribute__((__format__(__printf__,2,3)));$/;"	p	signature:(FILE *stream, const char *format, ...)
+fputc	stdio.h	/^int fputc(int c, FILE *stream) __THROW;$/;"	p	signature:(int c, FILE *stream)
+fputc_unlocked	stdio.h	/^int fputc_unlocked(int c, FILE *stream) __THROW;$/;"	p	signature:(int c, FILE *stream)
+fputs	stdio.h	/^int fputs(const char *s, FILE *stream) __THROW;$/;"	p	signature:(const char *s, FILE *stream)
+fputs_unlocked	stdio.h	/^int fputs_unlocked(const char *s, FILE *stream) __THROW;$/;"	p	signature:(const char *s, FILE *stream)
+fputwc	wchar.h	/^wint_t fputwc(wchar_t, FILE *);$/;"	p	signature:(wchar_t, FILE *)
+fputws	wchar.h	/^int fputws(const wchar_t *__restrict__, FILE *__restrict__);$/;"	p	signature:(const wchar_t *__restrict__, FILE *__restrict__)
+frac_digits	locale.h	/^  char frac_digits;		\/* Local fractional digits.  *\/$/;"	m	struct:lconv	access:public
+fread	stdio.h	/^size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) __THROW;$/;"	p	signature:(void *ptr, size_t size, size_t nmemb, FILE *stream)
+fread_unlocked	stdio.h	/^size_t fread_unlocked(void *ptr, size_t size, size_t nmemb, FILE *stream) __THROW;$/;"	p	signature:(void *ptr, size_t size, size_t nmemb, FILE *stream)
+free	stdlib.h	/^void free(void *ptr) __THROW;$/;"	p	signature:(void *ptr)
+freopen	stdio.h	/^FILE *freopen (const char *path, const char *mode, FILE *stream) __THROW;$/;"	p	signature:(const char *path, const char *mode, FILE *stream)
+frexp	math.h	/^double frexp(double x, int *exp);$/;"	p	signature:(double x, int *exp)
+fscanf	stdio.h	/^int fscanf(FILE *stream, const char *format, ...) __THROW __attribute__((__format__(__scanf__,2,3)));$/;"	p	signature:(FILE *stream, const char *format, ...)
+fseek	stdio.h	/^int fseek(FILE *stream, long offset, int whence) __THROW;$/;"	p	signature:(FILE *stream, long offset, int whence)
+fseek_unlocked	stdio.h	/^int fseek_unlocked(FILE *stream, long offset, int whence) __THROW;$/;"	p	signature:(FILE *stream, long offset, int whence)
+fseeko	stdio.h	/^int fseeko(FILE *stream, off_t offset, int whence) __THROW;$/;"	p	signature:(FILE *stream, off_t offset, int whence)
+fseeko	stdio.h	100;"	d
+fseeko64	stdio.h	/^int fseeko64(FILE *stream, loff_t offset, int whence) __THROW;$/;"	p	signature:(FILE *stream, loff_t offset, int whence)
+fseeko64_unlocked	stdio.h	/^int fseeko64_unlocked(FILE *stream, loff_t offset, int whence) __THROW;$/;"	p	signature:(FILE *stream, loff_t offset, int whence)
+fseeko_unlocked	stdio.h	/^int fseeko_unlocked(FILE *stream, off_t offset, int whence) __THROW;$/;"	p	signature:(FILE *stream, off_t offset, int whence)
+fsetpos	stdio.h	/^int fsetpos(FILE *stream, fpos_t *pos) __THROW;$/;"	p	signature:(FILE *stream, fpos_t *pos)
+ftell	stdio.h	/^long ftell(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+ftell_unlocked	stdio.h	/^long ftell_unlocked(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+ftello	stdio.h	/^off_t ftello(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+ftello	stdio.h	101;"	d
+ftello64	stdio.h	/^loff_t ftello64(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+ftello64_unlocked	stdio.h	/^loff_t ftello64_unlocked(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+ftello_unlocked	stdio.h	/^off_t ftello_unlocked(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+ftrylockfile	stdio.h	/^int ftrylockfile (FILE *__stream) __THROW;$/;"	p	signature:(FILE *__stream)
+funlockfile	stdio.h	/^void funlockfile(FILE* f) __THROW;$/;"	p	signature:(FILE* f)
+fwide	wchar.h	/^int fwide(FILE *, int);$/;"	p	signature:(FILE *, int)
+fwprintf	wchar.h	/^int fwprintf(FILE *__restrict__, const wchar_t *__restrict__, ...);$/;"	p	signature:(FILE *__restrict__, const wchar_t *__restrict__, ...)
+fwrite	stdio.h	/^size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) __THROW;$/;"	p	signature:(const void *ptr, size_t size, size_t nmemb, FILE *stream)
+fwrite_unlocked	stdio.h	/^size_t fwrite_unlocked(const void *ptr, size_t size, size_t nmemb, FILE *stream) __THROW;$/;"	p	signature:(const void *ptr, size_t size, size_t nmemb, FILE *stream)
+fwscanf	wchar.h	/^int fwscanf(FILE *__restrict__, const wchar_t *__restrict__, ...);$/;"	p	signature:(FILE *__restrict__, const wchar_t *__restrict__, ...)
+getc	stdio.h	/^int getc(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+getc	stdio.h	72;"	d
+getc_unlocked	stdio.h	/^inline int getc_unlocked(FILE *stream) __THROW { return fgetc_unlocked(stream); }$/;"	f	signature:(FILE *stream)
+getc_unlocked	stdio.h	74;"	d
+getchar	stdio.h	/^int getchar(void) __THROW;$/;"	p	signature:(void)
+getchar	stdio.h	73;"	d
+getchar_unlocked	stdio.h	/^inline int getchar_unlocked(void) __THROW { return fgetc_unlocked(stdin); }$/;"	f	signature:(void)
+getchar_unlocked	stdio.h	75;"	d
+getdelim	stdio.h	/^ssize_t getdelim(char **lineptr, size_t *n, int delim, FILE *stream);$/;"	p	signature:(char **lineptr, size_t *n, int delim, FILE *stream)
+getline	stdio.h	/^ssize_t getline(char **lineptr, size_t *n, FILE *stream);$/;"	p	signature:(char **lineptr, size_t *n, FILE *stream)
+gets	stdio.h	/^char *gets(char *s) __THROW;$/;"	p	signature:(char *s)
+getwc	wchar.h	/^wint_t getwc(FILE *);$/;"	p	signature:(FILE *)
+getwchar	wchar.h	/^wint_t getwchar(void);$/;"	p	signature:(void)
+gmtime	time.h	/^struct tm* gmtime(const time_t* t) __THROW;$/;"	p	signature:(const time_t* t)
+gmtime_r	time.h	/^struct tm* gmtime_r(const time_t* t, struct tm* r) __THROW;$/;"	p	signature:(const time_t* t, struct tm* r)
+grantpt	stdlib.h	/^int grantpt (int fd) __THROW;$/;"	p	signature:(int fd)
+gregs	setjmp.h	/^  long int gregs[10];$/;"	m	struct:__anon2	access:public
+grouping	locale.h	/^  char *grouping;$/;"	m	struct:lconv	access:public
+hypot	math.h	/^double hypot(double x, double y) __THROW __attribute__((__const__));$/;"	p	signature:(double x, double y)
+int16_t	inttypes.h	/^typedef int int16_t __attribute__((__mode__(__HI__)));$/;"	t
+int16_t	inttypes.h	/^typedef signed short int16_t;$/;"	t
+int32_t	inttypes.h	/^typedef int int32_t __attribute__((__mode__(__SI__)));$/;"	t
+int32_t	inttypes.h	/^typedef signed int int32_t;$/;"	t
+int64_t	inttypes.h	/^__extension__ typedef signed long long int64_t;$/;"	t
+int64_t	inttypes.h	/^typedef signed long int64_t;$/;"	t
+int8_t	inttypes.h	/^typedef signed char int8_t;$/;"	t
+int_curr_symbol	locale.h	/^  char *int_curr_symbol;$/;"	m	struct:lconv	access:public
+int_fast16_t	stdint.h	/^typedef signed long int int_fast16_t;$/;"	t
+int_fast32_t	stdint.h	/^typedef signed long int int_fast32_t;$/;"	t
+int_fast64_t	stdint.h	/^typedef int64_t int_fast64_t;$/;"	t
+int_fast8_t	stdint.h	/^typedef signed char int_fast8_t;$/;"	t
+int_frac_digits	locale.h	/^  char int_frac_digits;		\/* Int'l fractional digits.  *\/$/;"	m	struct:lconv	access:public
+int_least16_t	stdint.h	/^typedef int16_t int_least16_t;$/;"	t
+int_least32_t	stdint.h	/^typedef int32_t int_least32_t;$/;"	t
+int_least64_t	stdint.h	/^typedef int64_t int_least64_t;$/;"	t
+int_least8_t	stdint.h	/^typedef int8_t int_least8_t;$/;"	t
+int_n_cs_precedes	locale.h	/^  char int_n_cs_precedes;$/;"	m	struct:lconv	access:public
+int_n_sep_by_space	locale.h	/^  char int_n_sep_by_space;$/;"	m	struct:lconv	access:public
+int_n_sign_posn	locale.h	/^  char int_n_sign_posn;$/;"	m	struct:lconv	access:public
+int_p_cs_precedes	locale.h	/^  char int_p_cs_precedes;$/;"	m	struct:lconv	access:public
+int_p_sep_by_space	locale.h	/^  char int_p_sep_by_space;$/;"	m	struct:lconv	access:public
+int_p_sign_posn	locale.h	/^  char int_p_sign_posn;$/;"	m	struct:lconv	access:public
+intmax_t	inttypes.h	/^__extension__ typedef signed long long int intmax_t;$/;"	t
+intmax_t	inttypes.h	/^typedef signed long int intmax_t;$/;"	t
+intptr_t	inttypes.h	/^typedef signed long int intptr_t;$/;"	t
+ipow	math.h	/^double ipow (double mant, int expo);$/;"	p	signature:(double mant, int expo)
+isalnum	ctype.h	/^extern int isalnum (int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+isalpha	ctype.h	/^extern int isalpha (int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+isascii	ctype.h	/^extern int isascii (int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+isblank	ctype.h	/^extern int isblank (int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+iscntrl	ctype.h	/^extern int iscntrl(int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+isdigit	ctype.h	/^extern int isdigit (int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+isgraph	ctype.h	/^extern int isgraph(int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+isinf	math.h	/^int isinf(double d) __attribute__((__const__));$/;"	p	signature:(double d)
+islower	ctype.h	/^extern int islower (int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+isnan	math.h	/^int isnan(double d) __attribute__((__const__));$/;"	p	signature:(double d)
+isprint	ctype.h	/^extern int isprint(int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+ispunct	ctype.h	/^extern int ispunct(int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+isspace	ctype.h	/^extern int isspace (int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+isupper	ctype.h	/^extern int isupper (int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+iswalnum	wctype.h	/^int iswalnum(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswalpha	wctype.h	/^int iswalpha(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswblank	wctype.h	/^int iswblank(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswcntrl	wctype.h	/^int iswcntrl(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswctype	wctype.h	/^int iswctype(wint_t, wctype_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t, wctype_t)
+iswdigit	wctype.h	/^int iswdigit(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswgraph	wctype.h	/^int iswgraph(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswlower	wctype.h	/^int iswlower(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswprint	wctype.h	/^int iswprint(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswpunct	wctype.h	/^int iswpunct(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswspace	wctype.h	/^int iswspace(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswupper	wctype.h	/^int iswupper(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+iswxdigit	wctype.h	/^int iswxdigit(wint_t) __THROW __attribute__ ((__const__));$/;"	p	signature:(wint_t)
+isxdigit	ctype.h	/^extern int isxdigit(int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+j0	math.h	/^double j0(double x);$/;"	p	signature:(double x)
+j1	math.h	/^double j1(double x);$/;"	p	signature:(double x)
+jmp_buf	setjmp.h	/^} jmp_buf[1];$/;"	t	typeref:struct:__jmp_buf_tag
+jn	math.h	/^double jn(int n, double x);$/;"	p	signature:(int n, double x)
+jrand48	stdlib.h	/^long jrand48(randbuf buf) __THROW;$/;"	p	signature:(randbuf buf)
+kill	signal.h	/^int kill(pid_t pid, int sig) __THROW;$/;"	p	signature:(pid_t pid, int sig)
+killpg	signal.h	/^int killpg(pid_t pgrp, int sig) __THROW;$/;"	p	signature:(pid_t pgrp, int sig)
+labs	stdlib.h	/^long int labs(long int i) __THROW __attribute__((__const__));$/;"	p	signature:(long int i)
+lcong48	stdlib.h	/^void lcong48(unsigned short param[7]) __THROW;$/;"	p	signature:(unsigned short param[7])
+lconv	locale.h	/^struct lconv {$/;"	s
+lconv::currency_symbol	locale.h	/^  char *currency_symbol;	\/* Local currency symbol.  *\/$/;"	m	struct:lconv	access:public
+lconv::decimal_point	locale.h	/^  char *decimal_point;$/;"	m	struct:lconv	access:public
+lconv::frac_digits	locale.h	/^  char frac_digits;		\/* Local fractional digits.  *\/$/;"	m	struct:lconv	access:public
+lconv::grouping	locale.h	/^  char *grouping;$/;"	m	struct:lconv	access:public
+lconv::int_curr_symbol	locale.h	/^  char *int_curr_symbol;$/;"	m	struct:lconv	access:public
+lconv::int_frac_digits	locale.h	/^  char int_frac_digits;		\/* Int'l fractional digits.  *\/$/;"	m	struct:lconv	access:public
+lconv::int_n_cs_precedes	locale.h	/^  char int_n_cs_precedes;$/;"	m	struct:lconv	access:public
+lconv::int_n_sep_by_space	locale.h	/^  char int_n_sep_by_space;$/;"	m	struct:lconv	access:public
+lconv::int_n_sign_posn	locale.h	/^  char int_n_sign_posn;$/;"	m	struct:lconv	access:public
+lconv::int_p_cs_precedes	locale.h	/^  char int_p_cs_precedes;$/;"	m	struct:lconv	access:public
+lconv::int_p_sep_by_space	locale.h	/^  char int_p_sep_by_space;$/;"	m	struct:lconv	access:public
+lconv::int_p_sign_posn	locale.h	/^  char int_p_sign_posn;$/;"	m	struct:lconv	access:public
+lconv::mon_decimal_point	locale.h	/^  char *mon_decimal_point;	\/* Decimal point character.  *\/$/;"	m	struct:lconv	access:public
+lconv::mon_grouping	locale.h	/^  char *mon_grouping;		\/* Like `grouping' element (above).  *\/$/;"	m	struct:lconv	access:public
+lconv::mon_thousands_sep	locale.h	/^  char *mon_thousands_sep;	\/* Thousands separator.  *\/$/;"	m	struct:lconv	access:public
+lconv::n_cs_precedes	locale.h	/^  char n_cs_precedes;$/;"	m	struct:lconv	access:public
+lconv::n_sep_by_space	locale.h	/^  char n_sep_by_space;$/;"	m	struct:lconv	access:public
+lconv::n_sign_posn	locale.h	/^  char n_sign_posn;$/;"	m	struct:lconv	access:public
+lconv::negative_sign	locale.h	/^  char *negative_sign;		\/* Sign for negative values.  *\/$/;"	m	struct:lconv	access:public
+lconv::p_cs_precedes	locale.h	/^  char p_cs_precedes;$/;"	m	struct:lconv	access:public
+lconv::p_sep_by_space	locale.h	/^  char p_sep_by_space;$/;"	m	struct:lconv	access:public
+lconv::p_sign_posn	locale.h	/^  char p_sign_posn;$/;"	m	struct:lconv	access:public
+lconv::positive_sign	locale.h	/^  char *positive_sign;		\/* Sign for positive values.  *\/$/;"	m	struct:lconv	access:public
+lconv::thousands_sep	locale.h	/^  char *thousands_sep;$/;"	m	struct:lconv	access:public
+ldexp	math.h	/^double ldexp(double x, int exp);$/;"	p	signature:(double x, int exp)
+ldiv	stdlib.h	/^ldiv_t ldiv(long numerator, long denominator);$/;"	p	signature:(long numerator, long denominator)
+ldiv_t	stdlib.h	/^typedef struct { long quot,rem; } ldiv_t;$/;"	t	typeref:struct:__anon28
+lgamma	math.h	/^double lgamma(double x);$/;"	p	signature:(double x)
+llabs	stdlib.h	/^__extension__ long long int llabs(long long int i) __THROW __attribute__((__const__));$/;"	p	signature:(long long int i)
+lldiv	stdlib.h	/^lldiv_t lldiv(long long numerator, long long denominator);$/;"	p	signature:(long long numerator, long long denominator)
+lldiv_t	stdlib.h	/^typedef struct { long long quot,rem; } lldiv_t;$/;"	t	typeref:struct:__anon29
+localeconv	locale.h	/^struct lconv *localeconv (void) __THROW;$/;"	p	signature:(void)
+localtime	time.h	/^struct tm* localtime(const time_t* t) __THROW;$/;"	p	signature:(const time_t* t)
+localtime_r	time.h	/^struct tm* localtime_r(const time_t* t, struct tm* r) __THROW;$/;"	p	signature:(const time_t* t, struct tm* r)
+log	math.h	/^double log(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+log10	math.h	/^double log10(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+log2	math.h	/^double log2(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+longjmp	setjmp.h	/^extern void longjmp(jmp_buf __env,int __val)$/;"	p	signature:(jmp_buf __env,int __val)
+lrand48	stdlib.h	/^long lrand48(void) __THROW;$/;"	p	signature:(void)
+mbrlen	wchar.h	/^size_t mbrlen(const char *__restrict__, size_t, mbstate_t *__restrict__);$/;"	p	signature:(const char *__restrict__, size_t, mbstate_t *__restrict__)
+mbrtowc	wchar.h	/^size_t mbrtowc(wchar_t *__restrict__, const char *__restrict__, size_t, mbstate_t *__restrict__);$/;"	p	signature:(wchar_t *__restrict__, const char *__restrict__, size_t, mbstate_t *__restrict__)
+mbsinit	wchar.h	/^int mbsinit(const mbstate_t *);$/;"	p	signature:(const mbstate_t *)
+mbsrtowcs	wchar.h	/^size_t mbsrtowcs(wchar_t *__restrict__, const char **__restrict__, size_t, mbstate_t *__restrict__);$/;"	p	signature:(wchar_t *__restrict__, const char **__restrict__, size_t, mbstate_t *__restrict__)
+mbstate_t	wchar.h	/^} mbstate_t;$/;"	t	typeref:struct:__anon30
+mc_fp	setjmp.h	/^    unsigned long	mc_fp;$/;"	m	struct:__sparc64_jmp_buf::__anon4	access:public
+mc_fpregs	setjmp.h	/^    } mc_fpregs;$/;"	m	struct:__sparc64_jmp_buf::__anon4	typeref:struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+mc_gregs	setjmp.h	/^    unsigned long	mc_gregs[MC_NGREG];$/;"	m	struct:__sparc64_jmp_buf::__anon4	access:public
+mc_i7	setjmp.h	/^    unsigned long	mc_i7;$/;"	m	struct:__sparc64_jmp_buf::__anon4	access:public
+mcfpu_enab	setjmp.h	/^      unsigned char	mcfpu_enab;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+mcfpu_fprs	setjmp.h	/^      unsigned long	mcfpu_fprs;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+mcfpu_fq	setjmp.h	/^      } *mcfpu_fq;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	typeref:struct:__sparc64_jmp_buf::__anon4::__anon5::__anon7	access:public
+mcfpu_fregs	setjmp.h	/^      } mcfpu_fregs;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	typeref:union:__sparc64_jmp_buf::__anon4::__anon5::__anon6	access:public
+mcfpu_fsr	setjmp.h	/^      unsigned long	mcfpu_fsr;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+mcfpu_gsr	setjmp.h	/^      unsigned long	mcfpu_gsr;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+mcfpu_qcnt	setjmp.h	/^      unsigned char	mcfpu_qcnt;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+mcfpu_qentsz	setjmp.h	/^      unsigned char	mcfpu_qentsz;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5	access:public
+mcfq_addr	setjmp.h	/^	unsigned long	*mcfq_addr;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5::__anon7	access:public
+mcfq_insn	setjmp.h	/^	unsigned int	mcfq_insn;$/;"	m	struct:__sparc64_jmp_buf::__anon4::__anon5::__anon7	access:public
+memccpy	string.h	/^void *memccpy(void *dest, const void *src, int c, size_t n) __THROW;$/;"	p	signature:(void *dest, const void *src, int c, size_t n)
+memcpy	string.h	/^void* memcpy(void *dest, const void *src, size_t n) __THROW;$/;"	p	signature:(void *dest, const void *src, size_t n)
+memmem	string.h	/^void *memmem(const void *haystack, size_t haystacklen, const void *needle, size_t needlelen) __THROW;$/;"	p	signature:(const void *haystack, size_t haystacklen, const void *needle, size_t needlelen)
+memmove	string.h	/^void *memmove(void *dest, const void *src, size_t n) __THROW;$/;"	p	signature:(void *dest, const void *src, size_t n)
+memset	string.h	/^void* memset(void *s, int c, size_t n) __THROW;$/;"	p	signature:(void *s, int c, size_t n)
+mkdtemp	stdlib.h	/^char* mkdtemp(char *_template);$/;"	p	signature:(char *_template)
+mkstemp	stdlib.h	/^int mkstemp(char *_template);$/;"	p	signature:(char *_template)
+mktemp	stdlib.h	/^char* mktemp(char *_template);$/;"	p	signature:(char *_template)
+modf	math.h	/^double modf(double x, double * iptr);$/;"	p	signature:(double x, double * iptr)
+mon_decimal_point	locale.h	/^  char *mon_decimal_point;	\/* Decimal point character.  *\/$/;"	m	struct:lconv	access:public
+mon_grouping	locale.h	/^  char *mon_grouping;		\/* Like `grouping' element (above).  *\/$/;"	m	struct:lconv	access:public
+mon_thousands_sep	locale.h	/^  char *mon_thousands_sep;	\/* Thousands separator.  *\/$/;"	m	struct:lconv	access:public
+mrand48	stdlib.h	/^long mrand48(void) __THROW;$/;"	p	signature:(void)
+n_cs_precedes	locale.h	/^  char n_cs_precedes;$/;"	m	struct:lconv	access:public
+n_sep_by_space	locale.h	/^  char n_sep_by_space;$/;"	m	struct:lconv	access:public
+n_sign_posn	locale.h	/^  char n_sign_posn;$/;"	m	struct:lconv	access:public
+nanosleep	time.h	/^int nanosleep(const struct timespec *req, struct timespec *rem) __THROW;$/;"	p	signature:(const struct timespec *req, struct timespec *rem)
+negative_sign	locale.h	/^  char *negative_sign;		\/* Sign for negative values.  *\/$/;"	m	struct:lconv	access:public
+nrand48	stdlib.h	/^long nrand48(randbuf buf) __THROW;$/;"	p	signature:(randbuf buf)
+off_t	stdio.h	99;"	d
+offsetof	stddef.h	29;"	d
+offsetof	stddef.h	30;"	d
+p_cs_precedes	locale.h	/^  char p_cs_precedes;$/;"	m	struct:lconv	access:public
+p_sep_by_space	locale.h	/^  char p_sep_by_space;$/;"	m	struct:lconv	access:public
+p_sign_posn	locale.h	/^  char p_sign_posn;$/;"	m	struct:lconv	access:public
+pclose	stdio.h	/^int pclose(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+perror	stdio.h	/^void perror(const char *s) __THROW;$/;"	p	signature:(const char *s)
+popen	stdio.h	/^FILE *popen(const char *command, const char *type) __THROW;$/;"	p	signature:(const char *command, const char *type)
+positive_sign	locale.h	/^  char *positive_sign;		\/* Sign for positive values.  *\/$/;"	m	struct:lconv	access:public
+pow	math.h	/^double pow(double x, double y) __THROW __attribute__((__const__));$/;"	p	signature:(double x, double y)
+printf	stdio.h	/^int printf(const char *format, ...) __THROW __attribute__((__format__(__printf__,1,2)));$/;"	p	signature:(const char *format, ...)
+ptrdiff_t	stddef.h	/^typedef __PTRDIFF_TYPE__ ptrdiff_t;$/;"	t
+ptsname	stdlib.h	/^char *ptsname (int fd) __THROW;$/;"	p	signature:(int fd)
+putc	stdio.h	/^inline int putc(int c, FILE *stream) __THROW { return fputc(c,stream); }$/;"	f	signature:(int c, FILE *stream)
+putc	stdio.h	62;"	d
+putc_unlocked	stdio.h	/^inline int putc_unlocked(int c, FILE *stream) __THROW { return fputc_unlocked(c,stream); }$/;"	f	signature:(int c, FILE *stream)
+putc_unlocked	stdio.h	64;"	d
+putchar	stdio.h	/^int putchar(int c) __THROW;$/;"	p	signature:(int c)
+putchar	stdio.h	63;"	d
+putchar_unlocked	stdio.h	/^int putchar_unlocked(int c) __THROW;$/;"	p	signature:(int c)
+putchar_unlocked	stdio.h	65;"	d
+putenv	stdlib.h	/^int putenv(const char *string) __THROW;$/;"	p	signature:(const char *string)
+puts	stdio.h	/^int puts(const char *s) __THROW;$/;"	p	signature:(const char *s)
+putwc	wchar.h	/^wint_t putwc(wchar_t, FILE *);$/;"	p	signature:(wchar_t, FILE *)
+putwchar	wchar.h	/^wint_t putwchar(wchar_t);$/;"	p	signature:(wchar_t)
+qregs	setjmp.h	/^	long double	qregs[16];$/;"	m	union:__sparc64_jmp_buf::__anon4::__anon5::__anon6	access:public
+qsort	stdlib.h	/^void qsort(void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));$/;"	p	signature:(void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *))
+quot	stdlib.h	/^typedef struct { int quot,rem; } div_t;$/;"	m	struct:__anon27	access:public
+quot	stdlib.h	/^typedef struct { long long quot,rem; } lldiv_t;$/;"	m	struct:__anon29	access:public
+quot	stdlib.h	/^typedef struct { long quot,rem; } ldiv_t;$/;"	m	struct:__anon28	access:public
+raise	signal.h	/^int raise (int sig) __THROW;$/;"	p	signature:(int sig)
+rand	stdlib.h	/^extern int rand(void) __THROW;$/;"	p	signature:(void)
+rand_r	stdlib.h	/^extern int rand_r(unsigned int *seed) __THROW;$/;"	p	signature:(unsigned int *seed)
+randbuf	stdlib.h	/^typedef unsigned short randbuf[3];$/;"	t
+realpath	stdlib.h	/^char *realpath(const char *path, char *resolved_path) __THROW;$/;"	p	signature:(const char *path, char *resolved_path)
+rem	stdlib.h	/^typedef struct { int quot,rem; } div_t;$/;"	m	struct:__anon27	access:public
+rem	stdlib.h	/^typedef struct { long long quot,rem; } lldiv_t;$/;"	m	struct:__anon29	access:public
+rem	stdlib.h	/^typedef struct { long quot,rem; } ldiv_t;$/;"	m	struct:__anon28	access:public
+remove	stdio.h	/^int remove(const char *pathname) __THROW;$/;"	p	signature:(const char *pathname)
+rename	stdio.h	/^int rename(const char *oldpath, const char *newpath) __THROW;$/;"	p	signature:(const char *oldpath, const char *newpath)
+rewind	stdio.h	/^void rewind(FILE *stream) __THROW;$/;"	p	signature:(FILE *stream)
+rint	math.h	/^double rint(double x);$/;"	p	signature:(double x)
+sa_flags	signal.h	/^  unsigned long sa_flags;$/;"	m	struct:sigaction	access:public
+sa_handler	signal.h	468;"	d
+sa_mask	signal.h	/^  sigset_t sa_mask;$/;"	m	struct:sigaction	access:public
+sa_sigaction	signal.h	469;"	d
+scanf	stdio.h	/^int scanf(const char *format, ...) __THROW __attribute__((__format__(__scanf__,1,2)));$/;"	p	signature:(const char *format, ...)
+seed48	stdlib.h	/^unsigned short *seed48(randbuf buf) __THROW;$/;"	p	signature:(randbuf buf)
+setbuf	stdio.h	/^inline int setbuf(FILE *stream, char *buf) __THROW$/;"	f	signature:(FILE *stream, char *buf)
+setbuf	stdio.h	148;"	d
+setbuffer	stdio.h	/^inline int setbuffer(FILE *stream, char *buf, size_t size) __THROW$/;"	f	signature:(FILE *stream, char *buf, size_t size)
+setbuffer	stdio.h	149;"	d
+setenv	stdlib.h	/^int setenv(const char *name, const char *value, int overwrite) __THROW;$/;"	p	signature:(const char *name, const char *value, int overwrite)
+setjmp	setjmp.h	233;"	d
+setjmp	setjmp.h	235;"	d
+setlinebuf	stdio.h	/^inline int setlinebuf(FILE *stream) __THROW$/;"	f	signature:(FILE *stream)
+setlinebuf	stdio.h	150;"	d
+setlocale	locale.h	/^char *setlocale (int category, const char *locale) __THROW;$/;"	p	signature:(int category, const char *locale)
+setvbuf	stdio.h	/^int setvbuf(FILE *stream, char *buf, int mode , size_t size) __THROW;$/;"	p	signature:(FILE *stream, char *buf, int mode , size_t size)
+setvbuf_unlocked	stdio.h	/^int setvbuf_unlocked(FILE *stream, char *buf, int mode , size_t size) __THROW;$/;"	p	signature:(FILE *stream, char *buf, int mode , size_t size)
+si_addr	signal.h	310;"	d
+si_band	signal.h	311;"	d
+si_code	signal.h	/^  int32_t si_code;$/;"	m	struct:siginfo	access:public
+si_errno	signal.h	/^  int32_t si_errno;$/;"	m	struct:siginfo	access:public
+si_fd	signal.h	312;"	d
+si_int	signal.h	308;"	d
+si_pid	signal.h	302;"	d
+si_ptr	signal.h	309;"	d
+si_signo	signal.h	/^  int32_t si_signo;$/;"	m	struct:siginfo	access:public
+si_status	signal.h	304;"	d
+si_stime	signal.h	306;"	d
+si_uid	signal.h	303;"	d
+si_utime	signal.h	305;"	d
+si_value	signal.h	307;"	d
+sig	signal.h	/^  unsigned long sig[_NSIG_WORDS];$/;"	m	struct:__anon23	access:public
+sig_atomic_t	signal.h	/^typedef int sig_atomic_t;$/;"	t
+sig_t	signal.h	/^typedef sighandler_t sig_t;$/;"	t
+sigaction	signal.h	/^int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact) __THROW;$/;"	p	signature:(int signum, const struct sigaction *act, struct sigaction *oldact)
+sigaction	signal.h	/^struct sigaction {$/;"	s
+sigaction::__anon24::_sa_handler	signal.h	/^    sighandler_t _sa_handler;$/;"	m	union:sigaction::__anon24	access:public
+sigaction::__anon24::_sa_sigaction	signal.h	/^    void (*_sa_sigaction)(int, siginfo_t*, void*);$/;"	m	union:sigaction::__anon24	access:public
+sigaction::_u	signal.h	/^  } _u;$/;"	m	struct:sigaction	typeref:union:sigaction::__anon24	access:public
+sigaction::sa_flags	signal.h	/^  unsigned long sa_flags;$/;"	m	struct:sigaction	access:public
+sigaction::sa_mask	signal.h	/^  sigset_t sa_mask;$/;"	m	struct:sigaction	access:public
+sigaddset	signal.h	/^int sigaddset(sigset_t *set, int signum) __THROW;$/;"	p	signature:(sigset_t *set, int signum)
+sigaltstack	signal.h	/^int sigaltstack(const struct sigaltstack *newstack, struct sigaltstack *oldstack) __THROW;$/;"	p	signature:(const struct sigaltstack *newstack, struct sigaltstack *oldstack)
+sigaltstack	signal.h	/^typedef struct sigaltstack {$/;"	s
+sigaltstack::ss_flags	signal.h	/^  int32_t ss_flags;$/;"	m	struct:sigaltstack	access:public
+sigaltstack::ss_size	signal.h	/^  size_t ss_size;$/;"	m	struct:sigaltstack	access:public
+sigaltstack::ss_sp	signal.h	/^  void *ss_sp;$/;"	m	struct:sigaltstack	access:public
+sigandset	signal.h	/^int sigandset(sigset_t *set, const sigset_t *left, const sigset_t *right) __THROW;$/;"	p	signature:(sigset_t *set, const sigset_t *left, const sigset_t *right)
+sigdelset	signal.h	/^int sigdelset(sigset_t *set, int signum) __THROW;$/;"	p	signature:(sigset_t *set, int signum)
+sigemptyset	signal.h	/^int sigemptyset(sigset_t *set) __THROW;$/;"	p	signature:(sigset_t *set)
+sigev_notify	signal.h	/^  int32_t sigev_notify;$/;"	m	struct:sigevent	access:public
+sigev_notify_attributes	signal.h	498;"	d
+sigev_notify_function	signal.h	497;"	d
+sigev_notify_thread_id	signal.h	499;"	d
+sigev_signo	signal.h	/^  int32_t sigev_signo;$/;"	m	struct:sigevent	access:public
+sigev_value	signal.h	/^  sigval_t sigev_value;$/;"	m	struct:sigevent	access:public
+sigevent	signal.h	/^typedef struct sigevent {$/;"	s
+sigevent::__anon25::__anon26::_attribute	signal.h	/^      void*_attribute; \/* really pthread_attr_t *\/$/;"	m	struct:sigevent::__anon25::__anon26	access:public
+sigevent::__anon25::__anon26::_function	signal.h	/^      void(*_function)(sigval_t);$/;"	m	struct:sigevent::__anon25::__anon26	access:public
+sigevent::__anon25::_pad	signal.h	/^    int32_t _pad[SIGEV_PAD_SIZE];$/;"	m	union:sigevent::__anon25	access:public
+sigevent::__anon25::_sigev_thread	signal.h	/^    } _sigev_thread;$/;"	m	union:sigevent::__anon25	typeref:struct:sigevent::__anon25::__anon26	access:public
+sigevent::__anon25::_tid	signal.h	/^    int32_t _tid;$/;"	m	union:sigevent::__anon25	access:public
+sigevent::_sigev_un	signal.h	/^  } _sigev_un;$/;"	m	struct:sigevent	typeref:union:sigevent::__anon25	access:public
+sigevent::sigev_notify	signal.h	/^  int32_t sigev_notify;$/;"	m	struct:sigevent	access:public
+sigevent::sigev_signo	signal.h	/^  int32_t sigev_signo;$/;"	m	struct:sigevent	access:public
+sigevent::sigev_value	signal.h	/^  sigval_t sigev_value;$/;"	m	struct:sigevent	access:public
+sigevent_t	signal.h	/^} sigevent_t;$/;"	t	typeref:struct:sigevent
+sigfillset	signal.h	/^int sigfillset(sigset_t *set) __THROW;$/;"	p	signature:(sigset_t *set)
+sighandler_t	signal.h	/^typedef void (*sighandler_t)(int);$/;"	t
+siginfo	signal.h	/^typedef struct siginfo {$/;"	s
+siginfo::__anon8::__anon10::_timer1	signal.h	/^      uint32_t _timer1;$/;"	m	struct:siginfo::__anon8::__anon10	access:public
+siginfo::__anon8::__anon10::_timer2	signal.h	/^      uint32_t _timer2;$/;"	m	struct:siginfo::__anon8::__anon10	access:public
+siginfo::__anon8::__anon11::_pid	signal.h	/^      pid_t _pid;		\/* sender's pid *\/$/;"	m	struct:siginfo::__anon8::__anon11	access:public
+siginfo::__anon8::__anon11::_sigval	signal.h	/^      sigval_t _sigval;$/;"	m	struct:siginfo::__anon8::__anon11	access:public
+siginfo::__anon8::__anon11::_uid	signal.h	/^      uid_t _uid;		\/* sender's uid *\/$/;"	m	struct:siginfo::__anon8::__anon11	access:public
+siginfo::__anon8::__anon12::_pid	signal.h	/^      pid_t _pid;		\/* which child *\/$/;"	m	struct:siginfo::__anon8::__anon12	access:public
+siginfo::__anon8::__anon12::_status	signal.h	/^      int32_t _status;		\/* exit code *\/$/;"	m	struct:siginfo::__anon8::__anon12	access:public
+siginfo::__anon8::__anon12::_stime	signal.h	/^      clock_t _stime;$/;"	m	struct:siginfo::__anon8::__anon12	access:public
+siginfo::__anon8::__anon12::_uid	signal.h	/^      uid_t _uid;		\/* sender's uid *\/$/;"	m	struct:siginfo::__anon8::__anon12	access:public
+siginfo::__anon8::__anon12::_utime	signal.h	/^      clock_t _utime;$/;"	m	struct:siginfo::__anon8::__anon12	access:public
+siginfo::__anon8::__anon13::_addr	signal.h	/^      void *_addr; \/* faulting insn\/memory ref. *\/$/;"	m	struct:siginfo::__anon8::__anon13	access:public
+siginfo::__anon8::__anon14::_band	signal.h	/^      __band_t _band;	\/* POLL_IN, POLL_OUT, POLL_MSG *\/$/;"	m	struct:siginfo::__anon8::__anon14	access:public
+siginfo::__anon8::__anon14::_fd	signal.h	/^      int32_t _fd;$/;"	m	struct:siginfo::__anon8::__anon14	access:public
+siginfo::__anon8::__anon9::_pid	signal.h	/^      pid_t _pid;		\/* sender's pid *\/$/;"	m	struct:siginfo::__anon8::__anon9	access:public
+siginfo::__anon8::__anon9::_uid	signal.h	/^      uid_t _uid;		\/* sender's uid *\/$/;"	m	struct:siginfo::__anon8::__anon9	access:public
+siginfo::__anon8::_kill	signal.h	/^    } _kill;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon9	access:public
+siginfo::__anon8::_pad	signal.h	/^    int32_t _pad[SI_PAD_SIZE];$/;"	m	union:siginfo::__anon8	access:public
+siginfo::__anon8::_rt	signal.h	/^    } _rt;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon11	access:public
+siginfo::__anon8::_sigchld	signal.h	/^    } _sigchld;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon12	access:public
+siginfo::__anon8::_sigfault	signal.h	/^    } _sigfault;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon13	access:public
+siginfo::__anon8::_sigpoll	signal.h	/^    } _sigpoll;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon14	access:public
+siginfo::__anon8::_timer	signal.h	/^    } _timer;$/;"	m	union:siginfo::__anon8	typeref:struct:siginfo::__anon8::__anon10	access:public
+siginfo::_sifields	signal.h	/^  } _sifields;$/;"	m	struct:siginfo	typeref:union:siginfo::__anon8	access:public
+siginfo::si_code	signal.h	/^  int32_t si_code;$/;"	m	struct:siginfo	access:public
+siginfo::si_errno	signal.h	/^  int32_t si_errno;$/;"	m	struct:siginfo	access:public
+siginfo::si_signo	signal.h	/^  int32_t si_signo;$/;"	m	struct:siginfo	access:public
+siginfo_t	signal.h	/^} siginfo_t;$/;"	t	typeref:struct:siginfo
+siginterrupt	signal.h	/^int siginterrupt(int sig, int flag) __THROW;$/;"	p	signature:(int sig, int flag)
+sigismember	signal.h	/^int sigismember(const sigset_t *set, int signo) __THROW;$/;"	p	signature:(const sigset_t *set, int signo)
+sigjmp_buf	setjmp.h	/^typedef jmp_buf sigjmp_buf;$/;"	t
+siglongjmp	setjmp.h	/^extern void siglongjmp(sigjmp_buf __env,int __val)$/;"	p	signature:(sigjmp_buf __env,int __val)
+signal	signal.h	/^sighandler_t signal(int signum, sighandler_t action);$/;"	p	signature:(int signum, sighandler_t action)
+sigorset	signal.h	/^int sigorset(sigset_t *set, const sigset_t *left, const sigset_t *right) __THROW;$/;"	p	signature:(sigset_t *set, const sigset_t *left, const sigset_t *right)
+sigpending	signal.h	/^int sigpending(sigset_t *set) __THROW;$/;"	p	signature:(sigset_t *set)
+sigprocmask	signal.h	/^int sigprocmask(int how, const sigset_t *set, sigset_t *oldset) __THROW;$/;"	p	signature:(int how, const sigset_t *set, sigset_t *oldset)
+sigqueueinfo	signal.h	/^int sigqueueinfo(pid_t pid, int sig, siginfo_t *info) __THROW;$/;"	p	signature:(pid_t pid, int sig, siginfo_t *info)
+sigset_t	signal.h	/^} sigset_t;$/;"	t	typeref:struct:__anon23
+sigsetjmp	setjmp.h	237;"	d
+sigsuspend	signal.h	/^int sigsuspend(const sigset_t *mask) __THROW;$/;"	p	signature:(const sigset_t *mask)
+sigtimedwait	signal.h	/^int sigtimedwait(const sigset_t *mask, siginfo_t *info, const struct timespec *ts) __THROW;$/;"	p	signature:(const sigset_t *mask, siginfo_t *info, const struct timespec *ts)
+sigval	signal.h	/^typedef union sigval {$/;"	u
+sigval::sival_int	signal.h	/^  int sival_int;$/;"	m	union:sigval	access:public
+sigval::sival_ptr	signal.h	/^  void *sival_ptr;$/;"	m	union:sigval	access:public
+sigval_t	signal.h	/^} sigval_t;$/;"	t	typeref:union:sigval
+sigwait	signal.h	/^int sigwait(const sigset_t* set,int* sig) __THROW;$/;"	p	signature:(const sigset_t* set,int* sig)
+sigwaitinfo	signal.h	546;"	d
+sin	math.h	/^double sin(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+sincos	math.h	/^void sincos(double x, double* sinx, double* cosx);$/;"	p	signature:(double x, double* sinx, double* cosx)
+sinh	math.h	/^double sinh(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+sival_int	signal.h	/^  int sival_int;$/;"	m	union:sigval	access:public
+sival_ptr	signal.h	/^  void *sival_ptr;$/;"	m	union:sigval	access:public
+size_t	stddef.h	/^typedef __SIZE_TYPE__ size_t;$/;"	t
+snprintf	stdio.h	/^int snprintf(char *str, size_t size, const char *format, ...) __THROW __attribute__((__format__(__printf__,3,4)));$/;"	p	signature:(char *str, size_t size, const char *format, ...)
+sofar	wchar.h	/^  unsigned long sofar;$/;"	m	struct:__anon30	access:public
+sprintf	stdio.h	/^int sprintf(char *str, const char *format, ...) __THROW __attribute__((__format__(__printf__,2,3)));$/;"	p	signature:(char *str, const char *format, ...)
+sqrt	math.h	/^double sqrt(double x) __THROW __attribute__((__const__));$/;"	p	signature:(double x)
+srand	stdlib.h	/^extern void srand(unsigned int seed) __THROW;$/;"	p	signature:(unsigned int seed)
+srand48	stdlib.h	/^void srand48(long seed) __THROW;$/;"	p	signature:(long seed)
+sregs	setjmp.h	/^	unsigned int	sregs[32];$/;"	m	union:__sparc64_jmp_buf::__anon4::__anon5::__anon6	access:public
+ss_flags	signal.h	/^  int32_t ss_flags;$/;"	m	struct:sigaltstack	access:public
+ss_size	signal.h	/^  size_t ss_size;$/;"	m	struct:sigaltstack	access:public
+ss_sp	signal.h	/^  void *ss_sp;$/;"	m	struct:sigaltstack	access:public
+sscanf	stdio.h	/^int sscanf(const char *str, const char *format, ...) __THROW __attribute__((__format__(__scanf__,2,3)));$/;"	p	signature:(const char *str, const char *format, ...)
+stack_t	signal.h	/^} stack_t;$/;"	t	typeref:struct:sigaltstack
+stime	time.h	/^int stime(time_t *t) __THROW;$/;"	p	signature:(time_t *t)
+stpcpy	string.h	/^char *stpcpy(char *dest, const char *src);$/;"	p	signature:(char *dest, const char *src)
+strcat	string.h	/^char *strcat(char *dest, const char *src) __THROW;$/;"	p	signature:(char *dest, const char *src)
+strcoll	string.h	/^int strcoll(const char *s1, const char *s2) __THROW;$/;"	p	signature:(const char *s1, const char *s2)
+strcpy	string.h	/^char *strcpy(char *dest, const char *src) __THROW;$/;"	p	signature:(char *dest, const char *src)
+strcspn	string.h	/^size_t strcspn(const char *s, const char *reject) __THROW;$/;"	p	signature:(const char *s, const char *reject)
+strdupa	string.h	64;"	d
+strerror	string.h	/^char *strerror(int errnum) __THROW;$/;"	p	signature:(int errnum)
+strerror	string.h	55;"	d
+strftime	time.h	/^size_t strftime(char *s, size_t max, const char *format, const struct tm *tm) __THROW __attribute__((__format__(__strftime__,3,0)));$/;"	p	signature:(char *s, size_t max, const char *format, const struct tm *tm)
+strlcat	string.h	/^size_t strlcat(char *dst, const char *src, size_t size) __THROW;$/;"	p	signature:(char *dst, const char *src, size_t size)
+strlcpy	string.h	/^size_t strlcpy(char *dst, const char *src, size_t size) __THROW;$/;"	p	signature:(char *dst, const char *src, size_t size)
+strncat	string.h	/^char *strncat(char *dest, const char *src, size_t n) __THROW;$/;"	p	signature:(char *dest, const char *src, size_t n)
+strncpy	string.h	/^char *strncpy(char *dest, const char *src, size_t n) __THROW;$/;"	p	signature:(char *dest, const char *src, size_t n)
+strndupa	string.h	65;"	d
+strpbrk	string.h	/^char *strpbrk(const char *s, const char *_accept) __THROW;$/;"	p	signature:(const char *s, const char *_accept)
+strptime	time.h	/^char *strptime(const char *s, const char *format, struct tm *tm);$/;"	p	signature:(const char *s, const char *format, struct tm *tm)
+strsep	string.h	/^char *strsep(char **stringp, const char *delim) __THROW;$/;"	p	signature:(char **stringp, const char *delim)
+strsignal	string.h	/^const char *strsignal(int signum) __THROW;$/;"	p	signature:(int signum)
+strspn	string.h	/^size_t strspn(const char *s, const char *_accept) __THROW;$/;"	p	signature:(const char *s, const char *_accept)
+strtod	stdlib.h	/^double strtod(const char *nptr, char **endptr) __THROW;$/;"	p	signature:(const char *nptr, char **endptr)
+strtof	stdlib.h	/^float strtof(const char *nptr, char **endptr) __THROW;$/;"	p	signature:(const char *nptr, char **endptr)
+strtoimax	inttypes.h	/^intmax_t strtoimax (const char *nptr, char **endptr, int base);$/;"	p	signature:(const char *nptr, char **endptr, int base)
+strtok	string.h	/^char *strtok(char *s, const char *delim) __THROW;$/;"	p	signature:(char *s, const char *delim)
+strtok_r	string.h	/^char *strtok_r(char *s, const char *delim, char **ptrptr) __THROW;$/;"	p	signature:(char *s, const char *delim, char **ptrptr)
+strtol	stdlib.h	/^long int strtol(const char *nptr, char **endptr, int base) __THROW;$/;"	p	signature:(const char *nptr, char **endptr, int base)
+strtold	stdlib.h	/^long double strtold(const char *nptr, char **endptr) __THROW;$/;"	p	signature:(const char *nptr, char **endptr)
+strtoll	stdlib.h	/^__extension__ long long int strtoll(const char *nptr, char **endptr, int base) __THROW;$/;"	p	signature:(const char *nptr, char **endptr, int base)
+strtoul	stdlib.h	/^unsigned long int strtoul(const char *nptr, char **endptr, int base) __THROW;$/;"	p	signature:(const char *nptr, char **endptr, int base)
+strtoull	stdlib.h	/^__extension__ unsigned long long int strtoull(const char *nptr, char **endptr, int base) __THROW;$/;"	p	signature:(const char *nptr, char **endptr, int base)
+strtoumax	inttypes.h	/^uintmax_t strtoumax (const char *nptr, char **endptr, int base);$/;"	p	signature:(const char *nptr, char **endptr, int base)
+strxfrm	string.h	/^size_t strxfrm(char *dest, const char *src, size_t n) __THROW;$/;"	p	signature:(char *dest, const char *src, size_t n)
+swprintf	wchar.h	/^int swprintf(wchar_t *__restrict__, size_t, const wchar_t *__restrict__, ...);$/;"	p	signature:(wchar_t *__restrict__, size_t, const wchar_t *__restrict__, ...)
+swscanf	wchar.h	/^int swscanf(const wchar_t *__restrict__, const wchar_t *__restrict__, ...);$/;"	p	signature:(const wchar_t *__restrict__, const wchar_t *__restrict__, ...)
+system	stdlib.h	/^int system (const char * string) __THROW;$/;"	p	signature:(const char * string)
+tan	math.h	/^double tan(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+tanh	math.h	/^double tanh(double d) __THROW __attribute__((__const__));$/;"	p	signature:(double d)
+tempnam	stdio.h	/^char* tempnam(char* dir,char* _template);	\/* dito *\/$/;"	p	signature:(char* dir,char* _template)
+thousands_sep	locale.h	/^  char *thousands_sep;$/;"	m	struct:lconv	access:public
+time	time.h	/^time_t time(time_t *t) __THROW;$/;"	p	signature:(time_t *t)
+timer_create	time.h	/^int timer_create(clockid_t clock_id,struct sigevent*evp,timer_t*timerid) __THROW;$/;"	p	signature:(clockid_t clock_id,struct sigevent*evp,timer_t*timerid)
+timer_delete	time.h	/^int timer_delete(timer_t timerid) __THROW;$/;"	p	signature:(timer_t timerid)
+timer_getoverrun	time.h	/^int timer_getoverrun(timer_t timerid) __THROW;$/;"	p	signature:(timer_t timerid)
+timer_gettime	time.h	/^int timer_gettime(timer_t timerid,const struct itimerspec*val) __THROW;$/;"	p	signature:(timer_t timerid,const struct itimerspec*val)
+timer_settime	time.h	/^int timer_settime(timer_t timerid,int flags,const struct itimerspec*ival,struct itimerspec*oval) __THROW;$/;"	p	signature:(timer_t timerid,int flags,const struct itimerspec*ival,struct itimerspec*oval)
+tmpfile	stdio.h	/^FILE* tmpfile(void) __THROW;$/;"	p	signature:(void)
+tmpfile_unlocked	stdio.h	/^FILE* tmpfile_unlocked(void) __THROW;$/;"	p	signature:(void)
+tmpnam	stdio.h	/^char* tmpnam(char *s) __THROW;	\/* DO NOT USE!!! Use mkstemp instead! *\/$/;"	p	signature:(char *s)
+toascii	ctype.h	/^extern int toascii(int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+tolower	ctype.h	/^extern int tolower(int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+toupper	ctype.h	/^extern int toupper(int c) __THROW __attribute__ ((__const__));$/;"	p	signature:(int c)
+towctrans	wctype.h	/^wint_t towctrans(wint_t, wctrans_t) __THROW;$/;"	p	signature:(wint_t, wctrans_t)
+towlower	wctype.h	/^wint_t towlower(wint_t) __THROW;$/;"	p	signature:(wint_t)
+towupper	wctype.h	/^wint_t towupper(wint_t) __THROW;$/;"	p	signature:(wint_t)
+true	stdbool.h	9;"	d
+tzset	time.h	/^void tzset (void) __THROW;$/;"	p	signature:(void)
+uc_flags	setjmp.h	/^  unsigned long uc_flags;$/;"	m	struct:__sparc64_jmp_buf	access:public
+uc_link	setjmp.h	/^  struct __sparc64_jmp_buf *uc_link;$/;"	m	struct:__sparc64_jmp_buf	typeref:struct:__sparc64_jmp_buf::__sparc64_jmp_buf	access:public
+uc_mcontext	setjmp.h	/^  } uc_mcontext;$/;"	m	struct:__sparc64_jmp_buf	typeref:struct:__sparc64_jmp_buf::__anon4	access:public
+uc_sigmask	setjmp.h	/^  sigset_t uc_sigmask;$/;"	m	struct:__sparc64_jmp_buf	access:public
+uint16_t	inttypes.h	/^typedef unsigned int uint16_t __attribute__((__mode__(__HI__)));$/;"	t
+uint16_t	inttypes.h	/^typedef unsigned short uint16_t;$/;"	t
+uint32_t	inttypes.h	/^typedef unsigned int uint32_t __attribute__((__mode__(__SI__)));$/;"	t
+uint32_t	inttypes.h	/^typedef unsigned int uint32_t;$/;"	t
+uint64_t	inttypes.h	/^__extension__ typedef unsigned long long uint64_t;$/;"	t
+uint64_t	inttypes.h	/^typedef unsigned long uint64_t;$/;"	t
+uint8_t	inttypes.h	/^typedef unsigned char uint8_t;$/;"	t
+uint_fast16_t	stdint.h	/^typedef unsigned long int uint_fast16_t;$/;"	t
+uint_fast32_t	stdint.h	/^typedef unsigned long int uint_fast32_t;$/;"	t
+uint_fast64_t	stdint.h	/^typedef uint64_t uint_fast64_t;$/;"	t
+uint_fast8_t	stdint.h	/^typedef unsigned char uint_fast8_t;$/;"	t
+uint_least16_t	stdint.h	/^typedef uint16_t uint_least16_t;$/;"	t
+uint_least32_t	stdint.h	/^typedef uint32_t uint_least32_t;$/;"	t
+uint_least64_t	stdint.h	/^typedef uint64_t uint_least64_t;$/;"	t
+uint_least8_t	stdint.h	/^typedef uint8_t uint_least8_t;$/;"	t
+uintmax_t	inttypes.h	/^__extension__ typedef unsigned long long int uintmax_t;$/;"	t
+uintmax_t	inttypes.h	/^typedef unsigned long int uintmax_t;$/;"	t
+uintptr_t	inttypes.h	/^typedef unsigned long int uintptr_t;$/;"	t
+ungetc	stdio.h	/^int ungetc(int c, FILE *stream) __THROW;$/;"	p	signature:(int c, FILE *stream)
+ungetc_unlocked	stdio.h	/^int ungetc_unlocked(int c, FILE *stream) __THROW;$/;"	p	signature:(int c, FILE *stream)
+ungetwc	wchar.h	/^wint_t ungetwc(wint_t, FILE *);$/;"	p	signature:(wint_t, FILE *)
+unlockpt	stdlib.h	/^int unlockpt (int fd) __THROW;$/;"	p	signature:(int fd)
+unsetenv	stdlib.h	/^int unsetenv(const char *name) __THROW;$/;"	p	signature:(const char *name)
+va_arg	stdarg.h	14;"	d
+va_copy	stdarg.h	24;"	d
+va_end	stdarg.h	13;"	d
+va_list	stdarg.h	/^typedef __builtin_va_list va_list;$/;"	t
+va_start	stdarg.h	12;"	d
+vasprintf	stdio.h	/^int vasprintf(char **strp, const char *fmt, va_list ap);$/;"	p	signature:(char **strp, const char *fmt, va_list ap)
+vfdprintf	stdio.h	/^int vfdprintf(int fd, const char *format, va_list ap) __THROW __attribute__((__format__(__printf__,2,0)));$/;"	p	signature:(int fd, const char *format, va_list ap)
+vfprintf	stdio.h	/^int vfprintf(FILE *stream, const char *format, va_list ap) __THROW __attribute__((__format__(__printf__,2,0)));$/;"	p	signature:(FILE *stream, const char *format, va_list ap)
+vfscanf	stdio.h	/^int vfscanf(FILE *stream, const char *format, va_list ap) __THROW __attribute__((__format__(__scanf__,2,0)));$/;"	p	signature:(FILE *stream, const char *format, va_list ap)
+vfwprintf	wchar.h	/^int vfwprintf(FILE *__restrict__, const wchar_t *__restrict__, va_list);$/;"	p	signature:(FILE *__restrict__, const wchar_t *__restrict__, va_list)
+vfwscanf	wchar.h	/^int vfwscanf(FILE *__restrict__, const wchar_t *__restrict__, va_list);$/;"	p	signature:(FILE *__restrict__, const wchar_t *__restrict__, va_list)
+vprintf	stdio.h	/^int vprintf(const char *format, va_list ap) __THROW __attribute__((__format__(__printf__,1,0)));$/;"	p	signature:(const char *format, va_list ap)
+vscanf	stdio.h	/^int vscanf(const char *format, va_list ap) __THROW __attribute__((__format__(__scanf__,1,0)));$/;"	p	signature:(const char *format, va_list ap)
+vsnprintf	stdio.h	/^int vsnprintf(char *str, size_t size, const char *format, va_list ap) __THROW __attribute__((__format__(__printf__,3,0)));$/;"	p	signature:(char *str, size_t size, const char *format, va_list ap)
+vsprintf	stdio.h	/^int vsprintf(char *str, const char *format, va_list ap) __THROW __attribute__((__format__(__printf__,2,0)));$/;"	p	signature:(char *str, const char *format, va_list ap)
+vsscanf	stdio.h	/^int vsscanf(const char *str, const char *format, va_list ap) __THROW __attribute__((__format__(__scanf__,2,0)));$/;"	p	signature:(const char *str, const char *format, va_list ap)
+vswprintf	wchar.h	/^int vswprintf(wchar_t *__restrict__, size_t, const wchar_t *__restrict__, va_list);$/;"	p	signature:(wchar_t *__restrict__, size_t, const wchar_t *__restrict__, va_list)
+vswscanf	wchar.h	/^int vswscanf(const wchar_t *__restrict__, const wchar_t *__restrict__, va_list);$/;"	p	signature:(const wchar_t *__restrict__, const wchar_t *__restrict__, va_list)
+vwprintf	wchar.h	/^int vwprintf(const wchar_t *__restrict__, va_list);$/;"	p	signature:(const wchar_t *__restrict__, va_list)
+vwscanf	wchar.h	/^int vwscanf(const wchar_t *__restrict__, va_list);$/;"	p	signature:(const wchar_t *__restrict__, va_list)
+wcrtomb	wchar.h	/^size_t wcrtomb(char *__restrict__, wchar_t, mbstate_t *__restrict__);$/;"	p	signature:(char *__restrict__, wchar_t, mbstate_t *__restrict__)
+wcscat	wchar.h	/^wchar_t *wcscat(wchar_t *__restrict__, const wchar_t *__restrict__);$/;"	p	signature:(wchar_t *__restrict__, const wchar_t *__restrict__)
+wcschr	wchar.h	/^wchar_t *wcschr(const wchar_t *, wchar_t);$/;"	p	signature:(const wchar_t *, wchar_t)
+wcscmp	wchar.h	/^int wcscmp(const wchar_t *, const wchar_t *);$/;"	p	signature:(const wchar_t *, const wchar_t *)
+wcscoll	wchar.h	/^int wcscoll(const wchar_t *, const wchar_t *);$/;"	p	signature:(const wchar_t *, const wchar_t *)
+wcscpy	wchar.h	/^wchar_t* wcscpy(wchar_t *__restrict__, const wchar_t *__restrict__);$/;"	p	signature:(wchar_t *__restrict__, const wchar_t *__restrict__)
+wcscspn	wchar.h	/^size_t wcscspn(const wchar_t *, const wchar_t *);$/;"	p	signature:(const wchar_t *, const wchar_t *)
+wcsftime	wchar.h	/^size_t wcsftime(wchar_t *__restrict__, size_t, const wchar_t *__restrict__, const struct tm *__restrict__);$/;"	p	signature:(wchar_t *__restrict__, size_t, const wchar_t *__restrict__, const struct tm *__restrict__)
+wcsncat	wchar.h	/^wchar_t *wcsncat(wchar_t *__restrict__, const wchar_t *__restrict__, size_t);$/;"	p	signature:(wchar_t *__restrict__, const wchar_t *__restrict__, size_t)
+wcsncmp	wchar.h	/^int wcsncmp(const wchar_t *, const wchar_t *, size_t);$/;"	p	signature:(const wchar_t *, const wchar_t *, size_t)
+wcsncpy	wchar.h	/^wchar_t *wcsncpy(wchar_t *__restrict__, const wchar_t *__restrict__, size_t);$/;"	p	signature:(wchar_t *__restrict__, const wchar_t *__restrict__, size_t)
+wcspbrk	wchar.h	/^wchar_t *wcspbrk(const wchar_t *, const wchar_t *);$/;"	p	signature:(const wchar_t *, const wchar_t *)
+wcsrchr	wchar.h	/^wchar_t *wcsrchr(const wchar_t *, wchar_t);$/;"	p	signature:(const wchar_t *, wchar_t)
+wcsrtombs	wchar.h	/^size_t wcsrtombs(char *__restrict__, const wchar_t **__restrict__, size_t, mbstate_t *__restrict__);$/;"	p	signature:(char *__restrict__, const wchar_t **__restrict__, size_t, mbstate_t *__restrict__)
+wcsspn	wchar.h	/^size_t wcsspn(const wchar_t *, const wchar_t *);$/;"	p	signature:(const wchar_t *, const wchar_t *)
+wcsstr	wchar.h	/^wchar_t *wcsstr(const wchar_t *__restrict__, const wchar_t *__restrict__);$/;"	p	signature:(const wchar_t *__restrict__, const wchar_t *__restrict__)
+wcstod	wchar.h	/^double wcstod(const wchar_t *__restrict__, wchar_t **__restrict__);$/;"	p	signature:(const wchar_t *__restrict__, wchar_t **__restrict__)
+wcstof	wchar.h	/^float wcstof(const wchar_t *__restrict__, wchar_t **__restrict__);$/;"	p	signature:(const wchar_t *__restrict__, wchar_t **__restrict__)
+wcstok	wchar.h	/^wchar_t *wcstok(wchar_t *__restrict__, const wchar_t *__restrict__, wchar_t **__restrict__);$/;"	p	signature:(wchar_t *__restrict__, const wchar_t *__restrict__, wchar_t **__restrict__)
+wcstol	wchar.h	/^long wcstol(const wchar_t *__restrict__, wchar_t **__restrict__, int);$/;"	p	signature:(const wchar_t *__restrict__, wchar_t **__restrict__, int)
+wcstold	wchar.h	/^long double wcstold(const wchar_t *__restrict__, wchar_t **__restrict__);$/;"	p	signature:(const wchar_t *__restrict__, wchar_t **__restrict__)
+wcstoll	wchar.h	/^long long wcstoll(const wchar_t *__restrict__, wchar_t **__restrict__, int);$/;"	p	signature:(const wchar_t *__restrict__, wchar_t **__restrict__, int)
+wcstoul	wchar.h	/^unsigned long wcstoul(const wchar_t *__restrict__, wchar_t **__restrict__, int);$/;"	p	signature:(const wchar_t *__restrict__, wchar_t **__restrict__, int)
+wcstoull	wchar.h	/^unsigned long long wcstoull(const wchar_t *__restrict__, wchar_t **__restrict__, int);$/;"	p	signature:(const wchar_t *__restrict__, wchar_t **__restrict__, int)
+wcsxfrm	wchar.h	/^size_t wcsxfrm(wchar_t *__restrict__, const wchar_t *__restrict__, size_t);$/;"	p	signature:(wchar_t *__restrict__, const wchar_t *__restrict__, size_t)
+wctob	wchar.h	/^int wctob(wint_t);$/;"	p	signature:(wint_t)
+wctrans	wctype.h	/^wctrans_t wctrans(const char *) __THROW;$/;"	p	signature:(const char *)
+wctrans_t	wctype.h	/^typedef const int32_t* wctrans_t;$/;"	t
+wctype	wctype.h	/^wctype_t wctype(const char *) __THROW;$/;"	p	signature:(const char *)
+wctype_t	wchar.h	/^typedef unsigned long int wctype_t;$/;"	t
+wint_t	wchar.h	/^typedef __WINT_TYPE__ wint_t;$/;"	t
+wmemchr	wchar.h	/^wchar_t *wmemchr(const wchar_t *, wchar_t, size_t);$/;"	p	signature:(const wchar_t *, wchar_t, size_t)
+wmemcmp	wchar.h	/^int wmemcmp(const wchar_t *, const wchar_t *, size_t);$/;"	p	signature:(const wchar_t *, const wchar_t *, size_t)
+wmemcpy	wchar.h	/^wchar_t *wmemcpy(wchar_t *__restrict__, const wchar_t *__restrict__, size_t);$/;"	p	signature:(wchar_t *__restrict__, const wchar_t *__restrict__, size_t)
+wmemmove	wchar.h	/^wchar_t *wmemmove(wchar_t *, const wchar_t *, size_t);$/;"	p	signature:(wchar_t *, const wchar_t *, size_t)
+wmemset	wchar.h	/^wchar_t *wmemset(wchar_t *, wchar_t, size_t);$/;"	p	signature:(wchar_t *, wchar_t, size_t)
+wprintf	wchar.h	/^int wprintf(const wchar_t *__restrict__, ...);$/;"	p	signature:(const wchar_t *__restrict__, ...)
+wscanf	wchar.h	/^int wscanf(const wchar_t *__restrict__, ...);$/;"	p	signature:(const wchar_t *__restrict__, ...)
+y0	math.h	/^double y0(double x);$/;"	p	signature:(double x)
+y1	math.h	/^double y1(double x);$/;"	p	signature:(double x)
+yn	math.h	/^double yn(int n, double x);$/;"	p	signature:(int n, double x)

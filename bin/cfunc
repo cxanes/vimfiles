@@ -1,0 +1,447 @@
+#!/usr/bin/perl
+
+# Author: Frank Chang <frank.nevermind@gmail.com>
+
+use warnings;
+use strict;
+use Getopt::Long;
+use File::Basename;
+
+package Tags;
+
+use File::Temp qw(tempfile);
+use File::Basename;
+
+my $get_field_idx = sub ($) #{{{
+{
+    my ($self, $field) = @_;
+    my $field_idx = $self->{field_idx};
+    if (not exists $field_idx->{$field}) {
+        $field_idx->{$field} = scalar keys %$field_idx;
+    }
+    return $field_idx->{$field};
+};
+#}}}
+sub get_value ($$) #{{{
+{
+    my ($self, $record, $field) = @_;
+    my $idx = $self->$get_field_idx($field);
+    return defined($record->[$idx]) ? $record->[$idx] : undef;
+}
+#}}}
+sub set_value ($$$) #{{{
+{
+    my ($self, $record, $field, $value) = @_;
+    $record->[$self->$get_field_idx($field)] = $value;
+}
+#}}}
+sub add_record ($) #{{{
+{
+    my ($self, $line) = @_;
+
+    # format: tag_name<TAB>file_name<TAB>ex_cmd;"<TAB>extension_fields
+    my @values = split /\t/, $line;
+
+    my $field_idx = $self->{field_idx};
+    my @record = (undef) x scalar keys %$field_idx;
+
+    $record[$field_idx->{tag_name}] = shift @values; # tag_name
+                                      shift @values; # file_name
+    $record[$field_idx->{ex_cmd}]   = shift @values; # ex_cmd
+
+    # extension_fields: key:value
+    for my $value (@values) {
+        if ($value =~ /^([^:]+):(.*)/o) {
+            $self->set_value(\@record, $1, $2);
+        }
+    }
+
+    push @{$self->{records}}, \@record;
+};
+#}}}
+sub show () #{{{
+{
+    my $self = shift;
+
+    my @fields = ();
+    my ($field, $index);
+    while (($field, $index) = each %{$self->{field_idx}}) {
+        push @fields, [$field, $index];
+    }
+
+    @fields = map  { $_->[0] }
+              sort { $a->[1] <=> $b->[1] }
+              @fields;
+
+    local $" = "|";
+    print "@fields\n", "-" x 60, "\n";
+
+    no warnings;
+    for my $record (@{$self->{records}}) {
+        print "@$record\n"
+    }
+}
+#}}}
+sub query ($) #{{{
+{
+    my ($self, $query) = @_;
+
+    # $_{field} => $self->get_value($_, 'field')
+    $query =~ s/\$_\{([^\}]+)\}/'$self->get_value($_, \'' . $1 . '\')'/ge;
+
+    my @records = ();
+    for (@{$self->{records}}) {
+        push @records, $_ if eval $query;
+    }
+
+    return \@records;
+}
+#}}}
+sub show_record ($$$) #{{{
+{
+    my ($self, $records, $format) = @_;
+    my @fields = $format =~ /\$_\{([^\}]+)\}/g;
+
+    # remove duplicate fields
+    @fields = keys %{{ map { ($_, 0) } @fields }};
+    
+    # Don't give warnings when 'undef' is in the string.
+    no warnings;
+
+    $format =~ s/(?<=\$_)\{[^\}]+(?=\})/'->' . $&/ge;
+    my %dup = ();
+    for (@$records) {
+        my $record = $_;
+        $_ = { map { ($_, $self->get_value($record, $_)) } @fields };
+
+        my $str= eval "qq{${format}}";
+
+        # escape duplicate line
+        next if exists $dup{$str};
+
+        $dup{$str} = 0;
+        print $str;
+    }
+}
+#}}}
+our $angle_quote = q{};
+$angle_quote = qr{<(?:(?>[^<>]+)|(??{ $angle_quote }))*>}s;
+sub get_template_args ($) #{{{
+{
+    my $template = shift;
+    $template =~ s/^\s*template\s*<//;
+    $template =~ s/>\s*$//;
+
+    my $template_pat = qr{\btemplate\s*$angle_quote};
+
+    $template =~ s/$template_pat//gs;
+    my @type = map { m{(\w+)\s*$} ? $1 : ''} split /,/, $template;
+    return '<' . (join ', ', @type) . '>';
+}
+#}}}
+sub proc_template ($) #{{{
+{
+    my $template = shift;
+    $template =~ s/\b\s*=\s*\w+(?:\w+|(?:::))*\s*(?:<\w*>)?\s*//g;
+    $template =~ s/\s+/ /g;
+    $template =~ s/\s*</ </g;
+    $template =~ s/>\s*/> /g;
+
+    my ($head, $body, $tail) = $template =~ m/^(\s*template\s*<)(.*)(>\s)$/;
+
+    my $template_pat = qr{\btemplate\s*$angle_quote};
+
+    my $strip_sym = sub ($)
+    {
+        my $templ = shift;
+        $templ =~ s/\s*(\w+)\s*([,>])/(($1 eq 'typename' or $1 eq 'class') ? $1 : '') . $2/ge;
+        return $templ;
+    };
+
+    $body =~ s#$template_pat# $strip_sym->($&) #ge;
+    return "$head$body$tail";
+}
+#}}}
+my $set_template = sub ($$) #{{{
+{
+    my ($self, $records, $lines) = @_;
+
+    my $template_pat = qr{\btemplate\s*$angle_quote};
+
+    my %class_template = ();
+    my %class_template_args = ();
+    for my $i (0 .. $#$records) {
+        my $record = $records->[$i];
+        next if $self->get_value($record, 'kind') !~ /^[csfp]$/;
+
+        my $line = $lines->[$i];
+
+        my $tag_name = $self->get_value($record, 'tag_name');
+
+        # remove metacharacters
+        $tag_name =~ s/[\[\]\\|(){}^\$\*+?]/\\$&/g;
+        $tag_name =~ s/\./\\$&/g;
+        $tag_name =~ s/\s+/\\s*/g;
+        $line =~ s/$tag_name\b.*//s;
+
+        if ($line =~ /$template_pat/) {
+            my $template = proc_template($&);
+            $self->set_value($record, 'template', $template);
+            if ($self->get_value($record, 'kind') =~ /^[cs]$/) {
+                $class_template{$tag_name} = $template;
+                $class_template_args{$tag_name} = get_template_args($template);
+            }
+        }
+    }
+
+    for my $record (@$records) {
+        next if $self->get_value($record, 'kind') !~ /^[fp]$/;
+        my $class = $self->get_value($record, 'class');
+        if (defined($class) and exists($class_template{$class})) {
+            $self->set_value($record, 'class_template', $class_template{$class});
+            $self->set_value($record, 'class', $class . $class_template_args{$class});
+        }
+    }
+};
+#}}}
+my $set_ret_type = sub ($$) #{{{
+{
+    my ($self, $records, $lines) = @_;
+    my $identifier_pat = qr/[_a-zA-Z][_a-zA-Z0-9]*(?:\s*<[\w\s,]*>\s*)?/;
+    my $type_pat = qr/\b((?:(?:const|(?:un)?signed)\s+){0,2}$identifier_pat(?:\s*[&*]+)?)/;
+
+    my $content = $self->{content};
+
+    # Since tag file doesn't contain the return type of the function,
+    # we extract it from source file.
+    for my $i (0 .. $#$records) {
+        my $record = $records->[$i];
+        next if $self->get_value($record, 'kind') !~ /^[fp]$/;
+
+        my $line = $lines->[$i];
+
+        my $tag_name = $self->get_value($record, 'tag_name');
+        my $class = $self->get_value($record, 'class');
+        if (defined($class)) {
+            my $class_temp = $class;
+            $class_temp =~ s/<[^>]*>\s*$//;
+            if (($class_temp eq $tag_name) or ("~$class_temp" eq $tag_name)) {
+                next;
+            }
+        }
+
+        # remove metacharacters
+        $tag_name =~ s/[\[\]\\|(){}^\$\*+?]/\\$&/g;
+        $tag_name =~ s/\./\\$&/g;
+
+        # $tag_name = "${class}::${tag_name}" if defined($class);
+        $tag_name =~ s/\s+/\\s*/g;
+
+        if ($line =~ /$type_pat\s+$tag_name\s*\(/) {
+            $self->set_value($record, 'ret_type', $1);
+        }
+    }
+};
+#}}}
+my $set_extra_fields = sub () #{{{
+{
+    my $self = shift;
+    my $records = $self->query(
+        q{$_{kind} eq 'c'}
+        . q{or $_{kind} eq 's'}
+        . q{or $_{kind} eq 'f'}
+        . q{or $_{kind} eq 'p'}
+    );
+
+    my @lines = ();
+    my $content = $self->{content};
+    for my $record (@$records) {
+        my $lnum = $self->get_value($record, 'line') - 1;
+        my $line = $content->[$lnum--];
+
+        while ($lnum >= 0) {
+            my $prev_line = $content->[$lnum--];
+            if ($prev_line =~ /[\};]([^\};]*$)/) {
+                $line = $1 . $line;
+                last;
+            }
+            else {
+                $line = $prev_line . $line;
+            }
+        }
+        push @lines, $line;
+    }
+
+    $self->$set_template($records, \@lines);
+    $self->$set_ret_type($records, \@lines);
+};
+#}}}
+sub show_prototype ($) #{{{
+{
+    my ($self, $static) = @_;
+    my ($static_test, $static_decl) = ('', '');
+    if ($static == 0) {     # non static
+        $static_test = 'and (not defined($_{file}))';
+        $static_decl = '';
+    }
+    elsif ($static == 1) {  # static
+        $static_test = 'and defined($_{file})';
+        $static_decl = 'static ';
+    }
+    else {                 # all
+        $static_test = '';
+        $static_decl = '@{[defined($_{file}) ? "static " : ""]}';
+    }
+
+    my $records = $self->query(
+        q{$_{kind} eq 'f'}                     # is function
+        . q{and (not $_{tag_name} eq 'main')}  # not main function
+        . q{and (not defined($_{class}))}      # not class method
+        . qq{$static_test}                     # is/not in file scope
+    );
+
+    my $template = '@{[defined($_{template}) ? ($_{template} . "\n") : ""]}';
+    $self->show_record($records, 
+        "$template$static_decl\$_{ret_type} \$_{tag_name}\$_{signature};\\n");
+}
+#}}}
+sub show_skeleton () #{{{
+{
+    my $self = shift;
+    my $records = $self->query(
+        q{$_{kind} eq 'p'}                     # is prototype
+        . q{and (not (defined($_{implementation}) and $_{implementation} eq 'pure virtual'))}
+    );
+
+    my $class_template = '@{[defined($_{class_template}) ? ($_{class_template} . "\n") : ""]}';
+    my $template    = '@{[defined($_{template}) ? ((defined($_{class_template}) ? " " : "") . ($_{template} . "\n")) : ""]}';
+    my $ret_type    = '@{[defined($_{ret_type}) ? ($_{ret_type} . " ") : ""]}';
+    my $class       = '@{[defined($_{class})    ? ($_{class} . "::")   : ""]}';
+    my $static_decl = '@{[defined($_{file})     ? "static "            : ""]}';
+
+    $self->show_record($records, 
+        "${class_template}${template}${static_decl}${ret_type}\\n${class}\$_{tag_name}\$_{signature}\\n{}\\n\\n");
+}
+#}}}
+sub new ($) #{{{
+{
+    my $invocant = shift;
+    my $class = ref($invocant) || $invocant;
+
+    #  'records' contains record whose type is array.
+    #  'field_idx' contains index of each field in record array.
+
+    my $file_name = shift;
+    return undef if ((not -e $file_name) or (-B $file_name));
+
+    my $source = '';
+    {
+        open(FH, $file_name);
+        local $/;
+        $source = <FH>;
+        close(FH);
+    }
+    
+    # Strip comments
+    #
+    # Ref: http://perldoc.perl.org/perlfaq6.html
+    #      How do I use a regular expression to strip C style comments from a file?
+    $source =~ s#/\*[^*]*\*+([^/*][^*]*\*+)*/|//[^\n]*|("(\\.|[^"\\])*"|'(\\.|[^'\\])*'|.[^/"'\\]*)#defined $2 ? $2 : ""#gse;
+
+    # Strip empty lines
+    $source =~ s#^[ \t\r\f]*\n##gm;
+
+    my (undef, undef, $suffix) = fileparse($file_name, qr/\.[^.]*/);
+    my ($fh, $tempname) = tempfile(UNLINK => 1, SUFFIX => $suffix);
+    local $| = 1;
+    print $fh $source;
+    seek $fh, 0, 0;
+
+    my $self = {
+        field_idx => {
+                       tag_name  => 0,
+                       ex_cmd    => 1,
+                       line      => 2,
+                       kind      => 3,
+                     }, 
+        records   => [],
+        content   => [<$fh>],
+        file_name => $file_name,
+    };
+
+    bless $self, $class;
+
+    # The tag file is generated by ctags <http://ctags.sourceforge.net>
+    my @options = ('-f-', '-n', 
+                   '--fields=afikmnsSzt', '--c++-kinds=+p');
+    if (open(TAGS, '-|', 'ctags', @options, $tempname)) {
+        while (<TAGS>) {
+            $self->add_record($_);
+        }
+    }
+
+    # sort tags by and line
+    $self->{records} = [ map  { $_->[0] }
+                         sort { $a->[1] <=> $b->[1] } 
+                         map  { [ $_, $self->get_value($_, 'line') ] } 
+                         @{$self->{records}} 
+                       ];
+
+    $self->$set_extra_fields();
+
+    return $self;
+}
+#}}}
+
+package main;
+
+sub usage ($) #{{{
+{
+    print <<EOL;
+Usage: @{[basename($0)]} [options] file [file(s)]
+
+  -m                          Equivalent to --mode
+  -s                          Equivalent to --static
+  -h, -?                      Equivalent to --help
+  --mode=[prototype|skeleton] prototype: function prototypes (default)
+                              skeleton:  skeletons of functions based on
+                                         function prototypes
+  --static=[0|1|2]            0: list all non static functions (defualt)
+                              1: list all static functions
+                              2: list all functions
+  --help                      Print thie help
+EOL
+    exit $_[0];
+}
+#}}}
+sub main #{{{
+{
+    my $mode   = 'prototype';
+    my $static = 0;
+    my $help   = 0;
+
+    GetOptions(
+        'mode|m=s'   => \$mode, 
+        'static|s=i' => \$static,
+        'help|h|?'   => \$help
+    ) or usage(2);
+
+    usage(0) if $help;
+    usage(1) if not @ARGV;
+
+    for my $file (@ARGV) {
+        my $tags = Tags->new($file);
+        next if not defined($tags);
+        if ($mode =~ /^p/i) {    # prototype
+            $tags->show_prototype($static);
+        }
+        elsif ($mode =~ /^s/i) { # skeleton
+            $tags->show_skeleton();
+        }
+    }
+}
+#}}}
+
+main();
+
+# vim: set fdm=marker :

@@ -1,0 +1,25 @@
+DEMO 7
+======
+
+Fancy snippet:
+
+<{comment:{
+	let lines = split(@z, "\n", 1)
+	let len = max(map(copy(lines), 'strlen(v:val)'))
+	let sep = repeat('=', len)
+	let prefix = repeat(' ', col('.')-1)
+	let text = join(map(lines, "prefix.' * '.v:val.repeat(' ', len-strlen(v:val)).' *'"), "\n")
+    let [st, delim, et] = SetLocalTagVars()
+	return '/* '.sep." *\n". text . "\n".prefix." * ".sep." */\n".prefix.st.et
+}}>
+
+<{comment:{
+	let lines = split(@z, "\n", 1)
+	let len = max(map(copy(lines), 'strlen(v:val)'))
+	let sep = repeat('=', len)
+	let prefix = repeat(' ', col('.')-1)
+	let text = join(map(lines, "prefix.'// '.v:val"), "\n")
+    let [st, delim, et] = SetLocalTagVars()
+	return '// '.sep."\n". text . "\n".prefix."// ".sep."\n".prefix.st.et
+}}>
+

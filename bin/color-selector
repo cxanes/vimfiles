@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+"""Color Selector"""
+
+import gtk
+import sys
+
+def change_color_selector(prev_color):
+    dialog = gtk.ColorSelectionDialog("Color Selector")
+    colorsel = dialog.colorsel
+    
+    if prev_color != None:
+        colorsel.set_previous_color(prev_color)
+        colorsel.set_current_color(prev_color)
+
+    # colorsel.set_has_palette(True)
+    
+    color = None
+    response = dialog.run()
+    
+    if response == gtk.RESPONSE_OK:
+        color = colorsel.get_current_color()
+    
+    dialog.destroy()
+    return color
+
+
+def main(prev_color = None):
+    color = change_color_selector(prev_color)
+    if color != None:
+        rgb = (color.red, color.green, color.blue)
+        sys.stdout.write('[%d,%d,%d]' % \
+                tuple(map(lambda v: v/256, rgb)))
+
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        main()
+    else:
+        try:
+            color = gtk.gdk.color_parse(sys.argv[1])
+        except ValueError:
+            color = None
+        main(color)
+

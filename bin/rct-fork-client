@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'rcodetools/fork'
+
+Rcodetools::Fork.start_client ARGV
