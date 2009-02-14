@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-02-13 21:17:22
+" Last Modified: 2009-02-14 10:53:22
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -948,11 +948,14 @@ endfor
 unlet! s:script
 "}}}
 
-let g:PIM_Account_Glob = (s:MSWIN ? 'D:/Frank/' : '~/private/') . 'Account/*.account'
-let g:PIM_Account = (s:MSWIN ? 'D:/Frank/' : '~/private/') . printf('Account/%s.account', strftime('%Y'))
-let g:PIM_Account_Category = (s:MSWIN ? 'D:/Frank/' : '~/private/') . 'Account/category'
-let g:PIM_Log = (s:MSWIN ? 'D:/Frank/' : '~/private/') . '/Log/log'
-let g:PIM_Log_Category = (s:MSWIN ? 'D:/Frank/' : '~/private/') . 'Log/category'
+let s:PIM_Dir              = s:MSWIN   ? 'D:/Frank/' : '~/private/'
+let g:PIM_Account_Glob     = s:PIM_Dir . 'Account/*.account'
+let g:PIM_Account          = s:PIM_Dir . printf('Account/%s.account', strftime('%Y'))
+let g:PIM_Account_Category = s:PIM_Dir . 'Account/category'
+let g:PIM_Log              = s:PIM_Dir . '/Log/log'
+let g:PIM_Log_Category     = s:PIM_Dir . 'Log/category'
+unlet! s:PIM_Dir
+
 command! -nargs=? -complete=file -bang Account call PIM#Account#Open((empty(<q-args>) ? g:PIM_Account : <q-args>), <q-bang> == '!', g:PIM_Account_Category)
 command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ? g:PIM_Log : <q-args>), <q-bang> == '!', g:PIM_Log_Category)
 "}}}
@@ -1725,15 +1728,22 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   endfunction
   "}}}2
   "----------------------------------------------------------{{{2
-  " NoteManager.vim (My works)
+  " NoteManager.vim (My works) (obsolete: use WipidPad <http://wikidpad.sourceforge.net/> instead)
   "--------------------------------------------------------------
-  let g:NoteManager_PySqlite = 1
+  " Load NoteManager.vim only when we need it.
 
-  " My own note-taking configuration
-  if s:MSWIN && filereadable('E:/Notes/rc/nmrc')
-    augroup Vimrc
-      au VimEnter * so E:/Notes/rc/nmrc
-    augroup END
+  if globpath(&rtp, 'tools/NoteManager.vim') != ''
+    command! LoadNoteManager call <SID>LoadNoteManager()
+
+    function! s:LoadNoteManager() 
+      let g:NoteManager_PySqlite = 1
+      ru tools/NoteManager.vim
+
+      " My own note-taking configuration
+      if s:MSWIN && filereadable('E:/Notes/rc/nmrc')
+        so E:/Notes/rc/nmrc
+      endif
+    endfunction
   endif
   "}}}2
   "----------------------------------------------------------{{{2
