@@ -22,6 +22,17 @@ function! SelectAll()
   exe 'norm gg' . (&slm == '' ? 'VG' : "gH\<C-O>G")
 endfunction
 " }}}
+" {{{ ShowMesg()
+function! ShowMesg(group, mesg, ...) 
+  exec 'echohl' a:group
+  if a:0 > 0 && !empty(a:1)
+    echom a:mesg
+  else
+    echo a:mesg
+  endif
+  echohl None
+endfunction
+" }}}
 " {{{ GetPos(): Get the position of the cursor on the screen.
 "
 "   This is a trial-and-error function based on fixed font size.
@@ -238,9 +249,7 @@ endfunction
 function! Format(...) range " ... = option {{{
   let formatprg = 'par'
   if !executable(formatprg)
-    echohl ErrorMsg
-    echo formatprg . ': command not find'
-    echohl None
+    call ShowMesg('ErrorMsg', formatprg . ': command not find')
   endif
 
   exe printf('%d,%d!%s %s', 
@@ -261,9 +270,7 @@ nnoremap <silent> <Leader><F7> :Run<CR>
 
 function! s:Executable(file) 
   if !executable(a:file)
-    echohl ErrorMsg
-    echo "The executable file '" . a:file . "' doesn't exist"
-    echohl None
+    call ShowMesg('ErrorMsg', "The executable file '" . a:file . "' doesn't exist")
     return 0
   endif
   return 1
@@ -291,9 +298,7 @@ function! s:Run(contain_command, args) "{{{
     endif
 
     if !(type(run_command) == type('') || type(run_command) == type([]))
-      echohl ErrorMsg
-      echo 'b:run_command: Invalid type: ' . type(run_command)
-      echohl None
+      call ShowMesg('ErrorMsg', 'b:run_command: Invalid type: ' . type(run_command))
       return
     endif
 
@@ -309,14 +314,10 @@ function! s:Run(contain_command, args) "{{{
         let i = 0
         for val in command
           if type(val) != type('')
-            echohl ErrorMsg
-            echo 'b:run_command[' . i . ']: invalid type: ' . type(val)
-            echohl None
+            call ShowMesg('ErrorMsg', 'b:run_command[' . i . ']: invalid type: ' . type(val))
             return
           elseif empty(val)
-            echohl ErrorMsg
-            echo 'b:run_command[' . i . ']: empty string'
-            echohl None
+            call ShowMesg('ErrorMsg', 'b:run_command[' . i . ']: empty string')
             return
           endif
 
@@ -333,9 +334,7 @@ function! s:Run(contain_command, args) "{{{
         unlet! command
         let command = escape(join(temp), '%#!')
       else
-        echohl ErrorMsg
-        echo 'b:run_command: Invalid type: ' . type(command)
-        echohl None
+        call ShowMesg('ErrorMsg', 'b:run_command: Invalid type: ' . type(command))
         return
       endif
     elseif executable(expand('%:p:r'))
@@ -343,9 +342,7 @@ function! s:Run(contain_command, args) "{{{
     elseif executable(expand('%:p'))
       let command = Shellescape(expand('%:p'))
     else
-      echohl ErrorMsg
-      echo 'No executable file is found'
-      echohl None
+      call ShowMesg('ErrorMsg', 'No executable file is found')
       return
     endif
   endif
@@ -383,9 +380,7 @@ function! s:Inject(bufnr, text, newline) "{{{
   if nr != -1
     let curwin = winnr()
     if curwin == nr
-      echohl ErrorMsg
-      echo 'Cannot inject text into the same buffer'
-      echohl None
+      call ShowMesg('ErrorMsg', 'Inject: Cannot inject text into the same buffer')
       return
     endif
     exe nr . 'wincmd w'
@@ -394,19 +389,13 @@ function! s:Inject(bufnr, text, newline) "{{{
   else
     let nr = bufnr(bufnr)
     if nr == -1
-      echohl ErrorMsg
-      echo 'Buffer '
-        \ . (a:bufnr =~ '^\d\+' ? a:bufnr : "'" . a:bufnr . "'")
-        \ . " does not exist"
-      echohl None
+      call ShowMesg('ErrorMsg', 'Inject: Buffer ' . string(a:bufnr) . ' does not exist')
       return
     endif
 
     let curbuf = bufnr('')
     if curbuf == nr
-      echohl ErrorMsg
-      echo 'Cannot inject text into the same buffer'
-      echohl None
+      call ShowMesg('ErrorMsg', 'Inject: Cannot inject text into the same buffer')
       return
     endif
 
@@ -790,7 +779,7 @@ function! s:MultipleEdit(...) "{{{
     let fs = split(glob(arg), "\n")
 
     if len(fs) == 0
-      echohl ErrorMsg | echom 'E480: No match: ' . arg | echohl None
+      call ShowMesg('ErrorMsg', 'E480: No match: ' . arg, 1)
     else
       call extend(files, fs)
     endif
@@ -810,10 +799,7 @@ endfunction
 "--------------------------------------------------------------
 function! Calc(expr, ...) " ... = [modules]
   if !has('python')
-    echohl ErrorMsg
-    echom 'Calc: python not support'
-    echohl None
-
+    call ShowMesg('ErrorMsg', 'Calc: python not support', 1)
     return
   endif
 
@@ -835,10 +821,7 @@ endfunction
 command! -nargs=+ Calc call s:ImportPyModule(<q-args>)
 function! s:ImportPyModule(expr)
   if !has('python')
-    echohl ErrorMsg
-    echom 'Calc: python not support'
-    echohl None
-
+    call ShowMesg('ErrorMsg', 'Calc: python not support', 1)
     return
   endif
 
@@ -995,9 +978,7 @@ if has('cscope')
 
   function! s:Cscope(output, isCurrentFile) "{{{
     if !executable('cscope')
-      echohl ErrorMsg
-      echom 'cscope: command not find'
-      echohl None
+      call ShowMesg('ErrorMsg', 'cscope: command not find', 1)
     endif
 
     let cmd = 'silent !cscope -Rb %s %s'
@@ -1322,14 +1303,10 @@ function! s:EvalVim(expr) "{{{
     let res = eval(tr(a:expr, "\n", ' '))
     return type(res) == type('') ? res : string(res)
   catch /^Vim\%((\a\+)\)\=:/
-    echohl ErrorMsg
-    echom  substitute(v:exception, '^Vim\%((\a\+)\)\=:', '', '')
-    echohl None
+    call ShowMesg('ErrorMsg', substitute(v:exception, '^Vim\%((\a\+)\)\=:', '', ''), 1)
     throw 'Error'
   catch
-    echohl ErrorMsg
-    echom  v:exception
-    echohl None
+    call ShowMesg('ErrorMsg', v:exception, 1)
     throw 'Error'
   endtry
 endfunction
