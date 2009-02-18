@@ -8,7 +8,7 @@ setlocal isk+=_
 "===================================================================
 " Commands {{{1
 "-------------------------------------------------------------------
-command! -range -nargs=0 Eval call <SID>EvalLine(<line1>, <line2>)
+command! -range -nargs=0 Exec call <SID>ExecLine(<line1>, <line2>)
 " }}}1
 "===================================================================
 " Key Mappings {{{1
@@ -51,9 +51,9 @@ if exists('*StripSurrounding')
   endif
 endif
 " }}}2
-" Eval() {{{2
-if !exists('s:Eval')
-  function! s:Eval(expr) "{{{
+" Exec() {{{2
+if !exists('s:Exec')
+  function! s:Exec(expr) "{{{
     if empty(a:expr)
       return
     endif
@@ -76,8 +76,8 @@ if !exists('s:Eval')
   endfunction
   "}}}
 endif
-if !exists('s:EvalLine')
-  function! s:EvalLine(line1, ...) " ... = line2 (default: line1) {{{
+if !exists('s:ExecLine')
+  function! s:ExecLine(line1, ...) " ... = line2 (default: line1) {{{
     let [line1, line2] = [a:line1, (a:0 > 0 ? a:1 : a:line2)]
     let lines = []
     for line in getline(line1, line2)
@@ -95,7 +95,7 @@ if !exists('s:EvalLine')
       call add(lines, line)
     endfor
 
-    call s:Eval(lines)
+    call s:Exec(lines)
   endfunction
   " }}}
 endif
