@@ -1304,6 +1304,90 @@ function! s:Enclose(paren, line1, line2) "{{{
 endfunction
 "}}}
 "==========================================================}}}1
+" {{{1 VimEval(): Evaluate given expression and return the result
+"                 (when error occurs returns 0)
+"--------------------------------------------------------------
+inoremap <Leader>ee <C-R>=<SID>IEvalVim('e')<CR>
+inoremap <Leader>ej <C-R>=<SID>IEvalVim('j')<CR>
+
+nnoremap <Leader>ee :<C-U>call <SID>NEvalVim('e')<CR>
+nnoremap <Leader>ej :<C-U>call <SID>NEvalVim('j')<CR>
+
+vnoremap <Leader>ee :<C-U>call <SID>VEvalVim('e')<CR>
+vnoremap <Leader>ej :<C-U>call <SID>VEvalVim('j')<CR>
+vnoremap <Leader>er :<C-U>call <SID>VEvalVim('r')<CR>
+
+function! s:EvalVim(expr) "{{{
+  try
+    let res = eval(tr(a:expr, "\n", ' '))
+    return type(res) == type('') ? res : string(res)
+  catch /^Vim\%((\a\+)\)\=:/
+    echohl ErrorMsg
+    echom  substitute(v:exception, '^Vim\%((\a\+)\)\=:', '', '')
+    echohl None
+    throw 'Error'
+  catch
+    echohl ErrorMsg
+    echom  v:exception
+    echohl None
+    throw 'Error'
+  endtry
+endfunction
+"}}}
+function! s:IEvalVim(mode) "{{{
+  try
+    let res = s:EvalVim(getline('.'))
+  catch 
+    return ''
+  endtry
+
+  if a:mode == 'e'
+    return "\<C-G>u" . res
+  elseif a:mode == 'j'
+    return "\<C-G>u\<End>\<CR> \<C-U>" . res
+  endif
+endfunction
+"}}}
+function! s:NEvalVim(mode) "{{{
+  try
+    let res = s:EvalVim(getline('.'))
+  catch 
+    return
+  endtry
+
+  if a:mode == 'e'
+    exec 'norm! A'. res
+  elseif a:mode == 'j'
+    exec "norm! o \<C-U>" . res
+  endif
+endfunction
+"}}}
+function! s:VEvalVim(mode) "{{{
+  try
+    let res = s:EvalVim(GetSelection())
+  catch 
+    return
+  endtry
+
+  if a:mode == 'e'
+    exec 'norm! `>' . (visualmode()=='V' ? 'A' : col("'>") == strlen(getline("'>"))+1 ? 'a' : 'i') . res
+  elseif a:mode == 'j'
+    exec "norm! `>o\<C-O>\"_S" . res
+  elseif a:mode == 'r'
+    let del = 'gv"_d' 
+    if visualmode() == 'V'
+      exec 'norm!' del . (line("'>") == line('$') ? 'o' : 'O') .  " \<C-U>" . res
+    else
+      exec 'norm!' del
+      redraw
+      let insert = col("'<") == strlen(getline("'<"))+1 ? 'a' : 'i'
+      exec 'norm!' insert . res
+    endif
+  endif
+endfunction
+"}}}
+"}}}
+"==========================================================}}}1
 "==============================================================
 " Restore {{{
 let &cpo = s:save_cpo
