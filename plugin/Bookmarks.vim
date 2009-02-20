@@ -664,7 +664,7 @@ function! s:Bookmarks_SelectIndex(prompt) dict
   call inputrestore()
 
   if id =~ '^\s*$'
-    throw 'Bookmarks: cancel'
+    throw 'Bookmarks:Cancel'
   endif
 
   return self.GetIndex(id, 0, 1)
@@ -818,7 +818,7 @@ function! s:BookmarkRemove(args)
       call s:RefreshAll()
       call s:ShowMesg('WarningMsg', '%s: Bookmark removed', bookmark.fname)
     endif
-  catch /^Bookmarks: cancel$/
+  catch /^Bookmarks:Cancel$/
   endtry
 endfunction
 " }}}2
@@ -829,7 +829,9 @@ function! s:BookmarkOpen(args, new_tab)
   let id = empty(args) || args[0] =~ '^\s*$' ? '' : args[0]
   try 
     call s:OpenBookmark(s:BookmarkGetIndex(id, 'open'), a:new_tab)
-  catch /^Bookmarks: cancel$/
+  catch /^Bookmarks:Cancel$/
+  catch
+    call s:ShowMesg('ErrorMsg', v:exception)
   endtry
 endfunction
 " }}}2
@@ -849,7 +851,7 @@ function! s:BookmarkSetKeyword(force, args)
   if empty(args)
     try 
       let index = bookmarks.SelectIndex('set keyword')
-    catch /^Bookmarks: cancel$/
+    catch /^Bookmarks:Cancel$/
       return
     endtry
   else
