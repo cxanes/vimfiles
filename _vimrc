@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-02-14 10:53:22
+" Last Modified: 2009-03-02 21:49:43
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -84,6 +84,12 @@ function! s:SetEnv()
   let path = s:GetPath(['lib/ruby'], sep, (cyg_ruby ? 's:Cygpath' : ''))
   if path != ''
     let $RUBYLIB = path . ($RUBYLIB == '' ? '' : (sep . $RUBYLIB))
+  endif
+  "}}}
+  " $PYTHONPATH {{{
+  let path = s:GetPath(['lib/python'], sep)
+  if path != ''
+    let $PYTHONPATH = path . ($PYTHONPATH == '' ? '' : (sep . $PYTHONPATH))
   endif
   "}}}
   delfunction s:GetPath
