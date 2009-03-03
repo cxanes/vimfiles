@@ -39,7 +39,7 @@ rct-fork and rct-fork-client (we) are originally ruby_fork/ruby_fork_client in Z
 Completion or document browsing in a script with heavy libraries such as Rails takes a significant latency.
 We eliminate constant overhead of loading heavy libraries.
 
-rct-fork loads libraries you want to pre-load and opens up a server socket and waits for connection. When a connection comes in rct-fork forks to make a copy of the environment.
+rct-fork loads libraries you want to pre-load and opens up a server socket and waits for connection. When a connection comes in rct-fork forks to make a copy of the environment. rct-fork loads rubygems at startup.
 
 rct-fork-client connects to the rct-fork server and runs script in server's environment.
 
@@ -89,10 +89,9 @@ XXX
     Process.setsid
     fork and exit!
 
-    # Rcodetools version does not have to reopen IOs because they are already reopened.
-#     STDIN.reopen io
-#     STDOUT.reopen io
-#     STDERR.reopen io
+    STDIN.reopen io
+    STDOUT.reopen io
+    STDERR.reopen io
 
     yield if block_given?
   end
@@ -170,6 +169,10 @@ XXX
   end
 
   def self.start_server(args = ARGV)
+    begin
+      require 'rubygems'
+    rescue LoadError
+    end
     write_pwd
     settings = parse_server_args args
     setup_environment settings
@@ -212,9 +215,13 @@ XXX
     settings[:extra_paths].flatten!
     settings[:extra_paths].each { |dir| $:.unshift dir }
 
-    settings[:requires].each { |file| require file }
-
-    settings[:code].each { |code| eval code }
+    begin
+      settings[:requires].each { |file| require file }
+      settings[:code].each { |code| eval code, TOPLEVEL_BINDING }
+    rescue Exception
+      $@.reject! {|s| s =~ %r!rcodetools/fork\.rb!}
+      raise
+    end
   end
 
 end

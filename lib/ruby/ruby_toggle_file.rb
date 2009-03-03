@@ -35,7 +35,7 @@ class RubyToggleFile
     run_hooks_with_args_until_success %r/^implementation_file_/, test, m&&(m.pre_match+"/"), m&&m[1], m&&m[2]
   end
 
-  private
+#  private
   def exist(file)
     file if File.exist? file
   end

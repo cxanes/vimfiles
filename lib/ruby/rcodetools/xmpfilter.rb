@@ -1,14 +1,17 @@
 #!/usr/bin/env ruby
-# Copyright (c) 2005-2007 Mauricio Fernandez <mfp@acm.org> http://eigenclass.org
+# Copyright (c) 2005-2008 Mauricio Fernandez <mfp@acm.org> http://eigenclass.org
 #                         rubikitch <rubikitch@ruby-lang.org>
 # Use and distribution subject to the terms of the Ruby license.
 
+ENV['HOME'] ||= "#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}"
 require 'rcodetools/fork_config'
+require 'rcodetools/compat'
+require 'tmpdir'
 
 module Rcodetools
 
 class XMPFilter
-  VERSION = "0.7.0"
+  VERSION = "0.8.1"
 
   MARKER = "!XMP#{Time.new.to_i}_#{Process.pid}_#{rand(1000000)}!"
   XMP_RE = Regexp.new("^" + Regexp.escape(MARKER) + '\[([0-9]+)\] (=>|~>|==>) (.*)')
@@ -21,17 +24,18 @@ class XMPFilter
                      :include_paths => [], :warnings => true, 
                      :use_parentheses => true}
 
-  def self.windows?
+  def windows?
     /win|mingw/ =~ RUBY_PLATFORM && /darwin/ !~ RUBY_PLATFORM
   end
 
-  Interpreter = Struct.new(:options, :execute_method, :accept_debug, :chdir_proc)
+  Interpreter = Struct.new(:options, :execute_method, :accept_debug, :accept_include_paths, :chdir_proc)
   INTERPRETER_RUBY = Interpreter.new(["-w"],
-                                     windows? ? :execute_tmpfile : :execute_popen,
-                                     true, nil)
-  INTERPRETER_RBTEST = Interpreter.new(["-S", "rbtest"], :execute_script, false, nil)
-  INTERPRETER_FORK = Interpreter.new(["-S", "rct-fork-client"], :execute_tmpfile, false,
-                                     lambda { Fork::chdir_fork_directory })
+    :execute_ruby, true, true, nil)
+  INTERPRETER_RBTEST = Interpreter.new(["-S", "rbtest"],
+    :execute_script, false, false, nil)
+  INTERPRETER_FORK = Interpreter.new(["-S", "rct-fork-client"],
+    :execute_tmpfile, false, true,
+    lambda { Fork::chdir_fork_directory })
                                      
   def self.detect_rbtest(code, opts)
     opts[:use_rbtest] ||= (opts[:detect_rbtest] and code =~ /^=begin test./) ? true : false
@@ -58,7 +62,10 @@ class XMPFilter
     test_script = options[:test_script]
     test_method = options[:test_method]
     filename = options[:filename]
+    @execute_ruby_tmpfile = options[:execute_ruby_tmpfile]
     @postfix = ""
+    @stdin_path = nil
+    @width = options[:width]
     
     initialize_rct_fork if options[:detect_rct_fork]
     initialize_rbtest if options[:use_rbtest]
@@ -82,7 +89,7 @@ class XMPFilter
       basedir = common_path(test_script, filename)
       relative_filename = filename[basedir.length+1 .. -1].sub(%r!^lib/!, '')
       @evals << %Q!$LOADED_FEATURES << #{relative_filename.dump}!
-      @evals << %Q!require 'test/unit'!
+      @evals << safe_require_code('test/unit')
       @evals << %Q!load #{test_script.dump}!
     end
     test_method = get_test_method_from_lineno(test_script, test_method.to_i) if test_method =~ /^\d/
@@ -114,24 +121,30 @@ class XMPFilter
     ret
   end
 
+  SINGLE_LINE_RE = /^(?!(?:\s+|(?:\s*#.+)?)# ?=>)(.*) # ?=>.*/
+  MULTI_LINE_RE = /^(.*)\n(( *)# ?=>.*(?:\n|\z))(?: *#    .*\n)*/
   def annotate(code)
     idx = 0
-    newcode = code.gsub(/^(.*) # =>.*/){|l| prepare_line($1, idx += 1) }
-    if @dump
-      File.open(@dump, "w"){|f| f.puts newcode}
-    end
+    newcode = code.gsub(SINGLE_LINE_RE){ prepare_line($1, idx += 1) }
+    newcode.gsub!(MULTI_LINE_RE){ prepare_line($1, idx += 1, true)}
+    File.open(@dump, "w"){|f| f.puts newcode} if @dump
     stdout, stderr = execute(newcode)
     output = stderr.readlines
     runtime_data = extract_data(output)
     idx = 0
-    annotated = code.gsub(/^(.*) # =>.*/) do |l|
+    annotated = code.gsub(SINGLE_LINE_RE) { |l|
       expr = $1
       if /^\s*#/ =~ l
         l 
       else
         annotated_line(l, expr, runtime_data, idx += 1)
       end
-    end.gsub(/ # !>.*/, '').gsub(/# (>>|~>)[^\n]*\n/m, "");
+    }
+    annotated.gsub!(/ # !>.*/, '')
+    annotated.gsub!(/# (>>|~>)[^\n]*\n/m, "");
+    annotated.gsub!(MULTI_LINE_RE) { |l|
+      annotated_multi_line(l, $1, $3, runtime_data, idx += 1)
+    }
     ret = final_decoration(annotated, output)
     if @output_stdout and (s = stdout.read) != ""
       ret << s.inject(""){|s,line| s + "# >> #{line}".chomp + "\n" }
@@ -143,13 +156,28 @@ class XMPFilter
     "#{expression} # => " + (runtime_data.results[idx].map{|x| x[1]} || []).join(", ")
   end
   
-  def prepare_line_annotation(expr, idx)
+  def annotated_multi_line(line, expression, indent, runtime_data, idx)
+    pretty = (runtime_data.results[idx].map{|x| x[1]} || []).join(", ")
+    first, *rest = pretty.to_a
+    rest.inject("#{expression}\n#{indent}# => #{first}") {|s, l| s << "#{indent}#    " << l }
+  end
+  
+  def prepare_line_annotation(expr, idx, multi_line=false)
     v = "#{VAR}"
     blocal = "__#{VAR}"
     blocal2 = "___#{VAR}"
+    lastmatch = "____#{VAR}"
+    if multi_line
+      pp = safe_require_code "pp"
+      result = "((begin; #{lastmatch} = $~; PP.pp(#{v}, '', #{@width-5}).gsub(/\\r?\\n/, 'PPPROTECT'); ensure; $~ = #{lastmatch} end))"
+    else
+      pp = ''
+      result = "#{v}.inspect"
+    end
     oneline_ize(<<-EOF).chomp
+#{pp}
 #{v} = (#{expr})
-$stderr.puts("#{MARKER}[#{idx}] => " + #{v}.class.to_s + " " + #{v}.inspect) || begin
+$stderr.puts("#{MARKER}[#{idx}] => " + #{v}.class.to_s + " " + #{result}) || begin
   $stderr.puts local_variables
   local_variables.each{|#{blocal}|
     #{blocal2} = eval(#{blocal})
@@ -168,6 +196,17 @@ end || #{v}
   end
   alias_method :prepare_line, :prepare_line_annotation
 
+  def safe_require_code(lib)
+    oldverbose = "$#{VAR}_old_verbose"
+    "#{oldverbose} = $VERBOSE; $VERBOSE = false; require '#{lib}'; $VERBOSE = #{oldverbose}"
+  end
+  private :safe_require_code
+
+  def execute_ruby(code)
+    meth = (windows? or @execute_ruby_tmpfile) ? :execute_tmpfile : :execute_popen
+    __send__ meth, code
+  end
+
   def execute_tmpfile(code)
     ios = %w[_ stdin stdout stderr]
     stdin, stdout, stderr = (1..3).map do |i|
@@ -182,10 +221,11 @@ end || #{v}
     end
     stdin.puts code
     stdin.close
+    @stdin_path = File.expand_path stdin.path
     exe_line = <<-EOF.map{|l| l.strip}.join(";")
       $stdout.reopen('#{File.expand_path(stdout.path)}', 'w')
       $stderr.reopen('#{File.expand_path(stderr.path)}', 'w')
-      $0.replace '#{File.expand_path(stdin.path)}'
+      $0 = '#{File.expand_path(stdin.path)}'
       ARGV.replace(#{@options.inspect})
       load #{File.expand_path(stdin.path).inspect}
       #{@evals.join(";")}
@@ -209,20 +249,25 @@ end || #{v}
   end
 
   def execute_script(code)
-    codefile = "xmpfilter.tmpfile_#{Process.pid}.rb"
-    File.open(codefile, "w"){|f| f.puts code}
-    path = File.expand_path(codefile)
+    path = File.expand_path("xmpfilter.tmpfile_#{Process.pid}.rb", Dir.tmpdir)
+    File.open(path, "w"){|f| f.puts code}
     at_exit { File.unlink path if File.exist? path}
-    stdout, stderr = (1..2).map do |i|
+    stdout_path, stderr_path = (1..2).map do |i|
       fname = "xmpfilter.tmpfile_#{Process.pid}-#{i}.rb"
-      fullname = File.expand_path(fname)
-      at_exit { File.unlink fullname if File.exist? fullname}
-      File.open(fname, "w+")
+      File.expand_path(fname, Dir.tmpdir)
     end
-    args = *(interpreter_command << %["#{codefile}"] << "2>" << 
-             %["#{stderr.path}"] << ">" << %["#{stdout.path}"])
+    args = *(interpreter_command << %["#{path}"] << "2>" << 
+      %["#{stderr_path}"] << ">" << %["#{stdout_path}"])
     system(args.join(" "))
-    [stdout, stderr]
+    
+    [stdout_path, stderr_path].map do |fullname|
+      f = File.open(fullname, "r")
+      at_exit {
+        f.close unless f.closed?
+        File.unlink fullname if File.exist? fullname
+      }
+      f
+    end
   end
 
   def execute(code)
@@ -232,7 +277,7 @@ end || #{v}
   def interpreter_command
     r = [ @interpreter ] + @interpreter_info.options
     r << "-d" if $DEBUG and @interpreter_info.accept_debug
-    r << "-I#{@include_paths.join(":")}" unless @include_paths.empty?
+    r << "-I#{@include_paths.join(":")}" if @interpreter_info.accept_include_paths and !@include_paths.empty?
     @libs.each{|x| r << "-r#{x}" } unless @libs.empty?
     (r << "-").concat @options unless @options.empty?
     r
@@ -247,7 +292,7 @@ end || #{v}
       case op
       when "=>"
         klass, value = /(\S+)\s+(.*)/.match(result).captures
-        results[result_id.to_i] << [klass, value]
+        results[result_id.to_i] << [klass, value.gsub(/PPPROTECT/, "\n")]
       when "~>"
         exceptions[result_id.to_i] << result
       when "==>"
@@ -273,14 +318,16 @@ end || #{v}
       end
     end
     output = output.reject{|x| /^-:[0-9]+: warning/.match(x)}
-    if exception = /^-:[0-9]+:.*/m.match(output.join)
-      ret << exception[0].map{|line| "# ~> " + line }
+    if exception = /^-e?:[0-9]+:.*|^(?!!XMP)[^\n]+:[0-9]+:in .*/m.match(output.join)
+      err = exception[0]
+      err.gsub!(Regexp.union(@stdin_path), '-') if @stdin_path
+      ret << err.map{|line| "# ~> " + line }
     end
     ret
   end
 
   def oneline_ize(code)
-    "((" + code.gsub(/\r?\n|\r/, ';') + "))#{@postfix}\n"
+    "((" + code.gsub(/\r?\n|\r/, ';') + "));#{@postfix}\n"
   end
 
   def debugprint(*args)

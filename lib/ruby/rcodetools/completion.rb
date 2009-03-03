@@ -81,8 +81,8 @@ module ProcessParticularLine
   def aref_or_aset?(right_stripped, last_char)
     if last_char == ?[
       case right_stripped
-      when /\]\s*=/: "[]="
-      when /\]/:     "[]"
+      when /\]\s*=/ then "[]="
+      when /\]/     then "[]"
       end
     end
   end
@@ -182,7 +182,7 @@ XXX
     code = <<-EOC
   #{result} = #{v}.method(#{meth}).inspect.match( %r[\\A#<(?:Unbound)?Method: (.*?)>\\Z] )[1].sub(/\\A.*?\\((.*?)\\)(.*)\\Z/){ "\#{$1}\#{$2}" }.sub(/#<Class:(.*?)>#/) { "\#{$1}." }
   #{result} = #{v}.to_s + ".new" if #{result} == 'Class#new' and #{v}.private_method_defined?(:initialize)
-  #{result} = "Object#" + #{meth} if #{result} =~ /^Kernel#/ and Kernel.instance_methods(false).include? #{meth}
+  #{result} = "Object#" + #{meth} if #{result} =~ /^Kernel#/ and Kernel.instance_methods(false).map{|x| x.to_s}.include? #{meth}
   #{result}
 EOC
   end
@@ -212,7 +212,9 @@ class XMPCompletionFilter < XMPFilter
 
   def methods_map_code(recv)
     # delimiter is \0
-    %Q[map{|m| "\#{m}\\0" + #{magic_help_code((recv), 'm')}}]
+    m = "#{VAR}_m"
+    mhc = magic_help_code((recv), m)
+    %Q[map{|%s| "\#{%s}\\0" + %s}] % [m, m, mhc]
   end
 
   def split_method_info(minfo)
@@ -235,7 +237,7 @@ class XMPCompletionFilter < XMPFilter
       %Q[#$1.constants + #$1.methods(true).#{methods_map_code($1)}]
     when /^[A-Z]\w*$/           # normal constants
       __prepare_line 'nil', 'Module.constants', '%n'
-    when /^(.*::.+)\.(.+)$/       # toplevel class methods
+    when /^(.*::.+)\.(.*)$/       # toplevel class methods
       @prefix = $2
       __prepare_line $1, "#$1.methods",
       %Q[%n.#{methods_map_code($1)}]
@@ -274,7 +276,7 @@ class XMPCompletionFilter < XMPFilter
     idx = 1
     oneline_ize(<<EOC)
 #{rcv} = (#{recv})
-#{v} = (#{all_completion_expr}).grep(/^#{Regexp.quote(@prefix)}/)
+#{v} = (#{all_completion_expr}).map{|x| x.to_s}.grep(/^#{Regexp.quote(@prefix)}/)
 #{rcv} = Module === #{rcv} ? #{rcv} : #{rcv}.class
 $stderr.puts("#{MARKER}[#{idx}] => " + #{rcv}.to_s  + " " + #{v}.join(" ")) || #{v}
 exit

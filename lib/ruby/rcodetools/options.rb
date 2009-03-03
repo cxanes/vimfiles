@@ -66,6 +66,12 @@ module OptionHandler
     on("--debug", "Write transformed source code to xmp-tmp.PID.rb.") do
       options[:dump] = "xmp-tmp.#{Process.pid}.rb"
     end
+    on("--tmpfile", "--tempfile", "Use tmpfile instead of open3. (non-windows)") do
+      options[:execute_ruby_tmpfile] = true
+    end
+    on("-w N", "--width N", Integer, "Set width of multi-line annotation. (xmpfilter only)") do |width|
+      options[:width] = width
+    end
     separator ""
     on("-h", "--help", "Show this message") do
       puts self
@@ -110,6 +116,7 @@ DEFAULT_OPTIONS = {
   :interpreter       => "ruby",
   :options => ["hoge"],
   :min_codeline_size => 50,
+  :width             => 79,
   :libs              => [],
   :evals             => [],
   :include_paths     => [],
@@ -124,5 +131,6 @@ DEFAULT_OPTIONS = {
   :detect_rct_fork   => false,
   :use_rbtest        => false,
   :detect_rbtest     => false,
+  :execute_ruby_tmpfile => false,
   }
 end                             # /Rcodetools
