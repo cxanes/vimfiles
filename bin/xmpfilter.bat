@@ -1,2 +1,2 @@
 @ECHO off
-ruby "C:\Program Files\Vim\vimfiles\bin\xmpfilter" %*
+ruby "%~dp0xmpfilter" %*

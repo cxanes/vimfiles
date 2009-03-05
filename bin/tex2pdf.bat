@@ -1,2 +1,2 @@
 @echo off
-bash "C:\Program Files\Vim\vimfiles\bin\tex2pdf" %*
+bash "%~dp0tex2pdf" %*

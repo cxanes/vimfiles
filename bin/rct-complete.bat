@@ -1,2 +1,2 @@
 @ECHO off
-ruby "C:\Program Files\Vim\vimfiles\bin\rct-complete" %*
+ruby "%~dp0rct-complete" %*
