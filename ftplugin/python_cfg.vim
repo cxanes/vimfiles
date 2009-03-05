@@ -50,6 +50,10 @@ let b:run_command_python = function('RunCommandPython')
 
 silent! compiler python
 setlocal ts=4 sts=4 sw=4 et
+
+if exists('g:use_codeintel') && g:use_codeintel
+  setlocal completefunc=codeintel#Complete
+endif
 " }}}
 "===================================================================
 " Key Mappings {{{

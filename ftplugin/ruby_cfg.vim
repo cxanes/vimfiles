@@ -268,7 +268,12 @@ if exists('*AddOptFiles')
   set complete+=k
 endif
 
-exec 'setlocal completefunc='.'<SNR>'.s:SID().'_RCT_completion'
+
+if exists('g:use_codeintel') && g:use_codeintel
+  setlocal completefunc=codeintel#Complete
+else
+  exec 'setlocal completefunc='.'<SNR>'.s:SID().'_RCT_completion'
+endif
 
 exec 'nnoremap <buffer> <silent>' . s:GetOption('RCT_toggle_binding', '<Leader>rt')
       \ . ' :call <SID>RCT_ruby_toggle()<CR>'

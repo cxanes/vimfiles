@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-05 15:32:51
+" Last Modified: 2009-03-05 17:05:34
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1778,6 +1778,22 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   "--------------------------------------------------------------
   if !s:MSWIN && $USER == 'root'
     let g:loaded_Dict_plugin = 1
+  endif
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " codeintel.vim (My works)
+  "
+  " Codeintel is a sub-system used in Komodo Edit 
+  " <http://www.activestate.com/komodo_edit> for 
+  " autocomplete and calltips.
+  "--------------------------------------------------------------
+  if s:MSWIN
+    let g:codeintel_dir = 'C:\My_Tools\codeintel\lib'
+    if !isdirectory(g:codeintel_dir)
+      unlet g:codeintel_dir
+    else
+      let g:use_codeintel = 1
+    endif
   endif
   "}}}2
   "----------------------------------------------------------{{{2

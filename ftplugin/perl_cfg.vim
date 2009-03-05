@@ -62,6 +62,10 @@ if (has('win16') || has('win32') || has('win64') || has('win95'))
   let perlpath = join(map(split(perlpath, '\n'), 'substitute(v:val, ''\([ ,]\)'', ''\\\1'', ''g'')'), ',')
   let perlpath = substitute(perlpath,',.$',',,','')
 endif
+
+if exists('g:use_codeintel') && g:use_codeintel
+  setlocal completefunc=codeintel#Complete
+endif
 " }}}
 "===================================================================
 " Key Mappings {{{
