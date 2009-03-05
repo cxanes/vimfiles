@@ -27,6 +27,19 @@ augroup FlyMake
 augroup END
 
 let s:SERVERNAME = 'FLYMAKE'
+
+" http://vim.wikia.com/wiki/Python_-_check_syntax_and_run_script
+let s:flymake_compiler_default = { 
+      \ 'perl': {
+      \   'makeprg': 'perl -Wc', 
+      \   'errorformat': '%-G%.%#had compilation errors.,%-G%.%#syntax OK,%m at %f line %l.,%+A%.%# at %f line %l\,%.%#,%+C%.%#' }, 
+      \ 'python': {
+      \   'makeprg': 'python -c "import py_compile,sys; sys.stderr=sys.stdout; py_compile.compile(r''$*'')"', 
+      \   'errorformat': '%A  File "%f"\, line %l\,%m,%C    %.%#,%+Z%.%#Error: %.%#,%A  File "%f"\, line %l,%+C  %.%#,%-C%p^,%Z%m,%-G%.%#' }, 
+      \ 'ruby': { 
+      \   'makeprg': 'ruby -wc', 
+      \   'errorformat': '%+E%f:%l: parse error,%W%f:%l: warning: %m,%E%f:%l:in %*[^:]: %m,%E%f:%l: %m,%-C%tfrom %f:%l:in %.%#,%-Z%tfrom %f:%l,%-Z%p^,%-G%.%#' } 
+      \ }
 " }}}
 " {{{ +balloon_eval support
 if has('balloon_eval')
@@ -38,8 +51,33 @@ if has('balloon_eval')
       return ''
     endif
   endfunction
-  setlocal balloonexpr=FlyMake#BalloonExpr()
-  set beval
+
+  function! s:EnableFlyMakeBalloon() 
+    if exists('b:flymake_ballooneval_on') && b:flymake_ballooneval_on
+      return
+    endif
+
+    let b:flymake_balloonexpr = &l:balloonexpr
+    setlocal balloonexpr=FlyMake#BalloonExpr()
+    setlocal beval
+    let b:flymake_ballooneval_on = 1
+  endfunction
+
+  function! s:DisableFlyMakeBalloon() 
+    if !(exists('b:flymake_ballooneval_on') && b:flymake_ballooneval_on)
+      return
+    endif
+
+    if exists('b:flymake_balloonexpr')
+      let &l:balloonexpr = b:flymake_balloonexpr
+    endif
+
+    setlocal nobeval
+    let b:flymake_ballooneval_on = 0
+  endfunction
+
+  command! EnableFlyMakeBalloon  call s:EnableFlyMakeBalloon()
+  command! DisableFlyMakeBalloon call s:DisableFlyMakeBalloon()
 endif
 "}}}
 "=======================================================
@@ -47,9 +85,17 @@ function! FlyMake#Mode(on) "{{{
   if a:on
     au! FlyMake CursorHold  <buffer> call FlyMake#ShowErr()
     au! FlyMake CursorHoldI <buffer> call FlyMake#Send()
+
+    if exists('g:flymake_ballooneval') && g:flymake_ballooneval
+          \ && exists(':EnableFlyMakeBalloon')
+      EnableFlyMakeBalloon
+    endif
   else
     au! FlyMake CursorHold  <buffer>
     au! FlyMake CursorHoldI <buffer>
+    if exists(':DisableFlyMakeBalloon')
+      DisableFlyMakeBalloon
+    endif
   endif
 endfunction
 "}}}
@@ -203,6 +249,9 @@ endfunction
 function! s:ErrorList_HighlightErrors() dict
   if empty(self.position)
     call self.ClearHighlight()
+    if exists(':DisableFlyMakeBalloon')
+      DisableFlyMakeBalloon
+    endif
     return
   endif
 
@@ -235,6 +284,11 @@ function! s:ErrorList_HighlightErrors() dict
   endfor
   call self.ClearHighlight()
   let self.matchIdList = list
+
+  if exists('g:flymake_ballooneval') && g:flymake_ballooneval
+        \ && exists(':EnableFlyMakeBalloon')
+    EnableFlyMakeBalloon
+  endif
 endfunction
 " }}}
 " {{{ Public Method: Add
@@ -394,6 +448,30 @@ endfunction
 " }}}
 " }}}
 "=======================================================
+function! s:GetCompiler(ft, opt) "{{{
+  if empty(a:ft)
+    return ''
+  endif
+
+  if exists('g:flymake_compiler') && type(g:flymake_compiler) == type({}) 
+        \ && has_key(g:flymake_compiler, a:ft)
+    let compiler = g:flymake_compiler[a:ft]
+    if type(compiler) != type({})
+      if a:opt == 'makeprg'
+        return type(compiler) == type('') ? compiler : ''
+      endif
+    elseif has_key(compiler, a:opt)
+      return compiler[a:opt]
+    endif
+  endif
+
+  if has_key(s:flymake_compiler_default, a:ft)
+    return get(s:flymake_compiler_default[a:ft], a:opt, '')
+  endif
+
+  return ''
+endfunction
+"}}}
 function! s:SetupServer() "{{{
   if index(split(serverlist(), '\n'), s:SERVERNAME) != -1
     return
@@ -437,22 +515,30 @@ function! s:LocalMake(tempname) "{{{
 endfunction
 "}}}
 function! s:Make(source) "{{{
-  let sp_sav = &sp
-  let mp_sav = &mp
+  let sp_sav  = &sp
+  let mp_sav  = &mp
+  let efm_sav = &efm
 
   let &sp = '>%s 2>&1'
-  if &ft == 'perl'
-    let &mp = 'perl -Wc '
-    let cmd = printf("silent! lmake! '%s'", a:source)
-  elseif &ft == 'python'
-    " http://vim.wikia.com/wiki/Python_-_check_syntax_and_run_script
-    let &mp = 'python -c "import py_compile,sys; sys.stderr=sys.stdout; py_compile.compile(r''$*'')"'
-    let cmd = printf("silent! lmake! %s", a:source)
-  else
-    let &mp = 'make'
-    let cmd = printf("silent! lmake! CHK_SOURCES='%s' check-syntax", a:source)
+  let mp  = s:GetCompiler(&ft, 'makeprg')
+  if empty(mp)
+    let mp = s:GetCompiler(&ft, 'mp')
   endif
 
+  let efm = s:GetCompiler(&ft, 'errorformat')
+  if empty(efm)
+    let efm  = s:GetCompiler(&ft, 'efm')
+  endif
+
+  if !empty(mp)
+    let &mp = mp
+  endif
+
+  if !empty(efm)
+    let &efm = efm
+  endif
+
+  let cmd = printf("silent! lmake! %s", a:source)
   redir => dummy
   exec cmd 
   redir END

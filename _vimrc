@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-05 17:05:34
+" Last Modified: 2009-03-06 03:51:42
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1779,6 +1779,12 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   if !s:MSWIN && $USER == 'root'
     let g:loaded_Dict_plugin = 1
   endif
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " FlyMake.vim (My works)
+  "--------------------------------------------------------------
+  let g:flymake_compiler = { 'python': 'py-compile' }
+  let g:flymake_ballooneval = 1
   "}}}2
   "----------------------------------------------------------{{{2
   " codeintel.vim (My works)
