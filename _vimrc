@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-02 21:49:43
+" Last Modified: 2009-03-05 15:32:51
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -946,9 +946,10 @@ for s:script in [
       \          'JpPronunciation',
       \          'AutoCorrect',
       \          'Eclim',
+      \          'ropevim',
       \ ]
   if globpath(&rtp, printf('tools/%s.vim', s:script)) != ''
-    exec printf('command! Load%s ru tools/%s.vim', s:script, s:script)
+    exec printf('command! Load%s ru tools/%s.vim', substitute(s:script, '^.', '\u&', ''), s:script)
   endif
 endfor
 unlet! s:script
