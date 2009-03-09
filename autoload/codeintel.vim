@@ -32,7 +32,8 @@ try:
 except Exception, e:
   vim.command("let s:import_error = 1")
   vim.command('echohl ErrorMsg')
-  vim.command("echom 'codeintel: error: %s'" % str(e).replace("'", "''"))
+  vim.command("let g:codeintel_errmsg = '%s'" % (str(e).replace("'", "''"), ))
+  vim.command("echom 'codeintel: error: ' . g:codeintel_errmsg")
   vim.command('echohl None')
 PY_EOF
 if s:import_error
@@ -40,8 +41,12 @@ if s:import_error
 endif
 "}}}
 "==========================================================
-function! codeintel#UpdateBufs() "{{{
-  py codeintelvim.update_bufs()
+function! codeintel#ScanAllBuffers() "{{{
+  py codeintelvim.scan_vimbufs()
+endfunction
+"}}}
+function! codeintel#ScanCurrentBuffer() "{{{
+  py codeintelvim.scan_vimbuf()
 endfunction
 "}}}
 function! codeintel#ShowCalltips() "{{{
@@ -98,6 +103,9 @@ function! codeintel#Complete(findstart, base) "{{{
     let pattern = '^\V' . escape(a:base, '\') 
     for [type, word] in cplns
       if word =~ pattern
+        if type ==? 'function'
+          let word .= '('
+        endif
         let item = { 'word': word, 'kind': strlen(type) ? type[0] : ' ' }
         call add(res, item)
       endif

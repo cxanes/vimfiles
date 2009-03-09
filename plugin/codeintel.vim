@@ -17,8 +17,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}
 " Commands {{{
-command! CodeIntelUpdateBufs   call codeintel#UpdateBufs()
-command! CodeIntelShowCalltips call codeintel#ShowCalltips()
+command! CodeIntelScanAllBuffers    call codeintel#ScanAllBuffers()
+command! CodeIntelScanCurrentBuffer call codeintel#ScanCurrentBuffer()
+command! CodeIntelShowCalltips      call codeintel#ShowCalltips()
 "}}}
 " Restore {{{
 let &cpo = s:save_cpo
