@@ -35,7 +35,8 @@ endif
 vnoremap <silent> <script> <Plug>VDict <ESC>:<C-U>call Dict#Dict(GetSelection())<CR>
 nnoremap <silent> <script> <Plug>NDict :<C-U>call Dict#Dict(expand('<cword>'))<CR>
 
-command! -nargs=? -bang Dict call Dict#Dict(<q-args>, <q-bang> != '!')
+command! -nargs=? -bang Dict      call Dict#Dict(<q-args>, <q-bang> != '!')
+command! -nargs=1       Pronounce call Dict#Pronounce(<q-args>)
 
 if !hasmapto('<Plug>VPronounce')
   vmap <silent> <F6> <Plug>VPronounce
