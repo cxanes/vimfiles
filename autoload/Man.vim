@@ -169,7 +169,7 @@ function! Man#Main(type, bang, line) "{{{
   if a:type ==? 'vim' || a:type ==? 'help'
     if type(a:line) == type([])
       exec 'help' join(a:line, ' ')
-    elseif
+    else
       exec 'help' a:line
     end
     return
