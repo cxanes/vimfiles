@@ -75,7 +75,7 @@ function! Node#ClondeNode(self, deep) "{{{
 endfunction
 "}}}
 function! Node#ReplaceChild(self, newChild, oldChild) "{{{
-  if Node#IsNullNode(a:oldChild) || a:oldChild.parentNode isnot a:self.parentNode
+  if Node#IsNullNode(a:oldChild) || a:oldChild.parentNode isnot a:self
     return s:NullNode
   endif
 
