@@ -1,5 +1,5 @@
 " FileExplorer.vim
-" Last Modified: 2008-03-31 12:12:44
+" Last Modified: 2009-03-14 17:15:42
 "        Author: Frank Chang <frank.nevermind AT gmail.com>
 "
 " A tree view file browser.
@@ -15,15 +15,14 @@ set cpo&vim
 "}}}
 "========================================================
 " Variables {{{
-let s:indent = 2
-let s:MSWIN = has('win32') || has('win32unix') || has('win64')
+let s:INDENT = 2
+let s:MSWIN  = has('win32') || has('win32unix') || has('win64')
           \ || has('win95') || has('win16')
 "}}}
 " Options {{{
 let s:DEFAULT_OPTION = {
     \   'WinWidth'          : 24,
     \   'Max_Create_Level'  : 1,
-    \   'Max_Refresh_Level' : 1,
     \   'Filter'            : '',
     \   'FilterInv'         : 0,
     \   'Arrange_Options'   : { 'sorted' : 1, 'ascending' : 1, 'sortedBy' : 'name' },
@@ -162,11 +161,7 @@ else
   let s:Isdirectory = function('isdirectory')
 endif
 function! s:BuildFileTree(dir, ...) " ... = max_level {{{
-  let max_level = (a:0 == 0 || a:1+0 == 0)
-        \ ? s:GetOption('Max_Create_Level')
-        \ : a:1+0 < 0
-        \   ? s:GetOption('Max_Refresh_Level')
-        \   : a:1+0
+  let max_level = (a:0 == 0 || (a:1+0) == 0) ? s:GetOption('Max_Create_Level') : (a:1+0)
 
   if !exists('b:_FileExplorer_node_foldclosed')
     let b:_FileExplorer_node_foldclosed = {}
@@ -179,11 +174,16 @@ function! s:BuildFileTree(dir, ...) " ... = max_level {{{
     let node = s:CreateNode('root', s:Fullpath(a:dir))
     call s:SetNodeFoldClosed(node, 0)
   endif
+  call garbagecollect()
 
   " Each file can only be visited once.
   " If file is a link to its parent directory, then it could be revisited.
   let visited = {} 
-  return s:BuildFileTreeIntra(node, 0, max_level, visited)
+  try
+    return s:BuildFileTreeIntra(node, 0, max_level, visited)
+  catch /^Vim:Interrupt$/
+    return node
+  endtry
 endfunction
 "}}}
 function! s:BuildFileTreeIntra(node, current_level, max_level, visited) "{{{
@@ -208,10 +208,12 @@ function! s:BuildFileTreeIntra(node, current_level, max_level, visited) "{{{
 
   for file in s:GetFiles(dir)
     if s:Isdirectory(file)
-      call Node#AppendChild(a:node, 
-            \ s:BuildFileTreeIntra(s:CreateNode('node', file), a:current_level + 1, a:max_level, a:visited))
+      let node = s:CreateNode('node', file)
+      let tree = s:BuildFileTreeIntra(node, a:current_level + 1, a:max_level, a:visited)
+      call Node#AppendChild(a:node, tree)
     else
-      call Node#AppendChild(a:node, s:CreateNode('leaf', file))
+      let node = s:CreateNode('leaf', file)
+      call Node#AppendChild(a:node, node)
     endif
   endfor
 
@@ -350,7 +352,7 @@ endfunction
 call s:SetupArrange(s:GetOption('Arrange_Options'))
 " }}}
 " }}}
-" Folds {{{
+" functions: folds related {{{
 function! s:SetNodeFoldClosed(node, closed) "{{{
   let a:node.attributes['foldclosed'] = a:closed
   let b:_FileExplorer_node_foldclosed[a:node.nodeValue] = a:closed
@@ -453,28 +455,30 @@ function! s:CloseAllFolds(node) "{{{
   call s:ShowTree(b:_FileExplorer_root, line)
 endfunction
 "}}}
-function! s:OpenAllFolds(node) "{{{
+function! s:OpenAllFolds(node, ...) " ... = max_level {{{
   if !exists('b:_FileExplorer_root')
+    return
+  endif
+
+  if !Node#IsNode(a:node)
     return
   endif
 
   let node = a:node.nodeName == 'leaf' ? a:node.parentNode : a:node
   let line = get(node.attributes, 'line', 1)
 
-  if node.attributes['expanded'] && node.attributes['foldclosed'] == 1
-    call s:SetNodeFoldClosed(node, 0)
+  let max_level = a:0 && (a:1+0) > 0 ? (a:1+0) : -1
+  if node is b:_FileExplorer_root
+    call s:ShowTree(s:BuildFileTree(node.nodeValue, max_level), line)
+    return
   endif
 
-  let childs = copy(node.childNodes)
-  while !empty(childs)
-    let node = remove(childs, 0)
-    if node.nodeName == 'node' && node.attributes['expanded'] && node.attributes['foldclosed'] == 1
-    call s:SetNodeFoldClosed(node, 0)
-      if Node#HasChildNodes(node)
-        call extend(childs, node.childNodes)
-      endif
-    endif
-  endwhile
+  if Node#IsNullNode(node.parentNode)
+    return
+  endif
+
+  let new_node = s:BuildFileTree(s:CreateNode(node.nodeName, node.nodeValue), max_level)
+  call Node#ReplaceChild(node.parentNode, new_node, node)
   call s:ShowTree(b:_FileExplorer_root, line)
 endfunction
 "}}}
@@ -507,7 +511,7 @@ function! s:MoveBetweenFolds(forward, cnt) "{{{
 endfunction
 "}}}
 "}}}
-" History {{{
+" functions: history related {{{
 function! s:PushHistory(...) "{{{
   if a:0 == 0 && !exists('b:_FileExplorer_root')
     return
@@ -555,7 +559,10 @@ endfunction
 " BuildLines(root) {{{
 function! s:BuildLines(root) "{{{
   let lines = []
-  call s:BuildLinesIntra([a:root], lines, 0)
+  try
+    call s:BuildLinesIntra([a:root], lines, 0)
+	catch /^Vim:Interrupt$/
+  endtry
   return lines
 endfunction
 "}}}
@@ -581,6 +588,10 @@ function! s:ShowTree(root, ...) " ... = lnum (put cursor on line 'lnum') or file
     let nodeValue = Node#IsNullNode(node) ? '' : node.nodeValue
   endif
 
+  let prev_root = exists('b:_FileExplorer_root') ? b:_FileExplorer_root : Node#NullNode()
+  let b:_FileExplorer_root = a:root
+  let b:_FileExplorer_lines = s:BuildLines(b:_FileExplorer_root)
+  
   setlocal ma
   silent %d _
 
@@ -590,19 +601,15 @@ function! s:ShowTree(root, ...) " ... = lnum (put cursor on line 'lnum') or file
     let begin_lnum += b:_FileExplorer_help_endlnum
   endif
 
-  let prev_root = exists('b:_FileExplorer_root') ? b:_FileExplorer_root : Node#NullNode()
-  let b:_FileExplorer_root = a:root
-  let b:_FileExplorer_lines = s:BuildLines(b:_FileExplorer_root)
-  
   let first = 1
-  let lnum = 0
+  let lnum  = 0
 
   for line in b:_FileExplorer_lines
     let node = line['node']
     if prev_root isnot b:_FileExplorer_root && node is prev_root
       let lnum = first ? begin_lnum : (line('$')+1)
     endif
-    let indent = s:indent * line['level']
+    let indent = s:INDENT * line['level']
     if indent > 0 && node.nodeName == 'node'
       let indent -= 1
     endif
@@ -784,7 +791,7 @@ function! s:GetBufname() "{{{
   return [printf(name, i+1), -1]
 endfunction
 "}}}
-function! s:FileExplorer(dir, ...) " ... = max_level [0:Max_Create_Level|-1:Max_Refresh_Level], otherside {{{
+function! s:FileExplorer(dir, ...) " ... = max_level [0:Max_Create_Level], otherside {{{
   let [bufname, winnum] = s:GetBufname()
 
   let filename = ''
@@ -845,7 +852,7 @@ function! s:FileExplorer(dir, ...) " ... = max_level [0:Max_Create_Level|-1:Max_
 endfunction
 "}}}
 function! s:Refresh(...) "{{{
-  let max_level = a:0 == 0 ? -1 : a:1
+  let max_level = a:0 == 0 ? 0 : (a:1+0)
   if exists('b:_FileExplorer_root')
     call s:ShowTree(s:BuildFileTree(b:_FileExplorer_root.nodeValue, max_level))
   endif
@@ -873,9 +880,9 @@ function! s:ShowHelp(...)  " ... = show [0:don't show|1:show|-1(default)] {{{
     let usage .= "\"  zo : Open one fold\n"
     let usage .= "\"  za : Toggle one fold\n"
     let usage .= "\"  zM : Close all folds\n"
-    let usage .= "\"  zR : Open all folds\n"
+    let usage .= "\"  [N]zR : Open N level folds (default is highest level)\n"
     let usage .= "\"  zC : Close all folds under the cursor\n"
-    let usage .= "\"  zO : Open all folds under the cursor\n"
+    let usage .= "\"  [N]zO : Open N level folds under the cursor (default is highest level)\n"
     let usage .= "\"  zj : Move downwards to the next fold\n"
     let usage .= "\"  zk : Move upwards to the previous fold\n"
     let usage .= "\"  z<CR> : Refresh and goto root line\n"
@@ -898,6 +905,10 @@ function! s:ShowHelp(...)  " ... = show [0:don't show|1:show|-1(default)] {{{
     let usage .= "\"  :SetFilter[!] [pattern]: Inverted filter if !. Show current setting if ! and no pattern is set.\n"
     let usage .= "\"  :ShowHiddenFiles[!]: Toggle if !\n"
     let usage .= "\"  :Cd|:Chdir {dir}: Change root\n"
+		let usage .= "\" \n"
+    let usage .= "\" --\n"
+    let usage .= "\" " . s:GetFilterInfo() . "\n"
+    let usage .= "\" " . s:GetArrangeInfo() . "\n"
     let usage .= "\n"
 
     let b:_FileExplorer_show_help = 1
@@ -913,7 +924,7 @@ function! s:ShowHelp(...)  " ... = show [0:don't show|1:show|-1(default)] {{{
 endfunction
 "}}}
 function! s:InitCommands() "{{{
-  command! -buffer -count=0 Refresh call s:Refresh(<count> == 0 ? -1 : <count>)
+  command! -buffer -count=0 Refresh call s:Refresh(<count>)
 
   command! -buffer -nargs=* -complete=custom,s:ListSortSettings ArrangeBy 
         \ call s:ArrangeBy(<q-args>)
@@ -945,7 +956,7 @@ else
   endfunction
 endif
 
-function! s:Cwd(node) 
+function! s:Cwd(node) "{{{
   if Node#IsNullNode(a:node)
     return
   endif
@@ -965,6 +976,18 @@ function! s:Cwd(node)
   echo 'FileExplorer: Change the current working directory to ' . node.nodeValue
   echohl None
 endfunction
+"}}}
+function! s:GetArrangeInfo() "{{{
+  let arrange_options = s:GetOption('Arrange_Options')
+
+  if arrange_options['sorted'] == 0
+    return 'Unsorted'
+  else
+    return 'Sorted by ' . substitute(arrange_options['sortedBy'], '^\(.\)\(.*\)', '\u\1\L\2', '')
+          \ . ', ' . (arrange_options['ascending'] ? 'ascending' : 'descending')
+  endif
+endfunction
+"}}}
 function! s:ArrangeBy(options) "{{{
   if a:options =~? '\<default\>'
     call s:SetOption('Arrange_Options', s:GetOption('Arrange_Options', 1))
@@ -975,12 +998,7 @@ function! s:ArrangeBy(options) "{{{
   let arrange_options = s:GetOption('Arrange_Options')
 
   if a:options == ''
-    if arrange_options['sorted'] == 0
-      echo 'Unsorted'
-    else
-      echo 'Sorted by ' . substitute(arrange_options['sortedBy'], '^\(.\)\(.*\)', '\u\1\L\2', '')
-            \ . ', ' . (arrange_options['ascending'] ? 'ascending' : 'descending')
-    endif
+    echo s:GetArrangeInfo()
     return
   endif
 
@@ -1025,9 +1043,13 @@ function! s:ListSortSettings(A, L, P) "{{{
   return join(s:sort_settings, "\n")
 endfunction
 "}}}
+function! s:GetFilterInfo() "{{{
+    return 'Filter pattern' . (s:GetOption('FilterInv') ? ' [!]' : '') . ': ' . s:GetOption('Filter')
+endfunction
+"}}}
 function! s:SetFilter(filter, ...) " ... = inv {{{
   if a:0 && a:1 == 1 && a:filter == ''
-    echo 'Filter pattern' . (s:GetOption('FilterInv') ? ' [!]' : '') . ': ' . s:GetOption('Filter')
+    echom s:GetFilterInfo()
     return
   endif
   call s:SetOption('FilterInv', a:0 && a:1 == 1)
@@ -1139,12 +1161,12 @@ function! s:SizeRepr(size) "{{{
 endfunction
 "}}}
 "}}}
-function! s:GetRootLine() "{{{
+function! s:GetRootLnum() "{{{
   return !exists('b:_FileExplorer_help_endlnum') ? 1 : (b:_FileExplorer_help_endlnum + 1)
 endfunction
 "}}}
 function! s:GotoRootLine() "{{{
-  exec 'normal! ' . s:GetRootLine() . 'G'
+  exec 'normal! ' . s:GetRootLnum() . 'G'
 endfunction
 "}}}
 function! s:InitMappings() "{{{
@@ -1163,10 +1185,10 @@ function! s:InitMappings() "{{{
   nnoremap <buffer> <silent> zc :<C-U>call <SID>CloseFold(<SID>GetNode(line('.')))<CR>
   nnoremap <buffer> <silent> zo :<C-U>call <SID>OpenFold(<SID>GetNode(line('.')))<CR>
   nnoremap <buffer> <silent> za :<C-U>call <SID>ToggleFold(<SID>GetNode(line('.')))<CR>
-  nnoremap <buffer> <silent> zM :<C-U>call <SID>CloseAllFolds(<SID>GetNode(<SID>GetRootLine()))<CR>
-  nnoremap <buffer> <silent> zR :<C-U>call <SID>OpenAllFolds(<SID>GetNode(<SID>GetRootLine()))<CR>
+  nnoremap <buffer> <silent> zM :<C-U>call <SID>CloseAllFolds(<SID>GetNode(<SID>GetRootLnum()))<CR>
+  nnoremap <buffer> <silent> zR :<C-U>call <SID>OpenAllFolds(<SID>GetNode(<SID>GetRootLnum()), v:count)<CR>
   nnoremap <buffer> <silent> zC :<C-U>call <SID>CloseAllFolds(<SID>GetNode(line('.')))<CR>
-  nnoremap <buffer> <silent> zO :<C-U>call <SID>OpenAllFolds(<SID>GetNode(line('.')))<CR>
+  nnoremap <buffer> <silent> zO :<C-U>call <SID>OpenAllFolds(<SID>GetNode(line('.')), v:count)<CR>
   nnoremap <buffer> <silent> zj :<C-U>call <SID>MoveBetweenFolds(1, v:count1)<CR>
   nnoremap <buffer> <silent> zk :<C-U>call <SID>MoveBetweenFolds(0, v:count1)<CR>
 
@@ -1203,7 +1225,7 @@ endfunction
 "}}}
 "}}}
 function! s:InitHighlight() "{{{
-  let prefix_space = printf('^%s\%%(%s\)*', repeat(' ', s:indent-1), repeat(' ', s:indent))
+  let prefix_space = printf('^%s\%%(%s\)*', repeat(' ', s:INDENT-1), repeat(' ', s:INDENT))
 
   syntax clear
   syntax match TreeLeaf '^.*'
@@ -1216,7 +1238,7 @@ function! s:InitHighlight() "{{{
 
   exe 'syntax match FileSymlink contained ''\%(' . prefix_space . '[-+]\)\@<=.\{-1,}\%( ->\)\@='' containedin=TreeNode,TreeRoot,TreeLeaf'
 
-  exe 'syntax match FileSymlink contained ''\%(^\%(' . repeat(' ', s:indent) . '\)\+\)\@<=[^ ].\{-}\%( ->\)\@='' containedin=TreeNode,TreeRoot,TreeLeaf'
+  exe 'syntax match FileSymlink contained ''\%(^\%(' . repeat(' ', s:INDENT) . '\)\+\)\@<=[^ ].\{-}\%( ->\)\@='' containedin=TreeNode,TreeRoot,TreeLeaf'
 
 	highlight default link TreeRoot Define
 	highlight default link TreeNode Label
