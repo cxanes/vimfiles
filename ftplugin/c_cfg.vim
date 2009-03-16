@@ -153,7 +153,7 @@ if !exists('*CExpandTagCallback')
   endfunction
   "}}}
 endif
-let g:ExpandTagCallback_{&ft} = 'CExpandTagCallback'
+let g:ExpandTagCallback_{split(&ft, '\.')[0]} = 'CExpandTagCallback'
 "}}}
 " }}}
 "===================================================================
