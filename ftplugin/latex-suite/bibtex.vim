@@ -125,10 +125,10 @@ if exists('s:done')
 endif
 let s:done = 1
 
-call IMAP ('BBB', "\<C-r>=BibT('', '', 0)\<CR>", 'bib')
-call IMAP ('BBL', "\<C-r>=BibT('', 'o', 0)\<CR>", 'bib')
-call IMAP ('BBH', "\<C-r>=BibT('', 'O', 0)\<CR>", 'bib')
-call IMAP ('BBX', "\<C-r>=BibT('', 'Ox', 0)\<CR>", 'bib')
+" call IMAP ('BBB', "\<C-r>=BibT('', '', 0)\<CR>", 'bib')
+" call IMAP ('BBL', "\<C-r>=BibT('', 'o', 0)\<CR>", 'bib')
+" call IMAP ('BBH', "\<C-r>=BibT('', 'O', 0)\<CR>", 'bib')
+" call IMAP ('BBX', "\<C-r>=BibT('', 'Ox', 0)\<CR>", 'bib')
 
 " BibT: function to generate a formatted bibtex entry {{{
 " three sample usages:

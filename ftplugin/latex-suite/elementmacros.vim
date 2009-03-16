@@ -116,21 +116,21 @@ endif
 " Fonts
 " ============================================================================== 
 " series/family/shape {{{
-call <SID>Tex_FontFamily("FBF","series")
-call <SID>Tex_FontFamily("FMD","series")
+" call <SID>Tex_FontFamily("FBF","series")
+" call <SID>Tex_FontFamily("FMD","series")
 
-call <SID>Tex_FontFamily("FTT","family")
-call <SID>Tex_FontFamily("FSF","family")
-call <SID>Tex_FontFamily("FRM","family")
+" call <SID>Tex_FontFamily("FTT","family")
+" call <SID>Tex_FontFamily("FSF","family")
+" call <SID>Tex_FontFamily("FRM","family")
 
-call <SID>Tex_FontFamily("FUP","shape")
-call <SID>Tex_FontFamily("FSL","shape")
-call <SID>Tex_FontFamily("FSC","shape")
-call <SID>Tex_FontFamily("FIT","shape")
+" call <SID>Tex_FontFamily("FUP","shape")
+" call <SID>Tex_FontFamily("FSL","shape")
+" call <SID>Tex_FontFamily("FSC","shape")
+" call <SID>Tex_FontFamily("FIT","shape")
 
 " the \emph is special.
-if g:Tex_FontMaps | exe "vnoremap <silent> ".g:Tex_Leader."em \<C-\\>\<C-N>:call VEnclose('\\emph{', '}', '{\\em', '\\/}')<CR>" | endif
-if g:Tex_FontMaps | exe 'call IMAP ("FEM", "\\emph{<++>}<++>", "tex")' | endif
+" if g:Tex_FontMaps | exe "vnoremap <silent> ".g:Tex_Leader."em \<C-\\>\<C-N>:call VEnclose('\\emph{', '}', '{\\em', '\\/}')<CR>" | endif
+" if g:Tex_FontMaps | exe 'call IMAP ("FEM", "\\emph{<++>}<++>", "tex")' | endif
 
 " }}}
 if g:Tex_Menus && g:Tex_FontMenus

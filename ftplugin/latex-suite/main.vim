@@ -43,6 +43,7 @@ imap <silent> <script> <C-o><plug> <Nop>
 " calculate the mapleader character.
 let s:ml = exists('g:mapleader') ? g:mapleader : '\'
 
+let s:doneMappings = 1
 if !exists('s:doneMappings')
 	let s:doneMappings = 1
 	" short forms for latex formatting and math elements. {{{

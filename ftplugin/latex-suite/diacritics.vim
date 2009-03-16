@@ -6,6 +6,7 @@
 "  Description: shortcuts for all diacritics. 
 "=============================================================================
 
+let g:Tex_Diacritics = 0
 if !g:Tex_Diacritics
 	finish
 endif
