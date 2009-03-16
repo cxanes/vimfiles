@@ -115,7 +115,7 @@ endif
 " Ensure b:git_dir exists.
 function! s:GetGitDir() "{{{
   if !exists('b:git_dir')
-    let b:git_dir = finddir('.git', expand('%:p:h') . ';/')
+    let b:git_dir = finddir('.git', escape(expand('%:p:h'), ' ') . ';/')
     if strlen(b:git_dir)
       let b:git_dir = fnamemodify(b:git_dir, ':p')
     endif
@@ -256,7 +256,7 @@ function! Git#Commit(args) "{{{
   setlocal filetype=gitcommit bufhidden=wipe
   augroup GitCommit
     autocmd BufWritePre <buffer> g/^#/d | setlocal fileencoding=utf-8
-    exec printf("autocmd BufWritePost <buffer> call Git#DoCommand('commit %s -F ' . expand('%%')) | bw | autocmd! GitCommit * <buffer>", a:args)
+    exec printf("autocmd BufWritePost <buffer> call Git#DoCommand('commit %s -F ''' . expand('%%') . '''') | bw | autocmd! GitCommit * <buffer>", a:args)
   augroup END
 endfunction
 "}}}

@@ -17,7 +17,7 @@ set cpo&vim
 command! -nargs=1 -complete=customlist,Git#ListCommits GitCheckout call Git#Checkout(<q-args>)
 command! -nargs=* -complete=customlist,Git#ListCommits GitDiff     call Git#Diff(<q-args>)
 command!          GitStatus           call Git#Status()
-command! -nargs=? GitAdd              call Git#Add(<q-args>)
+command! -nargs=? -complete=file                       GitAdd      call Git#Add(<q-args>)
 command! -nargs=* -bang GitLog        call Git#Log(<q-args>, <q-bang> == '!')
 command! -nargs=* GitCommit           call Git#Commit(<q-args>)
 command! -nargs=1 GitCatFile          call Git#CatFile(<q-args>)
