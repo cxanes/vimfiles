@@ -145,8 +145,8 @@ exec "Snippet prop ".s:st."attribute".s:et." = property(get_".s:st."attribute".s
 exec "Snippet cm ".s:st."class".s:et." = classmethod(".s:st."class".s:et.")<CR>".s:st.s:et
 
 " Keywords
-exec "Snippet im import ".s:st."module".s:et."<CR>".s:st.s:et
-exec "Snippet from from ".s:st."module".s:et." import ".s:st.'name:D("*")'.s:et."<CR>".s:st.s:et
+exec "Snippet im import ".s:st.s:et
+exec "Snippet from from ".s:st."module".s:et." import ".s:st.'name:D("*")'.s:et
 exec "Snippet % '".s:st."s".s:et."'".s:st."s:snippets#python#__init__#HashArgList(Count(@z, '%[^%]'))".s:et.s:st.s:et
 exec "Snippet ass assert ".s:st."expression".s:et.s:st.s:et
 " From Kib2
