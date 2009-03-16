@@ -11,10 +11,14 @@ ru syntax/snippet.vim
 Snippet end <{:snippets#vim#__init__#EndCompl("end")}>
 "}}}
 "=================================================
-function! snippets#vim#__init__#EndCompl(trigger) "{{{
+function! snippets#vim#__init__#EndCompl(trigger, ...) "{{{
   if has('syntax_items') 
         \ && synIDattr(synID(line('.'), col('.')-1, 0), 'name') =~? 'comment\|string'
-    return a:trigger . SnippetReturnKey()
+		if a:0 && !empty(a:1)
+			return a:trigger
+		else
+			return a:trigger . SnippetReturnKey()
+		endif
   endif
 
   let pos = getpos('.')
@@ -53,7 +57,11 @@ function! snippets#vim#__init__#EndCompl(trigger) "{{{
   endwhile
 
   call setpos('.', pos)
-  return a:trigger . SnippetReturnKey()
+	if a:0 && !empty(a:1)
+		return a:trigger
+	else
+		return a:trigger . SnippetReturnKey()
+	endif
 endfunction
 "}}}
 function! s:PrevWord() "{{{

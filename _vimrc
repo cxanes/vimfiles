@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-06 03:51:42
+" Last Modified: 2009-03-17 00:54:52
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1595,6 +1595,12 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:dbext_default_menu_mode = 3
   "}}}2
   "----------------------------------------------------------{{{2
+  " snipMate.vim
+  " <http://www.vim.org/scripts/script.php?script_id=2540>
+  "--------------------------------------------------------------
+  let g:snips_author = g:USER_INFO['name']
+  "}}}2
+  "----------------------------------------------------------{{{2
   " xmledit
   " <http://www.vim.org/scripts/script.php?script_id=301>
   "--------------------------------------------------------------
@@ -1710,7 +1716,8 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:snippetsEmu_setup_menu = '&Plugin.'
   let g:snippetsEmu_autoload = 1
 
-  let g:snippetsEmu_noexp_key = '<Leader><Tab>'
+  let g:snippetsEmu_key = '<Leader><Tab>'
+  let g:snippetsEmu_noexp_key = '<Leader><S-Tab>'
 
   let g:snippetsEmu_JumperCallback = 'JumperCallback'
   function! JumperCallback()

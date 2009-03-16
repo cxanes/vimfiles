@@ -42,7 +42,7 @@ function! snippets#tex#__init__#CreateCommand(text) "{{{
   return '\'.command.'{<{}>}'
 endfunction
 "}}}
-function! snippets#tex#__init__#Font(attr) "{{{
+function! snippets#tex#__init__#Font(attr, ...) "{{{
   let in_math = 0
 
   " For '$...$' and '$$...$$', since searchpairpos() cannot handle these two tokens.
@@ -92,9 +92,9 @@ function! snippets#tex#__init__#Font(attr) "{{{
   endif
 
   if in_math
-    return '\math' . a:attr . "{<{}>\<C-Q>}"
+    return '\math' . a:attr . (a:0 ? a:1 : "{<{}>\<C-Q>}")
   else
-    return '\text' . a:attr . "{<{}>\<C-Q>}"
+    return '\text' . a:attr . (a:0 ? a:1 : "{<{}>\<C-Q>}")
   endif
 endfunction
 "}}}
