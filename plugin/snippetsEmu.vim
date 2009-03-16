@@ -227,18 +227,42 @@ endif
 let s:Disable = 0
 " }}}1
 " {{{1 Global Settings
-let g:snippetsEmu_start_tag       = '<{'
-let g:snippetsEmu_end_tag         = '}>'
-let g:snippetsEmu_elem_delim      = ':'
-let g:snippetsEmu_key             = '<Tab>'
-let g:snippetsEmu_noexp_key       = '<S-Tab>'
-let g:snippetsEmu_exp_in_tag      = 0
-let g:snippetsEmu_setup_menu      = 0
-let g:snippetsEmu_autoload        = 1
-let g:snippetsEmu_load_dir        = 'snippets'
-let g:snippetsEmu_trigger_in_word = 0
-let g:snippetsEmu_break_undo_sequences = 1
-let g:snippetsEmu_IMAP_Jumpfunc   = 1
+if !exists('g:snippetsEmu_start_tag')
+  let g:snippetsEmu_start_tag       = '<{'
+endif
+if !exists('g:snippetsEmu_end_tag')
+  let g:snippetsEmu_end_tag         = '}>'
+endif
+if !exists('g:snippetsEmu_elem_delim')
+  let g:snippetsEmu_elem_delim      = ':'
+endif
+if !exists('g:snippetsEmu_key')
+  let g:snippetsEmu_key             = '<Tab>'
+endif
+if !exists('g:snippetsEmu_noexp_key')
+  let g:snippetsEmu_noexp_key       = '<S-Tab>'
+endif
+if !exists('g:snippetsEmu_exp_in_tag')
+  let g:snippetsEmu_exp_in_tag      = 0
+endif
+if !exists('g:snippetsEmu_setup_menu')
+  let g:snippetsEmu_setup_menu      = 0
+endif
+if !exists('g:snippetsEmu_autoload')
+  let g:snippetsEmu_autoload        = 1
+endif
+if !exists('g:snippetsEmu_load_dir')
+  let g:snippetsEmu_load_dir        = 'snippets'
+endif
+if !exists('g:snippetsEmu_trigger_in_word')
+  let g:snippetsEmu_trigger_in_word = 0
+endif
+if !exists('g:snippetsEmu_break_undo_sequences')
+  let g:snippetsEmu_break_undo_sequences = 1
+endif
+if !exists('g:snippetsEmu_IMAP_Jumpfunc')
+  let g:snippetsEmu_IMAP_Jumpfunc   = 1
+endif
 
 " For original version
 let g:snip_start_tag  = g:snippetsEmu_start_tag
