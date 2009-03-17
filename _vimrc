@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-17 00:54:52
+" Last Modified: 2009-03-17 20:15:59
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1585,7 +1585,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " If you invoke :Project without specifying the filename, Project uses the
   " file named by the variable 'g:proj_filename' in the current directory if it
   " exists, otherwise $HOME/.vimprojects is used.
-  let g:proj_filename = 'vimproject'
+  let g:proj_filename = '.vimproject'
   "}}}2
   "----------------------------------------------------------{{{2
   " dbext.vim

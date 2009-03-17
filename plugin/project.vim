@@ -103,6 +103,8 @@ function! s:Project(filename) " <<<
         if g:proj_foldcolumn > 0
           exec 'setlocal foldcolumn=' . g:proj_foldcolumn
         endif
+
+        setf vimproject
     endfunction ">>>
     call s:DoSetup()
     " Syntax Stuff <<<
