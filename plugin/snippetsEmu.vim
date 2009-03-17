@@ -312,8 +312,10 @@ if !empty(g:snippetsEmu_autoload)
           \   if exists('b:snippetsEmu_filetype') |
           \     call s:UnloadSnippets('b:', b:snippetsEmu_filetype) |
           \   endif |
-          \   let b:snippetsEmu_filetype = expand('<amatch>') |
-          \   call s:LoadSnippets('b:', expand('<amatch>')) |
+          \   if !empty(expand('<amatch>')) |
+          \     let b:snippetsEmu_filetype = expand('<amatch>') |
+          \     call s:LoadSnippets('b:', expand('<amatch>')) |
+          \   endif |
           \ endif
     au VimEnter *
           \ if exists('loaded_snippet') |
