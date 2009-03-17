@@ -27,7 +27,7 @@ exe "Snipp wh while (${1:/* condition */}) {\n\t${2:/* code */}\n}"
 " For Loop
 exe "Snipp for for (${3:i} = ${2:0}; $3 < ${1:count}; ${4:++}$3) {\n\t${5:/* code */}\n}"
 " Function
-exe "Snipp func ${1:void} ${2:function_name}(${3})\n{\n\t${4:/* code */}\n}"
+exe "Snipp func ${1:void}\n${2:function_name}(${3})\n{\n\t${4:/* code */}\n}"
 " Typedef
 exe 'Snipp td typedef ${1:int} ${2:MyCustomType};'
 " Struct
