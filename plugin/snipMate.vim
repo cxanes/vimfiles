@@ -106,7 +106,7 @@ endf
 
 fun! TriggerSnippet()
 	if pumvisible() " Update snippet if completion is used, or deal with supertab
-		if exists('s:sid') | return "\<c-n>" | endif
+		if exists('s:sid') | return {s:sid}_SuperTab('n') | endif
 		call feedkeys("\<esc>a", 'n')
 		return ''
 	endif
