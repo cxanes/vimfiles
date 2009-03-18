@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-17 20:15:59
+" Last Modified: 2009-03-18 20:11:29
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1599,6 +1599,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " <http://www.vim.org/scripts/script.php?script_id=2540>
   "--------------------------------------------------------------
   let g:snips_author = g:USER_INFO['name']
+  au BufRead,BufNewFile *.snippet  exec 'setf '.expand('<afile>:p:h:t')
   "}}}2
   "----------------------------------------------------------{{{2
   " xmledit

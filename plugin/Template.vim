@@ -1,4 +1,4 @@
-" template.vim Insert Template using snippetsEmu.vim
+" template.vim Insert Template using (modified) snippetsEmu.vim or (modified) snipMate.vim
 " Last Modified: 2008-03-13 22:37:15
 "        Author: Frank Chang <frank.nevermind AT gmail.com>
 " Load Once {{{

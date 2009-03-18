@@ -161,6 +161,19 @@ fun s:GetSnippet(word, scope)
 	return word
 endf
 
+function s:SID()
+	if !exists('s:SID')
+		let s:SID = matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
+	end
+	return s:SID
+endfun
+
+fun SnipMateInsertSnippet(snippet)
+	let s:snippet = a:snippet
+	call feedkeys("\<C-R>=<SNR>" . s:SID() . "_ExpandSnippet(col('.'))\<CR>", 'n')
+	startinsert
+endf
+
 fun s:ExpandSnippet(col)
 	let lnum = line('.') | let col = a:col
 

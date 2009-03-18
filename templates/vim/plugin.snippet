@@ -1,0 +1,18 @@
+" `expand("%:t")`${1}
+" Last Modified: `strftime('%Y-%m-%d %H:%M:%S')`
+"        Author: ${2:`exists('g:USER_INFO') ? g:USER_INFO['name'] : 'name'`}`exists('g:USER_INFO') ? ' <' . g:USER_INFO['email'] . '>' : ''`
+
+" Load Once {{{
+if exists('loaded_${3:`(expand("%:p:h:t") ==? "autoload" ? "autoload_" : "") . (empty(expand("%:t:r")) ? "plugin" : expand("%:t:r"))`}')
+	finish
+endif
+let loaded_$3 = 1
+
+let s:save_cpo = &cpo
+set cpo&vim
+"}}}
+${4}
+" Restore {{{
+let &cpo = s:save_cpo
+unlet s:save_cpo
+" vim: fdm=marker :
