@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-18 20:11:29
+" Last Modified: 2009-03-19 22:38:15
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -90,6 +90,14 @@ function! s:SetEnv()
   let path = s:GetPath(['lib/python'], sep)
   if path != ''
     let $PYTHONPATH = path . ($PYTHONPATH == '' ? '' : (sep . $PYTHONPATH))
+  endif
+  "}}}
+  " $PERL5LIB {{{
+  let cyg_perl = 1
+  let sep = (s:MSWIN && !cyg_perl) ? ';' : ':'
+  let path = s:GetPath(['lib/perl'], sep, (cyg_perl ? 's:Cygpath' : ''))
+  if path != ''
+    let $PERL5LIB = path . ($PERL5LIB == '' ? '' : (sep . $PERL5LIB))
   endif
   "}}}
   delfunction s:GetPath
@@ -1595,13 +1603,6 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:dbext_default_menu_mode = 3
   "}}}2
   "----------------------------------------------------------{{{2
-  " snipMate.vim
-  " <http://www.vim.org/scripts/script.php?script_id=2540>
-  "--------------------------------------------------------------
-  let g:snips_author = g:USER_INFO['name']
-  au BufRead,BufNewFile *.snippet  exec 'setf '.expand('<afile>:p:h:t')
-  "}}}2
-  "----------------------------------------------------------{{{2
   " xmledit
   " <http://www.vim.org/scripts/script.php?script_id=301>
   "--------------------------------------------------------------
@@ -1714,7 +1715,8 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:snippetsEmu_elem_delim = ':'
 
   " Modified snippetsEmu.vim
-  let g:snippetsEmu_setup_menu = '&Plugin.'
+  " let g:snippetsEmu_setup_menu = '&Plugin.'
+  let g:snippetsEmu_setup_menu = 0
   let g:snippetsEmu_autoload = 1
 
   let g:snippetsEmu_key = '<Leader><Tab>'
@@ -1741,6 +1743,13 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
     endif
     return -1
   endfunction
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " snipMate.vim (Slight modification)
+  " <http://www.vim.org/scripts/script.php?script_id=2540>
+  "--------------------------------------------------------------
+  let g:snips_author = g:USER_INFO['name']
+  au BufRead,BufNewFile *.snippet  exec 'setf '.expand('<afile>:p:h:t')
   "}}}2
   "----------------------------------------------------------{{{2
   " NoteManager.vim (My works) (obsolete: use WipidPad <http://wikidpad.sourceforge.net/> instead)

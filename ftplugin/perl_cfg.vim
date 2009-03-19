@@ -25,6 +25,39 @@ if !exists('*s:NewLine')
   endfunction
   "}}}
 endif
+
+if !exists('*s:ExtractSubroutine')
+  function! s:ExtractSubroutine(subName, beg_lnum, end_lnum) range
+    let z_sav = @z
+
+    " old code is stored in g:perl_old_code
+    " new code is stored in g:perl_new_code
+    silent exec printf('%d,%dy z', a:beg_lnum, a:end_lnum)
+    let [newSubCall, g:perl_new_code] = PerlRefactor#ExtractSubroutine(a:subName, @z)
+    let g:perl_old_code = @z
+    let @z = z_sav
+
+    let append = a:lastline == line('$')
+    
+    silent exec printf('%d,%dd _', a:beg_lnum, a:end_lnum)
+    if append
+      call append(line('.'), newSubCall)
+      silent normal! j==
+    else
+      call append(line('.')-1, newSubCall)
+      silent normal! k==
+    endif
+  endfunction
+
+  function! s:PutExtractedSubroutine(lnum, before) 
+    if !exists('g:perl_new_code')
+      return
+    endif
+
+    silent exec printf('%dput%s =g:perl_new_code', a:lnum, a:before ? '!' : '')
+    silent normal! '[V']==
+  endfunction
+endif
 " }}}
 "===================================================================
 " Setting {{{
@@ -68,8 +101,14 @@ if exists('g:use_codeintel') && g:use_codeintel
 endif
 " }}}
 "===================================================================
-" Key Mappings {{{
+" Key Mappings and Commands {{{
 "-------------------------------------------------------------------
+command -range -buffer -nargs=1 ExtractSubroutine call <SID>ExtractSubroutine(<q-args>, <line1>, <line2>)
+command -range -buffer -bang    PutExtractedSubroutine call <SID>PutExtractedSubroutine(<count>, <q-bang> == '!')
+
+command -range -buffer -nargs=1 ExtractMehod call <SID>ExtractSubroutine(<q-args>, <line1>, <line2>)
+command -range -buffer -bang    PutExtractedMehod call <SID>PutExtractedSubroutine(<count>, <q-bang> == '!')
+
 if exists('*CompleteParenMap')
   call CompleteParenMap('([{',  '[$@%&*]\|\w')
 endif
