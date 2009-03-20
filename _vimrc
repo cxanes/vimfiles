@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-19 22:38:15
+" Last Modified: 2009-03-20 17:57:41
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -408,7 +408,6 @@ if has('gui_running')
         \          ['oceandeep2'],
         \          ['dusk'],
         \          ['desertedocean'],
-        \          ['ChocolateLiquor'],
         \          ['moria', 'let moria_style = "dark"'],
         \          ['desert'],
         \        ]
@@ -429,17 +428,15 @@ if has('gui_running')
     silent! set guifont=Consolas\ 12,Courier\ 10\ Pitch\ 12
   endif
 elseif &t_Co > 2
-  " if &t_Co < 16
-  "   set t_Co=16
-  " endif
-  " try
-  "   colors ChocolateLiquor 
-  "   augroup Vimrc
-  "     au VimLeave * hi clear
-  "   augroup END
-  " catch
-  "   silent! colors desert
-  " endtry
+  if &t_Co < 16
+    set t_Co=16
+  endif
+  " Changed the colors of grounps Pmenu and PmenuSel
+  silent! colors default2
+  set bg=dark
+  augroup Vimrc
+    au VimLeave * hi clear
+  augroup END
 endif
 "}}}
 "}}}1
