@@ -75,8 +75,10 @@ function! s:PrevWord() "{{{
 
     call cursor(lnum, col)
     if has('syntax_items') 
-          \ && synIDattr(synID(line('.'), col('.'), 0), 'name') =~? 'comment\|string'
-      continue
+      let name = synIDattr(synID(line('.'), col('.'), 0), 'name')
+      if name =~? 'comment\|string' || name !~? '^vim'
+        continue
+      endif
     endif
 
     break
