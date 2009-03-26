@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-20 17:57:41
+" Last Modified: 2009-03-25 18:13:01
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1504,6 +1504,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:netrw_home = $HOME
   let g:netrw_winsize = 24
   let g:netrw_silent  = 1
+  let g:netrw_cygwin = 1
   "}}}2
   "----------------------------------------------------------{{{2
   " imap.vim (Part of Latex-Suite)
