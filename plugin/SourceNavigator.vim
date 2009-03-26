@@ -12,7 +12,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}
 
-" GVIM --servername SN --remote-silent  "+call cursor(%l, %c+1)"  "%f"
+" GVIM --servername SN -u NORC --cmd "if v:servername=='SN'|ru _vimrc|el|se lpl|en" --remote-silent "+cal cursor(%l, %c+1)" "%f"
 
 command! -nargs=1 SNStart call SourceNavigator#Start(<args>)
 command! -nargs=0 SNStop  call SourceNavigator#Stop()
