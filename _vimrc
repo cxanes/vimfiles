@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-25 18:13:01
+" Last Modified: 2009-03-26 23:30:01
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -953,8 +953,8 @@ for s:script in [
       \          'Eclim',
       \          'ropevim',
       \ ]
-  if globpath(&rtp, printf('tools/%s.vim', s:script)) != ''
-    exec printf('command! Load%s ru tools/%s.vim', substitute(s:script, '^.', '\u&', ''), s:script)
+  if globpath(&rtp, printf('macros/%s.vim', s:script)) != ''
+    exec printf('command! Load%s ru macros/%s.vim', substitute(s:script, '^.', '\u&', ''), s:script)
   endif
 endfor
 unlet! s:script
@@ -1115,23 +1115,6 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
     endif
   endfunction
   " }}}
-
-  " Load minibufexpl.vim only when I need it.
-  if globpath(&rtp, 'minibufexpl.vim') != ''
-    command! Mbe call <SID>LoadMiniBufExplorer()
-
-    function! <SID>LoadMiniBufExplorer() "{{{
-      if !exists('g:minibufexpl_loaded') || g:minibufexpl_loaded == 1
-        return
-      endif
-      " let g:miniBufExplorerAutoUpdate = 1
-      ru minibufexpl.vim
-      MiniBufExplorer
-      wincmd p
-      let g:minibufexpl_loaded = 1
-    endfunction
-    "}}}
-  endif
 
   " Clean unused buffers
   command! CleanUnusedBuffers call <SID>CleanUnusedBuffers()
@@ -1491,14 +1474,6 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:DrChipTopLvlMenu = '&Plugin.'
   "}}}2
   "----------------------------------------------------------{{{2
-  " minibufexpl.vim
-  " <http://www.vim.org/scripts/script.php?script_id=159>
-  "--------------------------------------------------------------
-  if !exists('g:minibufexpl_loaded')
-    let g:minibufexpl_loaded = 0
-  endif
-  "}}}2
-  "----------------------------------------------------------{{{2
   " |pi_netrw.txt|
   "--------------------------------------------------------------
   let g:netrw_home = $HOME
@@ -1754,12 +1729,12 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   "--------------------------------------------------------------
   " Load NoteManager.vim only when we need it.
 
-  if globpath(&rtp, 'tools/NoteManager.vim') != ''
+  if globpath(&rtp, 'macros/NoteManager.vim') != ''
     command! LoadNoteManager call <SID>LoadNoteManager()
 
     function! s:LoadNoteManager() 
       let g:NoteManager_PySqlite = 1
-      ru tools/NoteManager.vim
+      ru macros/NoteManager.vim
 
       " My own note-taking configuration
       if s:MSWIN && filereadable('E:/Notes/rc/nmrc')

@@ -7,7 +7,7 @@ let snippet_filetype = 'javascript'
 " Prototype
 exe "Snipp proto ${1:class_name}.prototype.${2:method_name} =\nfunction(${3:first_argument}) {\n\t${4:// body...}\n};"
 " Function
-exe "Snipp fun function ${1:function_name} (${2:argument}) {\n\t${3:// body...}\n}"
+exe "Snipp func function ${1:function_name} (${2:argument}) {\n\t${3:// body...}\n}"
 " Anonymous Function
 exe 'Snipp f function(${1}) {${2}};'
 " if

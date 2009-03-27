@@ -161,18 +161,22 @@ function! Retab(text, ts)
 endfunction
 " }}}
 " Shellescape() {{{
-function! Shellescape(string)
-  if s:MSWIN && a:string !~ '[" \t]'
-    return a:string
-  endif
-
+function! Shellescape(string, ...) " ... = special
   if &sh =~ '\%(\<command\.com\|\<cmd\.exe\|\<cmd\)$'
         \ && exists('+shellslash') && &ssl
     set nossl
-    let string = shellescape(a:string)
+    if a:0
+      let string = shellescape(a:string, a:1)
+    else
+      let string = shellescape(a:string)
+    endif
     set ssl
   else
-    let string = shellescape(a:string)
+    if a:0
+      let string = shellescape(a:string, a:1)
+    else
+      let string = shellescape(a:string)
+    endif
   endif
   return string
 endfunction
@@ -1058,52 +1062,39 @@ endfunction
 "==========================================================}}}1
 " {{{1 WebSearch
 "--------------------------------------------------------------
-if has('unix') && !exists('*LaunchBrowser')
-  " http://www.infynity.spodzone.com/vim/HTML/
-  ru! browser_launcher.vim
-endif
+command! -nargs=+ WebSearch call WebSearch(<q-args>)
 
-if s:MSWIN || exists('*LaunchBrowser')
-  command! -nargs=+ WebSearch call WebSearch(<q-args>)
+function! WebSearch(query) "{{{
+  " default: Google search
+  let url_default = 'http://www.google.com/search?q=%s&ie=utf-8&oe=utf-8&aq=t'
+  let enc_default = 'utf-8'
 
-  function! WebSearch(query) "{{{
-    " default: Google search
-    let url_default = 'http://www.google.com/search?q=%s&ie=utf-8&oe=utf-8&aq=t'
-    let enc_default = 'utf-8'
+  let url = exists('g:WebSearchUrl')      ? g:WebSearchUrl      : url_default
+  let enc = exists('g:WebSearchEncoding') ? g:WebSearchEncoding : enc_default
 
-    let url = exists('g:WebSearchUrl')      ? g:WebSearchUrl      : url_default
-    let enc = exists('g:WebSearchEncoding') ? g:WebSearchEncoding : enc_default
-
-    try
-      let query = printf(url, s:WebQueryEncode(iconv(a:query, &enc, enc)))
-		catch /^Vim\%((\a\+)\)\=:E767/
-      let query = printf(url_default, s:WebQueryEncode(iconv(a:query, &enc, enc)))
-    endtry
-    if s:MSWIN
-      let query = substitute(query, '%', '\\%', 'g')
-      silent exe '!start RunDll32.exe shell32.dll,ShellExec_RunDLL "' . query . '"'
-    elseif exists('*LaunchBrowser')
-      " Launch Firefox
-      call LaunchBrowser('f', 2, query)
+  try
+    let query = printf(url, s:WebQueryEncode(iconv(a:query, &enc, enc)))
+  catch /^Vim\%((\a\+)\)\=:E767/
+    let query = printf(url_default, s:WebQueryEncode(iconv(a:query, &enc, enc)))
+  endtry
+  call OpenFile(query)
+endfunction
+" }}}
+function! s:WebQueryEncode(query) "{{{
+  let output = ''
+  for i in range(strlen(a:query))
+    let ch = a:query[i]
+    if ch =~ '\w' || ch == '-'
+      let output .= ch
+    elseif ch =~ '[[:space:]]'
+      let output .= '+'
+    else
+      let output .= printf('%%%X', char2nr(ch))
     endif
-  endfunction
-  " }}}
-  function! s:WebQueryEncode(query) "{{{
-    let output = ''
-    for i in range(strlen(a:query))
-      let ch = a:query[i]
-      if ch =~ '\w' || ch == '-'
-        let output .= ch
-      elseif ch =~ '[[:space:]]'
-        let output .= '+'
-      else
-        let output .= printf('%%%X', char2nr(ch))
-      endif
-    endfor
-    return output
-  endfunction
-  " }}}
-endif
+  endfor
+  return output
+endfunction
+" }}}
 "==========================================================}}}1
 " {{{1 ShowImage()
 "--------------------------------------------------------------
@@ -1196,9 +1187,9 @@ command! -nargs=1 -complete=file OpenFile call OpenFile(<q-args>)
 
 function! OpenFile(file) "{{{
 	if exists('*Shellescape')
-		let file = Shellescape(a:file)
+		let file = Shellescape(a:file, 1)
 	else
-		let file = shellescape(a:file)
+		let file = shellescape(a:file, 1)
 	endif
 
 	let cmd = s:MSWIN 

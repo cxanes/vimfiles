@@ -40,3 +40,10 @@ exe 'Snipp v ${1:String} ${2:var}${3: = null}${4};${5}'
 exe 'Snipp co static public final ${1:String} ${2:var} = ${3};${4}'
 exe 'Snipp cos static public final String ${1:var} = "${2}";${3}'
 exe 'Snipp as assert ${1:test} : "${2:Failure message}";${3}'
+
+exe "Snipp class class ${1:ClassName} {\n\t${2}\n}"
+exe "Snipp classe class ${1:ClassName} extends ${2:Base} {\n\t${3}\n}"
+exe "Snipp classi class ${1:ClassName} implements ${2:Interface} {\n\t${3}\n}"
+
+exe 'Snipp pt System.out.print(${1});'
+exe 'Snipp ptl System.out.println(${1});'
