@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-26 23:30:01
+" Last Modified: 2009-03-28 07:56:24
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1579,7 +1579,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " xmledit
   " <http://www.vim.org/scripts/script.php?script_id=301>
   "--------------------------------------------------------------
-  let g:xml_jump_string = '`'
+  let g:xml_jump_string = ''
   "}}}2
   "----------------------------------------------------------{{{2
   " vcscommand.vim
@@ -1676,53 +1676,12 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   endif
   "}}}2
   "----------------------------------------------------------{{{2
-  " snippetsEmu.vim (Heavy modification)
-  " <http://www.vim.org/scripts/script.php?script_id=1318>
-  "
-  " ATTENTION:
-  "   I fix some bugs and add new features to the original snippetsEmu.vim.
-  "   Please refer to CAUTION in snippetsEmu.vim for details.
-  "--------------------------------------------------------------
-  let g:snippetsEmu_start_tag = '<{'
-  let g:snippetsEmu_end_tag = '}>'
-  let g:snippetsEmu_elem_delim = ':'
-
-  " Modified snippetsEmu.vim
-  " let g:snippetsEmu_setup_menu = '&Plugin.'
-  let g:snippetsEmu_setup_menu = 0
-  let g:snippetsEmu_autoload = 1
-
-  let g:snippetsEmu_key = '<Leader><Tab>'
-  let g:snippetsEmu_noexp_key = '<Leader><S-Tab>'
-
-  let g:snippetsEmu_JumperCallback = 'JumperCallback'
-  function! JumperCallback()
-    " if exists('*IMAP_Jumpfunc')
-    "   let imap_jump = IMAP_Jumpfunc('', 0)
-    "   if !empty(imap_jump)
-    "     return [1, imap_jump]
-    "   endif
-    " endif
-
-    if exists('g:JumperCallback_' . &ft)
-      return call(g:JumperCallback_{&ft}, [])
-    endif
-  endfunction
-
-  let g:snippetsEmu_ExpandTagCallback = 'ExpandTagCallback'
-  function! ExpandTagCallback(col)
-    if exists('g:ExpandTagCallback_' . &ft)
-      return call(g:ExpandTagCallback_{&ft}, [a:col])
-    endif
-    return -1
-  endfunction
-  "}}}2
-  "----------------------------------------------------------{{{2
   " snipMate.vim (Slight modification)
   " <http://www.vim.org/scripts/script.php?script_id=2540>
   "--------------------------------------------------------------
   let g:snips_author = g:USER_INFO['name']
-  au BufRead,BufNewFile *.snippet  exec 'setf '.expand('<afile>:p:h:t')
+  let g:snippets_dir = s:RUNTIME_DIR . '/snippets/'
+  au BufRead,BufNewFile *.snippet exec 'set ft='.expand('<afile>:p:h:t')
   "}}}2
   "----------------------------------------------------------{{{2
   " NoteManager.vim (My works) (obsolete: use WipidPad <http://wikidpad.sourceforge.net/> instead)

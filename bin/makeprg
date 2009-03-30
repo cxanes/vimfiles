@@ -79,7 +79,7 @@ if [ -z "$FILETYPE" ]; then
 fi
 
 if [ $OSTYPE = 'cygwin' ]; then
-    GPP='g++-4'
+    GPP='g++-4 -Wl,--enable-auto-import '
 else
     GPP='g++'
 fi

@@ -24,6 +24,14 @@ function! CreateTempBuffer(bufname, ...) " bufInitFunc -> call a:1(a:2) {{{
     return cur_winnum
   endif
 
+  let args = a:000
+  if !empty(args) && s:IsSplitCmd(args[0])
+    let args = copy(a:000)
+    let split = remove(args, 0)
+  else
+    let split = 'bel'
+  endif
+
   let temp_winnum = s:TempBufwinnr(a:bufname, cur_bufnum)
   if temp_winnum != -1
     if cur_winnum == temp_winnum
@@ -52,7 +60,7 @@ function! CreateTempBuffer(bufname, ...) " bufInitFunc -> call a:1(a:2) {{{
     endif
     if temp_bufnum == -1 || !temp_bufloaded
       call s:TempBufInit(cur_bufnum)
-      call call('s:TempBufInitFunc', a:000)
+      call call('s:TempBufInitFunc', args)
     endif
     wincmd p
     return temp_winnum
@@ -61,14 +69,14 @@ function! CreateTempBuffer(bufname, ...) " bufInitFunc -> call a:1(a:2) {{{
     let temp_bufnum = s:TempBufnr(a:bufname, cur_bufnum) 
     if temp_bufnum != -1
       let temp_bufloaded = bufloaded(temp_bufnum)
-      exe 'silent bel sb ' . temp_bufnum
+      exe 'silent' split 'sb' temp_bufnum
     else
-      exe 'silent bel new'
+      exe 'silent' split 'new'
       call s:SetTempBufName(a:bufname, 0)
     endif
     if temp_bufnum == -1 || !temp_bufloaded
       call s:TempBufInit(cur_bufnum)
-      call call('s:TempBufInitFunc', a:000)
+      call call('s:TempBufInitFunc', args)
     endif
     let temp_winnum = winnr()
     wincmd p
@@ -82,18 +90,26 @@ function! CreateSharedTempBuffer(bufname, ...) " bufInitFunc -> call a:1(a:2) {{
   if temp_winnum != -1
     return temp_winnum
   else
+    let args = a:000
+    if !empty(args) && s:IsSplitCmd(args[0])
+      let args = copy(a:000)
+      let split = remove(args, 0)
+    else
+      let split = 'bel'
+    endif
+
     let temp_bufloaded = 0
     let temp_bufnum = s:TempBufnr(a:bufname, 0) 
     if temp_bufnum != -1
       let temp_bufloaded = bufloaded(temp_bufnum)
-      exe 'silent bel sb ' . temp_bufnum
+      exe 'silent' split 'sb' temp_bufnum
     else
-      exe 'silent bel new'
+      exe 'silent' split 'new'
       call s:SetTempBufName(a:bufname, 1)
     endif
     if temp_bufnum == -1 || !temp_bufloaded
       call s:TempBufInit(0)
-      call call('s:TempBufInitFunc', a:000)
+      call call('s:TempBufInitFunc', args)
     endif
     let temp_winnum = winnr()
     wincmd p
@@ -102,6 +118,10 @@ function! CreateSharedTempBuffer(bufname, ...) " bufInitFunc -> call a:1(a:2) {{
 endfunction
 " }}}
 "=====================================================
+function! s:IsSplitCmd(cmd) "{{{
+  return a:cmd =~ '^\s*\%(vert\%[ical]\s\+\)\?\%(lefta\%[bove]\|abo\%[veleft]\|rightb\%[elow]\|bel\%[owright]\|to\%[pleft]\|bo\%[tright]\)\?\s*\%(\d\+\)\?\s*$' && a:cmd !~ '^\s*$'
+endfunction
+"}}}
 function! s:IsTempBufName(bufname, temp_bufname, shared) "{{{
   return a:bufname =~ printf('^\V%s%s\$', 
         \ escape(a:temp_bufname, '\'), (a:shared ? '' : '<\d\+>'))

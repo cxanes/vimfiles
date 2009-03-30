@@ -1,0 +1,37 @@
+snippet guard
+	if exists('${1:did_`expand('%:t:r')`}') || &cp
+		finish
+	endif
+	let $1 = 1${2}
+snippet func
+	function! ${1:function_name}(${2}) 
+		${3:" code}
+	endfunction
+snippet for
+	for ${1:needle} in ${2:haystack}
+		${3:" code}
+	endfor
+snippet wh
+	while ${1:condition}
+		${2:" code}
+	endwhile
+snippet if
+	if ${1:condition}
+		${2:" code}
+	endif
+snippet ife
+	if ${1:condition}
+		${2}
+	else
+		${3}
+	endif
+snippet el
+	else
+		${1}
+snippet elif
+	elseif ${1:condition}
+		${2}
+snippet let
+	let ${1} = ${2}
+snippet end
+	`snippets#vim#EndCompl('end')`

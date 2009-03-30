@@ -206,6 +206,11 @@ function! ParseCmdArgs(line)
   return args
 endfunction
 "}}}
+" If2() {{{
+function! If2(x, y)
+  return empty(a:x) ? a:y : a:x
+endfunction
+"}}}
 "==============================================================
 " {{{1 Global Variable
 "--------------------------------------------------------------

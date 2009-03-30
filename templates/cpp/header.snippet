@@ -1,0 +1,6 @@
+#ifndef ${1:`If2(toupper(substitute(expand("%:t:r"), '\W\+\|\([a-z]\)\@<=\([A-Z]\)', '_&', 'g')), 'header' . '_H')`}
+#define $1
+
+${2}
+
+#endif  /* $1 */

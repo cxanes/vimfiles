@@ -1,45 +1,18 @@
-if !exists('*SetLocalTagVars')
-  finish
-endif
+" Syntax highlighting for snippet files (used for snipMate.vim)
+" Hopefully this should make snippets a bit nicer to write!
 
-let [s:snip_start_tag, s:snip_elem_delim, s:snip_end_tag] = SetLocalTagVars()
+syn match snipComment '^#.*'
+syn match placeHolder '\${\d\(:.\{-}\)\=}' contains=snipCommand
+syn match tabStop '\$\d'
+syn match snipCommand '`.\{-}`'
+syn match snippet '^snippet.*' transparent contains=multiSnipText,snipKeyword
+syn match multiSnipText '\w\+ \zs.*' contained
+syn match snipKeyword '^snippet'me=s+8 contained
 
-" let s:search_str = s:snip_start_tag
-"       \ . '\%([^'.s:snip_start_tag.s:snip_end_tag
-"       \ . '[:punct:] \t]\{-}\|".\{-}"\|\[.\{-}\]\|{.\{-}\}\)\%('
-"       \ . s:snip_elem_delim
-"       \ . '\_.\{-}\)\?'.s:snip_end_tag
-
-" exec printf('syntax match SnipWholeTag /%s/ containedin=TOP', escape(s:search_str, '/'))
-
-exec printf('syntax region SnipWholeTag matchgroup=SnipTag start=/%s/ end=/%s/ containedin=ALLBUT,SnipWholeTag keepend',
-      \ escape(s:snip_start_tag 
-      \         . '\%([^'.s:snip_start_tag .'[:punct:] \t]\|"\|\[\|{\|' 
-      \         . s:snip_end_tag . '\|' . s:snip_elem_delim . '\)\@=', '/'), 
-      \ escape(s:snip_end_tag, '/'))
-
-" exec printf('syntax match SnipTag /%s/ contained containedin=SnipWholeTag', 
-"       \ escape('\%('.s:snip_start_tag.'\)\|\%('.s:snip_end_tag.'\)', '/'))
-
-exec printf('syntax match SnipEmptyTag /%s/ contained containedin=SnipWholeTag', 
-      \ escape('\%('.s:snip_start_tag.'\)\@<=\[\d\+\]\%('.s:snip_end_tag.'\)\@=', '/'))
-
-exec printf('syntax match SnipDefaultVal /%s/ contained containedin=SnipWholeTag', 
-      \ escape('\%('.s:snip_start_tag.'\)\@<={.\{-}}\%(['. snip_elem_delim . snip_end_tag .']\)\@=', '/'))
-
-exec printf('syntax match SnipTagName /%s/ contained containedin=SnipWholeTag', 
-      \ escape('\%('.s:snip_start_tag.'\)\@<=[^' 
-      \         . snip_start_tag . snip_end_tag . '[:punct:] \t]\{-}\%(['. snip_elem_delim . snip_end_tag .']\)\@=', '/'))
-
-exec printf('syntax match SnipTagNameQ /%s/ contained containedin=SnipWholeTag', 
-      \ escape('\%('.s:snip_start_tag.'\)\@<=".\{-}"\%(['. snip_elem_delim . snip_end_tag .']\)\@=', '/'))
-
-
-hi link SnipTag           Comment
-hi link SnipDefaultVal    Type
-hi link SnipEmptyTag      Ignore
-hi link SnipTagName       Tag
-hi link SnipTagNameQ      String
-
-unlet s:snip_start_tag s:snip_end_tag s:snip_elem_delim
-" unlet s:search_str
+hi link snipComment   Comment
+hi link multiSnipText String
+hi link snipKeyword   Keyword
+hi link snipComment   Comment
+hi link placeHolder   Special
+hi link tabStop       Special
+hi link snipCommand   String

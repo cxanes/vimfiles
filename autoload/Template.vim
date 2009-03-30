@@ -13,8 +13,14 @@ if exists('loaded_snippet')
   call add(s:snippets_sys, 'snippetsEmu')
 endif
 
-if exists('loaded_snips') && exists('*SnipMateInsertSnippet')
+if exists('loaded_snips')
   call add(s:snippets_sys, 'snipMate')
+
+  function! SnipMateInsertSnippet(snippet)
+    let g:snippet = a:snippet
+    call feedkeys("\<C-R>=snipMate#expandSnip(col('.'))\<CR>", 'n')
+    startinsert
+  endfunction
 endif
 
 if empty(s:snippets_sys)

@@ -7,8 +7,17 @@ if !exists('*Tex_PutEnvironment')
   ru ftplugin/tex_latexSuite.vim
 endif
 
+if exists('*AddOptFiles')
+  call AddOptFiles('dict', 'keywords/tex')
+  call AddOptFiles('dict', split(globpath(&rtp, 'keywords/tex_*'), "\n"))
+  set complete+=k
+endif
+
 function! SetMakePrgTeX() 
   if exists('*SetMakeprg') && exists('g:Tex_DefaultTargetFormat')
+    if !empty(glob('Makefile'))
+      return
+    endif
     call SetMakeprg('-' . g:Tex_DefaultTargetFormat) 
   endif
 endfunction
@@ -256,6 +265,18 @@ if !exists('*TeXJumperCallback')
   " }}}
 endif
 "}}}2
+if has('python') && !exists('*s:TeXToc')
+  py import vim
+  py import texvim
+
+  function! s:TeXToc(filename) 
+    if empty(a:filename)
+      py texvim.Outline(vim.current.buffer).show()
+    else
+      py texvim.Outline(vim.eval("fnamemodify(a:filename, ':p')")).show()
+    endif
+  endfunction
+endif
 " }}}
 "===================================================================
 " Keymappings and Commnads {{{
@@ -282,6 +303,10 @@ if exists('*s:TeXCheck')
 endif
 
 command! -nargs=* -bang -buffer MakeXeTeX make<bang> -e "UseXeTeX()" <args>
+
+if exists('*s:TeXToc')
+  command! -nargs=? -complete=file -buffer TeXToc call <SID>TeXToc(<q-args>)
+endif
 " }}}
 "===================================================================
 " vim: fdm=marker :
