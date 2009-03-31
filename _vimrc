@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-28 07:56:24
+" Last Modified: 2009-03-31 20:44:57
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1682,6 +1682,15 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:snips_author = g:USER_INFO['name']
   let g:snippets_dir = s:RUNTIME_DIR . '/snippets/'
   au BufRead,BufNewFile *.snippet exec 'set ft='.expand('<afile>:p:h:t')
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " Viki/Deplate : A personal wiki for Vim
+  " <http://www.vim.org/scripts/script.php?script_id=861>
+  "--------------------------------------------------------------
+  let g:vikiUseParentSuffix = 1
+  let g:vikiNameSuffix = '.viki'
+  let g:vikiHomePage = s:MSWIN ? 'E:/Wiki/Notes/index.viki' : ($HOME . '/wiki/index.viki')
+  let g:vikiFolds = 'l'
   "}}}2
   "----------------------------------------------------------{{{2
   " NoteManager.vim (My works) (obsolete: use WipidPad <http://wikidpad.sourceforge.net/> instead)

@@ -27,6 +27,9 @@ augroup filetypedetect
 
   " LyX <http://www.lyx.org>
   au BufNewFile,BufRead *.lyx       setf lyx
+
+  " Viki <http://www.vim.org/scripts/script.php?script_id=861>
+  au BufNewFile,BufRead *.viki      setf viki
 augroup END
 
 " copy from filetype.vim
