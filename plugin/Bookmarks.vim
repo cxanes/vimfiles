@@ -40,6 +40,11 @@ function! Bookmarks_GetPath(id)
   endif
 endfunction
 " }}}2
+" {{{2 Bookmarks_Bookmark()
+function! Bookmarks_Bookmark(force, args)
+  return s:Bookmark(a:force, a:args)
+endfunction
+" }}}2
 " }}}1
 " {{{1 Utilities
 " {{{2 SID()
@@ -760,7 +765,12 @@ endfunction
 function! s:Bookmark(force, args)
   if !s:IsValidBookmarks() | return | endif
 
-  let args = s:ParseCmdArgs(a:args)
+  if type(a:args) == type([])
+    let args = a:args
+  else
+    let args = s:ParseCmdArgs(a:args)
+  endif
+
   if len(args) == 0 || args[0] == '^\s*$'
     let pos = getpos('.')[1:2]
     let fname = expand('%:p')

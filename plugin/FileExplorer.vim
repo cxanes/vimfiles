@@ -842,6 +842,19 @@ function! s:FileExplorer(dir, ...) " ... = max_level [0:Max_Create_Level], other
       let b:_FileExplorer_show_help = 0
     endif
 
+    " Add support for Bookmark.vim
+    if exists('*Bookmarks_Bookmark') && !exists('*s:Bookmark')
+      function! s:Bookmark(force, args) 
+        if empty(a:args)
+          let node = s:GetNode(line('.'))
+          if !Node#IsNullNode(node)
+            return Bookmarks_Bookmark(a:force, [node.nodeValue])
+          endif
+        endif
+        return Bookmarks_Bookmark(a:force, a:args)
+      endfunction
+    endif
+
     call s:InitCommands()
     call s:InitMappings()
     call s:InitHighlight()
@@ -939,6 +952,11 @@ function! s:InitCommands() "{{{
   command! -buffer Info echo s:GetNodeInfo(s:GetNode(line('.')))
 
   command! -buffer -nargs=0 Cwd call s:Cwd(s:GetNode(line('.')))
+
+  if exists('*s:Bookmark')
+    command! -buffer -nargs=* -bang -complete=file 
+          \ Bookmark call s:Bookmark(<q-bang> == '!', <q-args>)
+  endif
 
   au BufLeave <buffer> setlocal nocul
   au BufEnter <buffer> setlocal cul
@@ -1170,12 +1188,16 @@ function! s:GotoRootLine() "{{{
 endfunction
 "}}}
 function! s:InitMappings() "{{{
-  nnoremap <buffer> <silent>  o     :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 0, 1)<CR>
+  nnoremap <buffer> <silent> o      :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 0, 1)<CR>
   nnoremap <buffer> <silent> go     :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 0, 0)<CR>
   nnoremap <buffer> <silent> <Tab>  :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 1, 1)<CR>
   nnoremap <buffer> <silent> g<Tab> :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 1, 0)<CR>
-  nnoremap <buffer> <silent>  t     :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 2, 1)<CR>
-  nnoremap <buffer> <silent>  T     :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 2, 0)<CR>
+  nnoremap <buffer> <silent> t      :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 2, 1)<CR>
+  nnoremap <buffer> <silent> T      :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 2, 0)<CR>
+
+  if exists('*s:Bookmark')
+    nnoremap <buffer> <silent> gb :<C-U>call <SID>Bookmark(v:count, '')<CR>
+  endif
 
   nmap     <buffer> <silent> <CR> o
   nmap     <buffer> <silent> g<CR> go
