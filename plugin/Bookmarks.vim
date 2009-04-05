@@ -74,7 +74,13 @@ endfunction
 " }}}2
 " {{{2 SpWhenModified(fname)
 function! s:SpWhenModified(fname)
-  exe (&mod ? 'sp' : 'e') a:fname
+  if isdirectory(a:fname)
+    let fname = substitute(a:fname, '\/\+$', '', '')
+    exe (&mod ? 'sp' : 'e') fname
+    silent! call netrw#LocalBrowseCheck(fname)
+  else
+    exe (&mod ? 'sp' : 'e') a:fname
+  endif
 endfunction
 " }}}2
 " {{{2 SpWhenNamedOrModified(fname)
@@ -103,7 +109,7 @@ endfunction
 " }}}2
 " {{{2 OpenBookmark(index)
 function! s:OpenBookmark(index, ...) " ... = new_tab
-  if a:index == type({})
+  if type(a:index) == type({})
     let bookmark = a:index
   else
     let bookmark = s:GetBookmarks().Get(a:index)
