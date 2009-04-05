@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-03-31 20:44:57
+" Last Modified: 2009-04-05 22:06:53
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1682,6 +1682,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:snips_author = g:USER_INFO['name']
   let g:snippets_dir = s:RUNTIME_DIR . '/snippets/'
   au BufRead,BufNewFile *.snippet exec 'set ft='.expand('<afile>:p:h:t')
+  au VimEnter * inoremap <silent> <Tab> <C-G>u<C-R>=TriggerSnippet()<CR>
   "}}}2
   "----------------------------------------------------------{{{2
   " Viki/Deplate : A personal wiki for Vim
