@@ -151,7 +151,7 @@ fun! TriggerSnippet()
 		endif
 		let col = col('.') - len(trigger)
 		sil exe 's/'.escape(trigger, '.^$/\*[]').'\%#//'
-		return snipMate#expandSnip(col)
+		return printf("\<C-G>u\<C-R>=snipMate#expandSnip(%s)\<CR>", col)
 	elseif exists('SuperTabKey')
 		call feedkeys(SuperTabKey)
 		return ''
