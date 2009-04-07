@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "
@@ -45,6 +44,7 @@ let s:command_projects = '-command project_list'
 let s:command_project_info = '-command project_info -p "<project>"'
 let s:command_project_settings = '-command project_settings -p "<project>"'
 let s:command_project_setting = s:command_project_settings . ' -s <setting>'
+let s:command_project_update = '-command project_update -p "<project>"'
 let s:command_update = '-command project_update -p "<project>" -s "<settings>"'
 let s:command_open = '-command project_open -p "<project>"'
 let s:command_close = '-command project_close -p "<project>"'
@@ -182,7 +182,15 @@ endfunction " }}}
 " ProjectOpen(name) {{{
 " Open the requested project.
 function! eclim#project#util#ProjectOpen(name)
-  let command = substitute(s:command_open, '<project>', a:name, '')
+  let name = a:name
+  if name == ''
+    if !eclim#project#util#IsCurrentFileInProject()
+      return
+    endif
+    let name = eclim#project#util#GetCurrentProjectName()
+  endif
+
+  let command = substitute(s:command_open, '<project>', name, '')
   let result = eclim#ExecuteEclim(command)
   if result != '0'
     call eclim#util#Echo(result)
@@ -192,7 +200,15 @@ endfunction " }}}
 " ProjectClose(name) {{{
 " Close the requested project.
 function! eclim#project#util#ProjectClose(name)
-  let command = substitute(s:command_close, '<project>', a:name, '')
+  let name = a:name
+  if name == ''
+    if !eclim#project#util#IsCurrentFileInProject()
+      return
+    endif
+    let name = eclim#project#util#GetCurrentProjectName()
+  endif
+
+  let command = substitute(s:command_close, '<project>', name, '')
   let result = eclim#ExecuteEclim(command)
   if result != '0'
     call eclim#util#Echo(result)
@@ -278,6 +294,23 @@ function! eclim#project#util#ProjectSettings(project)
       autocmd! BufWriteCmd <buffer>
       autocmd BufWriteCmd <buffer> call <SID>SaveSettings()
     augroup END
+  endif
+endfunction " }}}
+
+" ProjectUpdate() {{{
+" Executes a project update which may also validate nature specific resource
+" file.
+function! eclim#project#util#ProjectUpdate()
+  let name = eclim#project#util#GetCurrentProjectName()
+  let command = substitute(s:command_project_update, '<project>', name, '')
+
+  let result = eclim#ExecuteEclim(command)
+  if result =~ '|'
+    let errors = eclim#util#ParseLocationEntries(split(result, '\n'))
+    call eclim#util#SetLocationList(errors)
+  else
+    call eclim#util#ClearLocationList()
+    call eclim#util#Echo(result)
   endif
 endfunction " }}}
 
@@ -501,7 +534,9 @@ function! eclim#project#util#GetProjectNames(...)
 
     return projects
   endif
-  return keys(eclim#project#util#GetProjects())
+  let names = keys(eclim#project#util#GetProjects())
+  call sort(names)
+  return names
 endfunction " }}}
 
 " GetProjectNatureAliases(...) {{{
@@ -577,12 +612,11 @@ function! eclim#project#util#IsCurrentFileInProject(...)
 endfunction " }}}
 
 " RefreshFileBootstrap() {{{
-" Boostraps a post write autocommand for new files, which forces a refresh by
-" the eclim project. The command should only be called as part of the a
-" BufWritePre autocmd.
+" Boostraps a post write autocommand for updating files, which forces a
+" refresh by the eclim project. The command should only be called as part of
+" the a BufWritePre autocmd.
 function! eclim#project#util#RefreshFileBootstrap()
-  if !filereadable(expand('%:p')) &&
-   \ eclim#project#util#GetCurrentProjectName() != ''
+  if eclim#project#util#GetCurrentProjectName() != '' && &modified
     augroup eclim_refresh_files_bootstrap
       autocmd!
       autocmd BufWritePost <buffer> call eclim#project#util#RefreshFile()

@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "   Plugin that integrates vim with the eclipse plugin eclim (ECLipse
@@ -35,13 +34,9 @@
     let g:EclimShowErrors = 1
   endif
 
-  if !exists("g:EclimSystemWorkaround")
-    let g:EclimSystemWorkaround = 0
-  endif
-
   if !exists("g:EclimHome")
     " set via installer
-    let g:EclimHome = 'C:\eclipse/plugins/org.eclim_1.4.4'
+    let g:EclimHome = 'C:\eclipse/plugins/org.eclim_1.4.5'
   endif
 " }}}
 
@@ -58,55 +53,43 @@
   " list of commands that may fail using system() call, so using a temp file
   " instead.
   let s:exec_commands = ['java_complete']
+
+  let s:eclimd_running = 1
+  let s:eclimd_available_file = g:EclimHome . '/.available'
 " }}}
 
-" ExecuteEclim(args) {{{
-" Executes eclim using the supplied argument string.
-function! eclim#ExecuteEclim(args)
+" ExecuteEclim(command) {{{
+" Executes the supplied eclim command.
+function! eclim#ExecuteEclim(command)
   if exists('g:EclimDisabled')
     return
   endif
 
-  let args = a:args
+  " eclimd appears to be down, so exit early if in an autocmd
+  if !s:eclimd_running && expand('<amatch>') != ''
+    " check for file created by eclimd to signal that it is back up.
+    if !filereadable(s:eclimd_available_file)
+      return
+    endif
+  endif
+
+  let s:eclimd_running = 1
+
+  let command = a:command
 
   " encode special characters
   " http://www.cs.net/lucid/ascii.htm
-  let args = substitute(args, '*', '%2A', 'g')
-  let args = substitute(args, '\$', '%24', 'g')
-  let command = eclim#GetEclimCommand()
-  if string(command) == '0'
-    "let g:EclimDisabled = 1
-    if expand('<amatch>') == '' && exists('g:EclimErrorReason')
-      call eclim#util#EchoError(g:EclimErrorReason)
-    endif
-    return 0
-  endif
-  let command = command . ' ' . args
-
-  " for windows, need to add a trailing quote to complete the command.
-  if command =~ '^"[a-zA-Z]:'
-    let command = command . '"'
-  endif
-
-  call eclim#util#EchoDebug("eclim: executing (Ctrl-C to cancel)...")
-
-  " determine whether to use system call or exec with a temp file
-  let use_exec = 0
-  if g:EclimSystemWorkaround
-    for cmd in s:exec_commands
-      if command =~ '-command\s\+' . cmd
-        let use_exec = 1
-        break
-      endif
-    endfor
-  endif
+  let command = substitute(command, '*', '%2A', 'g')
+  let command = substitute(command, '\$', '%24', 'g')
 
   " execute the command.
-  if use_exec
-    let result = eclim#ExecuteTempFile(command)
-  else
-    let result = eclim#util#System(command)
-    let result = substitute(result, '\(.*\)\n$', '\1', '')
+  let [retcode, result] = eclim#client#nailgun#Execute(command)
+  let result = substitute(result, '\n$', '', '')
+
+  " not sure this is the best place to handle this, but when using the python
+  " client, the result has a trailing ctrl-m on windows.
+  if has('win32') || has('win64')
+    let result = substitute(result, "\<c-m>$", '', '')
   endif
 
   call eclim#util#Echo(' ')
@@ -116,14 +99,18 @@ function! eclim#ExecuteEclim(args)
   if result =~ '^[^\n]*Exception:\?[^\n]*\n\s\+\<at\> ' ||
    \ result =~ '^[^\n]*ResourceException(.\{-})\[[0-9]\+\]:[^\n]*\n\s\+\<at\> '
     let error = substitute(result, '\(.\{-}\)\n.*', '\1', '')
-  elseif v:shell_error
+  elseif retcode
     let error = result
   endif
 
-  if v:shell_error || error != ''
+  if retcode || error != ''
     if g:EclimShowErrors
       if error =~ s:connect
-        " eclimd is not running and we appear to not be in an autocmd
+        " eclimd is not running, disable further eclimd calls
+        let s:eclimd_running = 0
+
+        " if we are not in an autocmd, alert the user that eclimd is not
+        " running.
         if expand('<amatch>') == ''
           call eclim#util#EchoWarning("unable to connect to eclimd - " . error)
         endif
@@ -132,62 +119,10 @@ function! eclim#ExecuteEclim(args)
         call eclim#util#EchoError(error)
       endif
     endif
-    return 0
+    return
   endif
 
   return result
-endfunction " }}}
-
-" ExecuteTempFile(command) {{{
-" Exectue the supplied command piping results to a temp file.
-function! eclim#ExecuteTempFile(command)
-  let tempfile = tempname()
-
-  let command = '!' . a:command . ' > ' . tempfile . ' 2>&1'
-  call eclim#util#Exec(command)
-  let result = join(readfile(tempfile), "\n")
-
-  call delete(tempfile)
-  redraw!
-
-  return result
-endfunction " }}}
-
-" GetEclimCommand() {{{
-" Gets the command to exexute eclim.
-function! eclim#GetEclimCommand()
-  if !exists('g:EclimPath')
-    let eclim_home = eclim#GetEclimHome()
-    if eclim_home == '' || string(eclim_home) == '0'
-      return
-    endif
-
-    let g:EclimPath = substitute(eclim_home, '\', '/', 'g') .
-      \ '/bin/' . g:EclimCommand
-
-    if has("win32") || has("win64")
-      let g:EclimPath = g:EclimPath . (has('win95') ? '.bat' : '.cmd')
-    elseif has("win32unix")
-      let g:EclimPath = system('cygpath "' . g:EclimPath . '"')
-      let g:EclimPath = substitute(g:EclimPath, '\n.*', '', '')
-    endif
-
-    if !filereadable(g:EclimPath)
-      let g:EclimErrorReason = 'Could not locate file: ' . g:EclimPath
-      return
-    endif
-
-    " on windows, the command must be executed on the drive where eclipse is
-    " installed.
-    if has("win32") || has("win64")
-      let g:EclimPath =
-        \ '"' . substitute(g:EclimPath, '^\([a-zA-Z]:\).*', '\1', '') .
-        \ ' && "' . g:EclimPath . '"'
-    else
-      let g:EclimPath = '"' . g:EclimPath . '"'
-    endif
-  endif
-  return g:EclimPath
 endfunction " }}}
 
 " GetEclimHome() {{{

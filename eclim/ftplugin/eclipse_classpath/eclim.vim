@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "   see http://eclim.sourceforge.net/vim/java/classpath.html
@@ -49,7 +48,7 @@ runtime indent/xml.vim
 
 augroup eclim_xml
   autocmd! BufWritePost <buffer>
-  autocmd BufWritePost <buffer> call eclim#java#classpath#UpdateClasspath()
+  autocmd BufWritePost <buffer> call eclim#project#util#ProjectUpdate()
 augroup END
 
 " Command Declarations {{{

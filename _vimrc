@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-04-06 20:40:49
+" Last Modified: 2009-04-07 23:16:41
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -950,7 +950,7 @@ for s:script in [
       \          'ImageBrowser',
       \          'JpPronunciation',
       \          'AutoCorrect',
-      \          'Eclim',
+      \          'eclim',
       \          'ropevim',
       \ ]
   if globpath(&rtp, printf('macros/%s.vim', s:script)) != ''

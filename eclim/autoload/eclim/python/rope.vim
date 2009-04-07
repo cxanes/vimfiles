@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "   see http://eclim.sourceforge.net/vim/python/rope.html
@@ -37,6 +36,7 @@ function eclim#python#rope#Init(project)
   endif
 
 python << EOF
+from __future__ import with_statement
 import os, sys, vim
 ropepath = vim.eval('ropepath')
 if ropepath not in sys.path:
@@ -54,6 +54,14 @@ if ropepath not in sys.path:
       yield
     finally:
       os.chdir(cwd)
+
+  def byteOffsetToCharOffset(filename, offset, encoding):
+    with(projectroot()):
+      f = file(filename)
+      ba = f.read(offset)
+      u = unicode(ba, encoding or 'utf8')
+      u = u.replace('\r\n', '\n') # rope ignore \r, so don't count them.
+      return len(u)
 EOF
 
   return 1
@@ -80,10 +88,10 @@ function eclim#python#rope#RopePath()
   return g:RopePath
 endfunction " }}}
 
-" Completions(project, filename, offset) {{{
+" Completions(project, filename, offset, encoding) {{{
 " Attempts to suggest code completions for a given project path, project
 " relative file path and offset.
-function eclim#python#rope#Completions(project, filename, offset)
+function eclim#python#rope#Completions(project, filename, offset, encoding)
   if !eclim#python#rope#Init(a:project)
     return []
   endif
@@ -99,12 +107,18 @@ with(projectroot()):
   from rope.contrib import codeassist
   project = project.Project(vim.eval('a:project'))
 
-  resource = project.get_resource(vim.eval('a:filename'))
+  filename = vim.eval('a:filename')
+  offset = int(vim.eval('a:offset'))
+  encoding = vim.eval('a:encoding')
+
+  resource = project.get_resource(filename)
   code = resource.read()
+
+  offset = byteOffsetToCharOffset(filename, offset, encoding)
 
   # code completion
   try:
-    proposals = codeassist.code_assist(project, code, int(vim.eval('a:offset')))
+    proposals = codeassist.code_assist(project, code, offset)
     proposals = codeassist.sorted_proposals(proposals)
     proposals = [[p.name, p.kind] for p in proposals]
     vim.command("let results = %s" % repr(proposals))
@@ -125,9 +139,9 @@ EOF
 
 endfunction " }}}
 
-" FindDefinition(project, filename, offset) {{{
+" FindDefinition(project, filename, offset, encoding) {{{
 " Attempts to find the definition of the element at the supplied offset.
-function eclim#python#rope#FindDefinition(project, filename, offset)
+function eclim#python#rope#FindDefinition(project, filename, offset, encoding)
   if !eclim#python#rope#Init(a:project)
     return []
   endif
@@ -141,13 +155,17 @@ with(projectroot()):
   from rope.contrib import codeassist
   project = project.Project(vim.eval('a:project'))
 
-  resource = project.get_resource(vim.eval('a:filename'))
+  filename = vim.eval('a:filename')
+  offset = int(vim.eval('a:offset'))
+  encoding = vim.eval('a:encoding')
+
+  resource = project.get_resource(filename)
   code = resource.read()
 
+  offset = byteOffsetToCharOffset(filename, offset, encoding)
+
   # code completion
-  location = codeassist.get_definition_location(
-    project, code, int(vim.eval('a:offset'))
-  )
+  location = codeassist.get_definition_location(project, code, offset)
   if location:
     path = location[0] and \
       location[0].real_path or \
@@ -157,6 +175,27 @@ EOF
 
   return result
 
+endfunction " }}}
+
+" GetOffset() {{{
+" Gets the character offset for the current cursor position.
+function eclim#python#rope#GetOffset()
+  " NOTE: rope doesn't recognize dos line endings as 2 characters, so just
+  " handle as a single character.  It uses true character offsets, vs eclipse
+  " which uses bytes.
+  let pos = getpos('.')
+
+  " count back from the current position to the beginning of the file.
+  let offset = col('.') - 1
+  while line('.') != 1
+    call cursor(line('.') - 1, 1)
+    let offset = offset + col('$')
+  endwhile
+
+  " restore the cursor position.
+  call setpos('.', pos)
+
+  return offset
 endfunction " }}}
 
 " GetSourceDirs(project) {{{

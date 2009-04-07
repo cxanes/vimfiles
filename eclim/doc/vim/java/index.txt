@@ -62,6 +62,8 @@ Java
 
 - Java Bean Functionality (|vim-java-bean|)
 
+- Class / Interface Hierarchy (|vim-java-hierarchy|)
+
 - Java Source Code Formatting (|vim-java-format|)
 
 - Checkstyle (|vim-java-checkstyle|)

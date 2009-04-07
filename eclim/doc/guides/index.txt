@@ -1,13 +1,18 @@
+*guides*
+
+
 Guides
 ******
 
 
-Installing / Upgrading
-======================
+Installing / Upgrading / Troubleshooting
+========================================
 
 - Installing / Upgrading (|guides-install|)
 
 - Uninstalling (|guides-uninstall|)
+
+- Troubleshooting (|guides-troubleshoot|)
 
 
 Java

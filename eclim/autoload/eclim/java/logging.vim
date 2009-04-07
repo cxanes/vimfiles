@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "  see http://eclim.sourceforge.net/vim/java/logging.html
@@ -29,7 +28,7 @@ function! eclim#java#logging#LoggingInit(var)
   " only execute if the user types a '.' for a method call and if the logger
   " is not already present.
   if char == '.' && s:InitLoggingSettings() &&
-    \ !search('\(final\|static\) Log\(ger\)\?\s', 'n')
+    \ !search('\(final\|static\)\>.\{-}\<Log\(ger\)\?\s', 'n')
     let line = line('.')
     let col = col('.')
     let position = eclim#java#util#GetClassDeclarationPosition(1)
@@ -49,7 +48,7 @@ function! eclim#java#logging#LoggingInit(var)
       call append(position, lines)
       call cursor(line + offset, col)
       for import in s:logger_imports
-        call eclim#java#import#InsertImport(import)
+        call eclim#java#import#InsertImports([import])
       endfor
     endif
   endif

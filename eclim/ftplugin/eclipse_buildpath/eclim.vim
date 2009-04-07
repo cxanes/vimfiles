@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "   see http://eclim.sourceforge.net/vim/php/buildpath.html
@@ -40,7 +39,7 @@ runtime indent/xml.vim
 
 augroup eclim_xml
   autocmd! BufWritePost <buffer>
-  autocmd BufWritePost <buffer> call eclim#php#buildpath#UpdateBuildPath()
+  autocmd BufWritePost <buffer> call eclim#project#util#ProjectUpdate()
 augroup END
 
 " Command Declarations {{{

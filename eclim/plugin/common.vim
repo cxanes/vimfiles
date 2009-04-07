@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "   Various commands that are useful in and out of eclim.
@@ -101,7 +100,7 @@ if !exists(":SwapTypedArguments")
   command SwapTypedArguments :call eclim#common#util#SwapTypedArguments()
 endif
 if !exists(":LocateFile")
-  command -nargs=? LocateFile :call eclim#common#util#LocateFile('', '<args>')
+  command -nargs=? LocateFile :call eclim#common#locate#LocateFile('', '<args>')
 endif
 
 if has('signs')
@@ -153,6 +152,11 @@ endif
 if !exists(":LcdRelative")
   command -nargs=1 -complete=customlist,eclim#common#util#CommandCompleteRelativeDirs
     \ LcdRelative :exec 'lcd ' . expand('%:p:h') . '/<args>'
+endif
+
+if !exists(":History")
+  command History call eclim#common#history#History()
+  command -bang HistoryClear call eclim#common#history#HistoryClear('<bang>')
 endif
 " }}}
 

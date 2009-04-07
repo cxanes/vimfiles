@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "   see http://eclim.sourceforge.net/vim/common/vcs.html
@@ -97,7 +96,7 @@ function eclim#vcs#web#VcsWeb(url_func, ...)
   if type(GetUrl) != 2
     return
   endif
-  call eclim#web#OpenUrl(GetUrl(root, path, a:000), 0)
+  call eclim#web#OpenUrl(GetUrl(root, path, a:000))
 endfunction " }}}
 
 " VcsWebLog() {{{

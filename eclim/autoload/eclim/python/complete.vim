@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "   see http://eclim.sourceforge.net/vim/python/complete.html
@@ -54,12 +53,13 @@ function! eclim#python#complete#CodeComplete(findstart, base)
       return []
     endif
 
-    let offset = eclim#util#GetOffset() + len(a:base)
+    let offset = eclim#python#rope#GetOffset() + len(a:base)
+    let encoding = eclim#util#GetEncoding()
     let project = eclim#project#util#GetCurrentProjectRoot()
     let filename = eclim#project#util#GetProjectRelativeFilePath(expand('%:p'))
 
     let completions = []
-    let results = eclim#python#rope#Completions(project, filename, offset)
+    let results = eclim#python#rope#Completions(project, filename, offset, encoding)
 
     for result in results
       let dict = {

@@ -47,9 +47,9 @@ Project Commands
 - |:ProjectInfo| [<project>] - Echos info for the current or supplied
   project.
 
-- |:ProjectOpen| <project> - Opens a project.
+- |:ProjectOpen| [<project>] - Opens a project.
 
-- |:ProjectClose| <project> - Closes a project.
+- |:ProjectClose| [<project>] - Closes a project.
 
 - |:ProjectNatures| [<project>] - View the configured natures for one
   or all projects.
@@ -150,6 +150,8 @@ Java Commands
 - |:JavaConstructor| - Creates class constructor, either empty or
   based on selected class fields.
 
+- |:JavaHierarchy| - View the type hierarchy tree.
+
 - |:JavaImpl| - View implementable / overridable methods from super
   classes and implemented interfaces.
 
@@ -167,6 +169,8 @@ Java Commands
   [testcase] Allows you to view the results of a test case.
 
 - |:JavaImport| - Import the class under the cursor.
+
+- |:JavaImportMissing| - Import all undefined types.
 
 - |:JavaSearch| [-p <pattern>] [-t <type>] [-x <context>] [-s <scope>]
   - Search for classes, methods, fields, etc.  (With pattern supplied,
@@ -527,5 +531,7 @@ Misc. Commands
 
 - |:OtherWorkingCopyTabopen| <project> - Like :OtherWorkingCopyDiff,
   except open the file in a new tab.
+
+- |:History| - View the local history entries for the current file.
 
 vim:ft=eclimhelp

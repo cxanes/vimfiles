@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "
@@ -27,6 +26,10 @@ if !exists("g:EclimProjectRefreshFiles")
   let g:EclimProjectRefreshFiles = 1
 endif
 
+if !exists("g:EclimProjectKeepLocalHistory")
+  let g:EclimProjectKeepLocalHistory = 1
+endif
+
 let g:EclimProjectTreeTitle = 'ProjectTree_'
 
 if !exists('g:EclimProjectTreeAutoOpen')
@@ -39,10 +42,20 @@ endif
 " }}}
 
 " Auto Commands {{{
-if g:EclimProjectRefreshFiles
+
+" w/ external vim refresh is optional, w/ embedded gvim it is mandatory
+" disabling at all though is discouraged.
+if g:EclimProjectRefreshFiles || has('netbeans_intg')
   augroup eclim_refresh_files
     autocmd!
     autocmd BufWritePre * call eclim#project#util#RefreshFileBootstrap()
+  augroup END
+endif
+
+if g:EclimProjectKeepLocalHistory
+  augroup eclim_history_add
+    autocmd!
+    autocmd BufWritePre * call eclim#common#history#AddHistory()
   augroup END
 endif
 
@@ -56,7 +69,7 @@ if g:EclimProjectTreeAutoOpen
     \ if tabpagenr() > 1 &&
     \     !exists('t:project_tree_auto_opened') &&
     \     eclim#project#util#GetCurrentProjectRoot() != '' |
-    \   call eclim#project#tree#ProjectTree(copy(g:EclimProjectTreeAutoOpenProjects)) |
+    \   call eclim#util#DelayedCommand('call eclim#project#tree#ProjectTree(copy(g:EclimProjectTreeAutoOpenProjects)) | winc w') |
     \   let t:project_tree_auto_opened = 1 |
     \ endif
 endif
@@ -90,11 +103,11 @@ if !exists(":ProjectInfo")
     \ ProjectInfo :call eclim#project#util#ProjectInfo('<args>')
 endif
 if !exists(":ProjectOpen")
-  command -nargs=1 -complete=customlist,eclim#project#util#CommandCompleteProject
+  command -nargs=? -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectOpen :call eclim#project#util#ProjectOpen('<args>')
 endif
 if !exists(":ProjectClose")
-  command -nargs=1 -complete=customlist,eclim#project#util#CommandCompleteProject
+  command -nargs=? -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectClose :call eclim#project#util#ProjectClose('<args>')
 endif
 if !exists(":ProjectNatures")

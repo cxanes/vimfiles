@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "   see http://eclim.sourceforge.net/vim/java/search.html
@@ -296,9 +295,8 @@ function! eclim#java#search#SearchAndDisplay(type, args)
       " single result in another file.
       elseif len(results) == 1 && g:EclimJavaSearchSingleResult != "lopen"
         let entry = getloclist(0)[0]
-        call eclim#util#GoToBufferWindowOrOpen
-          \ (bufname(entry.bufnr), g:EclimJavaSearchSingleResult)
-
+        let name = substitute(bufname(entry.bufnr), '\', '/', 'g')
+        call eclim#util#GoToBufferWindowOrOpen(name, g:EclimJavaSearchSingleResult)
         call cursor(entry.lnum, entry.col)
       else
         lopen
@@ -321,6 +319,7 @@ function! eclim#java#search#SearchAndDisplay(type, args)
         augroup END
       endif
     endif
+    return 1
   else
     if argline =~ '-p '
       let searchedFor = substitute(argline, '.*-p \(.\{-}\)\( .*\|$\)', '\1', '')

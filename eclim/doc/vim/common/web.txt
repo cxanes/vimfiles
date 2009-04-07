@@ -44,6 +44,17 @@ file is to be opened in Vim (split, edit, etc.).
 <
 
 
+If a url you want to open matches one of these patterns, but you want
+to force it to be opened in your browser, you can supply a bang (!) to
+force it to do so:
+
+>
+
+   :OpenUrl!
+
+<
+
+
 
 Configuration
 =============

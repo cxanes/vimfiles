@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "   see http://eclim.sourceforge.net/vim/python/find.html
@@ -39,11 +38,12 @@ function eclim#python#find#FindDefinition()
   " update the file before vim makes any changes.
   call eclim#util#ExecWithoutAutocmds('silent update')
 
-  let offset = eclim#util#GetOffset()
+  let offset = eclim#python#rope#GetOffset()
+  let encoding = eclim#util#GetEncoding()
   let project = eclim#project#util#GetCurrentProjectRoot()
   let filename = eclim#project#util#GetProjectRelativeFilePath(expand('%:p'))
 
-  let result = eclim#python#rope#FindDefinition(project, filename, offset)
+  let result = eclim#python#rope#FindDefinition(project, filename, offset, encoding)
 
   if result != ''
     call eclim#util#SetLocationList(eclim#util#ParseLocationEntries([result]))

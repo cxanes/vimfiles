@@ -1,5 +1,4 @@
 " Author:  Eric Van Dewoestine
-" Version: $Revision$
 "
 " Description: {{{
 "   Utility functions.
@@ -79,7 +78,6 @@ endfunction " }}}
 " autocommand event (WinEnter, etc) to fire, but doesn't, or you need a
 " command to execute after other autocommands have finished.
 function! eclim#util#DelayedCommand(command, ...)
-  " hack since WinEnter doesn't fire on :close of qf or temp window
   let g:eclim_updatetime_save = &updatetime
   let g:eclim_delayed_command = a:command
   let &updatetime = len(a:000) ? a:000[0] : 1
@@ -425,12 +423,15 @@ function! eclim#util#Globpath(path, expr, ...)
 endfunction " }}}
 
 " GoToBufferWindow(buf) {{{
-" Returns to the window containing the supplied buffer name or buffer number.
+" Focuses the window containing the supplied buffer name or buffer number.
+" Returns 1 if the window was found, 0 otherwise.
 function! eclim#util#GoToBufferWindow(buf)
   let winnr = type(a:buf) == 0 ? bufwinnr(a:buf) : bufwinnr(bufnr('^' . a:buf))
   if winnr != -1
     exec winnr . "winc w"
+    return 1
   endif
+  return 0
 endfunction " }}}
 
 " GoToBufferWindowOrOpen(filename, cmd) {{{
@@ -505,6 +506,10 @@ function! eclim#util#MakeWithCompiler(compiler, bang, args)
     let saved_makeprg = &makeprg
     let saved_errorformat = &errorformat
   endif
+  if has('win32') || has('win64')
+    let saved_shellpipe = &shellpipe
+    set shellpipe=>\ %s\ 2<&1
+  endif
 
   try
     unlet! g:current_compiler b:current_compiler
@@ -518,6 +523,9 @@ function! eclim#util#MakeWithCompiler(compiler, bang, args)
     else
       let &makeprg = saved_makeprg
       let &errorformat = saved_errorformat
+    endif
+    if has('win32') || has('win64')
+      let &shellpipe = saved_shellpipe
     endif
   endtry
 endfunction " }}}
@@ -626,6 +634,30 @@ function! eclim#util#PromptList(prompt, list, highlight)
   endif
 
   return response
+endfunction " }}}
+
+" PromptConfirm(prompt, highlight) {{{
+" Creates a yes/no prompt for the user using the supplied prompt string.
+" Returns -1 if the user canceled, otherwise 1 for yes, and 0 for no.
+function! eclim#util#PromptConfirm(prompt, highlight)
+  exec "echohl " . a:highlight
+  try
+    " clear any previous messages
+    redraw
+    echo a:prompt . "\n"
+    let response = input("(y/n): ")
+    while response != '' && response !~ '^\c\s*\(y\(es\)\?\|no\?\|\)\s*$'
+      let response = input("You must choose either y or n. (Ctrl-C to cancel): ")
+    endwhile
+  finally
+    echohl None
+  endtry
+
+  if response == ''
+    return -1
+  endif
+
+  return response =~ '\c\s*\(y\(es\)\?\)\s*'
 endfunction " }}}
 
 " RefreshFile() {{{
@@ -910,10 +942,11 @@ function! eclim#util#TempWindow(name, lines, ...)
   doautocmd BufEnter
 
   " Store filename and window number so that plugins can use it if necessary.
-  if !exists('b:filename')
+  if filename != expand('%:p')
     let b:filename = filename
     let b:winnr = winnr
   endif
+
   augroup eclim_temp_window
     autocmd! BufUnload <buffer>
     call eclim#util#GoToBufferWindowRegister(b:filename)
@@ -921,7 +954,7 @@ function! eclim#util#TempWindow(name, lines, ...)
 endfunction " }}}
 
 " TempWindowClear(name) {{{
-" Opens a temp window w/ the given name and contents.
+" Clears the contents of the temp window with the given name.
 function! eclim#util#TempWindowClear(name)
   "let name = escape(a:name, ' []')
   " hack for windows

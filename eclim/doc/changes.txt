@@ -1,11 +1,38 @@
 History of Changes
 ******************
 
+*1.4.5*
+
+
+1.4.5 (Apr. 04, 2009)
+=====================
+
+Bug Fixes:
+   - Fixed pdt and wst code completion when invoked from headed
+     eclimd.
+
+   - Fixed closing of gvim from eclipse to cleanup swap files.
+
+   - Fixed python code completion and find support when editing files
+     with dos line endings or multi-byte unicode characters.
+
+   - Various other bug fixes.
+
+Eclim:
+   - Added integration with eclipse's local history
+     (|vim-common-history|) support.
+
+Java:
+   - Added command to view type hierarchy (|javahierarchy|).
+
+   - Added command to import all undefined types
+     (|javaimportmissing|).
+
 *1.4.4*
 
 
-1.4.4 (Jan. 1, 2009)
-====================
+1.4.4 (Jan. 10, 2009)
+=====================
 
 Bug Fixes:
    - Various bug fixes.
