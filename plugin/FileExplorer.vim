@@ -754,6 +754,10 @@ function! s:MakeRoot(node) " {{{
 endfunction
 "}}}
 function! s:FileCheck(file) "{{{
+  if a:file =~ '^\s*$'
+    return 1
+  endif
+
   let file = s:Resolve(a:file)
   if isdirectory(file)
     return 0
