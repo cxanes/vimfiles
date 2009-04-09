@@ -13,10 +13,12 @@ snippet inc
 snippet Inc
 	#include "${1:`Filename("$1.h")`}"${2}
 # #ifndef ... #define ... #endif
-snippet def
+snippet Def
 	#ifndef $1
 	#define ${1:SYMBOL} ${2:value}
 	#endif${3}
+snippet def
+	#define 
 # Header Include-Guard
 # (the randomizer code is taken directly from TextMate; it could probably be
 # cleaner, I don't know how to do it in vim script)
@@ -55,7 +57,7 @@ snippet for
 		${4:/* code */}
 	}
 # Function
-snippet func
+snippet fun
 	${1:void} ${2:function_name}(${3})
 	{
 		${4:/* code */}
