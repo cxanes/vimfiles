@@ -16,9 +16,13 @@ endif
 if exists('loaded_snips')
   call add(s:snippets_sys, 'snipMate')
 
+  function! SnipMateExpandSnip(col)
+    return snipMate#expandSnip(s:snippet, col('.'))
+  endfunction
+
   function! SnipMateInsertSnippet(snippet)
-    let g:snippet = a:snippet
-    call feedkeys("\<C-R>=snipMate#expandSnip(col('.'))\<CR>", 'n')
+    let s:snippet = a:snippet
+    call feedkeys("\<C-R>=SnipMateExpandSnip(col('.'))\<CR>", 'n')
     startinsert
   endfunction
 endif
