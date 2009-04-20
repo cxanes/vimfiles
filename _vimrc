@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-04-07 23:16:41
+" Last Modified: 2009-04-19 21:12:41
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1043,12 +1043,12 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
           let col = match(getline(lnum), pattern) + 1
           if col == 0 | continue | endif
 
-          if has('syntax_items')
-            let name = synIDattr(synID(lnum, col, 0), 'name')
-            if name != '' && name !~? 'comment'
-              continue
-            endif
-          endif
+          " if has('syntax_items')
+          "   let name = synIDattr(synID(lnum, col, 0), 'name')
+          "   if name != '' && name !~? 'comment'
+          "     continue
+          "   endif
+          " endif
 
           let line = getline(lnum)
           call setline(lnum, (col - 2 < 0 ? '' : line[: (col-2)])
