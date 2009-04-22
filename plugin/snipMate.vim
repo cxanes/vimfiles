@@ -148,7 +148,9 @@ fun! TriggerSnippet()
 		if snippet != ''
 			let col = col('.') - len(trigger)
 			sil exe 's/\V'.escape(trigger, '/').'\%#//'
-			return snipMate#expandSnip(snippet, col)
+			let g:_snipMate_snippet = snippet
+			call feedkeys(printf("\<C-G>u\<C-R>=snipMate#expandSnip(g:_snipMate_snippet, %d)\<CR>", col), 'n')
+			return ''
 		endif
 	endfor
 
