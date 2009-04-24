@@ -1,0 +1,57 @@
+# snippets for Moose
+snippet cl Moose
+	package ${1:ClassName};
+	use Moose;
+	${2}
+
+	no Moose;
+	1;
+snippet method
+	sub ${1:method}
+	{
+		my $self = shift;
+		${2}
+	}
+snippet hasi
+	has '${1:attribute}' => ( is => '${2:rw}' );
+	${3}
+snippet has
+	has '${1:attribute}' => (
+		is => '${2:rw}',
+		${3}
+	);${4}
+snippet before
+	before '${1:method}' => sub {
+		my $self = shift;
+		${2}
+	};
+snippet after
+	after '${1:method}' => sub {
+		my $self = shift;
+		${2}
+	};
+snippet augment
+	augment '${1:method}' => sub {
+		my $self = shift;
+		${2}
+	};
+snippet override
+	override '${1:method}' => sub {
+		my $orig = shift;
+		my $self = shift;
+		${2}
+	};
+snippet role
+	package ${1:Role};
+	use Moose::Role;
+	${2}
+
+	1;
+snippet subtype
+	subtype '${1:Subtype}'
+		=> as '${2:Item}'${3};
+snippet coerce '${1:Type}'
+	=> from '${2:FromType}'
+	=> via { ${3} };
+snippet enum
+	enum '${1:Type}' => qw( ${2} );
