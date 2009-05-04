@@ -309,8 +309,8 @@ function! myutils#ShowMatch(...) "{{{
 
   syn clear
   syn match Number '^\s*\d\+'
+  exe "syn match Special " . "'" . escape(pattern, "'") . "'"
   let pattern = "'" . substitute(pattern, "'", "''", 'g') . "'"
-  exe "syn match Special " . pattern
   exe "nmap <buffer> <silent> <CR> :call <SID>ShowMatchGoToLine(" . substitute(pattern, '<', '<lt>', 'g') . "," . curwinnum ")<CR>"
 endfunction
 " }}}
