@@ -178,6 +178,12 @@ function! Shellescape(string, ...) " ... = special
       let string = shellescape(a:string)
     endif
   endif
+
+  if &sh =~ '\%(\<command\.com\|\<cmd\.exe\|\<cmd\)$'
+        \ && string !~ '\s'
+    let string = substitute(string, '^"\(.*\)"$', '\1', '')
+  endif
+
   return string
 endfunction
 "}}}
