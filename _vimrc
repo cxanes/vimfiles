@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-04-19 21:12:41
+" Last Modified: 2009-05-05 01:49:47
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -884,6 +884,48 @@ augroup END
 " nnoremap <silent> + ggVG=
 "}}}
 " Commands {{{
+
+" Wiki-related commands (rst)
+let g:rst_wiki = 1
+let g:WikiHomeDir = s:MSWIN ? 'E:/Wiki/Notes' : ($HOME . '/wiki')
+command! -bang -nargs=? -complete=custom,s:ListWikiLinks Wiki call s:Wiki(<q-bang> == '!', <q-args>)
+function! s:ListWikiLinks(A, L, P) "{{{
+  if !exists('g:WikiHomeDir')
+    return ''
+  endif
+
+  let links = split(globpath(g:WikiHomeDir, '*.rst'), "\n")
+  if empty(links)
+    return ''
+  endif
+
+  let pat = '^\V' . escape(g:WikiHomeDir, '\') . '\%(\[\\/]\)\?\|\.rst\$'
+  echom pat
+  call map(links, 'substitute(v:val, pat, "", "g")')
+  return join(links, "\n")
+endfunction
+"}}}
+function! s:Wiki(newtab, link) "{{{
+  if a:link =~ '^[A-Za=z]:|^[\\/]'
+    echohl ErrorMsg | echo 'Wiki: link cannot be fullpath' | echohl None
+    return
+  endif
+
+  let link = simplify(g:WikiHomeDir . '/' . (empty(a:link) ? 'index' : a:link))
+  if link !~ '\.rst$'
+    let link .= '.rst'
+  endif
+
+  if isdirectory(link)
+    echohl ErrorMsg | echo 'Wiki: link is directory' | echohl None
+    return
+  endif
+
+  exec (a:newtab ? 'tabe' : 'e') fnameescape(link)
+  exec 'lcd!' fnameescape(g:WikiHomeDir)
+endfunction
+"}}}
+
 " Change working directory to the directory of current file
 nnoremap <silent> <Leader>cd :<C-U>Cwd<CR>
 command! -bang -bar Cwd exe (<q-bang> == '!' ? 'l' : '') . 'cd ' . expand('%:p:h')
@@ -1682,15 +1724,6 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:snips_author = g:USER_INFO['name']
   let g:snippets_dir = s:RUNTIME_DIR . '/snippets/'
   au BufRead,BufNewFile *.snippet exec 'set ft='.expand('<afile>:p:h:t')
-  "}}}2
-  "----------------------------------------------------------{{{2
-  " Viki/Deplate : A personal wiki for Vim
-  " <http://www.vim.org/scripts/script.php?script_id=861>
-  "--------------------------------------------------------------
-  let g:vikiUseParentSuffix = 1
-  let g:vikiNameSuffix = '.viki'
-  let g:vikiHomePage = s:MSWIN ? 'E:/Wiki/Notes/index.viki' : ($HOME . '/wiki/index.viki')
-  let g:vikiFolds = 'l'
   "}}}2
   "----------------------------------------------------------{{{2
   " NoteManager.vim (My works) (obsolete: use WipidPad <http://wikidpad.sourceforge.net/> instead)
