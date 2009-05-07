@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-05-05 01:49:47
+" Last Modified: 2009-05-07 22:29:43
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -452,7 +452,8 @@ endif
 "
 "   <F4>      Quit                              <#r=Quit>
 "   <F7>      Filter                            <#r=Filter>
-"   <F8>      Format (par)                      <#r=Format>
+"   <F8>      Open Scratch 
+"              <http://www.vim.org/scripts/script.php?script_id=389>
 "   <F9>      Dictionary (sdcv)                 <#r=Dictionary>
 "   <F11>     Remove last search pattern |@/|   <#r=Search>
 "   <F12>     Toggle spell checking |spell|     <#r=Spell>
