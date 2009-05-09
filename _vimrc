@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-05-07 22:29:43
+" Last Modified: 2009-05-09 23:07:42
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -216,6 +216,9 @@ set hidden
 set tabstop=4
 set shiftwidth=4
 set expandtab
+
+" Round indent to multiple of 'shiftwidth'
+set shiftround
 
 if s:MSWIN
   set keywordprg=man
