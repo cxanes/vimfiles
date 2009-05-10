@@ -103,11 +103,11 @@ endif
 "===================================================================
 " Key Mappings and Commands {{{
 "-------------------------------------------------------------------
-command -range -buffer -nargs=1 ExtractSubroutine call <SID>ExtractSubroutine(<q-args>, <line1>, <line2>)
-command -range -buffer -bang    PutExtractedSubroutine call <SID>PutExtractedSubroutine(<count>, <q-bang> == '!')
+command! -range -buffer -nargs=1 ExtractSubroutine call <SID>ExtractSubroutine(<q-args>, <line1>, <line2>)
+command! -range -buffer -bang    PutExtractedSubroutine call <SID>PutExtractedSubroutine(<count>, <q-bang> == '!')
 
-command -range -buffer -nargs=1 ExtractMehod call <SID>ExtractSubroutine(<q-args>, <line1>, <line2>)
-command -range -buffer -bang    PutExtractedMehod call <SID>PutExtractedSubroutine(<count>, <q-bang> == '!')
+command! -range -buffer -nargs=1 ExtractMehod call <SID>ExtractSubroutine(<q-args>, <line1>, <line2>)
+command! -range -buffer -bang    PutExtractedMehod call <SID>PutExtractedSubroutine(<count>, <q-bang> == '!')
 
 if exists('*CompleteParenMap')
   call CompleteParenMap('([{',  '[$@%&*]\|\w')
