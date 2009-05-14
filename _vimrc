@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-05-09 23:07:42
+" Last Modified: 2009-05-15 05:43:32
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -122,8 +122,11 @@ augroup END
 let did_install_syntax_menu = 1
 let no_buffers_menu = 1
 
+let s:do_resize_window = 1
+
 if &term == 'screen'
   set term=xterm
+  let s:do_resize_window = 0
 endif
 
 " Encoding {{{
@@ -143,17 +146,20 @@ language time C
 set fileencodings=ucs-bom,utf-8,big5,latin1
 "}}}
 " Size of the Vim window {{{
-let s:default_size = [42, 120]
+if s:do_resize_window
+  let s:default_size = [42, 120]
 
-if &lines < s:default_size[0]
-  let &lines = s:default_size[0]
+  if &lines < s:default_size[0]
+    let &lines = s:default_size[0]
+  endif
+
+  if &columns < s:default_size[1]
+    let &columns = s:default_size[1]
+  endif
+
+  unlet s:default_size
 endif
-
-if &columns < s:default_size[1]
-  let &columns = s:default_size[1]
-endif
-
-unlet s:default_size
+unlet s:do_resize_window
 "}}}
 " 'backup' settings {{{
 set backup
