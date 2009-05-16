@@ -1795,7 +1795,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " autocomplete and calltips.
   "--------------------------------------------------------------
   if s:MSWIN
-    let g:codeintel_dir = 'C:\My_Tools\codeintel\lib'
+    let g:codeintel_dir = 'C:\My_Tools\codeintel\source\src\codeintel\lib'
     if !isdirectory(g:codeintel_dir)
       unlet g:codeintel_dir
     else
