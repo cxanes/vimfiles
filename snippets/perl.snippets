@@ -88,7 +88,7 @@ snippet cl Normal
 # Read File
 snippet slurp
 	my $${1:var};
-	{ local $/ = undef; local *FILE; open FILE, "<${2:file}"; $$1 = <FILE>; close FILE }${2}
+	{ local $/ = undef; local *FILE; open FILE, "<${2:file}"; $$1 = <FILE>; close FILE }${3}
 snippet head
 	#!/usr/bin/perl
 
