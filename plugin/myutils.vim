@@ -428,15 +428,19 @@ function! s:Inject(bufnr, text, newline) "{{{
         \ . (a:bufnr =~ '^\d\+' ? a:bufnr : "'" . a:bufnr . "'")
 endfunction
 "}}}
-if !s:MSWIN && executable('screen')
-  command! -range -nargs=1 ScreenInject 
-        \ call s:ScreenInject(<q-args>, GetSelection())
+if executable('screen')
+  command! -range -nargs=1 -bang ScreenInject 
+        \ call s:ScreenInject(<q-bang> != '!', <q-args>, GetSelection())
 
-  function! s:ScreenInject(winID, text) "{{{
+  function! s:ScreenInject(other, winID, text) "{{{
     let tmpfile = tempname()
     let lines = split(a:text, '\n')
     call writefile(lines, tmpfile)
-    exec printf("silent !screen -X eval 'readreg x \"%s\"' 'select %d' 'paste x' 'other'", tmpfile, a:winID)
+    let cmd = "silent !screen -X eval 'readreg x \"%s\"' 'select %d' 'paste x'"
+    if a:other
+      let cmd .= " 'other'"
+    end
+    exec printf(cmd, tmpfile, a:winID)
     call delete(tmpfile)
   endfunction
   "}}}
