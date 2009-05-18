@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-05-15 05:43:32
+" Last Modified: 2009-05-19 04:23:03
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1459,6 +1459,24 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:Perl_AuthorRef  = g:USER_INFO['ref']
   let g:Perl_Email      = g:USER_INFO['email']
   let g:Perl_Company    = ''
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " fuzzyfinder.vim
+  " <http://www.vim.org/scripts/script.php?script_id=1984>
+  "--------------------------------------------------------------
+  let g:FuzzyFinderOptions = { 'Base'      :{}, 'Buffer':{}, 'File'    :{}, 'Dir':{},
+        \                      'MruFile'   :{}, 'MruCmd':{}, 'Bookmark':{}, 'Tag':{}, 
+        \                      'TaggedFile':{}, 'CallbackFile':{}, 'CallbackItem':{} }
+  let g:FuzzyFinderOptions.Base.abbrev_map  = {}
+  nnoremap <silent> <Leader>fb :<C-U>FuzzyFinderBuffer<CR>
+  nnoremap <silent> <Leader>ff :<C-U>exec v:count == 0 ? 'FuzzyFinderFile' : v:count == 1 ? 'FuzzyFinderFileWithFullCwd' : 'FuzzyFinderFileWithCurrentBufferDir'<CR>
+  nnoremap <silent> <Leader>fd :<C-U>exec v:count == 0 ? 'FuzzyFinderDir' : v:count == 1 ? 'FuzzyFinderDirWithFullCwd' : 'FuzzyFinderDirWithCurrentBufferDir'<CR>
+  nnoremap <silent> <Leader>fmf :<C-U>FuzzyFinderMruFile<CR>
+  nnoremap <silent> <Leader>fmc :<C-U>FuzzyFinderMruCmd<CR>
+  nnoremap <silent> <Leader>ft :<C-U>exec v:count == 0 ? 'FuzzyFinderTag' : v:count == 1 ? 'FuzzyFinderTagWithCursorWord' : 'FuzzyFinderTaggedFile'<CR>
+  nnoremap <silent> <Leader>fk :<C-U>FuzzyFinderBookmark<CR>
+  nnoremap <silent> <Leader>fak :<C-U>FuzzyFinderAddBookmark<CR>
+  vnoremap <silent> <Leader>fak :FuzzyFinderAddBookmarkAsSelectedText<CR>
   "}}}2
   "----------------------------------------------------------{{{2
   " HTML.vim
