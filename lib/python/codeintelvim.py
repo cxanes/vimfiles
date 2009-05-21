@@ -17,6 +17,7 @@ try:
     from codeintel2.common import *
     import codeintel2.manager
     import codeintel2.indexer
+    import codeintel2.environment
 except ImportError:
     raise RuntimeError('Cannot find module codeintel2')
 
@@ -76,10 +77,21 @@ def _get_bufnr(bufnr = None):
 def _vimstr(s):
     return "'%s'" % (str(s).replace("'", "''"), )
 
+class _Environment(codeintel2.environment.SimplePrefsEnvironment):
+    """Our own environment
+    """
+    _default_prefs = {
+        "codeintel_selected_catalogs": ["pywin32", "cpan"],
+        "codeintel_max_recursive_dir_depth": 10,
+    }
+
+    def __init__(self):
+        codeintel2.environment.SimplePrefsEnvironment.__init__(self, **self._default_prefs)
+
 
 class _VimCodeIntel:
     def __init__(self, db_base_dir = None):
-        self.mgr = codeintel2.manager.Manager(db_base_dir)
+        self.mgr = codeintel2.manager.Manager(db_base_dir, env = _Environment())
         self.mgr.upgrade()
         self.mgr.initialize()
 
