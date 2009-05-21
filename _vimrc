@@ -1677,7 +1677,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " bufexplorer.vim <id=BufExplorer>
   " <http://www.vim.org/scripts/script.php?script_id=42>
   "--------------------------------------------------------------
-  nnoremap <silent> <F3> :<C-U>BufExplorer<CR>
+  nnoremap <silent> <F3> :<C-U>exec v:count == 0 ? 'BufExplorer' : v:count == 1 ? 'HSBufExplorer' : 'VSBufExplorer'<CR>
   "}}}2
   "----------------------------------------------------------{{{2
   " editexisting.vim -> $VIMRUNTIME/macros/editexisting.vim
