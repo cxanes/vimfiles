@@ -251,16 +251,16 @@ if exists('*IndentForComment#IndentForCommentMapping')
   call IndentForComment#IndentForCommentMapping(['#'], [30, 45, 60])
 endif
 
-if exists('*CompleteParenMap')
-  call CompleteParenMap('([{')
+if exists('*mapping#CompleteParen')
+  call mapping#CompleteParen('([{')
 endif
 
-if exists('*MoveToMap')
-  call MoveToMap('[{}\])]')
+if exists('*mapping#MoveTo')
+  call mapping#MoveTo('[{}\])]')
 endif
 
-if exists('*EnterMap')
-  call EnterMap('{', '}')
+if exists('*mapping#Enter')
+  call mapping#Enter('{', '}')
 endif
 
 if exists('*mylib#AddOptFiles')

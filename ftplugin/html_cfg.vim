@@ -27,8 +27,8 @@ endif
 "===================================================================
 " Key Mappings {{{
 "-------------------------------------------------------------------
-if exists('*MoveToMap')
-  call MoveToMap('>')
+if exists('*mapping#MoveTo')
+  call mapping#MoveTo('>')
 endif
 
 inoremap <silent> <buffer> <CR> <C-R>=<SID>HtmlEnter()<CR>

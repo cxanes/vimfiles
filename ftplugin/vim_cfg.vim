@@ -13,15 +13,15 @@ command! -range -nargs=0 Exec call <SID>ExecLine(<line1>, <line2>)
 "===================================================================
 " Key Mappings {{{1
 "-------------------------------------------------------------------
-if exists('*CompleteParenMap')
-  call CompleteParenMap('([', '[''"]\|\w')
+if exists('*mapping#CompleteParen')
+  call mapping#CompleteParen('([', '[''"]\|\w')
 endif
 
-if exists('*MoveToMap')
-  call MoveToMap('[}\])]')
+if exists('*mapping#MoveTo')
+  call mapping#MoveTo('[}\])]')
 endif
 
-if exists('*StripSurrounding')
+if exists('*mylib#StripSurrounding')
   nnoremap <silent> <buffer> <Leader>sf :call <SID>StripFunc()<CR>
 endif
 " }}}1
@@ -29,7 +29,7 @@ endif
 " Functions {{{1
 "-------------------------------------------------------------------
 " StripFunc() "{{{2
-if exists('*StripSurrounding')
+if exists('*mylib#StripSurrounding')
   if !exists('*s:StripFunc')
     function! s:StripFunc()
       let [lnum, col] = StripSurrounding('\<[a-zA-Z_{}][a-zA-Z0-9_{}]*\s*(', '', ')')

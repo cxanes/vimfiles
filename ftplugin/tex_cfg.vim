@@ -29,9 +29,9 @@ let b:set_makeprg_tex = 'SetMakePrgTeX'
 " Functions {{{
 "------------------------------------------------------------
 " StripCommand() "{{{2
-if exists('*StripSurrounding') && !exists('*s:StripCommand')
+if exists('*mylib#StripSurrounding') && !exists('*s:StripCommand')
   function! s:StripCommand()
-    call StripSurrounding('\\\w\+\s*{', '', '}')
+    call mylib#StripSurrounding('\\\w\+\s*{', '', '}')
   endfunction
 endif
 " }}}2
@@ -290,8 +290,8 @@ if exists('*s:InsertEnvironment')
   nnoremap <silent> <buffer> <Leader>ie "_yiwi<C-R>=<SID>InsertEnvironment('n')<CR>
 endif
 
-if exists('*MoveToMap')
-  call MoveToMap('[}\]]')
+if exists('*mapping#MoveTo')
+  call mapping#MoveTo('[}\]]')
 endif
 
 if exists('*s:StripCommand')

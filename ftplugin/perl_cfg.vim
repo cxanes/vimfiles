@@ -109,30 +109,30 @@ command! -range -buffer -bang    PutExtractedSubroutine call <SID>PutExtractedSu
 command! -range -buffer -nargs=1 ExtractMehod call <SID>ExtractSubroutine(<q-args>, <line1>, <line2>)
 command! -range -buffer -bang    PutExtractedMehod call <SID>PutExtractedSubroutine(<count>, <q-bang> == '!')
 
-if exists('*CompleteParenMap')
-  call CompleteParenMap('([{',  '[$@%&*]\|\w')
+if exists('*mapping#CompleteParen')
+  call mapping#CompleteParen('([{',  '[$@%&*]\|\w')
 endif
 
-if exists('*MoveToMap')
-  call MoveToMap('[}\])]')
+if exists('*mapping#MoveTo')
+  call mapping#MoveTo('[}\])]')
 endif
 
-if exists('*EnterMap')
-  call EnterMap('{', '}')
+if exists('*mapping#Enter')
+  call mapping#Enter('{', '}')
 endif
 
-if exists('*CNewLine')
-  inoremap <silent> <buffer> <C-J> <C-R>=CNewLine()<CR>
+if exists('*mylib#CNewLine')
+  inoremap <silent> <buffer> <C-J> <C-R>=mylib#CNewLine()<CR>
 endif
 
 if exists('*IndentForComment#IndentForCommentMapping')
   call IndentForComment#IndentForCommentMapping(['#'], [30, 45, 60])
 endif
 
-if exists('*StripSurrounding')
+if exists('*mylib#StripSurrounding')
   nnoremap <silent> <buffer> <Leader>sf :call <SID>StripFunc()<CR>
   function! s:StripFunc()
-    call StripSurrounding('\<\%(->\|::\)\@<!\%([a-zA-Z_{}][a-zA-Z0-9_{}]*\)\%(\%(->\|::\)[a-zA-Z_{}][a-zA-Z0-9_{}]*\)*\s*(', '', ')')
+    call mylib#StripSurrounding('\<\%(->\|::\)\@<!\%([a-zA-Z_{}][a-zA-Z0-9_{}]*\)\%(\%(->\|::\)[a-zA-Z_{}][a-zA-Z0-9_{}]*\)*\s*(', '', ')')
   endfunction
 endif
 " }}}

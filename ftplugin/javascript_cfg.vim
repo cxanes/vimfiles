@@ -7,12 +7,12 @@ set cindent
 "===================================================================
 " Key Mappings {{{
 "-------------------------------------------------------------------
-if exists('*CompleteParenMap')
-  call CompleteParenMap('([')
+if exists('*mapping#CompleteParen')
+  call mapping#CompleteParen('([')
 endif
 
-if exists('*MoveToMap')
-  call MoveToMap('[}\])]')
+if exists('*mapping#MoveTo')
+  call mapping#MoveTo('[}\])]')
 endif
 " }}}
 "===================================================================

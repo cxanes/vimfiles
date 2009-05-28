@@ -13,33 +13,33 @@ inoremap <silent> <buffer> < <lt><C-R>=<SID>CompleteAngleBracket()<CR>
 inoremap <silent> <buffer> <Leader>{  {
 inoremap <silent> <buffer> <Leader><  <
 
-if exists('*MoveToMap')
-  call MoveToMap('[{}\])>]')
+if exists('*mapping#MoveTo')
+  call mapping#MoveTo('[{}\])>]')
 endif
 
-if exists('*CNewLine')
-  inoremap <silent> <buffer> <C-J> <C-R>=CNewLine()<CR>
+if exists('*mylib#CNewLine')
+  inoremap <silent> <buffer> <C-J> <C-R>=mylib#CNewLine()<CR>
 endif
 " }}}
 "===================================================================
 " Functions {{{
 "-------------------------------------------------------------------
-if exists('*CompleteParenMap')
-  call CompleteParenMap('([')
+if exists('*mapping#CompleteParen')
+  call mapping#CompleteParen('([')
 endif
 
-if exists('*EnterMap')
-  call EnterMap('{', '}')
+if exists('*mapping#Enter')
+  call mapping#Enter('{', '}')
 endif
 
-if !exists('*s:CompleteBrace')
+if !exists('*s:CompleteBrace') && exists('*myutils#CompleteParen')
   function! s:CompleteBrace() "{{{
     let line = getline('.')[ : (col('.')-(col('$') == col('.') ? 1 : 2)) ]
     
     if line =~ '^%{$'
       return "\<CR>0\<C-D>\<CR>0\<C-D>%}\<Up>\<Home>"
     else
-      return CompleteParen('{')
+      return myutils#CompleteParen('{')
     endif
   endfunction
   "}}}
@@ -50,7 +50,7 @@ if !exists('*s:CompleteAngleBracket')
     let line = getline('.')[ : (col('.')-(col('$') == col('.') ? 1 : 2)) ]
     
     if line =~ '^<$'
-      return CompleteParen('<')
+      return myutils#CompleteParen('<')
     else
       return ''
     endif

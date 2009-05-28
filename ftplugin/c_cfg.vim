@@ -21,20 +21,20 @@ endif
 inoremap <silent> <buffer> <Leader>k <C-X><C-K>
 inoremap <silent> <buffer> <Leader>p <C-R>=<SID>CFuncType()<CR><C-R>=<SID>Imap()<CR>
 
-if exists('*CNewLine')
-  inoremap <silent> <buffer> <C-J> <C-R>=CNewLine()<CR>
+if exists('*mylib#CNewLine')
+  inoremap <silent> <buffer> <C-J> <C-R>=mylib#CNewLine()<CR>
 endif
 
-if exists('*CompleteParenMap')
-  call CompleteParenMap('([{')
+if exists('*mapping#CompleteParen')
+  call mapping#CompleteParen('([{')
 endif
 
-if exists('*MoveToMap')
-  call MoveToMap('[{}\])]')
+if exists('*mapping#MoveTo')
+  call mapping#MoveTo('[{}\])]')
 endif
 
-if exists('*EnterMap')
-  call EnterMap('{', '}')
+if exists('*mapping#Enter')
+  call mapping#Enter('{', '}')
 endif
 " }}}
 "===================================================================

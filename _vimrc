@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-05-28 18:41:38
+" Last Modified: 2009-05-28 23:49:47
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1825,11 +1825,11 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
 		if a:file =~? '\.\%(jpg\|bmp\|png\|gif\)$'
 			if exists('*ShowImage') && ShowImage(a:file, 1) == 0
 				return 1
-			elseif exists('*OpenFile') && OpenFile(a:file) == 0
+			elseif exists('*myutils#OpenFile') && myutils#OpenFile(a:file) == 0
 				return 1
 			endif
-		elseif exists('*OpenFile') && a:file =~? '\.\%(pdf\|docx\?\|xls\|odt\)$'
-			call OpenFile(a:file)
+		elseif exists('*myutils#OpenFile') && a:file =~? '\.\%(pdf\|docx\?\|xls\|odt\)$'
+			call myutils#OpenFile(a:file)
 			return 1
 		endif
   endfunction
