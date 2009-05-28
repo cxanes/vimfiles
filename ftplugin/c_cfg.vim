@@ -3,8 +3,8 @@
 " Setting {{{
 "-------------------------------------------------------------------
 compiler gcc
-if exists('*AddOptFiles') && isdirectory($HOME . '/local/include')
-  call AddOptFiles('path', $HOME . '/local/include')
+if exists('*mylib#AddOptFiles') && isdirectory($HOME . '/local/include')
+  call mylib#AddOptFiles('path', $HOME . '/local/include')
 endif
 " }}}
 "===================================================================
@@ -163,11 +163,11 @@ if &ft != 'c'
   finish
 endif
 
-if exists('*AddOptFiles')
-  call AddOptFiles('tags', 'tags/cstd.tags')
-  call AddOptFiles('tags', 'tags/lsb32.tags')
+if exists('*mylib#AddOptFiles')
+  call mylib#AddOptFiles('tags', 'tags/cstd.tags')
+  call mylib#AddOptFiles('tags', 'tags/lsb32.tags')
 
-  call AddOptFiles('dict', 'keywords/c')
+  call mylib#AddOptFiles('dict', 'keywords/c')
   set complete+=k
 endif
 

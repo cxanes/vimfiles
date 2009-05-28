@@ -15,209 +15,6 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}
 "==============================================================
-" Common functions
-"--------------------------------------------------------------
-" {{{ SelectAll <$VIMRUNTIME/menu.vim>
-function! SelectAll()
-  exe 'norm gg' . (&slm == '' ? 'VG' : "gH\<C-O>G")
-endfunction
-" }}}
-" {{{ ShowMesg()
-function! ShowMesg(group, mesg, ...) 
-  exec 'echohl' a:group
-  if a:0 > 0 && !empty(a:1)
-    echom a:mesg
-  else
-    echo a:mesg
-  endif
-  echohl None
-endfunction
-" }}}
-" {{{ GetPos(): Get the position of the cursor on the screen.
-"
-"   This is a trial-and-error function based on fixed font size.
-"   Windows version: set guifont=Consolas:h9:w5
-
-" trial-and-error: set guifont=Consolas:h9:w5
-let s:gui_setting = {
-      \ 'tabpage_gui_line_height' : 19,
-      \ 'tabpage_text_line_height': 15,
-      \ 'font_width'              :  7,
-      \ 'vert_scrollbar_width'    : 13,
-      \ 'font_height'             : 15,
-      \ 'menu_height'             : 19,
-      \ 'title_height'            : 10,
-      \ 'toolbar_height'          : 30,
-      \ }
-  
-function! GetPos() "{{{
-  let nline = winline() + 1
-  let ncol  = wincol() - 1
-
-  let orgwin = winnr()
-  let curwin = orgwin
-  wincmd k
-  while curwin != winnr()
-    let nline += winheight(0) + 1
-    let curwin = winnr()
-    wincmd k
-  endwhile
-
-  exe orgwin . "wincmd w"
-  let curwin = orgwin
-  wincmd h
-  while curwin != winnr()
-    let ncol += winwidth(0) + 1
-    let curwin = winnr()
-    wincmd h
-  endwhile
-
-  exe orgwin . "wincmd w"
-  let pos = {'x': getwinposx(), 'y' : getwinposy()}
-
-  let pos.x += ncol * s:gui_setting['font_width'] + 6
-        \ + (&columns != winwidth(0) ? s:gui_setting['vert_scrollbar_width'] : 0)
-
-  if &showtabline == 2 || ( tabpagenr('$') > 1 && &showtabline == 1 )
-    let pos.y += stridx(&guioptions, 'e') != -1 
-          \ ? s:gui_setting['tabpage_gui_line_height']
-          \ : s:gui_setting['tabpage_text_line_height']
-  endif
-
-  let pos.y += nline * s:gui_setting['font_height'] + s:gui_setting['title_height']
-
-  if stridx(&guioptions, 'm') != -1
-    let pos.y += s:gui_setting['menu_height']
-  endif
-
-  if stridx(&guioptions, 'T') != -1
-    let pos.y += s:gui_setting['toolbar_height']
-  endif
-
-  return pos
-endfunction
-"}}}
-" }}}
-" {{{ AddOptFiles()
-function! AddOptFiles(opt, files)
-  if type(a:files) == type('') && !empty(a:files)
-    let files = [a:files]
-  elseif type(a:files) == type([]) && !empty(a:files)
-    let files = a:files
-  else
-    return
-  endif
-
-  for file in files
-    if file =~ '^[a-zA-Z]:/' || file =~ '^/'
-      let path = file
-    else
-      let path = globpath(&rtp, file)
-    endif
-    if path != ''
-      exe 'setl ' . a:opt . '+=' . substitute(split(path,'\n')[0], '[ ,\\]', '\\\\\\&', 'g')
-    endif
-  endfor
-endfunction
-" }}}
-" {{{ LiteralPattern()
-function! LiteralPattern(pat)
-  return '\V' . escape(a:pat, '\') . (&magic ? '\m' : '\M')
-endfunction
-" }}}
-" {{{ SearchApply()
-function! SearchApply(pat, func)
-  let total = line('$')
-  let lnum = 1
-  while lnum <= total
-    call substitute(getline(lnum), a:pat, '\=call(a:func, [submatch(0)])', 'g')
-    let lnum += 1
-  endwhile
-endfunction
-" }}}
-" {{{ GetSelection()
-function! GetSelection()
-  let s_sav = @s
-  let @s = ''
-
-  normal gv"sy
-
-  let s = @s
-  let @s = s_sav
-
-  return s
-endfunction
-" }}}
-" {{{ Retab()
-function! Retab(text, ts)
-  let text = a:text
-  let ts = a:ts + 0
-  while match(text, '\t') != -1
-    let text = substitute(text, '^\([^\t]*\)\(\t\+\)', 
-          \ . '\=submatch(1).repeat(" ", strlen(submatch(2))*'
-          \ . ts . '-strlen(submatch(1))%' . ts . ')', '')
-  endwhile
-  return text
-endfunction
-" }}}
-" Shellescape() {{{
-function! Shellescape(string, ...) " ... = special
-  if &sh =~ '\%(\<command\.com\|\<cmd\.exe\|\<cmd\)$'
-        \ && exists('+shellslash') && &ssl
-    set nossl
-    if a:0
-      let string = shellescape(a:string, a:1)
-    else
-      let string = shellescape(a:string)
-    endif
-    set ssl
-  else
-    if a:0
-      let string = shellescape(a:string, a:1)
-    else
-      let string = shellescape(a:string)
-    endif
-  endif
-
-  if &sh =~ '\%(\<command\.com\|\<cmd\.exe\|\<cmd\)$'
-        \ && string !~ '\s'
-    let string = substitute(string, '^"\(.*\)"$', '\1', '')
-  endif
-
-  return string
-endfunction
-"}}}
-" ParseCmdArgs() {{{
-function! ParseCmdArgs(line)
-  let qstr_pat  = '\%(''\%(\%(''''\)\+\|[^'']\+\)*''\)'
-  let qqstr_pat = '\%("\%(\%(\\.\)\+\|[^"\\]\+\)*"\)'
-  let cstr_pat  = '\%(\%(\%(\\[\\ \t]\)\+\|[^\\ \t]\+\)\+\)'
-  let str_pat = printf('^\%%(%s\|%s\|%s\)', qstr_pat, qqstr_pat, cstr_pat)
-  let line = substitute(a:line,  '^\s\+\|\s\+$', '', 'g')
-  let args = []
-  while !empty(line)
-    let idx = matchend(line, str_pat)
-    if idx == -1
-      break
-    endif
-    let arg = line[ : (idx-1)]
-    if stridx('''"', arg[0]) != -1
-      let arg = eval(arg)
-    else
-      let arg = substitute(arg, '\\\([\\ \t]\)', '\1', 'g')
-    endif
-    call add(args, arg)
-    let line = substitute(line[idx : ], '^\s\+', '', '')
-  endwhile
-  return args
-endfunction
-"}}}
-" If2() {{{
-function! If2(x, y)
-  return empty(a:x) ? a:y : a:x
-endfunction
-"}}}
-"==============================================================
 " {{{1 Global Variable
 "--------------------------------------------------------------
 let s:MSWIN = has('win32') || has('win32unix') || has('win64') || 
@@ -264,7 +61,7 @@ endfunction
 function! Format(...) range " ... = option {{{
   let formatprg = 'par'
   if !executable(formatprg)
-    call ShowMesg('ErrorMsg', formatprg . ': command not find')
+    call mylib#ShowMesg('ErrorMsg', formatprg . ': command not find')
   endif
 
   exe printf('%d,%d!%s %s', 
@@ -285,14 +82,14 @@ nnoremap <silent> <Leader><F7> :Run<CR>
 
 function! s:Executable(file) 
   if !executable(a:file)
-    call ShowMesg('ErrorMsg', "The executable file '" . a:file . "' doesn't exist")
+    call mylib#ShowMesg('ErrorMsg', "The executable file '" . a:file . "' doesn't exist")
     return 0
   endif
   return 1
 endfunction
 
 function! s:Run(contain_command, args) "{{{
-  let args = ParseCmdArgs(a:args)
+  let args = mylib#ParseCmdArgs(a:args)
 
   if empty(args) || !a:contain_command
     let run_command = ''
@@ -313,7 +110,7 @@ function! s:Run(contain_command, args) "{{{
     endif
 
     if !(type(run_command) == type('') || type(run_command) == type([]))
-      call ShowMesg('ErrorMsg', 'b:run_command: Invalid type: ' . type(run_command))
+      call mylib#ShowMesg('ErrorMsg', 'b:run_command: Invalid type: ' . type(run_command))
       return
     endif
 
@@ -323,16 +120,16 @@ function! s:Run(contain_command, args) "{{{
         if !s:Executable(command)
           return
         endif
-        let command = Shellescape(command)
+        let command = mylib#Shellescape(command)
       elseif type(command) == type([])
         let temp = []
         let i = 0
         for val in command
           if type(val) != type('')
-            call ShowMesg('ErrorMsg', 'b:run_command[' . i . ']: invalid type: ' . type(val))
+            call mylib#ShowMesg('ErrorMsg', 'b:run_command[' . i . ']: invalid type: ' . type(val))
             return
           elseif empty(val)
-            call ShowMesg('ErrorMsg', 'b:run_command[' . i . ']: empty string')
+            call mylib#ShowMesg('ErrorMsg', 'b:run_command[' . i . ']: empty string')
             return
           endif
 
@@ -341,7 +138,7 @@ function! s:Run(contain_command, args) "{{{
               return
             endif
           endif
-          call add(temp, Shellescape(val))
+          call add(temp, mylib#Shellescape(val))
 
           let i += 1
         endfor
@@ -349,15 +146,15 @@ function! s:Run(contain_command, args) "{{{
         unlet! command
         let command = escape(join(temp), '%#!')
       else
-        call ShowMesg('ErrorMsg', 'b:run_command: Invalid type: ' . type(command))
+        call mylib#ShowMesg('ErrorMsg', 'b:run_command: Invalid type: ' . type(command))
         return
       endif
     elseif executable(expand('%:p:r'))
-      let command = Shellescape(expand('%:p:r'))
+      let command = mylib#Shellescape(expand('%:p:r'))
     elseif executable(expand('%:p'))
-      let command = Shellescape(expand('%:p'))
+      let command = mylib#Shellescape(expand('%:p'))
     else
-      call ShowMesg('ErrorMsg', 'No executable file is found')
+      call mylib#ShowMesg('ErrorMsg', 'No executable file is found')
       return
     endif
   endif
@@ -367,7 +164,7 @@ function! s:Run(contain_command, args) "{{{
     if !s:Executable(command)
       return
     endif
-    let command = Shellescape(command)
+    let command = mylib#Shellescape(command)
   endif
 
   let curwinnum = winnr()
@@ -375,7 +172,7 @@ function! s:Run(contain_command, args) "{{{
   exe winnum . 'wincmd w'
   silent %d _
 
-  call map(args, 'Shellescape(v:val)')
+  call map(args, 'mylib#Shellescape(v:val)')
   silent exe printf('1r !%s %s', command, escape(join(args), '%#!'))
   silent 1d _
   call cursor(1, 1)
@@ -387,7 +184,7 @@ endfunction
 " {{{1 Inject
 "--------------------------------------------------------------
 command! -bang -range -complete=buffer -nargs=1 Inject 
-      \ call s:Inject(<q-args>, GetSelection(), <q-bang> == '!')
+      \ call s:Inject(<q-args>, mylib#GetSelection(), <q-bang> == '!')
 
 function! s:Inject(bufnr, text, newline) "{{{
   let bufnr = a:bufnr =~ '^\d\+' ? a:bufnr+0 : a:bufnr
@@ -395,7 +192,7 @@ function! s:Inject(bufnr, text, newline) "{{{
   if nr != -1
     let curwin = winnr()
     if curwin == nr
-      call ShowMesg('ErrorMsg', 'Inject: Cannot inject text into the same buffer')
+      call mylib#ShowMesg('ErrorMsg', 'Inject: Cannot inject text into the same buffer')
       return
     endif
     exe nr . 'wincmd w'
@@ -404,13 +201,13 @@ function! s:Inject(bufnr, text, newline) "{{{
   else
     let nr = bufnr(bufnr)
     if nr == -1
-      call ShowMesg('ErrorMsg', 'Inject: Buffer ' . string(a:bufnr) . ' does not exist')
+      call mylib#ShowMesg('ErrorMsg', 'Inject: Buffer ' . string(a:bufnr) . ' does not exist')
       return
     endif
 
     let curbuf = bufnr('')
     if curbuf == nr
-      call ShowMesg('ErrorMsg', 'Inject: Cannot inject text into the same buffer')
+      call mylib#ShowMesg('ErrorMsg', 'Inject: Cannot inject text into the same buffer')
       return
     endif
 
@@ -430,7 +227,7 @@ endfunction
 "}}}
 if executable('screen')
   command! -range -nargs=1 -bang ScreenInject 
-        \ call s:ScreenInject(<q-bang> != '!', <q-args>, GetSelection())
+        \ call s:ScreenInject(<q-bang> != '!', <q-args>, mylib#GetSelection())
 
   function! s:ScreenInject(other, winID, text) "{{{
     let tmpfile = tempname()
@@ -716,7 +513,7 @@ command! -nargs=? ShowMatch call myutils#ShowMatch(<q-args>)
 command! -nargs=+ -bang -range Seq call s:InsertSeq(<q-bang> == '!', <q-args>)
 
 function! s:InsertSeq(visual_mode, args) "{{{
-  let seq = call('myutils#Seq', ParseCmdArgs(a:args))
+  let seq = call('myutils#Seq', mylib#ParseCmdArgs(a:args))
   if seq == ''
     return
   endif
@@ -798,7 +595,7 @@ function! s:MultipleEdit(...) "{{{
     let fs = split(glob(arg), "\n")
 
     if len(fs) == 0
-      call ShowMesg('ErrorMsg', 'E480: No match: ' . arg, 1)
+      call mylib#ShowMesg('ErrorMsg', 'E480: No match: ' . arg, 1)
     else
       call extend(files, fs)
     endif
@@ -818,7 +615,7 @@ endfunction
 "--------------------------------------------------------------
 function! Calc(expr, ...) " ... = [modules]
   if !has('python')
-    call ShowMesg('ErrorMsg', 'Calc: python not support', 1)
+    call mylib#ShowMesg('ErrorMsg', 'Calc: python not support', 1)
     return
   endif
 
@@ -840,7 +637,7 @@ endfunction
 command! -nargs=+ Calc call s:ImportPyModule(<q-args>)
 function! s:ImportPyModule(expr)
   if !has('python')
-    call ShowMesg('ErrorMsg', 'Calc: python not support', 1)
+    call mylib#ShowMesg('ErrorMsg', 'Calc: python not support', 1)
     return
   endif
 
@@ -997,7 +794,7 @@ if has('cscope')
 
   function! s:Cscope(output, isCurrentFile) "{{{
     if !executable('cscope')
-      call ShowMesg('ErrorMsg', 'cscope: command not find', 1)
+      call mylib#ShowMesg('ErrorMsg', 'cscope: command not find', 1)
     endif
 
     let cmd = 'silent !cscope -Rb %s %s'
@@ -1118,7 +915,7 @@ if globpath(&rtp, 'bin/image-viewer') != ''
   command! -nargs=+ -complete=file ShowImage call ShowImage([<f-args>])
 
   function! s:GetFiles() "{{{
-    let path = GetSelection()
+    let path = mylib#GetSelection()
     if path =~ '^\s*$'
       return
     endif
@@ -1170,8 +967,8 @@ if globpath(&rtp, 'bin/image-viewer') != ''
     call filter(files, 'v:val != ""')
 
     if !empty(files)
-      if exists('*GetPos') && (a:0 == 0 || a:1 == 0)
-        let pos = GetPos()
+      if exists('*mylib#GetPos') && (a:0 == 0 || a:1 == 0)
+        let pos = mylib#GetPos()
       else
         let pos = { 'x': getwinposy(), 'y': getwinposy() }
       endif
@@ -1201,8 +998,8 @@ endif
 command! -nargs=1 -complete=file OpenFile call OpenFile(<q-args>)
 
 function! OpenFile(file) "{{{
-	if exists('*Shellescape')
-		let file = Shellescape(a:file, 1)
+	if exists('*mylib#Shellescape')
+		let file = mylib#Shellescape(a:file, 1)
 	else
 		let file = shellescape(a:file, 1)
 	endif
@@ -1234,7 +1031,7 @@ if (s:MSWIN && executable('color-selector.bat')) || executable('color-selector')
   function! s:ColorSelector(mode) "{{{
     let prev_color = ''
     if a:mode == 'v'
-      let prev_color = GetSelection()
+      let prev_color = mylib#GetSelection()
     endif
 
     let len = strlen(substitute(prev_color, '.', 'x', 'g'))
@@ -1309,10 +1106,10 @@ function! s:EvalVim(expr) "{{{
     let res = eval(tr(a:expr, "\n", ' '))
     return type(res) == type('') ? res : string(res)
   catch /^Vim\%((\a\+)\)\=:/
-    call ShowMesg('ErrorMsg', substitute(v:exception, '^Vim\%((\a\+)\)\=:', '', ''), 1)
+    call mylib#ShowMesg('ErrorMsg', substitute(v:exception, '^Vim\%((\a\+)\)\=:', '', ''), 1)
     throw 'Error'
   catch
-    call ShowMesg('ErrorMsg', v:exception, 1)
+    call mylib#ShowMesg('ErrorMsg', v:exception, 1)
     throw 'Error'
   endtry
 endfunction
@@ -1347,7 +1144,7 @@ endfunction
 "}}}
 function! s:VEvalVim(mode) "{{{
   try
-    let res = s:EvalVim(GetSelection())
+    let res = s:EvalVim(mylib#GetSelection())
   catch 
     return
   endtry

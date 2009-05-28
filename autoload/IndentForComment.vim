@@ -118,14 +118,14 @@ function! s:HasComment(comment_list) "{{{
   let save_cursor = getpos('.')
   for comment in a:comment_list
     call cursor(line('.'), 1)
-    let [lnum, col] = searchpos(LiteralPattern(comment[0]), 'n', line('.'))
+    let [lnum, col] = searchpos(mylib#LiteralPattern(comment[0]), 'n', line('.'))
     while [lnum, col] != [0, 0]
       if synIDattr(synIDtrans(synID(lnum, col, 1)), 'name') == 'Comment'
         call setpos('.', save_cursor)
         return [[lnum, col], comment]
       else
         call cursor(lnum, col)
-        let [lnum, col] = searchpos(LiteralPattern(comment[0]), 'n', line('.'))
+        let [lnum, col] = searchpos(mylib#LiteralPattern(comment[0]), 'n', line('.'))
       endif
     endwhile
   endfor
@@ -147,7 +147,7 @@ function! s:KillComment(pos, comment) "{{{
     silent normal! "_D
   else
     let s_sav = @/
-    exe 'silent normal! "_d/' . escape(LiteralPattern(a:comment[1]), '/') . "/e\<CR>"
+    exe 'silent normal! "_d/' . escape(mylib#LiteralPattern(a:comment[1]), '/') . "/e\<CR>"
     let @/ = s_sav
   endif
   call s:DeleteTrailingWhitespace()
@@ -227,10 +227,10 @@ endfunction
 " }}}
 function! s:GoToComment(pos, comment, mode) "{{{
   call call('cursor', a:pos)
-  let cmt_col = searchpos(LiteralPattern(a:comment[0]), 'ne', line('.'))[1]
-  call search(LiteralPattern(a:comment[0]) . '\s*\S\?', 'e', line('.'))
+  let cmt_col = searchpos(mylib#LiteralPattern(a:comment[0]), 'ne', line('.'))[1]
+  call search(mylib#LiteralPattern(a:comment[0]) . '\s*\S\?', 'e', line('.'))
   if !empty(a:comment[1]) 
-        \ && getline('.')[col('.')-1 : -1] =~ '^' .LiteralPattern(a:comment[1])
+        \ && getline('.')[col('.')-1 : -1] =~ '^' .mylib#LiteralPattern(a:comment[1])
         \ && cmt_col + 1 < col('.')
       exe 'normal! ' . (col('.') - cmt_col)/2 . 'h'
   endif

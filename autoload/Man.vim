@@ -216,8 +216,8 @@ function! Man#Main(type, bang, line) "{{{
   let error_mesg = ''
 
   let q_args = copy(args)
-  if exists('*Shellescape')
-    call map(q_args, 'Shellescape(v:val)')
+  if exists('*mylib#Shellescape')
+    call map(q_args, 'mylib#Shellescape(v:val)')
   else
     call map(q_args, 'shellescape(v:val)')
   endif

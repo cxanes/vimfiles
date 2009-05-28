@@ -1108,18 +1108,6 @@ function! s:GetNodeFiletype(node) "{{{
   return s:GetFiletype(file)
 endfunction
 "}}}
-function! s:Shellescape(string) "{{{
-  if &sh =~ '\%(\<command\.com\|\<cmd\.exe\|\<cmd\)$'
-        \ && exists('+shellslash') && &ssl
-    set nossl
-    let string = shellescape(a:string)
-    set ssl
-  else
-    let string = shellescape(a:string)
-  endif
-  return string
-endfunction
-"}}}
 function! s:GetFiletype(file) "{{{
   if !executable('file')
     call s:ShowMessage('FileExplorer: The program "file" must be installed')
@@ -1131,7 +1119,7 @@ function! s:GetFiletype(file) "{{{
     return ''
   endif
 
-  return substitute(system('file ' . s:Shellescape(file)), '\n\+$', '', '')
+  return substitute(system('file ' . mylib#Shellescape(file)), '\n\+$', '', '')
 endfunction
 "}}}
 function! s:GetNodeInfo(node) "{{{

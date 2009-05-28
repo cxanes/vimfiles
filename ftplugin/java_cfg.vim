@@ -4,8 +4,8 @@
 "-------------------------------------------------------------------
 compiler javac
 
-if exists('*AddOptFiles')
-  call AddOptFiles('dict', 'keywords/java')
+if exists('*mylib#AddOptFiles')
+  call mylib#AddOptFiles('dict', 'keywords/java')
   set complete+=k
 endif
 

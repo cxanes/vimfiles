@@ -32,8 +32,8 @@ if !exists('*s:NewLine')
   "}}}
 endif
 
-if exists('*AddOptFiles')
-  call AddOptFiles('dict', 'keywords/python')
+if exists('*mylib#AddOptFiles')
+  call mylib#AddOptFiles('dict', 'keywords/python')
   set complete+=k
 endif
 " }}}

@@ -56,8 +56,8 @@ function! s:PreviewFig() "{{{2
   silent! echo code
   redir END
 
-  if exists('*GetPos')
-    let pos = GetPos()
+  if exists('*mylib#GetPos')
+    let pos = mylib#GetPos()
   else
     let pos = { 'x': getwinposy(), 'y': getwinposy() }
   endif

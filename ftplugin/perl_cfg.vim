@@ -73,10 +73,10 @@ let b:run_command_perl = function('RunCommandPerl')
 compiler perl
 set complete-=i
 
-if exists('*AddOptFiles')
-  call AddOptFiles('dict', 'keywords/perl')
+if exists('*mylib#AddOptFiles')
+  call mylib#AddOptFiles('dict', 'keywords/perl')
   if search('\<use\s\+Moose\>', 'nw')
-    call AddOptFiles('dict', 'keywords/perl_moose')
+    call mylib#AddOptFiles('dict', 'keywords/perl_moose')
   endif
   set complete+=k
 endif

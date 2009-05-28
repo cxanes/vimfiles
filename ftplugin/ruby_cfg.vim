@@ -263,8 +263,8 @@ if exists('*EnterMap')
   call EnterMap('{', '}')
 endif
 
-if exists('*AddOptFiles')
-  call AddOptFiles('dict', 'keywords/ruby')
+if exists('*mylib#AddOptFiles')
+  call mylib#AddOptFiles('dict', 'keywords/ruby')
   set complete+=k
 endif
 

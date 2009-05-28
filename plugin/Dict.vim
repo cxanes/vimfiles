@@ -32,7 +32,7 @@ if !hasmapto('<Plug>NDict')
   nmap <silent> <F9> <Plug>NDict
 endif
 
-vnoremap <silent> <script> <Plug>VDict <ESC>:<C-U>call Dict#Dict(GetSelection())<CR>
+vnoremap <silent> <script> <Plug>VDict <ESC>:<C-U>call Dict#Dict(mylib#GetSelection())<CR>
 nnoremap <silent> <script> <Plug>NDict :<C-U>call Dict#Dict(expand('<cword>'))<CR>
 
 command! -nargs=? -bang Dict      call Dict#Dict(<q-args>, <q-bang> != '!')
@@ -46,7 +46,7 @@ if !hasmapto('<Plug>NPronounce')
   nmap <silent> <F6> <Plug>NPronounce
 endif
 
-vnoremap <silent> <script> <Plug>VPronounce <ESC>:<C-U>call Dict#Pronounce(GetSelection())<CR>
+vnoremap <silent> <script> <Plug>VPronounce <ESC>:<C-U>call Dict#Pronounce(mylib#GetSelection())<CR>
 nnoremap <silent> <script> <Plug>NPronounce :<C-U>call Dict#Pronounce(expand('<cword>'))<CR>
 "==============================================================
 " Restore {{{

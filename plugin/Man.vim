@@ -25,19 +25,7 @@ command! -bang -nargs=* ManRuby   call Man#Main('ruby',   <q-bang> == '!', <q-ar
 
 if &keywordprg =~ '^man\>'
   nnoremap <silent> K :call Man#K_Map(&ft, v:count, expand('<cWORD>'))<CR>
-  vnoremap <silent> K :call Man#K_Map(&ft, v:count, s:GetSelection())<CR>
-  function! s:GetSelection() "{{{
-    let s_sav = @s
-    let @s = ''
-
-    normal gv"sy
-
-    let s = @s
-    let @s = s_sav
-
-    return s
-  endfunction
-  "}}}
+  vnoremap <silent> K :call Man#K_Map(&ft, v:count, mylib#GetSelection())<CR>
 endif
 
 " Restore {{{

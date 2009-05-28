@@ -60,13 +60,13 @@ else
 let s:system = function('system')
 endif
 "}}}
-if executable('bash') && executable('git-compl.sh') && exists('*ParseCmdArgs')
+if executable('bash') && executable('git-compl.sh') && exists('*mylib#ParseCmdArgs')
   if exists('g:git_completion')
     let $GIT_COMPL = g:git_completion
   endif
   function! Git#ListArgs(ArgLead, CmdLine, CursorPos) "{{{
     let line = a:CmdLine[ : a:CursorPos-1]
-    let words = ParseCmdArgs(line)
+    let words = mylib#ParseCmdArgs(line)
     if !empty(words) && words[0] =~ '^GitHelp$'
       let words = ['git', 'help'] + (len(words) > 1 ? words[1:] : [])
     endif

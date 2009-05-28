@@ -24,8 +24,8 @@ endfunction
 "}}}
 function! s:LogInit(category_file) "{{{
   call s:LogSyntaxInit()
-  if exists('*AddOptFiles')
-    call AddOptFiles('dict', a:category_file)
+  if exists('*mylib#AddOptFiles')
+    call mylib#AddOptFiles('dict', a:category_file)
   endi
 
   imap <F5> <Plug>InsertDate

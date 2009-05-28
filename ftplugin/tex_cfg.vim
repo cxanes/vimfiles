@@ -7,9 +7,9 @@ if !exists('*Tex_PutEnvironment')
   ru ftplugin/tex_latexSuite.vim
 endif
 
-if exists('*AddOptFiles')
-  call AddOptFiles('dict', 'keywords/tex')
-  call AddOptFiles('dict', split(globpath(&rtp, 'keywords/tex_*'), "\n"))
+if exists('*mylib#AddOptFiles')
+  call mylib#AddOptFiles('dict', 'keywords/tex')
+  call mylib#AddOptFiles('dict', split(globpath(&rtp, 'keywords/tex_*'), "\n"))
   set complete+=k
 endif
 
@@ -86,8 +86,8 @@ if !exists('*s:TeXPreview') && executable('tex2img')
       let preamble_file = ''
     endif
 
-    if exists('*GetPos')
-      let pos = GetPos()
+    if exists('*mylib#GetPos')
+      let pos = mylib#GetPos()
     else
       let pos = { 'x': getwinposy(), 'y': getwinposy() }
     endif

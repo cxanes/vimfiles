@@ -170,31 +170,6 @@ function! s:RefreshAll()
   endfor
 endfunction
 " }}}2
-" {{{2 ParseCmdArgs()
-function! s:ParseCmdArgs(line)
-  let qstr_pat  = '\%(''\%(\%(''''\)\+\|[^'']\+\)*''\)'
-  let qqstr_pat = '\%("\%(\%(\\.\)\+\|[^"\\]\+\)*"\)'
-  let cstr_pat  = '\%(\%(\%(\\[\\ \t]\)\+\|[^\\ \t]\+\)\+\)'
-  let str_pat = printf('^\%%(%s\|%s\|%s\)', qstr_pat, qqstr_pat, cstr_pat)
-  let line = substitute(a:line,  '^\s\+\|\s\+$', '', 'g')
-  let args = []
-  while !empty(line)
-    let idx = matchend(line, str_pat)
-    if idx == -1
-      break
-    endif
-    let arg = line[ : (idx-1)]
-    if stridx('''"', arg[0]) != -1
-      let arg = eval(arg)
-    else
-      let arg = substitute(arg, '\\\([\\ \t]\)', '\1', 'g')
-    endif
-    call add(args, arg)
-    let line = substitute(line[idx : ], '^\s\+', '', '')
-  endwhile
-  return args
-endfunction
-" }}}2
 " {{{2 KeywordList()
 function! s:KeywordList(A, L, P)
   return join(s:GetBookmarks().GetKeywords(), "\n")
@@ -774,7 +749,7 @@ function! s:Bookmark(force, args)
   if type(a:args) == type([])
     let args = a:args
   else
-    let args = s:ParseCmdArgs(a:args)
+    let args = mylib#ParseCmdArgs(a:args)
   endif
 
   if len(args) == 0 || args[0] == '^\s*$'
@@ -824,7 +799,7 @@ endfunction
 " {{{2 BookmarkRemove(args)
 function! s:BookmarkRemove(args)
   if !s:IsValidBookmarks() | return | endif
-  let args = s:ParseCmdArgs(a:args)
+  let args = mylib#ParseCmdArgs(a:args)
   let id = empty(args) || args[0] =~ '^\s*$' ? '' : args[0]
   try 
     let bookmarks = s:GetBookmarks()
@@ -841,7 +816,7 @@ endfunction
 " {{{2 BookmarkOpen(args, new_tab)
 function! s:BookmarkOpen(args, new_tab)
   if !s:IsValidBookmarks() | return | endif
-  let args = s:ParseCmdArgs(a:args)
+  let args = mylib#ParseCmdArgs(a:args)
   let id = empty(args) || args[0] =~ '^\s*$' ? '' : args[0]
   try 
     call s:OpenBookmark(s:BookmarkGetIndex(id, 'open'), a:new_tab)
@@ -862,7 +837,7 @@ endfunction
 function! s:BookmarkSetKeyword(force, args)
   if !s:IsValidBookmarks() | return | endif
 
-  let args = s:ParseCmdArgs(a:args)
+  let args = mylib#ParseCmdArgs(a:args)
   let bookmarks = s:GetBookmarks()
   if empty(args)
     try 
