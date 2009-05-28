@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-05-28 23:49:47
+" Last Modified: 2009-05-29 00:21:22
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1870,7 +1870,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   "----------------------------------------------------------{{{2
   " Bookmarks.vim (My works, modified for NavMenu.vim)
   "--------------------------------------------------------------
-  " let g:Bookmarks_menu = 0
+  let g:Bookmarks_menu = 0
   "}}}2
   "----------------------------------------------------------{{{2
   " eclim.vim
