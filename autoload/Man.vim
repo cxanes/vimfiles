@@ -275,8 +275,8 @@ function! Man#Main(type, bang, line) "{{{
 endfunction
 "}}}
 function! Man#SimpleArgsParser(line) "{{{
-  " ParseCmdArgs(): Defined in myutils.vim
-  return ParseCmdArgs(a:line)
+  " ParseCmdArgs(): Defined in mylib.vim
+  return mylib#ParseCmdArgs(a:line)
 endfunction
 "}}}
 function! Man#K_Map(ft, cnt, word) range "{{{
