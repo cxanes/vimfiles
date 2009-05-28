@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-05-19 04:23:03
+" Last Modified: 2009-05-28 18:41:38
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -654,6 +654,52 @@ endfunction
 inoremap <silent> <Leader>tif <C-R>=strftime('%Y-%m-%d %H:%M:%S')<CR>
 inoremap <silent> <Leader>tid <C-R>=strftime('%Y-%m-%d')<CR>
 inoremap <silent> <Leader><BS><BS> <C-G>u<C-O>0<C-O>"_D<BS>
+
+" Maximize window {{{
+nnoremap <silent> <Leader>x :<C-U>call <SID>MaximizeWindow(v:count)<CR>
+command! DoMaximizeWindow call <SID>DoMaximizeWindow(1)
+command! NoMaximizeWindow call <SID>DoMaximizeWindow(0)
+
+let g:maxmize_window_type = 0
+function! s:DoMaximizeWindow(start) "{{{
+  if a:start
+    call <SID>MaximizeWindow()
+    augroup MaximizeWindow
+      au!
+      au WinEnter * call <SID>MaximizeWindow()
+    augroup END
+  else
+    augroup MaximizeWindow
+      au!
+    augroup END
+  endif
+endfunction
+"}}}
+function! s:MaximizeWindow(...) "{{{
+  if winnr('$') == 1
+    return
+  endif
+
+  if a:0
+    let type = a:1
+  else
+    if exists('g:maxmize_window_type')
+      let type = g:maxmize_window_type
+    else
+      let type = 0
+    endif
+  endif
+
+  if type == 0
+    exec "normal! \<C-W>_"
+  elseif type == 1
+    exec "normal! \<C-W>|"
+  else
+    exec "normal! \<C-W>_\<C-W>|"
+  endif
+endfunction
+"}}}
+"}}}
 
 " Escaping Emacs key bindings
 " <id=EscapingEmacsKeyBindings>
