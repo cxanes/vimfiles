@@ -1,11 +1,11 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-05-29 00:21:22
+" Last Modified: 2009-05-29 20:33:16
 "
 " Prerequisite:  Vim >= 7.0
 "
-" Some codes of the functions and key mappings are modified from
+" Some definitions of the functions and key mappings are modified from
 " others' scripts. Many thanks to them!
 "
 " Reference:
@@ -751,38 +751,31 @@ endfunction
 " Map: <C-*> {{{
 " Navigate between windows
 augroup Vimrc
-  autocmd VimEnter * nnoremap <silent> <C-J> :<C-U>call <SID>MoveToWindow('down',  v:count1)<CR>
-  autocmd VimEnter * nnoremap <silent> <C-K> :<C-U>call <SID>MoveToWindow('up',    v:count1)<CR>
-  autocmd VimEnter * nnoremap <silent> <C-H> :<C-U>call <SID>MoveToWindow('left',  v:count1)<CR>
-  autocmd VimEnter * nnoremap <silent> <C-L> :<C-U>call <SID>MoveToWindow('right', v:count1)<CR>
+  autocmd VimEnter * nnoremap <silent> <C-J> :<C-U>call <SID>MoveToWindow('j', v:count1)<CR>
+  autocmd VimEnter * nnoremap <silent> <C-K> :<C-U>call <SID>MoveToWindow('k', v:count1)<CR>
+  autocmd VimEnter * nnoremap <silent> <C-H> :<C-U>call <SID>MoveToWindow('h', v:count1)<CR>
+  autocmd VimEnter * nnoremap <silent> <C-L> :<C-U>call <SID>MoveToWindow('l', v:count1)<CR>
 augroup END
 
-function! s:MoveToWindow(direction, cnt) "{{{
+function! s:MoveToWindow(motion, cnt) "{{{
+  let opposite = { 'j': 'k' , 'k': 'j', 'h': 'l', 'l': 'h' }
+  let tabpage  = { 'l': 'gt', 'h': 'gT' }
+
+  if !has_key(opposite, a:motion)
+    return
+  endif
+
   let cnt = a:cnt
   while cnt > 0
     let curwin = winnr()
-    let orgwin = curwin
 
-    if a:direction == 'down' || a:direction == 'up'
-      exec 'wincmd ' . (a:direction == 'down' ? 'j' : 'k')
-      if curwin == winnr()
-        exec 'wincmd ' . (a:direction == 'down' ? 't' : 'b')
+    exec 'wincmd' a:motion
+    if curwin == winnr()
+      if has_key(tabpage, a:motion) && tabpagenr('$') > 1
+        exec 'normal!' tabpage[a:motion]
       endif
-    elseif a:direction == 'left' || a:direction == 'right'
-      exec 'wincmd ' . (a:direction == 'right' ? 'l' : 'h')
-      if curwin == winnr()
-        if tabpagenr('$') > 1
-          exec 'normal! ' . (a:direction == 'right' ? 'gt' : 'gT')
-        endif
 
-        let move = 'wincmd ' . (a:direction == 'right' ? 'h' : 'l')
-        let curwin = winnr()
-        exec move
-        while curwin != winnr()
-          let curwin = winnr()
-          exec move
-        endwhile
-      endif
+      exec winnr('$') 'wincmd' opposite[a:motion]
     endif
 
     let cnt -= 1
@@ -1071,7 +1064,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
 "}}}
 "}}}1
 "============================================================{{{1
-" Add-on functions (Most functions are moved to s:RUNTIME_DIR/plugin/myutils.vim)
+" Add-on functions (Most functions are moved to $MYVIMRUNTIME/plugin/myutils.vim)
 "================================================================
   "----------------------------------------------------------{{{2
   " UpdateModifiedTime()
