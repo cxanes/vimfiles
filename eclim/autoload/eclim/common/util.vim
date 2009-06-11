@@ -100,10 +100,10 @@ function! eclim#common#util#GrepRelative(command, args)
   let rel_dir = expand('%:p:h')
   let cwd = getcwd()
   try
-    silent exec 'lcd ' . rel_dir
+    silent exec 'lcd ' . escape(rel_dir, ' ')
     silent! exec a:command . ' ' . a:args
   finally
-    silent exec 'lcd ' . cwd
+    silent exec 'lcd ' . escape(cwd, ' ')
     " force quickfix / location list signs to update.
     call eclim#display#signs#Update()
   endtry
@@ -175,9 +175,9 @@ function! eclim#common#util#OtherWorkingCopyDiff(project)
 
   let b:filename = filename
   augroup other_diff
-    autocmd! BufUnload <buffer>
+    autocmd! BufWinLeave <buffer>
     call eclim#util#GoToBufferWindowRegister(b:filename)
-    autocmd BufUnload <buffer> diffoff
+    autocmd BufWinLeave <buffer> diffoff
   augroup END
 endfunction " }}}
 
@@ -233,7 +233,7 @@ function! eclim#common#util#CommandCompleteRelative(argLead, cmdLine, cursorPos)
   let dir = substitute(expand('%:p:h'), '\', '/', 'g')
 
   let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
-  let args = eclim#util#ParseArgs(cmdLine)
+  let args = eclim#util#ParseCmdLine(cmdLine)
   let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
 
   let results = split(eclim#util#Glob(dir . '/' . argLead . '*', 1), '\n')
@@ -252,7 +252,7 @@ function! eclim#common#util#CommandCompleteRelativeDirs(argLead, cmdLine, cursor
   let dir = substitute(expand('%:p:h'), '\', '/', 'g')
 
   let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
-  let args = eclim#util#ParseArgs(cmdLine)
+  let args = eclim#util#ParseCmdLine(cmdLine)
   let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
 
   let results = split(eclim#util#Glob(dir . '/' . argLead . '*', 1), '\n')

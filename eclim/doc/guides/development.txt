@@ -19,18 +19,7 @@ Checking out the code and building it.
 
    >
 
-      $ svn co https://eclim.svn.sourceforge.net/svnroot/eclim/trunk eclim
-
-   <
-
-
-   If your planning on contributing code beyond small bug fixes, then
-   it is highly recommend to check the code out using git,
-   specifically using git-svn:
-
-   >
-
-      $ git svn clone https://eclim.svn.sourceforge.net/svnroot/eclim/trunk eclim
+      $ git clone git://eclim.git.sourceforge.net/gitroot/eclim
 
    <
 
@@ -102,6 +91,8 @@ Checking out the code and building it.
 
    - wst: web development support using the eclipse wst.
 
+   - cdt: c/c++ support using the eclipse cdt.
+
    - pdt: php support using the eclipse pdt.
 
 *development-patches*
@@ -119,14 +110,12 @@ managing those patches.
 
 Submitting Patches
 
-Any patches you submit should be in the form of an svn diff (if you
-chose to use svn) or as a git formatted patch (for those using git).
-For svn users, simply redirecting svn diff to a file will suffice.
-For git users, the preferred method is to use git-format-patch:
+Any patches you submit should be in the form of full diff against the
+current git head:
 
    >
 
-      $ git format-patch --stdout origin > myfeature.patch
+      $ git diff origin > myfeature.patch
 
    <
 
@@ -140,14 +129,15 @@ Or using StGit (described below):
    <
 
 
-If you use git-format-patch please be aware that it will generate a
-patch entry for every commit you've made. So unless each commit
-represents a change that you are willing to submit independently of
-the others, please consolidate all your commits for a given patch into
-a single commit prior to generating the patch file.  If you don't do
-so then the patch file will contain all your trial and errors, dead
-ends, etc. and evaluating a patch with an entire history like that can
-be very difficult.
+If you use git, without stgit, please be aware that the diff will
+generate a patch entry for every commit you've made. So unless each
+commit represents a change that you are willing to submit
+independently of the others, please consolidate all your commits for a
+given patch into a single commit prior to generating the patch file
+(using git rebase -i for instance).  If you don't do so then the patch
+file will contain all your trial and errors, dead ends, etc. and
+evaluating a patch with an entire history like that can be very
+difficult.
 
 *development-patches-managing*
 
@@ -176,7 +166,7 @@ This example will use the recommend tools, git and stgit.
 
    >
 
-      $ git svn clone https://eclim.svn.sourceforge.net/svnroot/eclim/trunk eclim
+      $ git clone git://eclim.git.sourceforge.net/gitroot/eclim
 
    <
 
@@ -270,34 +260,19 @@ development group.
 
 Pulling Updates
 
-   As some point you'll need to pull updates from the remote svn
-   repository. For svn users it's a simple svn up, but for git/stgit
-   users the process is not as obvious.
-
-   If you're using just git-svn, without stgit, then you can pull
-   updates like so:
+   As some point you'll need to pull updates from the remote git
+   repository.  If you're using git without stgit, then you can pull
+   updates in the standard git fashion:
 
       >
 
-         $ git svn rebase
+         $ git pull
 
       <
 
 
    If you're using stgit on top of git, then the preferred method is
-   to first run the following commands:
-
-      >
-
-         $ git config stgit.pull-policy rebase
-         $ git config stgit.rebasecmd "git svn rebase"
-         $ git config branch.master.stgit.parentbranch remotes/trunk
-
-      <
-
-
-   Once you've got that part setup you can then use stgit to pull the
-   latest changes from the remote repository:
+   to pull via stgit:
 
       >
 

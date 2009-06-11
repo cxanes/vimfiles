@@ -34,12 +34,8 @@ endif
 
 " GetAnnotations(revision) {{{
 function! eclim#vcs#impl#hg#GetAnnotations(revision)
-  if exists('b:vcs_props')
-    if filereadable(b:vcs_props.path)
-      let file = fnamemodify(b:vcs_props.path, ':t')
-    else
-      let file = b:vcs_props.svn_root_url . b:vcs_props.path
-    endif
+  if exists('b:vcs_props') && filereadable(b:vcs_props.path)
+    let file = fnamemodify(b:vcs_props.path, ':t')
   else
     let file = expand('%')
   endif
@@ -154,8 +150,9 @@ function eclim#vcs#impl#hg#ChangeSet(revision)
   endfor
   let author = substitute(log.user, '^user:\s\+', '', '')
   let date = substitute(log.date, '^date:\s\+', '', '')
+  let root = eclim#vcs#impl#hg#GetRoot()
   let files = split(substitute(log.files, '^files:\s\+', '', ''))
-  call map(files, 'filereadable(fnamemodify(v:val, ":t")) ? "  A/M |" . v:val . "|" : "  R   |" . v:val . "|"')
+  call map(files, 'filereadable(root . "/" . v:val) ? "  A/M |" . v:val . "|" : "  R   |" . v:val . "|"')
   let lines = []
   call add(lines, 'Revision: ' . a:revision)
   call add(lines, 'Modified: ' . date . ' by ' . author)

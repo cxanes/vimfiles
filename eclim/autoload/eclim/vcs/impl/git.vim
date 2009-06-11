@@ -34,12 +34,8 @@ endif
 
 " GetAnnotations(revision) {{{
 function! eclim#vcs#impl#git#GetAnnotations(revision)
-  if exists('b:vcs_props')
-    if filereadable(b:vcs_props.path)
-      let file = fnamemodify(b:vcs_props.path, ':t')
-    else
-      let file = b:vcs_props.svn_root_url . b:vcs_props.path
-    endif
+  if exists('b:vcs_props') && filereadable(b:vcs_props.path)
+    let file = fnamemodify(b:vcs_props.path, ':t')
   else
     let file = expand('%')
   endif
@@ -102,7 +98,7 @@ function eclim#vcs#impl#git#GetRevision(file)
   let path = eclim#vcs#impl#git#GetRelativePath(
     \ fnamemodify(a:file, ':p:h'), fnamemodify(a:file, ':p:t'))
   let path = substitute(path, '^/', '', '')
-  exec 'lcd ' . root
+  exec 'lcd ' . escape(root, ' ')
   let log = eclim#vcs#impl#git#Git('log --pretty=oneline -1 "' . path . '"')
   if type(log) == 0
     return
@@ -123,7 +119,7 @@ endfunction " }}}
 
 " GetRoot() {{{
 function eclim#vcs#impl#git#GetRoot()
-  let root = finddir('.git', getcwd() . ';')
+  let root = finddir('.git', escape(getcwd(), ' ') . ';')
   if root == ''
     return
   endif
@@ -260,7 +256,7 @@ function! eclim#vcs#impl#git#ViewFileRevision(path, revision)
     \ fnamemodify(a:path, ':p:h'), fnamemodify(a:path, ':t'))
   let path = substitute(path, '^/', '', '')
   let root = eclim#vcs#impl#git#GetRoot()
-  exec 'lcd ' . root
+  exec 'lcd ' . escape(root, ' ')
   let result = eclim#vcs#impl#git#Git('show "' . a:revision . ':' . path . '"')
   return split(result, '\n')
 endfunction " }}}

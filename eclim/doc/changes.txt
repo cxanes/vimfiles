@@ -1,6 +1,60 @@
 History of Changes
 ******************
 
+*1.4.8*
+
+
+1.4.8 (May 30, 2009)
+====================
+
+Bug Fixes:
+   - Fixed C/C++ element search.
+
+   - Fixed possible issue with secondary python element search on
+     Windows.
+
+   - Various other bug fixes.
+
+Eclim:
+   - Added |:ProjectImport| command.
+
+Maven
+   - Switched repository searching to a new (hopefully more
+     dependable) site.
+
+Python:
+   - Added |:PythonSearchContext|.
+
+*1.4.7*
+
+
+1.4.7 (May 02, 2009)
+====================
+
+Bug Fixes:
+   - Fixed installation error on unix based operating systems.
+
+*1.4.6*
+
+
+1.4.6 (May 02, 2009)
+====================
+
+Bug Fixes:
+   - Various bug fixes.
+
+C/C++:
+   - Added c/c++ support for code completion (|vim-c-complete|),
+     searching (|vim-c-search|), and validation (|vim-c-validate|).
+     Requires the eclipse cdt plugin.
+
+Java:
+   - Added command to run java (|java|).
+
+   - Added command to run javac (|javac|).
+
+   - Added command to run javadoc (|javadoc|).
+
 *1.4.5*
 
 
@@ -90,7 +144,7 @@ Python:
    - Added support for code completion (|vim-python-complete|).
 
    - Added support for finding an element definition
-     (|vim-python-find|).
+     (|vim-python-search|).
 
    - Improved |:PyLint| support.
 
@@ -163,11 +217,6 @@ Eclim:
    - Added translation of html docs to vim doc format accessable via
      |:EclimHelp| and |:EclimHelpGrep|.
 
-Django:
-   - Added end tag completion (|htmldjango|) support for django
-     templates.
-
-Project:
    - Added |:Todo| and |:ProjectTodo|.
 
    - Added |:TrackerTicket| for viewing tickets by id in your web
@@ -175,6 +224,10 @@ Project:
 
    - Renamed setting org.eclim.project.vcs.tracker to
      org.eclim.project.tracker.
+
+Django:
+   - Added end tag completion (|htmldjango|) support for django
+     templates.
 
 Php:
    - Support for php has been temporarily removed until the eclipse

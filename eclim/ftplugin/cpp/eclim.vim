@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   Contains any global vim side code for embedding gvim in eclipse.
+"   see http://eclim.sourceforge.net/vim/c/validate.html
 "
 " License:
 "
@@ -22,14 +22,6 @@
 "
 " }}}
 
-" Autocmds {{{
-  if has('netbeans_intg')
-    augroup eclim_vimplugin
-      " autocommand used to work around the fact that the "unmodified" event
-      " in vim's netbean support is commentted out for some reason.
-      autocmd BufWritePost * call eclim#vimplugin#BufferWritten()
-    augroup END
-  endif
-" }}}
+runtime ftplugin/c/eclim.vim
 
 " vim:ft=vim:fdm=marker

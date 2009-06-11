@@ -35,7 +35,7 @@
     \ '-o <offset> -l <length> -e <encoding> -x <context>'
   let s:search_pattern = '-command php_search -n "<project>" <args>'
   let s:buildpaths = '-command php_buildpaths -p "<project>"'
-  let s:options = ['-p', '-t', '-s', '-x']
+  let s:options = ['-p', '-t', '-s', '-x', '-i']
   let s:scopes = ['all', 'project']
   let s:types = [
       \ 'class',
@@ -106,9 +106,10 @@ function! eclim#php#search#Search(...)
     " single result in another file.
     elseif len(results) == 1 && g:EclimPhpSearchSingleResult != "lopen"
       let entry = getloclist(0)[0]
-      exec g:EclimPhpSearchSingleResult . ' ' . bufname(entry.bufnr)
       call eclim#util#GoToBufferWindowOrOpen
         \ (bufname(entry.bufnr), g:EclimPhpSearchSingleResult)
+      call eclim#util#SetLocationList(eclim#util#ParseLocationEntries(results))
+      call eclim#display#signs#Update()
 
       call cursor(entry.lnum, entry.col)
     else
@@ -166,6 +167,8 @@ function eclim#php#search#FindDefinition(context)
       let entry = getloclist(0)[0]
       call eclim#util#GoToBufferWindowOrOpen
         \ (bufname(entry.bufnr), g:EclimPhpSearchSingleResult)
+      call eclim#util#SetLocationList(eclim#util#ParseLocationEntries(results))
+      call eclim#display#signs#Update()
 
       call cursor(entry.lnum, entry.col)
     else
@@ -202,6 +205,7 @@ function eclim#php#search#FindInclude()
       let entry = getloclist(0)[0]
       call eclim#util#GoToBufferWindowOrOpen
         \ (bufname(entry.bufnr), g:EclimPhpSearchSingleResult)
+      call eclim#display#signs#Update()
     else
       lopen
     endif

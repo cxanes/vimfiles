@@ -171,7 +171,7 @@ class CompletionProposal(CodeAssistProposal):
             pyname = pyname._get_imported_pyname()
         if isinstance(pyname, pynames.DefinedName):
             pyobject = pyname.get_object()
-            if isinstance(pyobject, pyobject.AbstractFunction):
+            if isinstance(pyobject, pyobjects.AbstractFunction):
                 return pyobject.get_param_names()
 
 

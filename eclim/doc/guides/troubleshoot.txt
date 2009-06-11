@@ -118,7 +118,7 @@ to:
    <
 
    If there are a lot of messages, you may have to page through them
-   to then end to find the most recent command.  Once you've found the
+   to the end to find the most recent command.  Once you've found the
    command, copy the command text from "-command" to the end of the
    command arguments.
 
@@ -130,7 +130,7 @@ to:
        script and then append the command you copied.:
 
        >
-          $ /opt/eclipse/plugins/org.eclim_1.4.5/bin/eclim -command ...
+          $ /opt/eclipse/eclim -command ...
 
        <
 

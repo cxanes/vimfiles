@@ -4,9 +4,6 @@
 Php Search
 **********
 
-Note: Search support depends on the eclipse pdt which should be installed
-  for you when choosing php support in the eclim installer.
-
 *:PhpFindDefinition*
 
 
@@ -35,16 +32,16 @@ search depending on the context of the element.
 
 - Otherwise, it will search for the declaration of the element.
 
+*:PhpSearch*
+
 
 Pattern Search
 ==============
 
-*:PhpSearch*
-
 Pattern searching provides a means to widen a search beyond a single
 element.  A pattern search can be executed using the command
 
-   :PhpSearch -p <pattern> -t <type> -s <scope>
+   :PhpSearch -p <pattern> [-t <type> -s <scope> -i]
 
 All of the results will be placed into the current window's location
 list (:help location-list) so that you can easily navigate the
@@ -65,7 +62,7 @@ exception of the pattern to search for.
 <
 
 
-- pattern: The pattern to search for.
+- -p <pattern>: The pattern to search for.
 
   Ex.
 
@@ -75,7 +72,8 @@ exception of the pattern to search for.
 
      my*
 
-- type: The type of element to search for where possible types include
+- -t <type> (Default: all): The type of element to search for where
+  possible types include
 
   - class
 
@@ -83,13 +81,15 @@ exception of the pattern to search for.
 
   - field
 
-- scope (Default: all): The scope of the search where possible context
-  values include
+- -s <scope> (Default: all): The scope of the search where possible
+  context values include
 
   - all - Search the whole workspace.
 
   - project - Search the current project, dependent projects, and
     libraries.
+
+- -i: Ignore case when searching.
 
 
 Configuration
@@ -109,5 +109,8 @@ Vim Variables
   - 'edit' - open the result in the current window.
 
   - 'lopen' - open the location list to display the result.
+
+Note: Search support depends on the eclipse pdt which should be installed
+  for you when choosing php support in the eclim installer.
 
 vim:ft=eclimhelp

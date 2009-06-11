@@ -25,6 +25,7 @@
 " Script Variables {{{
 let s:command_comment =
   \ '-command javadoc_comment -p "<project>" -f "<file>" -o <offset> -e <encoding>'
+let s:command_source_dirs = '-command java_src_dirs -p "<project>"'
 " }}}
 
 " Comment() {{{
@@ -52,6 +53,79 @@ function! eclim#java#doc#Comment()
     call eclim#util#RefreshFile()
     silent retab
   endif
+endfunction " }}}
+
+" Javadoc(bang, [file, file, ...]) {{{
+" Run javadoc for all, or the supplied, source files.
+function! eclim#java#doc#Javadoc(bang, ...)
+  if !eclim#project#util#IsCurrentFileInProject()
+    return
+  endif
+
+  let project_path = eclim#project#util#GetCurrentProjectRoot()
+  let project = eclim#project#util#GetCurrentProjectName()
+  let args = '-p "' . project . '"'
+
+  if len(a:000) > 0 && (len(a:000) > 1 || a:000[0] != '')
+    let args .= ' -f "' . join(a:000, ' ') . '"'
+  endif
+
+  let cwd = getcwd()
+  try
+    exec 'lcd ' . escape(project_path, ' ')
+    let exec = has('win32') || has('win64')
+    call eclim#util#MakeWithCompiler('eclim_javadoc', a:bang, args, exec)
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
+endfunction " }}}
+
+" CommandCompleteJavadoc(argLead, cmdLine, cursorPos) {{{
+" Custom command completion for :Javadoc
+function! eclim#java#doc#CommandCompleteJavadoc(
+    \ argLead, cmdLine, cursorPos)
+  let dir = eclim#project#util#GetCurrentProjectRoot()
+
+  let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
+  let args = eclim#util#ParseCmdLine(cmdLine)
+  let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
+
+  let project = eclim#project#util#GetCurrentProjectName()
+  let command = substitute(s:command_source_dirs, '<project>', project, '')
+  let result =  eclim#ExecuteEclim(command)
+  let paths = []
+  if result != '' && result != '0'
+    let paths = map(split(result, "\n"),
+      \ "eclim#project#util#GetProjectRelativeFilePath(v:val)")
+  endif
+
+  let results = []
+
+  if argLead !~ '^\s*$'
+    let follow = 0
+    for path in paths
+      if argLead =~ '^' . path
+        let follow = 1
+        break
+      elseif  path =~ '^' . argLead
+        call add(results, path)
+      endif
+    endfor
+
+    if follow
+      let results = split(eclim#util#Glob(dir . '/' . argLead . '*', 1), '\n')
+      call filter(results, "isdirectory(v:val) || v:val =~ '\\.java$'")
+      call map(results, "substitute(v:val, '\\', '/', 'g')")
+      call map(results, 'isdirectory(v:val) ? v:val . "/" : v:val')
+      call map(results, 'substitute(v:val, dir, "", "")')
+      call map(results, 'substitute(v:val, "^\\(/\\|\\\\\\)", "", "g")')
+      call map(results, "substitute(v:val, ' ', '\\\\ ', 'g')")
+    endif
+  else
+    let results = paths
+  endif
+
+  return eclim#util#ParseCommandCompletionResults(argLead, results)
 endfunction " }}}
 
 " vim:ft=vim:fdm=marker

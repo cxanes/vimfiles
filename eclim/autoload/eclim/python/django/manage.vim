@@ -120,7 +120,7 @@ function! eclim#python#django#manage#Manage(args)
       call eclim#util#EchoError('Current file not in a django project.')
       return
     endif
-    exec 'cd ' . path
+    exec 'cd ' . escape(path, ' ')
   endif
 
   try
@@ -156,7 +156,7 @@ function! eclim#python#django#manage#Manage(args)
         let b:filename = filename
 
         augroup temp_window
-          autocmd! BufUnload <buffer>
+          autocmd! BufWinLeave <buffer>
           call eclim#util#GoToBufferWindowRegister(filename)
         augroup END
       endif
@@ -165,14 +165,14 @@ function! eclim#python#django#manage#Manage(args)
     endif
   finally
     " change back to original directory if necessary.
-    exec 'cd ' . cwd
+    exec 'cd ' . escape(cwd, ' ')
   endtry
 endfunction " }}}
 
 " CommandCompleteManage(argLead, cmdLine, cursorPos) {{{
 function! eclim#python#django#manage#CommandCompleteManage(argLead, cmdLine, cursorPos)
   let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
-  let args = eclim#util#ParseArgs(cmdLine)
+  let args = eclim#util#ParseCmdLine(cmdLine)
   let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
 
   if cmdLine =~ '^' . args[0] . '\s*' . escape(argLead, '~.\') . '$'

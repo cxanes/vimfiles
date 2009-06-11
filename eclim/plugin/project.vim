@@ -36,6 +36,10 @@ if !exists('g:EclimProjectTreeAutoOpen')
   let g:EclimProjectTreeAutoOpen = 0
 endif
 
+if !exists('g:EclimProjectTreeExpandPathOnOpen')
+  let g:EclimProjectTreeExpandPathOnOpen = 0
+endif
+
 if g:EclimProjectTreeAutoOpen && !exists('g:EclimProjectTreeAutoOpenProjects')
   let g:EclimProjectTreeAutoOpenProjects = ['CURRENT']
 endif
@@ -69,7 +73,8 @@ if g:EclimProjectTreeAutoOpen
     \ if tabpagenr() > 1 &&
     \     !exists('t:project_tree_auto_opened') &&
     \     eclim#project#util#GetCurrentProjectRoot() != '' |
-    \   call eclim#util#DelayedCommand('call eclim#project#tree#ProjectTree(copy(g:EclimProjectTreeAutoOpenProjects)) | winc w') |
+    \   call eclim#project#tree#ProjectTree(copy(g:EclimProjectTreeAutoOpenProjects)) |
+    \   exec g:EclimProjectTreeContentWincmd |
     \   let t:project_tree_auto_opened = 1 |
     \ endif
 endif
@@ -79,6 +84,10 @@ endif
 if !exists(":ProjectCreate")
   command -nargs=+ -complete=customlist,eclim#project#util#CommandCompleteProjectCreate
     \ ProjectCreate :call eclim#project#util#ProjectCreate('<args>')
+endif
+if !exists(":ProjectImport")
+  command -nargs=1 -complete=dir
+    \ ProjectImport :call eclim#project#util#ProjectImport('<args>')
 endif
 if !exists(":ProjectDelete")
   command -nargs=1 -complete=customlist,eclim#project#util#CommandCompleteProject

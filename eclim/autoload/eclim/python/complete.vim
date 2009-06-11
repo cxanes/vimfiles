@@ -26,12 +26,12 @@
 " Handles python code completion.
 function! eclim#python#complete#CodeComplete(findstart, base)
   if a:findstart
+    " update the file before vim makes any changes.
+    call eclim#util#ExecWithoutAutocmds('silent update')
+
     if !eclim#project#util#IsCurrentFileInProject(0) || !filereadable(expand('%'))
       return -1
     endif
-
-    " update the file before vim makes any changes.
-    call eclim#util#ExecWithoutAutocmds('silent update')
 
     " locate the start of the word
     let line = getline('.')
@@ -62,9 +62,16 @@ function! eclim#python#complete#CodeComplete(findstart, base)
     let results = eclim#python#rope#Completions(project, filename, offset, encoding)
 
     for result in results
+      let menu = result[1]
+      let info = ''
+      if result[2] != ''
+        let info = result[0] . '(' . result[2] . ')'
+        let menu = info
+      endif
       let dict = {
           \ 'word': result[0],
-          \ 'menu': result[1],
+          \ 'menu': menu,
+          \ 'info': info,
         \ }
 
       call add(completions, dict)

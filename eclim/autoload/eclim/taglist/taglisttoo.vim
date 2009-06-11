@@ -109,6 +109,19 @@ let s:tlist_def_cpp_settings = {
     \ }
   \ }
 
+" cdt cproject files
+let s:tlist_format_eclipse_cproject = 'eclim#taglist#lang#cproject#FormatCProject'
+let s:tlist_def_eclipse_cproject_settings = {
+    \ 'lang': 'cproject', 'tags': {
+      \ 'c': 'configuration',
+      \ 'e': 'entry',
+      \ 't': 'toolchain',
+      \ 'l': 'tool',
+      \ 'i': 'include',
+      \ 's': 'symbol',
+    \ }
+  \ }
+
 " c# language
 let s:tlist_def_cs_settings = {
     \ 'lang': 'c#', 'tags': {
@@ -497,8 +510,8 @@ endfunction " }}}
 
 " s:ProcessTags() {{{
 function! s:ProcessTags()
-  let file = expand('%')
-  if file =~ s:taglisttoo_ignore || file == ''
+  let filename = expand('%')
+  if filename =~ s:taglisttoo_ignore || filename == ''
     return
   endif
 
@@ -513,21 +526,36 @@ function! s:ProcessTags()
     endif
 
     let file = substitute(expand('%:p'), '\', '/', 'g')
-    let command = g:Tlist_Ctags_Cmd . ' -f - --format=2 --excmd=pattern ' .
-        \ '--fields=nks --sort=no --language-force=<lang> ' .
-        \ '--<lang>-types=<types> "<file>"'
-    let command = substitute(command, '<lang>', settings.lang, 'g')
-    let command = substitute(command, '<types>', types, 'g')
-    let command = substitute(command, '<file>', file, '')
 
-    if command =~ '^-command'
-      let response = eclim#ExecuteEclim(command)
-    else
-      let response = eclim#util#System(command)
-      if v:shell_error
-        call eclim#util#EchoError('taglist failed with error code: ' . v:shell_error)
-        return
+    " support generated file contents (like viewing a .class file via jad)
+    let tempfile = ''
+    if !filereadable(file) || &buftype == 'nofile'
+      let tempfile = g:EclimTempDir . '/' . fnamemodify(file, ':t')
+      if tolower(file) != tolower(tempfile)
+        let tempfile = escape(tempfile, ' ')
+        exec 'write! ' . tempfile
+        let file = tempfile
       endif
+    endif
+
+    try
+      let command = g:Tlist_Ctags_Cmd . ' -f - --format=2 --excmd=pattern ' .
+          \ '--fields=nks --sort=no --language-force=<lang> ' .
+          \ '--<lang>-types=<types> "<file>"'
+      let command = substitute(command, '<lang>', settings.lang, 'g')
+      let command = substitute(command, '<types>', types, 'g')
+      let command = substitute(command, '<file>', file, '')
+
+      let response = eclim#util#System(command)
+    finally
+      if tempfile != ''
+        call delete(tempfile)
+      endif
+    endtry
+
+    if v:shell_error
+      call eclim#util#EchoError('taglist failed with error code: ' . v:shell_error)
+      return
     endif
 
     let results = split(response, '\n')
@@ -590,11 +618,15 @@ function! s:ProcessTags()
       call append(line('$'), 'Warning: taglist truncated.')
       setlocal nomodifiable
     endif
+
+    let filewin = bufwinnr(filename)
+    if filewin != -1
+      exec filewin . 'winc w'
+    endif
   else
     call s:Window({}, tags, [[],[]])
+    winc p
   endif
-
-  winc p
 
   call s:ShowCurrentTag()
 endfunction " }}}

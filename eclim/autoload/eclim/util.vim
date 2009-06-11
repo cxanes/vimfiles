@@ -77,6 +77,8 @@ endfunction " }}}
 " Executes a delayed command.  Useful in cases where one would expect an
 " autocommand event (WinEnter, etc) to fire, but doesn't, or you need a
 " command to execute after other autocommands have finished.
+" Note: Nesting is not supported.  A delayed command cannot invoke off another
+" delayed command.
 function! eclim#util#DelayedCommand(command, ...)
   let g:eclim_updatetime_save = &updatetime
   let g:eclim_delayed_command = a:command
@@ -450,7 +452,7 @@ endfunction " }}}
 " Registers the autocmd for returning the user to the supplied buffer when the
 " current buffer is closed.
 function! eclim#util#GoToBufferWindowRegister(bufname)
-  exec 'autocmd BufUnload <buffer> call eclim#util#GoToBufferWindow("' .
+  exec 'autocmd BufWinLeave <buffer> call eclim#util#GoToBufferWindow("' .
     \ escape(a:bufname, '\') . '") | doautocmd BufEnter'
 endfunction " }}}
 
@@ -493,9 +495,12 @@ function! eclim#util#ListContains(list, element)
   return 0
 endfunction " }}}
 
-" MakeWithCompiler(compiler, bang, args) {{{
+" MakeWithCompiler(compiler, bang, args, [exec]) {{{
 " Executes :make using the supplied compiler.
-function! eclim#util#MakeWithCompiler(compiler, bang, args)
+" If the 'exec' arg is > 0, then instead of using :make, this function will
+" execute the make program using exec (useful if the make program doesn't
+" behave on windows).
+function! eclim#util#MakeWithCompiler(compiler, bang, args, ...)
   if exists('g:current_compiler')
     let saved_compiler = g:current_compiler
   endif
@@ -514,7 +519,37 @@ function! eclim#util#MakeWithCompiler(compiler, bang, args)
   try
     unlet! g:current_compiler b:current_compiler
     exec 'compiler ' . a:compiler
-    exec 'make' . a:bang . ' ' . a:args
+    let make_cmd = substitute(&makeprg, '\$\*', a:args, '')
+
+    let exec = len(a:000) > 0 ? a:000[0] : 0
+    if !exec
+      call eclim#util#EchoTrace('make: ' . make_cmd)
+      exec 'make' . a:bang . ' ' . a:args
+    else
+      let command = '!' . make_cmd
+      let outfile = g:EclimTempDir . '/eclim_make_output.txt'
+      if has("win32") || has("win64")
+        if executable("tee")
+          let command .= ' | tee "' . outfile . '" 2>&1"'
+        else
+          let command .= ' >"' . outfile . '" 2>&1"'
+        endif
+      else
+        let command .= ' 2>&1| tee "' . outfile . '"'
+      endif
+
+      doautocmd QuickFixCmdPre make
+      call eclim#util#Exec(command)
+      if filereadable(outfile)
+        if a:bang == ''
+          exec 'cfile ' . escape(outfile, ' ')
+        else
+          exec 'cgetfile ' . escape(outfile, ' ')
+        endif
+        call delete(outfile)
+      endif
+      doautocmd QuickFixCmdPost make
+    endif
   finally
     if exists('saved_compiler')
       unlet! g:current_compiler b:current_compiler
@@ -547,10 +582,49 @@ function! eclim#util#MarkSave()
 endfunction " }}}
 
 " ParseArgs(args) {{{
-" Parses the supplied argument line into a list of args.
+" Parses the supplied argument line into a list of args, handling quoted
+" strings, escaped spaces, etc.
 function! eclim#util#ParseArgs(args)
-  let args = split(a:args, '[^\\]\s\zs')
-  call map(args, 'substitute(v:val, "\\([^\\\\]\\)\\s\\+$", "\\1", "")')
+  let args = []
+  let arg = ''
+  let quote = ''
+  let escape = 0
+  let index = 0
+  while index < len(a:args)
+    let char = a:args[index]
+    let index += 1
+    if char == ' ' && quote == '' && !escape
+      if arg != ''
+        call add(args, arg)
+        let arg = ''
+      endif
+    elseif char == '\'
+      if escape
+        let arg .= char
+      endif
+      let escape = !escape
+    elseif char == '"' || char == "'"
+      if !escape
+        if quote != '' && char == quote
+          let quote = ''
+        elseif quote == ''
+          let quote = char
+        else
+          let arg .= char
+        endif
+      else
+        let arg .= char
+        let escape = 0
+      endif
+    else
+      let arg .= char
+      let escape = 0
+    endif
+  endwhile
+
+  if arg != ''
+    call add(args, arg)
+  endif
 
   return args
 endfunction " }}}
@@ -945,12 +1019,12 @@ function! eclim#util#TempWindow(name, lines, ...)
   if filename != expand('%:p')
     let b:filename = filename
     let b:winnr = winnr
-  endif
 
-  augroup eclim_temp_window
-    autocmd! BufUnload <buffer>
-    call eclim#util#GoToBufferWindowRegister(b:filename)
-  augroup END
+    augroup eclim_temp_window
+      autocmd! BufWinLeave <buffer>
+      call eclim#util#GoToBufferWindowRegister(b:filename)
+    augroup END
+  endif
 endfunction " }}}
 
 " TempWindowClear(name) {{{
@@ -1061,6 +1135,15 @@ function! eclim#util#CommandCompleteDir(argLead, cmdLine, cursorPos)
     endif
   endfor
   return eclim#util#ParseCommandCompletionResults(argLead, results)
+endfunction " }}}
+
+" ParseCmdLine(args) {{{
+" Parses the supplied argument line into a list of args.
+function! eclim#util#ParseCmdLine(args)
+  let args = split(a:args, '[^\\]\s\zs')
+  call map(args, 'substitute(v:val, "\\([^\\\\]\\)\\s\\+$", "\\1", "")')
+
+  return args
 endfunction " }}}
 
 " ParseCommandCompletionResults(args) {{{

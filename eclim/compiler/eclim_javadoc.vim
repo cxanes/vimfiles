@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   Commands view / search eclim help files.
+"   Compiler for javadoc.
 "
 " License:
 "
@@ -22,14 +22,22 @@
 "
 " }}}
 
-" Command Declarations {{{
-if !exists(':EclimHelp')
-  command -nargs=? -complete=customlist,eclim#help#CommandCompleteTag
-    \ EclimHelp :call eclim#help#Help('<args>', 0)
+if exists("current_compiler")
+  finish
 endif
-if !exists(':EclimHelpGrep')
-  command -nargs=+ EclimHelpGrep :call eclim#help#HelpGrep(<q-args>)
+let current_compiler = "eclim_javadoc"
+
+let command = eclim#client#nailgun#GetEclimCommand()
+if !(has('win32') || has('win64'))
+  let command = substitute(command, '"', '', 'g')
 endif
-" }}}
+let command = escape(command, ' "')
+exec 'CompilerSet makeprg=' . command . '\ -command\ javadoc\ $*'
+
+exec 'CompilerSet errorformat=' .
+  \ '\%A%.%#[javadoc]\ %f:%l:\ %m,' .
+  \ '\%-Z%.%#[javadoc]\ %p^,' .
+  \ '\%-G%.%#[javadoc]%.%#,' .
+  \ '\%-G%.%#'
 
 " vim:ft=vim:fdm=marker

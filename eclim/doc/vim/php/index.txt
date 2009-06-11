@@ -12,7 +12,7 @@ Php
 
 - Php Search (|vim-php-search|)
 
-Note: This feature depends on the eclipse pdt which should be installed
+Note: These features depends on the eclipse pdt which should be installed
   for you when choosing php support in the eclim installer.
 
 vim:ft=eclimhelp

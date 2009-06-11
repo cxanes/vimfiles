@@ -136,8 +136,8 @@ Java 指令集
 
 - |:JavaImport| - Import 目前游標位置的 class.
 
-- |:JavaSearch| [-p <pattern>] [-t <type>] [-x <內文內容>] - 尋找類別, 方法,
-  欄位等(使用 pattern 支持，尋找目前游標位置的元素).
+- Pattern Search (|javasearch|) [-p <pattern>] [-t <type>] [-x <內文內容>]
+  - 尋找類別, 方法, 欄位等(使用 pattern 支持，尋找目前游標位置的元素).
 
 - |:JavaSearchContext| - 執行目前游標位置元素的內文搜尋.
 
@@ -145,9 +145,9 @@ Java 指令集
 
 - |:JavaRegex| - 開啟一個視窗，進行 regular ecpression 測試.
 
-- |:JavaDocSearch| - 尋找 javadoc，如同 :JavaSearch 指令.
+- Searching (|javadocsearch|) - 尋找 javadoc，如同 :JavaSearch 指令.
 
-- |:JavaDocComment| - 新增或修改目前游標位置元素的註解.
+- Commenting (|javadoccomment|) - 新增或修改目前游標位置元素的註解.
 
 - |:Jps| - 開啟目前 java 運作資訊的視窗.
 

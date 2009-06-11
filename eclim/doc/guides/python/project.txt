@@ -70,4 +70,7 @@ Note: If you have only one project or many projects that share the same
   project that has not overridden them with values via
   :ProjectSettings.
 
+Now that you have a project created, you can now leverage the various
+python features (|vim-python-index|) that eclim provides.
+
 vim:ft=eclimhelp

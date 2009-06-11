@@ -135,7 +135,7 @@ function! eclim#display#signs#ViewSigns(name)
   " Store filename so that plugins can use it if necessary.
   let b:filename = filename
   augroup temp_window
-    autocmd! BufUnload <buffer>
+    autocmd! BufWinLeave <buffer>
     call eclim#util#GoToBufferWindowRegister(filename)
   augroup END
 endfunction " }}}
@@ -324,6 +324,10 @@ endfunction " }}}
 
 " RemovePlaceholder() {{{
 function! eclim#display#signs#RemovePlaceholder()
+  if !has("signs")
+    return
+  endif
+
   let existing = eclim#display#signs#GetExisting('placeholder')
   for exists in existing
     call eclim#display#signs#Unplace(exists.id)

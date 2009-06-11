@@ -38,11 +38,18 @@ function eclim#python#rope#Init(project)
 python << EOF
 from __future__ import with_statement
 import os, sys, vim
+try:
+  from cStringIO import StringIO
+except:
+  from StringIO import StringIO
+
 ropepath = vim.eval('ropepath')
 if ropepath not in sys.path:
   sys.path.insert(0, ropepath)
 
   from contextlib import contextmanager
+  from rope.base import pyobjects, pynames
+
   @contextmanager
   def projectroot():
     cwd = os.getcwd()
@@ -62,6 +69,63 @@ if ropepath not in sys.path:
       u = unicode(ba, encoding or 'utf8')
       u = u.replace('\r\n', '\n') # rope ignore \r, so don't count them.
       return len(u)
+
+  def parameters(proposal):
+    pyname = proposal.pyname
+    if isinstance(pyname, pynames.ImportedName):
+      pyname = pyname._get_imported_pyname()
+    if isinstance(pyname, pynames.DefinedName):
+      pyobject = pyname.get_object()
+      if isinstance(pyobject, pyobjects.AbstractFunction):
+        args = [(a.id, a.col_offset) for a in pyobject.arguments.args]
+        defaults = []
+        for d in pyobject.arguments.defaults:
+          value = _defaultValue(d)
+          defaults.append((value, d.col_offset))
+
+        params = StringIO()
+        for ii, arg in enumerate(args):
+          if len(params.getvalue()) > 0:
+            params.write(', ')
+          if defaults:
+            if defaults[0][1] > arg[1]:
+              if (ii == len(args) - 1) or (args[ii + 1][1] > defaults[0][1]):
+                arg = (arg[0], arg[1], defaults[0][0])
+                defaults.pop(0)
+          if len(arg) > 2:
+            params.write('%s=%s' % (arg[0], arg[2]))
+          else:
+            params.write(arg[0])
+
+        if pyobject.arguments.vararg:
+          if len(params.getvalue()) > 0:
+            params.write(', ')
+          params.write('*args')
+
+        if pyobject.arguments.kwarg:
+          if len(params.getvalue()) > 0:
+            params.write(', ')
+          params.write('**kwargs')
+
+        return params.getvalue()
+    return ''
+
+  def _defaultValue(default, nested=False):
+    value = None
+    for attr in ('id', 'n', 's', 'elts', 'keys'):
+      if hasattr(default, attr):
+        value = getattr(default, attr)
+        if attr == 's' and not nested:
+          value = repr(value)
+        elif attr == 'elts':
+          value = repr(tuple([_defaultValue(v, nested=True) for v in value]))
+        elif attr == 'keys':
+          value = repr(dict([
+            (_defaultValue(k, nested=True), _defaultValue(v, nested=True))
+            for k, v in zip(value, getattr(default, 'values'))
+          ]))
+        break
+    return value
 EOF
 
   return 1
@@ -103,7 +167,7 @@ python << EOF
 from __future__ import with_statement
 with(projectroot()):
   from rope.base import project
-  from rope.base.exceptions import RopeError
+  from rope.base.exceptions import ModuleSyntaxError, RopeError
   from rope.contrib import codeassist
   project = project.Project(vim.eval('a:project'))
 
@@ -118,14 +182,19 @@ with(projectroot()):
 
   # code completion
   try:
-    proposals = codeassist.code_assist(project, code, offset)
+    proposals = codeassist.code_assist(
+      project, code, offset, resource=resource, maxfixes=3)
     proposals = codeassist.sorted_proposals(proposals)
-    proposals = [[p.name, p.kind] for p in proposals]
+    for ii, p in enumerate(proposals):
+      proposals[ii] = [p.name, p.kind, parameters(p)]
     vim.command("let results = %s" % repr(proposals))
   except IndentationError, e:
     vim.command(
       "let completion_error = 'Completion failed due to indentation error.'"
     )
+  except ModuleSyntaxError, e:
+    message = 'Completion failed due to syntax error: %s' % e.message
+    vim.command("let completion_error = %s" % repr(message))
   except RopeError, e:
     message = 'Completion failed due to rope error: %s' % type(e)
     vim.command("let completion_error = %s" % repr(message))
@@ -139,42 +208,69 @@ EOF
 
 endfunction " }}}
 
-" FindDefinition(project, filename, offset, encoding) {{{
-" Attempts to find the definition of the element at the supplied offset.
-function eclim#python#rope#FindDefinition(project, filename, offset, encoding)
+" Find(project, filename, offset, encoding, context) {{{
+function eclim#python#rope#Find(project, filename, offset, encoding, context)
   if !eclim#python#rope#Init(a:project)
     return []
   endif
 
-  let result = ''
+  let results = []
+  let search_error = ''
 
 python << EOF
 from __future__ import with_statement
 with(projectroot()):
   from rope.base import project
-  from rope.contrib import codeassist
+  from rope.base.exceptions import ModuleSyntaxError, RopeError
+  from rope.contrib import findit
   project = project.Project(vim.eval('a:project'))
 
   filename = vim.eval('a:filename')
   offset = int(vim.eval('a:offset'))
   encoding = vim.eval('a:encoding')
+  context = vim.eval('a:context')
 
   resource = project.get_resource(filename)
-  code = resource.read()
 
   offset = byteOffsetToCharOffset(filename, offset, encoding)
 
-  # code completion
-  location = codeassist.get_definition_location(project, code, offset)
-  if location:
-    path = location[0] and \
-      location[0].real_path or \
-      '%s/%s' % (vim.eval('a:project'), vim.eval('a:filename'))
-    vim.command("let result = '%s|%s col 1|'" % (path, location[1]))
+  try:
+    if context == 'implementations':
+      locations = findit.find_implementations(project, resource, offset)
+    elif context == 'occurrences':
+      locations = findit.find_occurrences(project, resource, offset)
+    else:
+      code = resource.read()
+      location = findit.find_definition(
+        project, code, offset, resource=resource, maxfixes=3)
+      locations = location and [location]
+
+    results = []
+    if locations:
+      for location in locations:
+        path = location.resource.real_path.replace('\\', '/')
+        # TODO: use location.offset
+        results.append('%s|%s col 1|' % (path, location.lineno))
+
+    vim.command("let results = %s" % repr(results))
+  except IndentationError, e:
+    vim.command(
+      "let search_error = 'Search failed due to indentation error.'"
+    )
+  except ModuleSyntaxError, e:
+    message = 'Search failed due to syntax error: %s' % e.message
+    vim.command("let search_error = %s" % repr(message))
+  except RopeError, e:
+    message = 'Search failed due to rope error: %s' % type(e)
+    vim.command("let search_error = %s" % repr(message))
 EOF
 
-  return result
+  if search_error != ''
+    call eclim#util#EchoError(search_error)
+    return
+  endif
 
+  return results
 endfunction " }}}
 
 " GetOffset() {{{

@@ -19,6 +19,8 @@ Documentation
 
 - Common (|vim-common-index|)
 
+- C/C++ (|vim-c-index|)
+
 - Css (|vim-css-index|)
 
 - Dtd (|vim-dtd-index|)

@@ -21,19 +21,10 @@
 "
 " }}}
 
-" Global Variables {{{
-if !exists("g:EclimTemplatesDisabled")
-  " Disabled for now.
-  let g:EclimTemplatesDisabled = 1
-endif
-" }}}
-
-" Auto Commands {{{
-if !g:EclimTemplatesDisabled
-  augroup eclim_template
-    autocmd!
-    autocmd BufNewFile * call eclim#common#template#Template()
-  augroup END
+" Command Declarations {{{
+if !exists(":CProjectConfigs")
+  command -nargs=? -complete=customlist,eclim#c#project#CommandCompleteProject
+    \ CProjectConfigs :call eclim#c#project#Configs('<args>')
 endif
 " }}}
 

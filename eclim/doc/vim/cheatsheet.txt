@@ -30,7 +30,10 @@ Project Commands
 ================
 
 - |:ProjectCreate| <folder> [-p <project_name>] -n <nature> ... [-d
-  <project_dependency> ...] Create a new project.
+  <project_dependency> ...] - Create a new project.
+
+- |:ProjectImport| <folder> - Import a project from an existing
+  eclipse project folder.
 
 - |:ProjectList| - List current projects.
 
@@ -105,6 +108,23 @@ Ant Commands
 - :Validate (|validate-ant|) - Validate the current ant build file.
 
 
+C/C++ Commands
+==============
+
+- :Validate (|validate-c|) - Validate the current file.
+
+- |:CSearch| -p <pattern> -t <type> [-s <scope> -x <context>] - Search
+  for classes, functions, methods, macros, etc.
+
+- |:CFindDefinition| - Find the element under the cursor.
+
+- |:CSearchContext| - Find the element under the cursor based on its
+  context.
+
+- |:CProjectConfigs| [project] - Open a temp buffer to view/modify the
+  current projects cdt configurations.
+
+
 Css Commands
 ============
 
@@ -128,14 +148,14 @@ Html Commands
 Ivy Commands
 ============
 
-- Initial Setup (|ivyrepo|) <path> - Sets the necessary IVY_REPO
-  classpath variable for supporting automatic updates to .classpath
-  files upon ivy.xml updates.
+- |:IvyRepo| <path> - Sets the necessary IVY_REPO classpath variable
+  for supporting automatic updates to .classpath files upon ivy.xml
+  updates.
 
-- Search Online Maven Repository (|ivydependencysearch|) <artifact> -
-  Searches online repository and opens a window with results that can
-  be added to the current ivy file by hitting <Enter> on a result.
-  Available when editing an ivy.xml file.
+- |:IvyDependencySearch| <artifact> - Searches online repository and
+  opens a window with results that can be added to the current ivy
+  file by hitting <Enter> on a result.  Available when editing an
+  ivy.xml file.
 
 
 Java Commands
@@ -158,15 +178,13 @@ Java Commands
 - |:JavaDelegate| - View list of methods that delegate to the field
   under the cursor.
 
-- Generating test method stubs. (|junitimpl|) - Similar to :JavaImpl,
-  but creates test methods.
+- |:JUnitImpl| - Similar to :JavaImpl, but creates test methods.
 
-- Executing test cases and viewing the results. (|junitexecute|) -
-  [testcase] Allows you to execute test cases in your favorite build
-  tool.
+- |:JUnitExecute| [testcase] - Allows you to execute test cases in
+  your favorite build tool.
 
-- Executing test cases and viewing the results. (|junitresult|) -
-  [testcase] Allows you to view the results of a test case.
+- |:JUnitResult| [testcase] - Allows you to view the results of a test
+  case.
 
 - |:JavaImport| - Import the class under the cursor.
 
@@ -187,6 +205,13 @@ Java Commands
 
 - |:JavaDocComment| - Adds or updates the comments for the element
   under the cursor.
+
+- |:Java| - Executes the java using your project's main class.
+
+- |:Javac| - Executes the javac utility against all source files.
+
+- |:Javadoc| [file, file, ...] - Executes the javadoc utility against
+  all or just the supplied source files.
 
 - |:JavaFormat| - Formats java source code.
 
@@ -241,11 +266,11 @@ Maven Commands
 
 - |:Mvn| [<goal> ...] - Execute maven 2.x from the current project.
 
-- Initial Setup (|mavenrepo|) - Sets the necessary MAVEN_REPO
-  classpath variable for maven's (1.x) eclipse support.
+- |:MavenRepo| - Sets the necessary MAVEN_REPO classpath variable for
+  maven's (1.x) eclipse support.
 
-- Initial Setup (|mvnrepo|) - Sets the necessary M2_REPO classpath
-  variable for maven's (2.x) eclipse support.
+- |:MvnRepo| - Sets the necessary M2_REPO classpath variable for
+  maven's (2.x) eclipse support.
 
 - |:MavenDependencySearch| <artifact> - Searches online repository and
   opens a window with results that can be added to the current project
@@ -264,8 +289,7 @@ Php Commands
 - |:PhpSearch| -p <pattern> -t <type> [-s <scope>] - Search for
   classes, methods, and constants.
 
-- Element Search (|phpfinddefinition|) - Find the element under the
-  cursor.
+- |:PhpFindDefinition| - Find the element under the cursor.
 
 - |:PhpSearchContext| - Find the element under the cursor based on its
   context.
@@ -297,6 +321,11 @@ Php .projectOption Commands
 Python Commands
 ===============
 
+- |:PythonFindDefinition| - Find the element under the cursor.
+
+- |:PythonSearchContext| - Find the element under the cursor based on
+  its context.
+
 - :Validate (|validate-python|) - Validates the current file using
   pyflakes.
 
@@ -305,9 +334,8 @@ Python Commands
 - |:PythonRegex| - Opens a window for testing python regular
   expressions.
 
-- Django manage.py (|djangomanage|) - Invokes django's manage.py from
-  any file in the same directory as your manage.py or in any of the
-  child directories.
+- |:DjangoManage| - Invokes django's manage.py from any file in the
+  same directory as your manage.py or in any of the child directories.
 
 - |:DjangoFind| - Available when editing a django html template file.
   Finds tag/filter definition, other template files, and static files.
@@ -321,7 +349,7 @@ Python Commands
 
 - |:DjangoContextOpen| - Available when editing a python file.
   Executes :DjangoViewOpen, :DjangoTemplateOpen, or
-  :PythonFindDefinition depending on the context of the text under the
+  :PythonSearchContext depending on the context of the text under the
   cursor.
 
 
@@ -372,7 +400,7 @@ Xml Commands
 - :Validate (|validate-xml|) [<file>] - Validates the supplied xml
   file or the current file if none supplied.
 
-- Xml Format (|xmlformat|) Reformats the current xml file.
+- |:XmlFormat| - Reformats the current xml file.
 
 
 Xsd Commands
@@ -424,8 +452,7 @@ Note: Currently cvs, subversion, mercurial, and git are supported by the
 Web Lookup Commands
 ===================
 
-- OpenUrl (|openurl|) [url] - Opens a url in your configured web
-  browser.
+- |:OpenUrl| [url] - Opens a url in your configured web browser.
 
 - |:Google| [word ...] - Looks up a word or phrase with google.
 
@@ -505,13 +532,12 @@ Misc. Commands
 - |:LocationListClear| - Removes all entries from the location list
   window.
 
-- Maximize (|maximizewindow|) - Toggles maximization of the current
-  window.
+- |:MaximizeWindow| - Toggles maximization of the current window.
 
-- Minimize (|minimizewindow|) [winnr ...] - Minimizes the current
-  window or the windows corresponding to the window numbers supplied.
+- |:MinimizeWindow| [winnr ...] - Minimizes the current window or the
+  windows corresponding to the window numbers supplied.
 
-- Minimize (|minimizerestore|) - Restore all minimized windows.
+- |:MinimizeRestore| - Restore all minimized windows.
 
 - |:Buffers| - Opens a temporary window with a list of all the
   currently listed buffers, allowing you to open or remove them.

@@ -46,6 +46,8 @@ Java
 
 - Java Search (|vim-java-search|)
 
+- Java / Javac Support (|vim-java-java|)
+
 - Javadoc Support (|vim-java-javadoc|)
 
 - Automated Imports (|vim-java-import|)

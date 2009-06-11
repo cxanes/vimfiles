@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/common/maximize.html
+"   Compiler for javac.
 "
 " License:
 "
@@ -22,28 +22,22 @@
 "
 " }}}
 
-" Global Variables {{{
-  if !exists('g:MaximizeStatusLine')
-    let g:MaximizeStatusLine = '%<%f\ %M\ %h%r%=%-10.(%l,%c%V\ b=%n,w=%{winnr()}%)\ %P'
-  endif
+if exists("current_compiler")
+  finish
+endif
+let current_compiler = "eclim_javac"
 
-  if exists('g:MaximizeStatusLineEnabled') && g:MaximizeStatusLineEnabled
-    exec "set statusline=" . g:MaximizeStatusLine
-  endif
-" }}}
+let command = eclim#client#nailgun#GetEclimCommand()
+if !(has('win32') || has('win64'))
+  let command = substitute(command, '"', '', 'g')
+endif
+let command = escape(command, ' "')
+exec 'CompilerSet makeprg=' . command . '\ -command\ javac\ $*'
 
-" Command Declarations {{{
-if !exists(":MaximizeWindow")
-  command MaximizeWindow :call eclim#display#maximize#MaximizeWindow()
-endif
-if !exists(":MinimizeWindow")
-  command -nargs=* MinimizeWindow :call eclim#display#maximize#MinimizeWindow(<f-args>)
-endif
-if !exists(":MinimizeRestore")
-  command MinimizeRestore
-      \ :call eclim#display#maximize#ResetMinimized() |
-      \ call eclim#display#maximize#RestoreWindows(0)
-endif
-" }}}
+exec 'CompilerSet errorformat=' .
+  \ '\%A%.%#[javac]\ %f:%l:\ %m,' .
+  \ '\%-Z%.%#[javac]\ %p^,' .
+  \ '\%-G%.%#[javac]%.%#,' .
+  \ '\%-G%.%#'
 
 " vim:ft=vim:fdm=marker

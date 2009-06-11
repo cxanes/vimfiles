@@ -87,19 +87,6 @@ function! eclim#project#tree#ProjectTree(...)
   let dir_list = string(dirs)
 
   call s:CloseTreeWindow()
-
-  if bufwinnr(s:GetTreeTitle()) == -1
-    call eclim#display#window#VerticalToolWindowOpen(s:GetTreeTitle(), 9)
-    " command used to navigate to a content window before executing a command.
-    if !exists('g:EclimProjectTreeContentWincmd')
-      if g:VerticalToolWindowSide == 'right'
-        let g:EclimProjectTreeContentWincmd = 'winc h'
-      else
-        let g:EclimProjectTreeContentWincmd = 'winc l'
-      endif
-    endif
-  endif
-
   call s:OpenTree(names, dirs)
   normal! zs
 
@@ -138,6 +125,21 @@ endfunction " }}}
 
 " OpenTree(names, dirs) " {{{
 function! s:OpenTree(names, dirs)
+  let expandDir = ''
+  if g:EclimProjectTreeExpandPathOnOpen
+    let expandDir = substitute(expand('%:p:h'), '\', '/', 'g')
+  endif
+
+  call eclim#display#window#VerticalToolWindowOpen(s:GetTreeTitle(), 9)
+  " command used to navigate to a content window before executing a command.
+  if !exists('g:EclimProjectTreeContentWincmd')
+    if g:VerticalToolWindowSide == 'right'
+      let g:EclimProjectTreeContentWincmd = 'winc h'
+    else
+      let g:EclimProjectTreeContentWincmd = 'winc l'
+    endif
+  endif
+
   if !s:project_tree_loaded
     " remove any settings related to usage of tree as an external filesystem
     " explorer.
@@ -146,7 +148,8 @@ function! s:OpenTree(names, dirs)
     endif
   endif
 
-  call eclim#tree#Tree(s:GetTreeTitle(), a:dirs, a:names, len(a:dirs) == 1, [])
+  let expand = len(a:dirs) == 1
+  call eclim#tree#Tree(s:GetTreeTitle(), a:dirs, a:names, expand, [])
 
   if !s:project_tree_loaded
     for action in g:EclimProjectTreeActions
@@ -158,6 +161,11 @@ function! s:OpenTree(names, dirs)
   endif
 
   setlocal bufhidden=hide
+
+  if expand && expandDir != ''
+    call eclim#util#DelayedCommand(
+      \ 'call eclim#tree#ExpandPath("' . s:GetTreeTitle() . '", "' . expandDir . '")')
+  endif
 endfunction " }}}
 
 " OpenProjectFile(cmd, cwd, file) {{{
@@ -167,7 +175,7 @@ function! eclim#project#tree#OpenProjectFile(cmd, cwd, file)
   let cwd = substitute(getcwd(), '\', '/', 'g')
   let cwd = escape(cwd, ' &')
 
-  "exec 'cd ' . a:cwd
+  "exec 'cd ' . escape(a:cwd, ' ')
   exec g:EclimProjectTreeContentWincmd
 
   " if the buffer is a no name and action is split, use edit instead.

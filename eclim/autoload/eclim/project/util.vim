@@ -36,6 +36,7 @@ let s:command_create = '-command project_create -f "<folder>"'
 let s:command_create_name = ' -p "<name>"'
 let s:command_create_natures = ' -n <natures>'
 let s:command_create_depends = ' -d <depends>'
+let s:command_import = '-command project_import -f "<folder>"'
 let s:command_delete = '-command project_delete -p "<project>"'
 let s:command_refresh = '-command project_refresh -p "<project>"'
 let s:command_refresh_file =
@@ -43,7 +44,7 @@ let s:command_refresh_file =
 let s:command_projects = '-command project_list'
 let s:command_project_info = '-command project_info -p "<project>"'
 let s:command_project_settings = '-command project_settings -p "<project>"'
-let s:command_project_setting = s:command_project_settings . ' -s <setting>'
+let s:command_project_setting = '-command project_setting -p "<project>" -s <setting>'
 let s:command_project_update = '-command project_update -p "<project>"'
 let s:command_update = '-command project_update -p "<project>" -s "<settings>"'
 let s:command_open = '-command project_open -p "<project>"'
@@ -73,16 +74,16 @@ endfunction " }}}
 function! eclim#project#util#ProjectCD(scope)
   let dir = eclim#project#util#GetCurrentProjectRoot()
   if a:scope == 0
-    exec 'cd ' . dir
+    exec 'cd ' . escape(dir, ' ')
   elseif a:scope == 1
-    exec 'lcd ' . dir
+    exec 'lcd ' . escape(dir, ' ')
   endif
 endfunction " }}}
 
 " ProjectCreate(args) {{{
 " Creates a project at the supplied folder
 function! eclim#project#util#ProjectCreate(args)
-  let args = eclim#util#ParseArgs(a:args)
+  let args = eclim#util#ParseCmdLine(a:args)
 
   let folder = fnamemodify(expand(args[0]), ':p')
   let folder = substitute(folder, '\', '/', 'g')
@@ -104,6 +105,20 @@ function! eclim#project#util#ProjectCreate(args)
     let depends = substitute(depends, '\s\+', ',', 'g')
     let command .= substitute(s:command_create_depends, '<depends>', depends, '')
   endif
+
+  let result = eclim#ExecuteEclim(command)
+  if result != '0'
+    call eclim#util#Echo(result)
+    call eclim#project#util#ClearProjectsCache()
+  endif
+endfunction " }}}
+
+" ProjectImport(arg) {{{
+" Import a project from the supplied folder
+function! eclim#project#util#ProjectImport(arg)
+  let folder = fnamemodify(expand(a:arg), ':p')
+  let folder = substitute(folder, '\', '/', 'g')
+  let command = substitute(s:command_import, '<folder>', folder, '')
 
   let result = eclim#ExecuteEclim(command)
   if result != '0'
@@ -139,7 +154,7 @@ endfunction " }}}
 function! eclim#project#util#ProjectRefresh(args)
   call eclim#project#util#ClearProjectsCache()
   if a:args != ''
-    let projects = eclim#util#ParseArgs(a:args)
+    let projects = eclim#util#ParseCmdLine(a:args)
   else
     if !eclim#project#util#IsCurrentFileInProject()
       return
@@ -249,7 +264,7 @@ endfunction " }}}
 " ProjectNatureModify(project) {{{
 " Modifies one or more natures for the specified project.
 function! eclim#project#util#ProjectNatureModify(command, args)
-  let args = eclim#util#ParseArgs(a:args)
+  let args = eclim#util#ParseCmdLine(a:args)
 
   let project = args[0]
   let natures = join(args[1:], ',')
@@ -280,7 +295,7 @@ function! eclim#project#util#ProjectSettings(project)
 
   let command = substitute(s:command_project_settings, '<project>', project, '')
   if eclim#util#TempWindowCommand(command, project . "_settings")
-    exec "lcd " . eclim#project#util#GetProjectRoot(project)
+    exec "lcd " . escape(eclim#project#util#GetProjectRoot(project), ' ')
     setlocal buftype=acwrite
     setlocal filetype=jproperties
     setlocal noreadonly
@@ -328,11 +343,11 @@ function! eclim#project#util#ProjectGrep(command, args)
 "  let save_opt = &eventignore
 "  set eventignore=all
   try
-    silent exec 'lcd ' . project_dir
+    silent exec 'lcd ' . escape(project_dir, ' ')
     silent! exec a:command . ' ' . a:args
   finally
 "    let &eventignore = save_opt
-    silent exec 'lcd ' . cwd
+    silent exec 'lcd ' . escape(cwd, ' ')
     " force quickfix / location list signs to update.
     call eclim#display#signs#Update()
   endtry
@@ -439,7 +454,7 @@ function! eclim#project#util#GetProjectRelativeFilePath(file)
     let pattern .= '\c'
   endif
   let result = substitute(file, pattern, '', '')
-  if result =~ '^/'
+  if result != file && result =~ '^/'
     let result = result[1:]
   endif
   return result
@@ -568,8 +583,9 @@ function! eclim#project#util#GetProjectRoot(project)
 endfunction " }}}
 
 " GetProjectSetting(setting) {{{
-" Gets a project setting from eclim.  Returns '' the setting does not exist,
-" 0 if not in a project or an error occurs communicating with the server.
+" Gets a project setting from eclim.  Returns '' if the setting does not
+" exist, 0 if not in a project or an error occurs communicating with the
+" server.
 function! eclim#project#util#GetProjectSetting(setting)
   if !eclim#project#util#IsCurrentFileInProject()
     return
@@ -580,19 +596,15 @@ function! eclim#project#util#GetProjectSetting(setting)
   let command = substitute(command, '<project>', project, '')
   let command = substitute(command, '<setting>', a:setting, '')
 
-  let result = split(eclim#ExecuteEclim(command), '\n')
-  if len(result) == 1 && result[0] == '0'
-    return result[0]
+  let result = eclim#ExecuteEclim(command)
+  if result == '0'
+    return result
   endif
 
-  call filter(result, 'v:val !~ "^\\s*#"')
-
-  if len(result) == 0
+  if result == ''
     call eclim#util#EchoWarning("Setting '" . a:setting . "' does not exist.")
-    return ''
   endif
-
-  return substitute(result[0], '.\{-}=\(.*\)', '\1', '')
+  return result
 endfunction " }}}
 
 " IsCurrentFileInProject(...) {{{
@@ -681,7 +693,7 @@ endfunction " }}}
 " Custom command completion for ProjectCreate
 function! eclim#project#util#CommandCompleteProjectCreate(argLead, cmdLine, cursorPos)
   let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
-  let args = eclim#util#ParseArgs(cmdLine)
+  let args = eclim#util#ParseCmdLine(cmdLine)
   let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
 
   " complete dirs for first arg
@@ -743,10 +755,17 @@ endfunction " }}}
 function! eclim#project#util#CommandCompleteProjectRelative(
     \ argLead, cmdLine, cursorPos)
   let dir = eclim#project#util#GetCurrentProjectRoot()
+  if dir == '' && exists('b:project')
+    let dir = eclim#project#util#GetProjectRoot(b:project)
+  endif
+
+  if dir == ''
+    return []
+  endif
 
   let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
-  let args = eclim#util#ParseArgs(cmdLine)
-  let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
+  let args = eclim#util#ParseCmdLine(cmdLine)
+  let argLead = cmdLine =~ '\s$' ? '' : (len(args) > 0 ? args[len(args) - 1] : '')
 
   let results = split(eclim#util#Glob(dir . '/' . argLead . '*', 1), '\n')
   call map(results, "substitute(v:val, '\\', '/', 'g')")
@@ -756,6 +775,20 @@ function! eclim#project#util#CommandCompleteProjectRelative(
   call map(results, "substitute(v:val, ' ', '\\\\ ', 'g')")
 
   return eclim#util#ParseCommandCompletionResults(argLead, results)
+endfunction " }}}
+
+" CommandCompleteAbsoluteOrProjectRelative(argLead, cmdLine, cursorPos) {{{
+" Custom command completion for project relative files and directories.
+function! eclim#project#util#CommandCompleteAbsoluteOrProjectRelative(
+    \ argLead, cmdLine, cursorPos)
+  let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
+  let args = eclim#util#ParseCmdLine(cmdLine)
+  let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
+  if argLead =~ '^\(/\|[a-zA-Z]:\)'
+    return eclim#util#CommandCompleteDir(a:argLead, a:cmdLine, a:cursorPos)
+  endif
+  return eclim#project#util#CommandCompleteProjectRelative(
+    \ a:argLead, a:cmdLine, a:cursorPos)
 endfunction " }}}
 
 " CommandCompleteProjectNatureAdd(argLead, cmdLine, cursorPos) {{{
@@ -787,7 +820,7 @@ endfunction " }}}
 function! s:CommandCompleteProjectNatureModify(
     \ argLead, cmdLine, cursorPos, aliasesFunc)
   let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
-  let args = eclim#util#ParseArgs(cmdLine)
+  let args = eclim#util#ParseCmdLine(cmdLine)
   let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
 
   " complete dirs for first arg

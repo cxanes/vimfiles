@@ -287,6 +287,83 @@ function! eclim#java#util#UpdateSrcFile(validate)
   endif
 endfunction " }}}
 
+" Javac(bang) {{{
+" Run javac.
+function! eclim#java#util#Javac(bang)
+  if !eclim#project#util#IsCurrentFileInProject()
+    return
+  endif
+
+  let project_path = eclim#project#util#GetCurrentProjectRoot()
+  let project = eclim#project#util#GetCurrentProjectName()
+  let args = '-p "' . project . '"'
+
+  let cwd = getcwd()
+  try
+    exec 'lcd ' . escape(project_path, ' ')
+    let exec = has('win32') || has('win64')
+    call eclim#util#MakeWithCompiler('eclim_javac', a:bang, args, exec)
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
+endfunction " }}}
+
+" Java([args]) {{{
+" Run a projects main class.
+function! eclim#java#util#Java(args)
+  let project = eclim#project#util#GetCurrentProjectName()
+  if project == '' && exists('b:project')
+    let project = b:project
+  endif
+
+  if project == ''
+    call eclim#project#util#IsCurrentFileInProject()
+    return
+  endif
+
+  let command = '!'
+  let command .= eclim#client#nailgun#GetEclimCommand()
+  let command .= ' -command java -p "' . project . '"'
+
+  let args = eclim#util#ParseArgs(a:args)
+  if len(args)
+    let command .= ' -a'
+    for arg in args
+      let command .= ' "' . arg . '"'
+    endfor
+  endif
+
+  call eclim#util#TempWindow('[Java Output]', [])
+
+  let outfile = g:EclimTempDir . '/eclim_java_output.txt'
+
+  if has("win32") || has("win64")
+    if executable("tee")
+      let command .= ' | tee "' . outfile . '" 2>&1"'
+    else
+      let command .= ' >"' . outfile . '" 2>&1"'
+    endif
+  else
+    let command .= ' 2>&1| tee "' . outfile . '"'
+  endif
+
+  " ensure the temp window was opened (test for empty window vs dealing with
+  " all the escaping necessary to test against buffer name).
+  if len(getline(1)) == 0 && line('$') == 1
+    call eclim#util#Exec(command)
+    set modifiable noreadonly
+    exec 'silent read ' . escape(outfile, ' ')
+    1,1delete _
+    $,$delete _
+    set nomodifiable readonly
+    let b:project = project
+
+    if exists(":Java") != 2
+      command -buffer -nargs=* Java :call eclim#java#util#Java(<q-args>)
+    endif
+  endif
+endfunction " }}}
+
 " CommandCompleteProject(argLead, cmdLine, cursorPos) {{{
 " Custom command completion for project names.
 function! eclim#java#util#CommandCompleteProject(argLead, cmdLine, cursorPos)
