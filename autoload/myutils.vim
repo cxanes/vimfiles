@@ -1050,7 +1050,7 @@ endfunction
 "}}}
 function! myutils#IEvalVim(mode) "{{{
   try
-    let res = s:EvalVim(getline('.'))
+    let res = myutils#EvalVim(getline('.'))
   catch 
     return ''
   endtry
@@ -1064,7 +1064,7 @@ endfunction
 "}}}
 function! myutils#NEvalVim(mode) "{{{
   try
-    let res = s:EvalVim(getline('.'))
+    let res = myutils#EvalVim(getline('.'))
   catch 
     return
   endtry
@@ -1078,7 +1078,7 @@ endfunction
 "}}}
 function! myutils#VEvalVim(mode) "{{{
   try
-    let res = s:EvalVim(mylib#GetSelection())
+    let res = myutils#EvalVim(mylib#GetSelection())
   catch 
     return
   endtry

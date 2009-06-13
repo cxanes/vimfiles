@@ -218,15 +218,15 @@ command! -nargs=? -range Enclose call myutils#Enclose(<q-args>, <line1>, <line2>
 " {{{1 VimEval(): Evaluate given expression and return the result
 "                 (when error occurs returns 0)
 "--------------------------------------------------------------
-inoremap <Leader>ee <C-R>=myutils#IEvalVim('e')<CR>
-inoremap <Leader>ej <C-R>=myutils#IEvalVim('j')<CR>
+inoremap <silent> <Leader>ee <C-R>=myutils#IEvalVim('e')<CR>
+inoremap <silent> <Leader>ej <C-R>=myutils#IEvalVim('j')<CR>
 
-nnoremap <Leader>ee :<C-U>call myutils#NEvalVim('e')<CR>
-nnoremap <Leader>ej :<C-U>call myutils#NEvalVim('j')<CR>
+nnoremap <silent> <Leader>ee :<C-U>call myutils#NEvalVim('e')<CR>
+nnoremap <silent> <Leader>ej :<C-U>call myutils#NEvalVim('j')<CR>
 
-vnoremap <Leader>ee :<C-U>call myutils#VEvalVim('e')<CR>
-vnoremap <Leader>ej :<C-U>call myutils#VEvalVim('j')<CR>
-vnoremap <Leader>er :<C-U>call myutils#VEvalVim('r')<CR>
+vnoremap <silent> <Leader>ee :<C-U>call myutils#VEvalVim('e')<CR>
+vnoremap <silent> <Leader>ej :<C-U>call myutils#VEvalVim('j')<CR>
+vnoremap <silent> <Leader>er :<C-U>call myutils#VEvalVim('r')<CR>
 "}}}
 "==========================================================}}}1
 "==============================================================
