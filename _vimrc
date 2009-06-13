@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-05-29 20:33:16
+" Last Modified: 2009-06-13 19:24:37
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -441,7 +441,11 @@ elseif &t_Co > 2
     set t_Co=16
   endif
   " Changed the colors of grounps Pmenu and PmenuSel
-  silent! colors default2
+  if &term == 'win32'
+    silent! colors default2
+  else
+    silent! colors ChocolateLiquor2
+  endif
   set bg=dark
   augroup Vimrc
     au VimLeave * hi clear
