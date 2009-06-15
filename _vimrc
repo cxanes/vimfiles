@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-06-13 19:24:37
+" Last Modified: 2009-06-15 21:07:39
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -20,6 +20,11 @@
 "   - $VIMRUNTIME/gvimrc_example.vim
 "
 set nocompatible
+if version < 700
+  echohl ErrorMsg | echo 'Config requires at least VIM 7.0' | echohl None
+  set noloadplugins
+  finish
+end
 "============================================================{{{1
 " Global, Script, and Environment Variables
 "================================================================
@@ -31,11 +36,19 @@ let g:USER_INFO = {
       \ }
 "}}}
 " s:MSWIN {{{
-let s:MSWIN = has('win32') || has('win32unix') || has('win64')
+let s:MSWIN =  has('win32') || has('win32unix') || has('win64')
           \ || has('win95') || has('win16')
 "}}}
 " s:RUNTIME_DIR {{{
-let s:RUNTIME_DIR = s:MSWIN ? ($VIM  . '/vimfiles') : ($HOME . '/.vim')
+let s:RUNTIME_DIRS = [($HOME . '/.vim'), ($VIM  . '/vimfiles')]
+if !isdirectory(s:RUNTIME_DIRS[s:MSWIN])
+      \ && isdirectory(s:RUNTIME_DIRS[!s:MSWIN])
+  let s:RUNTIME_DIR = s:RUNTIME_DIRS[!s:MSWIN]
+else
+  let s:RUNTIME_DIR = s:RUNTIME_DIRS[s:MSWIN]
+end
+unlet s:RUNTIME_DIRS
+
 let $MYVIMRUNTIME = s:RUNTIME_DIR
 let $V = s:RUNTIME_DIR
 "}}}
@@ -122,11 +135,8 @@ augroup END
 let did_install_syntax_menu = 1
 let no_buffers_menu = 1
 
-let s:do_resize_window = 1
-
 if &term == 'screen'
   set term=xterm
-  let s:do_resize_window = 0
 endif
 
 " Encoding {{{
@@ -146,7 +156,7 @@ language time C
 set fileencodings=ucs-bom,utf-8,big5,latin1
 "}}}
 " Size of the Vim window {{{
-if s:do_resize_window
+if has('gui_win32')
   let s:default_size = [42, 120]
 
   if &lines < s:default_size[0]
@@ -159,7 +169,6 @@ if s:do_resize_window
 
   unlet s:default_size
 endif
-unlet s:do_resize_window
 "}}}
 " 'backup' settings {{{
 set backup
