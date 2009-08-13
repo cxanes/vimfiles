@@ -265,17 +265,75 @@ if !exists('*TeXJumperCallback')
   " }}}
 endif
 "}}}2
-if has('python') && !exists('*s:TeXToc')
-  py import vim
-  py import texvim
+if has('python') && !exists('g:texvim_py_loaded')
+  py <<END_PY
+import vim
+import subprocess
+import os
+try:
+  import texvim
+  vim.command('let g:texvim_py_loaded = 1')
+except ImportError:
+  vim.command('let g:texvim_py_loaded = 0')
+END_PY
+end
 
-  function! s:TeXToc(filename) 
-    if empty(a:filename)
-      py texvim.Outline(vim.current.buffer).show()
-    else
-      py texvim.Outline(vim.eval("fnamemodify(a:filename, ':p')")).show()
-    endif
+if g:texvim_py_loaded
+  if !exists('*s:TeXToc')
+    function! s:TeXToc(filename) "{{{
+      if empty(a:filename)
+        py texvim.Outline(vim.current.buffer).show()
+      else
+        py texvim.Outline(vim.eval("fnamemodify(a:filename, ':p')")).show()
+      endif
+    endfunction
+    "}}}
+  end
+
+  " Add SyncTeX support in MSWIN with Sumatra PDF viewer
+  " 
+  " References:
+  "
+  "   http://william.famille-blum.org/blog/static.php?page=static081010-000413
+  "   http://william.famille-blum.org/blog/index.php?entry=entry080515-065447
+  "   http://william.famille-blum.org/blog/index.php?entry=entry081007-214408
+  "   http://sourceforge.net/apps/mediawiki/skim-app/index.php?title=TeX_and_PDF_Synchronization
+  if !exists('*s:TeXSync')
+    function! s:TeXSync(...) "{{{
+      let setfocus = a:0 && a:1
+
+      if !exists('g:TeX_PDF_File')
+        echohl ErrorMsg | echo "TeXSync: The variable g:TeX_PDF_File doesn't assigned." | echohl None
+        return
+      end
+      let TeX_PDF_File = g:TeX_PDF_File
+      if exists('b:TeX_PDF_File')
+        let TeX_PDF_File = b:TeX_PDF_File
+      end
+
+      if has('clientserver')
+        let servername = v:servername
+      else
+        let servername = ''
+      end
+
+      let pdf_viewer = ['C:\My_Tools\SumatraPDF\SumatraPDF.exe', '-inverse-search', 'pythonw "C:\Program Files\Vim\vimfiles\bin\tex-open-vim.py" "%f" %l %c' . (empty(servername)?'': (' ' . servername)), '-reuse-instance']
+      py subprocess.Popen(vim.eval('pdf_viewer'))
+
+      let TeX_PDF_File = fnamemodify(TeX_PDF_File, ':p')
+
+      let ssl_sav = &ssl
+      let &ssl = 0
+      py subprocess.Popen(["python", r"C:\Program Files\Vim\vimfiles\bin\dde-sumatra-pdf.py", "ForwardSearch" , vim.eval('TeX_PDF_File'), vim.eval("expand('%:p')") , vim.eval("line('.')"), vim.eval("col('.')"), '0', vim.eval("setfocus")], shell=True)
+      let &ssl = ssl_sav
+    endfunction
+  end
+  "}}}
+  function! s:TeXSetPDF(pdf_file, ...) "{{{
+    let isbuf = a:0 && a:1
+    let {['g:','b:'][isbuf]}TeX_PDF_File = a:pdf_file
   endfunction
+  "}}}
 endif
 " }}}
 "===================================================================
@@ -307,6 +365,13 @@ command! -nargs=* -bang -buffer MakeXeTeX make<bang> -e "UseXeTeX()" <args>
 if exists('*s:TeXToc')
   command! -nargs=? -complete=file -buffer TeXToc call <SID>TeXToc(<q-args>)
 endif
+
+if exists('*s:TeXSync')
+  command! -nargs=0 -bang -buffer TeXSync call <SID>TeXSync(<q-bang> == '!')
+  nnoremap <silent> <buffer> <Leader>ss :<C-U>call <SID>TeXSync(v:count)<CR>
+
+  command! -nargs=1 -complete=file -buffer TeXSetPDF call <SID>TeXSetPDF(<q-args>, <q-bang> == '!')
+end
 " }}}
 "===================================================================
 " vim: fdm=marker :
