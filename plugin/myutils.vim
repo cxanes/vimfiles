@@ -152,7 +152,7 @@ inoremap <silent> <S-CR> <C-\><C-O>:call myutils#PutNewLine()<CR>
 " {{{1 Build Tags
 "--------------------------------------------------------------
 command! -nargs=? -bang Cscope call myutils#Cscope(<q-args>, expand('<bang>') != '!')
-command! -nargs=? -bang Ctags  call myutils#(<q-args>, expand('<bang>') != '!')
+command! -nargs=? -bang Ctags  call myutils#Ctags(<q-args>, expand('<bang>') != '!')
 "==========================================================}}}1
 " {{{1 Text objects selection
 "--------------------------------------------------------------
