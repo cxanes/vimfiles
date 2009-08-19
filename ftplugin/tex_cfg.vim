@@ -324,7 +324,7 @@ if g:texvim_py_loaded
 
       let ssl_sav = &ssl
       let &ssl = 0
-      py subprocess.Popen(["python", r"C:\Program Files\Vim\vimfiles\bin\dde-sumatra-pdf.py", "ForwardSearch" , vim.eval('TeX_PDF_File'), vim.eval("expand('%:p')") , vim.eval("line('.')"), vim.eval("col('.')"), '0', vim.eval("setfocus")], shell=True)
+      py subprocess.Popen(["pythonw", r"C:\Program Files\Vim\vimfiles\bin\dde-sumatra-pdf.py", "ForwardSearch" , vim.eval('TeX_PDF_File'), vim.eval("expand('%:p')") , vim.eval("line('.')"), vim.eval("col('.')"), '0', vim.eval("setfocus")])
       let &ssl = ssl_sav
     endfunction
   end
