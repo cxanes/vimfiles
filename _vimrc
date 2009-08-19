@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-06-15 21:07:39
+" Last Modified: 2009-08-19 16:22:46
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1460,6 +1460,9 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let python_highlight_builtins          = 1
   let python_highlight_exceptions        = 1
   let python_highlight_string_formatting = 1
+
+  let g:pyindent_open_paren   = 'match(getline(plnum),''[({\[][^({\[]*$'')-indent(plnum)+1'
+  let g:pyindent_nested_paren = g:pyindent_open_paren
   "}}}2
 " }}}1
 "============================================================{{{1
