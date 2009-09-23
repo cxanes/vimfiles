@@ -71,13 +71,13 @@ MW()
     word="$1"
     # mw_url='http://www.m-w.com/dictionary/'
     mw_url='http://www.merriam-webster.com/dictionary/'
-    sound_url='http://cougar.eb.com/soundc11/'
+    sound_url='http://media.merriam-webster.com/soundc11/'
 
     cmd='
         $w = lc shift();
         @f = (); 
         while(<>) {
-            if (m{/cgi-bin/audio\.pl\?((\w)\w*\.wav)=(\w+)}i) {
+            if (m{return\s+au\('"'"'((\w)\w*)'"'"',\s*'"'"'(\w+)'"'"'\)}) {
                 my ($wav, $dir, $word) = ($1, $2, lc $3);
 
                 if    ($wav =~ m{^bix}) { $dir = q{bix}; }
@@ -93,6 +93,7 @@ MW()
         };
         print $f[0] if @f;
     '
+
     wav="$(wget -T 10 -t 3 -w 1 -q -O - "$mw_url$word" | perl -e "$cmd" "$word")"
 
     if [ -n "$wav" ]; then
@@ -128,7 +129,7 @@ DICT()
     dict_url='http://dictionary.reference.com/browse/'
 
     cmd='
-        if (/"soundUrl=([^"]+)"/i) {
+        if (/\bsoundUrl=(.+?)["&]/i) {
             my $wav = $1;
             $wav =~ s{%([0-9a-f][0-9a-f])}{chr(hex($1))}gie;
             print $wav;
