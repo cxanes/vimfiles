@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-09-08 11:36:29
+" Last Modified: 2009-09-25 12:04:03
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1702,7 +1702,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " xmledit
   " <http://www.vim.org/scripts/script.php?script_id=301>
   "--------------------------------------------------------------
-  let g:xml_jump_string = ''
+  unlet! g:xml_jump_string
   "}}}2
   "----------------------------------------------------------{{{2
   " vcscommand.vim
