@@ -1,9 +1,9 @@
 " Vim script file                                           vim600:fdm=marker:
 " FileType:     XML
-" Author:       Devin Weaver <vim (at) tritarget.com> 
-" Maintainer:   Devin Weaver <vim (at) tritarget.com>
-" Last Change:  $Date: 2009-02-06 00:15:06 -0500 (Fri, 06 Feb 2009) $
-" Version:      $Revision: 82 $
+" Author:       Devin Weaver <suki (at) tritarget.com> 
+" Maintainer:   Devin Weaver <suki (at) tritarget.com>
+" Last Change:  Tue Apr 07 11:12:08 EDT 2009
+" Version:      1.84
 " Location:     http://www.vim.org/scripts/script.php?script_id=301
 " Licence:      This program is free software; you can redistribute it
 "               and/or modify it under the terms of the GNU General Public
@@ -108,7 +108,7 @@ endif
 if !exists("*s:NewFileXML")
 function s:NewFileXML( )
     " Where is g:did_xhtmlcf_inits defined?
-    if &filetype == 'xml' || (!exists ("g:did_xhtmlcf_inits") && exists ("g:xml_use_xhtml") && (&filetype == 'html' || &filetype == 'xhtml'))
+    if &filetype == 'docbk' || &filetype == 'xml' || (!exists ("g:did_xhtmlcf_inits") && exists ("g:xml_use_xhtml") && (&filetype == 'html' || &filetype == 'xhtml'))
         if append (0, '<?xml version="1.0"?>')
             normal! G
         endif
@@ -483,7 +483,7 @@ function s:InsertGt( )
   if (getline('.')[col('.') - 1] == '>')
     let char_syn=synIDattr(synID(line("."), col(".") - 1, 1), "name")
   endif
-  if -1 == match(char_syn, "xmlProcessing") && (0 == match(char_syn, 'html') || 0 == match(char_syn, 'xml'))
+  if -1 == match(char_syn, "xmlProcessing") && (0 == match(char_syn, 'html') || 0 == match(char_syn, 'xml') || 0 == match(char_syn, 'docbk'))
     call <SID>ParseTag()
   else
     if col(".") == col("$") - 1
@@ -660,8 +660,10 @@ function! s:XmlInstallDocumentation(full_name, revision)
 endfunction
 " }}}2
 
+let s:script_lines = readfile(expand("<sfile>"), "", 6)
 let s:revision=
-      \ substitute("$Revision: 82 $",'\$\S*: \([.0-9]\+\) \$','\1','')
+      \ substitute(s:script_lines[5], '^" Version:\s*\|\s*$', '', '')
+"      \ substitute("$Revision: 83 $",'\$\S*: \([.0-9]\+\) \$','\1','')
 silent! let s:install_status =
     \ s:XmlInstallDocumentation(expand('<sfile>:p'), s:revision)
 if (s:install_status == 1)
@@ -836,14 +838,14 @@ xml_use_xhtml
             let xml_use_xhtml = 1
 <
 xml_no_html
-        This turns of the support for HTML specific tags. Place this in your
+        This turns off the support for HTML specific tags. Place this in your
         .vimrc: >
             let xml_no_html = 1
 <
 xml_jump_string
-        This turns of the support for continuing edits after an ending tag.
+        This turns off the support for continuing edits after an ending tag.
         xml_jump_string can be any string how ever a simple character will
-        serfice. Pick a character or small string that is unique and will
+        suffice. Pick a character or small string that is unique and will
         not interfer with your normal editing. See the <LocalLeader>Space
         mapping for more.
         .vimrc: >
