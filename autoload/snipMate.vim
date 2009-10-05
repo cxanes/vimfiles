@@ -17,7 +17,7 @@ endf
 fun snipMate#expandSnip(snip, col)
 	let lnum = line('.') | let col = a:col
 
-	let snippet = s:ProcessSnippet(a:snip)
+	let snippet = s:ProcessSnippet(a:snip, col)
 	" Avoid error if eval evaluates to nothing
 	if snippet == '' | return '' | endif
 
@@ -73,17 +73,20 @@ fun snipMate#expandSnip(snip, col)
 endf
 
 " Prepare snippet to be processed by s:BuildTabStops
-fun s:ProcessSnippet(snip)
+fun s:ProcessSnippet(snip, col)
 	let snippet = a:snip
 	" Evaluate eval (`...`) expressions.
 	" Using a loop here instead of a regex fixes a bug with nested "\=".
 	if stridx(snippet, '`') != -1
+		let save_cursor = getpos('.')
+		call cursor(line('.'), a:col)
 		while match(snippet, '`.\{-}`') != -1
 			let snippet = substitute(snippet, '`.\{-}`',
 						\ substitute(eval(matchstr(snippet, '`\zs.\{-}\ze`')),
 						\ "\n\\%$", '', ''), '')
 		endw
 		let snippet = substitute(snippet, "\r", "\n", 'g')
+		call setpos('.', save_cursor)
 	endif
 
 	" Place all text after a colon in a tab stop after the tab stop
