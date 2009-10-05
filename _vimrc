@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-09-25 12:04:03
+" Last Modified: 2009-09-30 15:43:14
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -885,8 +885,8 @@ imap <silent> <F11> <C-\><C-O>:let @/ = ''<Bar>call histdel(':', -1)<CR>
 nmap <silent> <F11> :<C-U>let @/ = ''<Bar>call histdel(':', -1)<CR>
 
 " Toggle Spellcheck <id=Spell>
-map  <silent> <F12> :<C-U>setlocal spell! spelllang=en_us<Bar>setlocal spell?<CR>
-imap <silent> <F12> <C-\><C-O>:setlocal spell! spelllang=en_us<Bar>setlocal spell?<CR>
+map  <silent> <F12> :<C-U>setlocal spell! spelllang=en_us<Bar>call histdel(':', -1)<Bar>setlocal spell?<CR>
+imap <silent> <F12> <C-\><C-O>:setlocal spell! spelllang=en_us<Bar>call histdel(':', -1)<Bar>setlocal spell?<CR>
 
 "}}}
 " Map: Others {{{
