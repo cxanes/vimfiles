@@ -298,17 +298,35 @@ if g:texvim_py_loaded
   "   http://william.famille-blum.org/blog/index.php?entry=entry080515-065447
   "   http://william.famille-blum.org/blog/index.php?entry=entry081007-214408
   "   http://sourceforge.net/apps/mediawiki/skim-app/index.php?title=TeX_and_PDF_Synchronization
-  if !exists('*s:TeXSync')
+  if !exists('*s:TeXSync') "{{{
+    function! s:GuessPDFFile() "{{{ 
+      let file = expand('%:p')
+      if !empty(file)
+        let pdf_file = fnamemodify(file, ':r') . '.pdf'
+        if filereadable(pdf_file)
+          return pdf_file
+        end
+      end
+      return ''
+    endfunction
+    "}}}
     function! s:TeXSync(...) "{{{
       let setfocus = a:0 && a:1
 
-      if !exists('g:TeX_PDF_File')
-        echohl ErrorMsg | echo "TeXSync: The variable g:TeX_PDF_File doesn't assigned." | echohl None
-        return
-      end
-      let TeX_PDF_File = g:TeX_PDF_File
+      let TeX_PDF_File = ''
       if exists('b:TeX_PDF_File')
         let TeX_PDF_File = b:TeX_PDF_File
+      elseif exists('g:TeX_PDF_File')
+        let TeX_PDF_File = g:TeX_PDF_File
+      else
+        let TeX_PDF_File = s:GuessPDFFile()
+      end
+
+      if empty(TeX_PDF_File)
+        echohl ErrorMsg
+        echo "TeXSync: The variable TeX_PDF_File (b: or g:) doesn't exist or is empty."
+        echohl None
+        return
       end
 
       if has('clientserver')
@@ -327,12 +345,13 @@ if g:texvim_py_loaded
       py subprocess.Popen(["pythonw", r"C:\Program Files\Vim\vimfiles\bin\dde-sumatra-pdf.py", "ForwardSearch" , vim.eval('TeX_PDF_File'), vim.eval("expand('%:p')") , vim.eval("line('.')"), vim.eval("col('.')"), '0', vim.eval("setfocus")])
       let &ssl = ssl_sav
     endfunction
+    "}}}
+    function! s:TeXSetPDF(pdf_file, ...) "{{{
+      let isbuf = a:0 && a:1
+      let {['g:','b:'][isbuf]}TeX_PDF_File = a:pdf_file
+    endfunction
+    "}}}
   end
-  "}}}
-  function! s:TeXSetPDF(pdf_file, ...) "{{{
-    let isbuf = a:0 && a:1
-    let {['g:','b:'][isbuf]}TeX_PDF_File = a:pdf_file
-  endfunction
   "}}}
 endif
 " }}}
