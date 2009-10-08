@@ -28,6 +28,10 @@ snippet \
 	\\[
 		${1}
 	\\]
+snippet $$
+	$$ ${1} $$
+snippet $
+	$${1}$
 # Enumerate
 snippet enum
 	\begin{enumerate}
@@ -112,7 +116,7 @@ snippet subp
 snippet itd
 	\item[${1:description}] ${2:item}
 snippet li
-	\item $0
+	\item $1
 snippet figure
 	${1:Figure}~\ref{${2:fig:}}${3}
 snippet table
