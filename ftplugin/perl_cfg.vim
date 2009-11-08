@@ -81,21 +81,6 @@ if exists('*mylib#AddOptFiles')
   set complete+=k
 endif
 
-" Set my own 'perlpath', since I use cygwin version perl in win32 vim.
-" ref: $VIMRUNTIME/ftplugin/perl.vim
-if (has('win16') || has('win32') || has('win64') || has('win95'))
-      \ && !has('perl') && !exists('perlpath') && executable('perl') && executable('cygpath')
-  " I don't use $_ directly because of the different interpretations in 
-  " different shells (e.g. cmd.exe or bash.exe)
-  if &shellxquote != '"'
-    let perlpath = system('perl -MShell=cygpath -e "print map { cygpath(q{-m}, join q{}, split /(.+)/) } @INC"')
-  else
-    let perlpath = system("perl -MShell=cygpath -e 'print map { cygpath(q{-m}, join q{}, split /(.+)/) } @INC'")
-  endif
-  let perlpath = join(map(split(perlpath, '\n'), 'substitute(v:val, ''\([ ,]\)'', ''\\\1'', ''g'')'), ',')
-  let perlpath = substitute(perlpath,',.$',',,','')
-endif
-
 if exists('g:use_codeintel') && g:use_codeintel
   setlocal completefunc=codeintel#Complete
 endif

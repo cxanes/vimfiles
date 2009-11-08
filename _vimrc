@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-09-30 15:43:14
+" Last Modified: 2009-11-08 23:30:21
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -25,6 +25,13 @@ if version < 700
   set noloadplugins
   finish
 end
+"============================================================{{{1
+" Remove ALL autocommands in group Vimrc.
+"================================================================
+augroup Vimrc
+  au!
+augroup END
+"}}}1
 "============================================================{{{1
 " Global, Script, and Environment Variables
 "================================================================
@@ -54,7 +61,7 @@ let $V = s:RUNTIME_DIR
 "}}}
 " Environment Variables {{{
 function! s:SetEnv() 
-  function! s:GetPath(dirs, sep, ...) "{{{
+  function! s:GetPath(dirs) "{{{
     let path_list = []
     for dir in a:dirs
       let path = globpath(&rtp, dir)
@@ -62,71 +69,57 @@ function! s:SetEnv()
         call extend(path_list, split(path, '\n'))
       endif
     endfor
-    if a:0 > 0 && a:1 != ''
-      call map(path_list, 'call(a:1, [v:val])')
+    if s:MSWIN
+      call map(path_list, 'tr(v:val, ''/'', ''\'')')
     endif
-    return join(path_list, a:sep)
+    return path_list
   endfunction
   "}}}
-  function! s:Cygpath(path) "{{{
-    let path = tr(a:path, '\', '/')
-    let path = substitute(path, '^\([a-zA-Z]\):', '/cygdrive/\u\1', '')
-    return path
-  endfunction
-  "}}}
-  " $PATH {{{
-  let sep = s:MSWIN ? ';' : ':'
-  let path = s:GetPath(['bin', (s:MSWIN ? 'bin/win' : 'bin/linux')], sep)
-  if path != ''
-    let $PATH = path . ($PATH == '' ? '' : (sep . $PATH))
-  endif
-  "}}}
-  " $RUBYLIB {{{
-  let cyg_ruby = 1
-  " if s:MSWIN
-  "   let ruby_path = globpath(tr($PATH, ';', ','), 'ruby.exe')
-  "   if ruby_path != ''
-  "     let ruby_path = split(ruby_path, '\n')[0]
-  "   endif
-  "   if ruby_path =~ '\<cygwin[/\\]bin\>'
-  "     let cyg_ruby = 1
-  "   endif
-  " endif
+  function! s:PrependEnv(env, path, ...) " ... = is_cyg {{{
+    let is_cyg = a:0 > 0 ? a:1 : 0
+    if s:MSWIN && is_cyg >= 0
+      ru autoload/Cygwin.vim
+      if exists('*Cygwin#PrependEnv')
+        let is_cyg = s:MSWIN && a:0 > 0 && !empty(a:1)
+        return Cygwin#PrependEnv(a:env, a:path, is_cyg)
+      endif
+    endif
 
-  let sep = (s:MSWIN && !cyg_ruby) ? ';' : ':'
-  let path = s:GetPath(['lib/ruby'], sep, (cyg_ruby ? 's:Cygpath' : ''))
-  if path != ''
-    let $RUBYLIB = path . ($RUBYLIB == '' ? '' : (sep . $RUBYLIB))
-  endif
+    let path_sep = s:MSWIN ? ';' : ':'
+    if empty(a:path)
+      return a:env
+    endif
+    return join(a:path, path_sep) . (empty(a:env) ? '' : (path_sep . a:env))
+  endfunction
   "}}}
-  " $PYTHONPATH {{{
-  let path = s:GetPath(['lib/python'], sep)
-  if path != ''
-    let $PYTHONPATH = path . ($PYTHONPATH == '' ? '' : (sep . $PYTHONPATH))
+
+  if s:MSWIN
+    let cyg_ruby   = exists('*GetRubyDist')   ? GetRubyDist()   == 'cygwin' : 1
+    let cyg_python = exists('*GetPythonDist') ? GetPythonDist() == 'cygwin' : 0
+    let cyg_perl   = exists('*GetPerlDist')   ? GetPerlDist()   == 'cygwin' : 1
+  else
+    let cyg_ruby    = 0
+    let cyg_python  = 0
+    let cyg_perl    = 0
+  end
+
+  let $PATH       = s:PrependEnv($PATH,       s:GetPath(['bin', (s:MSWIN ? 'bin/win' : 'bin/linux')]), -1)
+  let $RUBYLIB    = s:PrependEnv($RUBYLIB,    s:GetPath(['lib/ruby']),   cyg_ruby)
+  let $PYTHONPATH = s:PrependEnv($PYTHONPATH, s:GetPath(['lib/python']), cyg_python)
+  let $PERL5LIB   = s:PrependEnv($PERL5LIB,   s:GetPath(['lib/perl']),   cyg_perl)
+
+  if s:MSWIN && exists('*SetPerlDist') && exists('*GetPerlDist')
+    call SetPerlDist(GetPerlDist())
   endif
-  "}}}
-  " $PERL5LIB {{{
-  let cyg_perl = 1
-  let sep = (s:MSWIN && !cyg_perl) ? ';' : ':'
-  let path = s:GetPath(['lib/perl'], sep, (cyg_perl ? 's:Cygpath' : ''))
-  if path != ''
-    let $PERL5LIB = path . ($PERL5LIB == '' ? '' : (sep . $PERL5LIB))
-  endif
-  "}}}
+
   delfunction s:GetPath
-  delfunction s:Cygpath
+  delfunction s:PrependEnv
 endfunction
 
-call s:SetEnv()
-delfunction s:SetEnv
-"}}}
-"}}}1
-"============================================================{{{1
-" Remove ALL autocommands in group Vimrc.
-"================================================================
 augroup Vimrc
-  au!
+  au VimEnter * call <SID>SetEnv()|delfunction <SID>SetEnv
 augroup END
+"}}}
 "}}}1
 "============================================================{{{1
 " Settings
