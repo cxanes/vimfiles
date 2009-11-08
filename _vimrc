@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-11-08 23:30:21
+" Last Modified: 2009-11-08 23:36:36
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1039,6 +1039,8 @@ if s:MSWIN
   endfunction
   command! UpdateRuntimeFiles call s:UpdateRuntimeFiles()
   "}}}
+
+  command! Cmd silent !start
 endif
 
 " Tools {{{
