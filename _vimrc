@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-11-09 16:50:34
+" Last Modified: 2009-11-09 16:59:08
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -118,7 +118,7 @@ function! s:SetEnv()
 endfunction
 
 call s:SetEnv()
-delfunction s:Setrnv
+delfunction s:SetEnv
 "}}}
 "}}}1
 "============================================================{{{1
