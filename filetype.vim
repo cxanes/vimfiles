@@ -27,6 +27,10 @@ augroup filetypedetect
 
   " LyX <http://www.lyx.org>
   au BufNewFile,BufRead *.lyx       setf lyx
+
+  " (Perl) Parse::Eyapp <http://search.cpan.org/dist/Parse-Eyapp/>
+  au BufNewFile,BufRead *.yp        setf eyapp
+  au BufNewFile,BufRead *.eyp       setf eyapp 
 augroup END
 
 " copy from filetype.vim
