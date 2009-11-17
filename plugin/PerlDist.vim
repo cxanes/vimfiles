@@ -13,7 +13,7 @@ let s:MSWIN =  has('win32') || has('win32unix') || has('win64')
 if !s:MSWIN
   unlet s:MSWIN
   finish
-end
+endif
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -22,41 +22,64 @@ set cpo&vim
 let g:perlpath = ''
 au FileType perl call Perl#SetOptPath(GetPerlDist())
 
-command -nargs=1 -bang -complete=custom,<SID>ListPerlDists SetPerlDist call SetPerlDist(<q-args>, <q-bang> == '!')
+command -nargs=? -bang -complete=custom,<SID>ListPerlDists SetPerlDist call SetPerlDist(<q-args>, <q-bang> == '!')
 command -nargs=0 -bang                                     GetPerlDist echo GetPerlDist(<q-bang> == '!')
+
+let s:PerlDistCandidates = ['cygwin', 'strawberry', '']
+
+function! s:CheckDist(dist) "{{{
+  if type(a:dist) != type('')
+    echohl ErrorMsg
+    echo 'Invalid format.'
+    echohl None
+    return 0
+  endif
+
+  if empty(a:dist) || index(s:PerlDistCandidates, a:dist) >= 0
+    return 1
+  else
+    echohl ErrorMsg
+    echo "Unsupported distribution: only 'cygwin' and 'strawberry' are supported."
+    echohl None
+    return 0
+  endif
+endfunction
+"}}}
 
 " g:PERL_DIST {{{
 " {only for Win32 versions}
 " possible distribution:
+"   - (empty)
 "   - cygwin
 "   - strawberry
 "   - all other distributions are not supported
-let g:PERL_DIST = 'cygwin'
+let s:PERL_DIST_DEFAULT = 'strawberry'
+
+if !exists('g:PERL_DIST')
+  let g:PERL_DIST = s:PERL_DIST_DEFAULT
+elseif !s:CheckDist(g:PERL_DIST)
+  let g:PERL_DIST = ''
+endif
 "}}}
 
 function! s:ListPerlDists(A,L,P) "{{{
-  return "cygwin\nstrawberry"
+  return join(s:PerlDistCandidates, "\n")
 endfunction
 "}}}
 function! SetPerlDist(dist, ...) " ... = local {{{
   let scope = a:0 > 0 && !empty(a:1) ? 'b' : 'g'
 
-  if a:dist ==? 'cygwin'
-    let {scope}:PERL_DIST = 'cygwin'
-  elseif a:dist ==? 'strawberry'
-    let {scope}:PERL_DIST = 'strawberry'
-  else
-    echohl ErrorMsg
-    echo "Unsupported distribution: only 'cygwin' and 'strawberry' are supported."
-    echohl None
+  if !s:CheckDist(a:dist)
     return
   endif
+
+  let {scope}:PERL_DIST = a:dist
 
   call Perl#SetEnv({scope}:PERL_DIST)
   
   if &ft =~ '\<perl\>'
     call Perl#SetOptPath({scope}:PERL_DIST, scope == 'b')
-  end
+  endif
 endfunction
 "}}}
 function! GetPerlDist(...) " ... = local {{{
@@ -65,7 +88,7 @@ function! GetPerlDist(...) " ... = local {{{
     return b:PERL_DIST
   else
     return g:PERL_DIST
-  end
+  endif
 endfunction
 "}}}
 " Restore {{{

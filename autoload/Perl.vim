@@ -33,6 +33,8 @@ let s:BIN_DIR = { 'cygwin'    :   s:CatDir(s:CYGWIN_PERL_ROOT, 'bin'),
       \           'strawberry': [ s:CatDir(s:STRAWBERRY_PERL_ROOT, 'perl', 'bin'),
       \                           s:CatDir(s:STRAWBERRY_PERL_ROOT, 'c'   , 'bin') ] }
 
+let s:Env = { 'PERL5LIB': $PERL5LIB, 'PATH': $PATH }
+
 function! Perl#SetEnv(dist) "{{{
   if !s:MSWIN
     echohl ErrorMsg
@@ -45,6 +47,10 @@ function! Perl#SetEnv(dist) "{{{
   elseif a:dist ==? 'strawberry'
     let $PERL5LIB = Cygwin#ChangePath($PERL5LIB, 0)
     call s:AddPATH(a:dist)
+  elseif empty(a:dist)
+    for [key, value] in items(s:Env)
+      exe printf("let $%s = '%s'", key, substitute(value, "'", "''", 'g'))
+    endfor
   else
     echohl ErrorMsg
     echo "Unsupported distribution: only 'cygwin' and 'strawberry' are supported."
@@ -112,8 +118,9 @@ function! Perl#SetOptPath(dist, ...) " ... = [local, force] {{{
   return &l:path
 endfunction
 "}}}
-function! s:DirPat(dir)"{{{
-  return '\V\c\%(\^' . escape(a:dir, '\') . '\\\?\%(\$\|;\)\)\|\%(;' . escape(a:dir, '\') . '\\\?\%(\$\|;\)\@=\)\m'
+function! s:DirPat(dir) "{{{
+  let dir_pat = escape(a:dir, '\')
+  return '\V\c\%(\^' . dir_pat . '\\\?\%(\$\|;\)\)\|\%(;' . dir_pat . '\\\?\%(\$\|;\)\@=\)\m'
 endfunction
 "}}}
 function! s:RemoveStrawberryPerlFromPATH() "{{{

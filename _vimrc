@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-11-09 16:59:08
+" Last Modified: 2009-11-17 11:27:41
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -94,7 +94,9 @@ function! s:SetEnv()
   "}}}
 
   if s:MSWIN
-    ru RubyDist.vim PythonDist.vim PerlDist.vim
+    ru plugin/RubyDist.vim 
+    ru plugin/PythonDist.vim
+    ru plugin/PerlDist.vim
     let cyg_ruby   = exists('*GetRubyDist')   ? GetRubyDist()   == 'cygwin' : 1
     let cyg_python = exists('*GetPythonDist') ? GetPythonDist() == 'cygwin' : 0
     let cyg_perl   = exists('*GetPerlDist')   ? GetPerlDist()   == 'cygwin' : 1
