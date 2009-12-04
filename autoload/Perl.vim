@@ -35,6 +35,11 @@ let s:BIN_DIR = { 'cygwin'    :   s:CatDir(s:CYGWIN_PERL_ROOT, 'bin'),
 
 let s:Env = { 'PERL5LIB': $PERL5LIB, 'PATH': $PATH }
 
+let s:HAS_PYTHON = has('python')
+if s:HAS_PYTHON
+  py import os, vim
+endif
+
 function! Perl#SetEnv(dist) "{{{
   if !s:MSWIN
     echohl ErrorMsg
@@ -43,13 +48,24 @@ function! Perl#SetEnv(dist) "{{{
     return
   elseif a:dist ==? 'cygwin'
     let $PERL5LIB = Cygwin#ChangePath($PERL5LIB, 1)
+    if s:HAS_PYTHON
+      py os.environ['PERL5LIB'] = vim.eval('Cygwin#ChangePath($PERL5LIB, 0)')
+    endif
+
     call s:AddPATH(a:dist)
   elseif a:dist ==? 'strawberry'
     let $PERL5LIB = Cygwin#ChangePath($PERL5LIB, 0)
+    if s:HAS_PYTHON
+      py os.environ['PERL5LIB'] = vim.eval('$PERL5LIB')
+    endif
+    
     call s:AddPATH(a:dist)
   elseif empty(a:dist)
     for [key, value] in items(s:Env)
       exe printf("let $%s = '%s'", key, substitute(value, "'", "''", 'g'))
+      if s:HAS_PYTHON
+        py os.environ[vim.eval('key')] = vim.eval('value')
+      endif
     endfor
   else
     echohl ErrorMsg
@@ -143,6 +159,10 @@ function! s:AddPATH(dist) "{{{
     if bin_idx_cygwin < 0
       let $PATH .= ($PATH =~ ';$' ? '' : ';') . s:BIN_DIR.cygwin
     endif
+
+    if s:HAS_PYTHON
+      py os.environ['PATH'] = vim.eval('$PATH')
+    endif
   elseif a:dist ==? 'strawberry'
     call s:RemoveStrawberryPerlFromPATH()
     let bin_idx_cygwin = match($PATH, s:DirPat(s:BIN_DIR.cygwin))
@@ -152,6 +172,10 @@ function! s:AddPATH(dist) "{{{
       let $PATH .= ($PATH =~ ';$' ? '' : ';') . join(s:BIN_DIR.strawberry, ';')
     else
       let $PATH = $PATH[0 : bin_idx_cygwin-1] . ';' . join(s:BIN_DIR.strawberry, ';') . $PATH[bin_idx_cygwin : ]
+    endif
+
+    if s:HAS_PYTHON
+      py os.environ['PATH'] = vim.eval('$PATH')
     endif
   endif
 endfunction
