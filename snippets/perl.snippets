@@ -7,7 +7,8 @@ snippet .
 	 =>
 # Function
 snippet sub
-	sub ${1:function_name} {
+	sub ${1:function_name} 
+	{
 		${2:#body ...}
 	}
 # Conditional
@@ -58,14 +59,14 @@ snippet wh
 # While Loop One-line
 snippet xwh
 	${1:expression} while ${2:condition};${3}
-# For Loop
-snippet for
+# For Loop (C style)
+snippet forc
 	for (my $${2:var} = 0; $$2 < ${1:count}; $$2${3:++}) {
 		${4:# body...}
 	}
-# Foreach Loop
-snippet fore
-	foreach my $${1:x} (@${2:array}) {
+# For Loop
+snippet for
+	for my $${1:i} (${2:array}) {
 		${3:# body...}
 	}
 # Foreach Loop One-line
