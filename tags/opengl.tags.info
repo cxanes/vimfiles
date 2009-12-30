@@ -1,0 +1,16 @@
+OpenGL
+OpenGL ES
+GLEW
+
+Resource:
+
+    OpenGL: C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\Include\gl
+            (have Microsoft Visual Studio 8 installed)
+    GLEW: http://glew.sourceforge.net/
+    OpenGL ES: http://www.imgtec.com/powervr/insider/powervr-sdk.asp
+
+Command: 
+
+    # e.g.
+    ctags -R -f ~/opengl.tags --c++-kinds=+p --fields=+iaS --extra=+q --language-force=c++ GL
+

@@ -1,0 +1,930 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.7	//
+EGLAPI	EGL/eglplatform.h	49;"	d
+EGLAPIENTRY	EGL/eglplatform.h	52;"	d
+EGLAPIENTRYP	EGL/eglplatform.h	53;"	d
+EGLBoolean	EGL/egl.h	/^typedef unsigned int EGLBoolean;$/;"	t
+EGLClientBuffer	EGL/egl.h	/^typedef void *EGLClientBuffer;$/;"	t
+EGLConfig	EGL/egl.h	/^typedef void *EGLConfig;$/;"	t
+EGLContext	EGL/egl.h	/^typedef void *EGLContext;$/;"	t
+EGLDisplay	EGL/egl.h	/^typedef void *EGLDisplay;$/;"	t
+EGLImageKHR	EGL/eglext.h	/^typedef void *EGLImageKHR;$/;"	t
+EGLNativeDisplayType	EGL/eglplatform.h	/^typedef Display *EGLNativeDisplayType;$/;"	t
+EGLNativeDisplayType	EGL/eglplatform.h	/^typedef HDC     EGLNativeDisplayType;$/;"	t
+EGLNativeDisplayType	EGL/eglplatform.h	/^typedef int EGLNativeDisplayType;$/;"	t
+EGLNativeDisplayType	EGL/eglplatform.h	/^typedef khronos_int64_t EGLNativeDisplayType;$/;"	t
+EGLNativePixmapType	EGL/eglplatform.h	/^typedef HBITMAP EGLNativePixmapType;$/;"	t
+EGLNativePixmapType	EGL/eglplatform.h	/^typedef Pixmap   EGLNativePixmapType;$/;"	t
+EGLNativePixmapType	EGL/eglplatform.h	/^typedef void *EGLNativePixmapType;$/;"	t
+EGLNativeWindowType	EGL/eglplatform.h	/^typedef HWND    EGLNativeWindowType;$/;"	t
+EGLNativeWindowType	EGL/eglplatform.h	/^typedef Window   EGLNativeWindowType;$/;"	t
+EGLNativeWindowType	EGL/eglplatform.h	/^typedef void *EGLNativeWindowType;$/;"	t
+EGLSurface	EGL/egl.h	/^typedef void *EGLSurface;$/;"	t
+EGL_ALPHA_FORMAT	EGL/egl.h	234;"	d
+EGL_ALPHA_FORMAT_NONPRE	EGL/egl.h	237;"	d
+EGL_ALPHA_FORMAT_PRE	EGL/egl.h	238;"	d
+EGL_ALPHA_MASK_SIZE	EGL/egl.h	125;"	d
+EGL_ALPHA_SIZE	EGL/egl.h	96;"	d
+EGL_BACK_BUFFER	EGL/egl.h	184;"	d
+EGL_BAD_ACCESS	EGL/egl.h	78;"	d
+EGL_BAD_ALLOC	EGL/egl.h	79;"	d
+EGL_BAD_ATTRIBUTE	EGL/egl.h	80;"	d
+EGL_BAD_CONFIG	EGL/egl.h	81;"	d
+EGL_BAD_CONTEXT	EGL/egl.h	82;"	d
+EGL_BAD_CURRENT_SURFACE	EGL/egl.h	83;"	d
+EGL_BAD_DISPLAY	EGL/egl.h	84;"	d
+EGL_BAD_MATCH	EGL/egl.h	85;"	d
+EGL_BAD_NATIVE_PIXMAP	EGL/egl.h	86;"	d
+EGL_BAD_NATIVE_WINDOW	EGL/egl.h	87;"	d
+EGL_BAD_PARAMETER	EGL/egl.h	88;"	d
+EGL_BAD_SURFACE	EGL/egl.h	89;"	d
+EGL_BIND_TO_TEXTURE_RGB	EGL/egl.h	120;"	d
+EGL_BIND_TO_TEXTURE_RGBA	EGL/egl.h	121;"	d
+EGL_BITMAP_ORIGIN_KHR	EGL/eglext.h	61;"	d
+EGL_BITMAP_PITCH_KHR	EGL/eglext.h	60;"	d
+EGL_BITMAP_PIXEL_ALPHA_OFFSET_KHR	EGL/eglext.h	65;"	d
+EGL_BITMAP_PIXEL_BLUE_OFFSET_KHR	EGL/eglext.h	64;"	d
+EGL_BITMAP_PIXEL_GREEN_OFFSET_KHR	EGL/eglext.h	63;"	d
+EGL_BITMAP_PIXEL_LUMINANCE_OFFSET_KHR	EGL/eglext.h	66;"	d
+EGL_BITMAP_PIXEL_RED_OFFSET_KHR	EGL/eglext.h	62;"	d
+EGL_BITMAP_POINTER_KHR	EGL/eglext.h	59;"	d
+EGL_BLUE_SIZE	EGL/egl.h	97;"	d
+EGL_BUFFER_DESTROYED	EGL/egl.h	205;"	d
+EGL_BUFFER_PRESERVED	EGL/egl.h	204;"	d
+EGL_BUFFER_SIZE	EGL/egl.h	95;"	d
+EGL_CLIENT_APIS	EGL/egl.h	164;"	d
+EGL_COLORSPACE	EGL/egl.h	233;"	d
+EGL_COLORSPACE_LINEAR	EGL/egl.h	236;"	d
+EGL_COLORSPACE_sRGB	EGL/egl.h	235;"	d
+EGL_COLOR_BUFFER_TYPE	EGL/egl.h	126;"	d
+EGL_CONFIG_CAVEAT	EGL/egl.h	102;"	d
+EGL_CONFIG_ID	EGL/egl.h	103;"	d
+EGL_CONFORMANT	EGL/egl.h	129;"	d
+EGL_CONFORMANT_KHR	EGL/eglext.h	41;"	d
+EGL_CONTEXT_CLIENT_TYPE	EGL/egl.h	211;"	d
+EGL_CONTEXT_CLIENT_VERSION	EGL/egl.h	214;"	d
+EGL_CONTEXT_LOST	EGL/egl.h	90;"	d
+EGL_CORE_NATIVE_ENGINE	EGL/egl.h	230;"	d
+EGL_DEFAULT_DISPLAY	EGL/egl.h	67;"	d
+EGL_DEPTH_SIZE	EGL/egl.h	100;"	d
+EGL_DISPLAY_SCALING	EGL/egl.h	198;"	d
+EGL_DONT_CARE	EGL/egl.h	73;"	d
+EGL_DRAW	EGL/egl.h	226;"	d
+EGL_EGLEXT_VERSION	EGL/eglext.h	37;"	d
+EGL_EXTENSIONS	EGL/egl.h	163;"	d
+EGL_FALSE	EGL/egl.h	63;"	d
+EGL_FORMAT_RGBA_8888_EXACT_KHR	EGL/eglext.h	55;"	d
+EGL_FORMAT_RGBA_8888_KHR	EGL/eglext.h	56;"	d
+EGL_FORMAT_RGB_565_EXACT_KHR	EGL/eglext.h	53;"	d
+EGL_FORMAT_RGB_565_KHR	EGL/eglext.h	54;"	d
+EGL_GL_RENDERBUFFER_KHR	EGL/eglext.h	119;"	d
+EGL_GL_TEXTURE_2D_KHR	EGL/eglext.h	97;"	d
+EGL_GL_TEXTURE_3D_KHR	EGL/eglext.h	113;"	d
+EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_X_KHR	EGL/eglext.h	104;"	d
+EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_KHR	EGL/eglext.h	106;"	d
+EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_KHR	EGL/eglext.h	108;"	d
+EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_X_KHR	EGL/eglext.h	103;"	d
+EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_Y_KHR	EGL/eglext.h	105;"	d
+EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_Z_KHR	EGL/eglext.h	107;"	d
+EGL_GL_TEXTURE_LEVEL_KHR	EGL/eglext.h	98;"	d
+EGL_GL_TEXTURE_ZOFFSET_KHR	EGL/eglext.h	114;"	d
+EGL_GREEN_SIZE	EGL/egl.h	98;"	d
+EGL_HEIGHT	EGL/egl.h	167;"	d
+EGL_HORIZONTAL_RESOLUTION	EGL/egl.h	177;"	d
+EGL_IMAGE_PRESERVED_KHR	EGL/eglext.h	125;"	d
+EGL_KHR_config_attribs	EGL/eglext.h	40;"	d
+EGL_KHR_gl_renderbuffer_image	EGL/eglext.h	118;"	d
+EGL_KHR_gl_texture_2D_image	EGL/eglext.h	96;"	d
+EGL_KHR_gl_texture_3D_image	EGL/eglext.h	112;"	d
+EGL_KHR_gl_texture_cubemap_image	EGL/eglext.h	102;"	d
+EGL_KHR_image	EGL/eglext.h	78;"	d
+EGL_KHR_image_base	EGL/eglext.h	123;"	d
+EGL_KHR_image_pixmap	EGL/eglext.h	129;"	d
+EGL_KHR_lock_surface	EGL/eglext.h	47;"	d
+EGL_KHR_vg_parent_image	EGL/eglext.h	91;"	d
+EGL_LARGEST_PBUFFER	EGL/egl.h	169;"	d
+EGL_LEVEL	EGL/egl.h	104;"	d
+EGL_LOCK_SURFACE_BIT_KHR	EGL/eglext.h	50;"	d
+EGL_LOCK_USAGE_HINT_KHR	EGL/eglext.h	58;"	d
+EGL_LOWER_LEFT_KHR	EGL/eglext.h	67;"	d
+EGL_LUMINANCE_BUFFER	EGL/egl.h	138;"	d
+EGL_LUMINANCE_SIZE	EGL/egl.h	124;"	d
+EGL_MAP_PRESERVE_PIXELS_KHR	EGL/eglext.h	57;"	d
+EGL_MATCH_FORMAT_KHR	EGL/eglext.h	52;"	d
+EGL_MATCH_NATIVE_PIXMAP	EGL/egl.h	128;"	d
+EGL_MAX_PBUFFER_HEIGHT	EGL/egl.h	105;"	d
+EGL_MAX_PBUFFER_PIXELS	EGL/egl.h	106;"	d
+EGL_MAX_PBUFFER_WIDTH	EGL/egl.h	107;"	d
+EGL_MAX_SWAP_INTERVAL	EGL/egl.h	123;"	d
+EGL_MIN_SWAP_INTERVAL	EGL/egl.h	122;"	d
+EGL_MIPMAP_LEVEL	EGL/egl.h	173;"	d
+EGL_MIPMAP_TEXTURE	EGL/egl.h	172;"	d
+EGL_MULTISAMPLE_RESOLVE	EGL/egl.h	181;"	d
+EGL_MULTISAMPLE_RESOLVE_BOX	EGL/egl.h	218;"	d
+EGL_MULTISAMPLE_RESOLVE_BOX_BIT	EGL/egl.h	152;"	d
+EGL_MULTISAMPLE_RESOLVE_DEFAULT	EGL/egl.h	217;"	d
+EGL_NATIVE_PIXMAP_KHR	EGL/eglext.h	79;"	d
+EGL_NATIVE_RENDERABLE	EGL/egl.h	108;"	d
+EGL_NATIVE_VISUAL_ID	EGL/egl.h	109;"	d
+EGL_NATIVE_VISUAL_TYPE	EGL/egl.h	110;"	d
+EGL_NONE	EGL/egl.h	119;"	d
+EGL_NON_CONFORMANT_CONFIG	EGL/egl.h	135;"	d
+EGL_NOT_INITIALIZED	EGL/egl.h	77;"	d
+EGL_NO_CONTEXT	EGL/egl.h	68;"	d
+EGL_NO_DISPLAY	EGL/egl.h	69;"	d
+EGL_NO_IMAGE_KHR	EGL/eglext.h	81;"	d
+EGL_NO_SURFACE	EGL/egl.h	70;"	d
+EGL_NO_TEXTURE	EGL/egl.h	141;"	d
+EGL_OPENGL_API	EGL/egl.h	223;"	d
+EGL_OPENGL_BIT	EGL/egl.h	158;"	d
+EGL_OPENGL_ES2_BIT	EGL/egl.h	157;"	d
+EGL_OPENGL_ES_API	EGL/egl.h	221;"	d
+EGL_OPENGL_ES_BIT	EGL/egl.h	155;"	d
+EGL_OPENVG_API	EGL/egl.h	222;"	d
+EGL_OPENVG_BIT	EGL/egl.h	156;"	d
+EGL_OPENVG_IMAGE	EGL/egl.h	208;"	d
+EGL_OPTIMAL_FORMAT_BIT_KHR	EGL/eglext.h	51;"	d
+EGL_PBUFFER_BIT	EGL/egl.h	147;"	d
+EGL_PIXEL_ASPECT_RATIO	EGL/egl.h	179;"	d
+EGL_PIXMAP_BIT	EGL/egl.h	148;"	d
+EGL_PRESERVED_RESOURCES	EGL/egl.h	111;"	d
+EGL_READ	EGL/egl.h	227;"	d
+EGL_READ_SURFACE_BIT_KHR	EGL/eglext.h	48;"	d
+EGL_RED_SIZE	EGL/egl.h	99;"	d
+EGL_RENDERABLE_TYPE	EGL/egl.h	127;"	d
+EGL_RENDER_BUFFER	EGL/egl.h	174;"	d
+EGL_RGB_BUFFER	EGL/egl.h	137;"	d
+EGL_SAMPLES	EGL/egl.h	112;"	d
+EGL_SAMPLE_BUFFERS	EGL/egl.h	113;"	d
+EGL_SINGLE_BUFFER	EGL/egl.h	185;"	d
+EGL_SLOW_CONFIG	EGL/egl.h	134;"	d
+EGL_STENCIL_SIZE	EGL/egl.h	101;"	d
+EGL_SUCCESS	EGL/egl.h	76;"	d
+EGL_SURFACE_TYPE	EGL/egl.h	114;"	d
+EGL_SWAP_BEHAVIOR	EGL/egl.h	180;"	d
+EGL_SWAP_BEHAVIOR_PRESERVED_BIT	EGL/egl.h	153;"	d
+EGL_TEXTURE_2D	EGL/egl.h	144;"	d
+EGL_TEXTURE_FORMAT	EGL/egl.h	170;"	d
+EGL_TEXTURE_RGB	EGL/egl.h	142;"	d
+EGL_TEXTURE_RGBA	EGL/egl.h	143;"	d
+EGL_TEXTURE_TARGET	EGL/egl.h	171;"	d
+EGL_TRANSPARENT_BLUE_VALUE	EGL/egl.h	116;"	d
+EGL_TRANSPARENT_GREEN_VALUE	EGL/egl.h	117;"	d
+EGL_TRANSPARENT_RED_VALUE	EGL/egl.h	118;"	d
+EGL_TRANSPARENT_RGB	EGL/egl.h	136;"	d
+EGL_TRANSPARENT_TYPE	EGL/egl.h	115;"	d
+EGL_TRUE	EGL/egl.h	64;"	d
+EGL_UNKNOWN	EGL/egl.h	201;"	d
+EGL_UPPER_LEFT_KHR	EGL/eglext.h	68;"	d
+EGL_VENDOR	EGL/egl.h	161;"	d
+EGL_VERSION	EGL/egl.h	162;"	d
+EGL_VERSION_1_0	EGL/egl.h	52;"	d
+EGL_VERSION_1_1	EGL/egl.h	53;"	d
+EGL_VERSION_1_2	EGL/egl.h	54;"	d
+EGL_VERSION_1_3	EGL/egl.h	55;"	d
+EGL_VERSION_1_4	EGL/egl.h	56;"	d
+EGL_VERTICAL_RESOLUTION	EGL/egl.h	178;"	d
+EGL_VG_ALPHA_FORMAT	EGL/egl.h	176;"	d
+EGL_VG_ALPHA_FORMAT_NONPRE	EGL/egl.h	192;"	d
+EGL_VG_ALPHA_FORMAT_PRE	EGL/egl.h	193;"	d
+EGL_VG_ALPHA_FORMAT_PRE_BIT	EGL/egl.h	151;"	d
+EGL_VG_ALPHA_FORMAT_PRE_BIT_KHR	EGL/eglext.h	43;"	d
+EGL_VG_COLORSPACE	EGL/egl.h	175;"	d
+EGL_VG_COLORSPACE_LINEAR	EGL/egl.h	189;"	d
+EGL_VG_COLORSPACE_LINEAR_BIT	EGL/egl.h	150;"	d
+EGL_VG_COLORSPACE_LINEAR_BIT_KHR	EGL/eglext.h	42;"	d
+EGL_VG_COLORSPACE_sRGB	EGL/egl.h	188;"	d
+EGL_VG_PARENT_IMAGE_KHR	EGL/eglext.h	92;"	d
+EGL_WIDTH	EGL/egl.h	168;"	d
+EGL_WINDOW_BIT	EGL/egl.h	149;"	d
+EGL_WRITE_SURFACE_BIT_KHR	EGL/eglext.h	49;"	d
+EGLenum	EGL/egl.h	/^typedef unsigned int EGLenum;$/;"	t
+EGLint	EGL/eglplatform.h	/^typedef khronos_int32_t EGLint;$/;"	t
+EGLint	EGL/eglplatform.h	/^typedef khronos_int64_t EGLint;$/;"	t
+GL_3DC_XY_AMD	GLES2/gl2ext.h	132;"	d
+GL_3DC_X_AMD	GLES2/gl2ext.h	131;"	d
+GL_ACTIVE_ATTRIBUTES	GLES2/gl2.h	272;"	d
+GL_ACTIVE_ATTRIBUTE_MAX_LENGTH	GLES2/gl2.h	273;"	d
+GL_ACTIVE_TEXTURE	GLES2/gl2.h	368;"	d
+GL_ACTIVE_UNIFORMS	GLES2/gl2.h	270;"	d
+GL_ACTIVE_UNIFORM_MAX_LENGTH	GLES2/gl2.h	271;"	d
+GL_ALIASED_LINE_WIDTH_RANGE	GLES2/gl2.h	167;"	d
+GL_ALIASED_POINT_SIZE_RANGE	GLES2/gl2.h	166;"	d
+GL_ALPHA	GLES2/gl2.h	243;"	d
+GL_ALPHA_BITS	GLES2/gl2.h	202;"	d
+GL_ALWAYS	GLES2/gl2.h	285;"	d
+GL_AMD_compressed_3DC_texture	GLES2/gl2ext.h	338;"	d
+GL_AMD_compressed_ATC_texture	GLES2/gl2ext.h	343;"	d
+GL_AMD_performance_monitor	GLES2/gl2ext.h	149;"	d
+GL_AMD_performance_monitor	GLES2/gl2ext.h	353;"	d
+GL_AMD_program_binary_Z400	GLES2/gl2ext.h	348;"	d
+GL_APICALL	GLES2/gl2platform.h	22;"	d
+GL_APIENTRY	GLES2/gl2platform.h	25;"	d
+GL_APIENTRYP	GLES2/gl2ext.h	14;"	d
+GL_ARRAY_BUFFER	GLES2/gl2.h	112;"	d
+GL_ARRAY_BUFFER_BINDING	GLES2/gl2.h	114;"	d
+GL_ATC_RGBA_EXPLICIT_ALPHA_AMD	GLES2/gl2ext.h	138;"	d
+GL_ATC_RGBA_INTERPOLATED_ALPHA_AMD	GLES2/gl2ext.h	139;"	d
+GL_ATC_RGB_AMD	GLES2/gl2ext.h	137;"	d
+GL_ATTACHED_SHADERS	GLES2/gl2.h	269;"	d
+GL_BACK	GLES2/gl2.h	128;"	d
+GL_BGRA	GLES2/gl2extimg.h	30;"	d
+GL_BLEND	GLES2/gl2.h	144;"	d
+GL_BLEND_COLOR	GLES2/gl2.h	109;"	d
+GL_BLEND_DST_ALPHA	GLES2/gl2.h	103;"	d
+GL_BLEND_DST_RGB	GLES2/gl2.h	101;"	d
+GL_BLEND_EQUATION	GLES2/gl2.h	92;"	d
+GL_BLEND_EQUATION_ALPHA	GLES2/gl2.h	94;"	d
+GL_BLEND_EQUATION_RGB	GLES2/gl2.h	93;"	d
+GL_BLEND_SRC_ALPHA	GLES2/gl2.h	104;"	d
+GL_BLEND_SRC_RGB	GLES2/gl2.h	102;"	d
+GL_BLUE_BITS	GLES2/gl2.h	201;"	d
+GL_BOOL	GLES2/gl2.h	382;"	d
+GL_BOOL_VEC2	GLES2/gl2.h	383;"	d
+GL_BOOL_VEC3	GLES2/gl2.h	384;"	d
+GL_BOOL_VEC4	GLES2/gl2.h	385;"	d
+GL_BUFFER_ACCESS_OES	GLES2/gl2ext.h	68;"	d
+GL_BUFFER_MAPPED_OES	GLES2/gl2ext.h	69;"	d
+GL_BUFFER_MAP_POINTER_OES	GLES2/gl2ext.h	70;"	d
+GL_BUFFER_SIZE	GLES2/gl2.h	121;"	d
+GL_BUFFER_USAGE	GLES2/gl2.h	122;"	d
+GL_BYTE	GLES2/gl2.h	232;"	d
+GL_CCW	GLES2/gl2.h	162;"	d
+GL_CLAMP_TO_EDGE	GLES2/gl2.h	372;"	d
+GL_COLOR_ATTACHMENT0	GLES2/gl2.h	449;"	d
+GL_COLOR_BUFFER_BIT	GLES2/gl2.h	44;"	d
+GL_COLOR_CLEAR_VALUE	GLES2/gl2.h	192;"	d
+GL_COLOR_WRITEMASK	GLES2/gl2.h	193;"	d
+GL_COMPILE_STATUS	GLES2/gl2.h	406;"	d
+GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG	GLES2/gl2extimg.h	25;"	d
+GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG	GLES2/gl2extimg.h	24;"	d
+GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG	GLES2/gl2extimg.h	23;"	d
+GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG	GLES2/gl2extimg.h	22;"	d
+GL_COMPRESSED_TEXTURE_FORMATS	GLES2/gl2.h	221;"	d
+GL_CONSTANT_ALPHA	GLES2/gl2.h	107;"	d
+GL_CONSTANT_COLOR	GLES2/gl2.h	105;"	d
+GL_COUNTER_RANGE_AMD	GLES2/gl2ext.h	151;"	d
+GL_COUNTER_TYPE_AMD	GLES2/gl2ext.h	150;"	d
+GL_CULL_FACE	GLES2/gl2.h	143;"	d
+GL_CULL_FACE_MODE	GLES2/gl2.h	168;"	d
+GL_CURRENT_PROGRAM	GLES2/gl2.h	275;"	d
+GL_CURRENT_VERTEX_ATTRIB	GLES2/gl2.h	124;"	d
+GL_CW	GLES2/gl2.h	161;"	d
+GL_DECR	GLES2/gl2.h	292;"	d
+GL_DECR_WRAP	GLES2/gl2.h	295;"	d
+GL_DELETE_STATUS	GLES2/gl2.h	266;"	d
+GL_DEPTH24_STENCIL8_OES	GLES2/gl2ext.h	77;"	d
+GL_DEPTH_ATTACHMENT	GLES2/gl2.h	450;"	d
+GL_DEPTH_BITS	GLES2/gl2.h	203;"	d
+GL_DEPTH_BUFFER_BIT	GLES2/gl2.h	42;"	d
+GL_DEPTH_CLEAR_VALUE	GLES2/gl2.h	172;"	d
+GL_DEPTH_COMPONENT	GLES2/gl2.h	242;"	d
+GL_DEPTH_COMPONENT16	GLES2/gl2.h	430;"	d
+GL_DEPTH_COMPONENT24_OES	GLES2/gl2ext.h	42;"	d
+GL_DEPTH_COMPONENT32_OES	GLES2/gl2ext.h	47;"	d
+GL_DEPTH_FUNC	GLES2/gl2.h	173;"	d
+GL_DEPTH_RANGE	GLES2/gl2.h	170;"	d
+GL_DEPTH_STENCIL_OES	GLES2/gl2ext.h	75;"	d
+GL_DEPTH_TEST	GLES2/gl2.h	147;"	d
+GL_DEPTH_WRITEMASK	GLES2/gl2.h	171;"	d
+GL_DITHER	GLES2/gl2.h	145;"	d
+GL_DONT_CARE	GLES2/gl2.h	224;"	d
+GL_DST_ALPHA	GLES2/gl2.h	76;"	d
+GL_DST_COLOR	GLES2/gl2.h	82;"	d
+GL_DYNAMIC_DRAW	GLES2/gl2.h	119;"	d
+GL_ELEMENT_ARRAY_BUFFER	GLES2/gl2.h	113;"	d
+GL_ELEMENT_ARRAY_BUFFER_BINDING	GLES2/gl2.h	115;"	d
+GL_EQUAL	GLES2/gl2.h	280;"	d
+GL_ES_VERSION_2_0	GLES2/gl2.h	39;"	d
+GL_ETC1_RGB8_OES	GLES2/gl2ext.h	23;"	d
+GL_EXTENSIONS	GLES2/gl2.h	301;"	d
+GL_EXT_texture_filter_anisotropic	GLES2/gl2ext.h	386;"	d
+GL_EXT_texture_type_2_10_10_10_REV	GLES2/gl2ext.h	391;"	d
+GL_FALSE	GLES2/gl2.h	47;"	d
+GL_FASTEST	GLES2/gl2.h	225;"	d
+GL_FIXED	GLES2/gl2.h	239;"	d
+GL_FLOAT	GLES2/gl2.h	238;"	d
+GL_FLOAT_MAT2	GLES2/gl2.h	386;"	d
+GL_FLOAT_MAT3	GLES2/gl2.h	387;"	d
+GL_FLOAT_MAT4	GLES2/gl2.h	388;"	d
+GL_FLOAT_VEC2	GLES2/gl2.h	376;"	d
+GL_FLOAT_VEC3	GLES2/gl2.h	377;"	d
+GL_FLOAT_VEC4	GLES2/gl2.h	378;"	d
+GL_FRAGMENT_SHADER	GLES2/gl2.h	256;"	d
+GL_FRAGMENT_SHADER_DERIVATIVE_HINT_OES	GLES2/gl2ext.h	88;"	d
+GL_FRAMEBUFFER	GLES2/gl2.h	424;"	d
+GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME	GLES2/gl2.h	445;"	d
+GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE	GLES2/gl2.h	444;"	d
+GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET_OES	GLES2/gl2ext.h	108;"	d
+GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE	GLES2/gl2.h	447;"	d
+GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL	GLES2/gl2.h	446;"	d
+GL_FRAMEBUFFER_BINDING	GLES2/gl2.h	461;"	d
+GL_FRAMEBUFFER_COMPLETE	GLES2/gl2.h	455;"	d
+GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT	GLES2/gl2.h	456;"	d
+GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS	GLES2/gl2.h	458;"	d
+GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT	GLES2/gl2.h	457;"	d
+GL_FRAMEBUFFER_UNSUPPORTED	GLES2/gl2.h	459;"	d
+GL_FRONT	GLES2/gl2.h	127;"	d
+GL_FRONT_AND_BACK	GLES2/gl2.h	129;"	d
+GL_FRONT_FACE	GLES2/gl2.h	169;"	d
+GL_FUNC_ADD	GLES2/gl2.h	91;"	d
+GL_FUNC_REVERSE_SUBTRACT	GLES2/gl2.h	98;"	d
+GL_FUNC_SUBTRACT	GLES2/gl2.h	97;"	d
+GL_GENERATE_MIPMAP_HINT	GLES2/gl2.h	229;"	d
+GL_GEQUAL	GLES2/gl2.h	284;"	d
+GL_GREATER	GLES2/gl2.h	282;"	d
+GL_GREEN_BITS	GLES2/gl2.h	200;"	d
+GL_HALF_FLOAT_OES	GLES2/gl2ext.h	113;"	d
+GL_HIGH_FLOAT	GLES2/gl2.h	418;"	d
+GL_HIGH_INT	GLES2/gl2.h	421;"	d
+GL_IMG_binary_shader	GLES2/gl2extimg.h	39;"	d
+GL_IMG_texture_compression_pvrtc	GLES2/gl2extimg.h	44;"	d
+GL_IMPLEMENTATION_COLOR_READ_FORMAT	GLES2/gl2.h	403;"	d
+GL_IMPLEMENTATION_COLOR_READ_TYPE	GLES2/gl2.h	402;"	d
+GL_INCR	GLES2/gl2.h	291;"	d
+GL_INCR_WRAP	GLES2/gl2.h	294;"	d
+GL_INFO_LOG_LENGTH	GLES2/gl2.h	407;"	d
+GL_INT	GLES2/gl2.h	236;"	d
+GL_INT_10_10_10_2_OES	GLES2/gl2ext.h	122;"	d
+GL_INT_VEC2	GLES2/gl2.h	379;"	d
+GL_INT_VEC3	GLES2/gl2.h	380;"	d
+GL_INT_VEC4	GLES2/gl2.h	381;"	d
+GL_INVALID_ENUM	GLES2/gl2.h	155;"	d
+GL_INVALID_FRAMEBUFFER_OPERATION	GLES2/gl2.h	465;"	d
+GL_INVALID_OPERATION	GLES2/gl2.h	157;"	d
+GL_INVALID_VALUE	GLES2/gl2.h	156;"	d
+GL_INVERT	GLES2/gl2.h	293;"	d
+GL_KEEP	GLES2/gl2.h	289;"	d
+GL_LEQUAL	GLES2/gl2.h	281;"	d
+GL_LESS	GLES2/gl2.h	279;"	d
+GL_LINEAR	GLES2/gl2.h	305;"	d
+GL_LINEAR_MIPMAP_LINEAR	GLES2/gl2.h	313;"	d
+GL_LINEAR_MIPMAP_NEAREST	GLES2/gl2.h	311;"	d
+GL_LINES	GLES2/gl2.h	52;"	d
+GL_LINE_LOOP	GLES2/gl2.h	53;"	d
+GL_LINE_STRIP	GLES2/gl2.h	54;"	d
+GL_LINE_WIDTH	GLES2/gl2.h	165;"	d
+GL_LINK_STATUS	GLES2/gl2.h	267;"	d
+GL_LOW_FLOAT	GLES2/gl2.h	416;"	d
+GL_LOW_INT	GLES2/gl2.h	419;"	d
+GL_LUMINANCE	GLES2/gl2.h	246;"	d
+GL_LUMINANCE_ALPHA	GLES2/gl2.h	247;"	d
+GL_MAX_3D_TEXTURE_SIZE_OES	GLES2/gl2ext.h	106;"	d
+GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS	GLES2/gl2.h	261;"	d
+GL_MAX_CUBE_MAP_TEXTURE_SIZE	GLES2/gl2.h	333;"	d
+GL_MAX_FRAGMENT_UNIFORM_VECTORS	GLES2/gl2.h	264;"	d
+GL_MAX_RENDERBUFFER_SIZE	GLES2/gl2.h	463;"	d
+GL_MAX_TEXTURE_IMAGE_UNITS	GLES2/gl2.h	263;"	d
+GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT	GLES2/gl2ext.h	166;"	d
+GL_MAX_TEXTURE_SIZE	GLES2/gl2.h	196;"	d
+GL_MAX_VARYING_VECTORS	GLES2/gl2.h	260;"	d
+GL_MAX_VERTEX_ATTRIBS	GLES2/gl2.h	258;"	d
+GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS	GLES2/gl2.h	262;"	d
+GL_MAX_VERTEX_UNIFORM_VECTORS	GLES2/gl2.h	259;"	d
+GL_MAX_VIEWPORT_DIMS	GLES2/gl2.h	197;"	d
+GL_MEDIUM_FLOAT	GLES2/gl2.h	417;"	d
+GL_MEDIUM_INT	GLES2/gl2.h	420;"	d
+GL_MIRRORED_REPEAT	GLES2/gl2.h	373;"	d
+GL_NEAREST	GLES2/gl2.h	304;"	d
+GL_NEAREST_MIPMAP_LINEAR	GLES2/gl2.h	312;"	d
+GL_NEAREST_MIPMAP_NEAREST	GLES2/gl2.h	310;"	d
+GL_NEVER	GLES2/gl2.h	278;"	d
+GL_NICEST	GLES2/gl2.h	226;"	d
+GL_NONE	GLES2/gl2.h	453;"	d
+GL_NOTEQUAL	GLES2/gl2.h	283;"	d
+GL_NO_ERROR	GLES2/gl2.h	154;"	d
+GL_NUM_COMPRESSED_TEXTURE_FORMATS	GLES2/gl2.h	220;"	d
+GL_NUM_PROGRAM_BINARY_FORMATS_OES	GLES2/gl2ext.h	61;"	d
+GL_NUM_SHADER_BINARY_FORMATS	GLES2/gl2.h	413;"	d
+GL_OES_EGL_image	GLES2/gl2ext.h	190;"	d
+GL_OES_compressed_ETC1_RGB8_texture	GLES2/gl2ext.h	180;"	d
+GL_OES_compressed_paletted_texture	GLES2/gl2ext.h	185;"	d
+GL_OES_depth24	GLES2/gl2ext.h	201;"	d
+GL_OES_depth32	GLES2/gl2ext.h	206;"	d
+GL_OES_depth_texture	GLES2/gl2ext.h	211;"	d
+GL_OES_element_index_uint	GLES2/gl2ext.h	216;"	d
+GL_OES_fbo_render_mipmap	GLES2/gl2ext.h	221;"	d
+GL_OES_fragment_precision_high	GLES2/gl2ext.h	226;"	d
+GL_OES_get_program_binary	GLES2/gl2ext.h	231;"	d
+GL_OES_mapbuffer	GLES2/gl2ext.h	242;"	d
+GL_OES_packed_depth_stencil	GLES2/gl2ext.h	255;"	d
+GL_OES_rgb8_rgba8	GLES2/gl2ext.h	260;"	d
+GL_OES_standard_derivatives	GLES2/gl2ext.h	265;"	d
+GL_OES_stencil1	GLES2/gl2ext.h	270;"	d
+GL_OES_stencil4	GLES2/gl2ext.h	275;"	d
+GL_OES_texture_3D	GLES2/gl2ext.h	280;"	d
+GL_OES_texture_float	GLES2/gl2ext.h	309;"	d
+GL_OES_texture_float_linear	GLES2/gl2ext.h	299;"	d
+GL_OES_texture_half_float	GLES2/gl2ext.h	314;"	d
+GL_OES_texture_half_float_linear	GLES2/gl2ext.h	304;"	d
+GL_OES_texture_npot	GLES2/gl2ext.h	319;"	d
+GL_OES_vertex_half_float	GLES2/gl2ext.h	324;"	d
+GL_OES_vertex_type_10_10_10_2	GLES2/gl2ext.h	329;"	d
+GL_ONE	GLES2/gl2.h	71;"	d
+GL_ONE_MINUS_CONSTANT_ALPHA	GLES2/gl2.h	108;"	d
+GL_ONE_MINUS_CONSTANT_COLOR	GLES2/gl2.h	106;"	d
+GL_ONE_MINUS_DST_ALPHA	GLES2/gl2.h	77;"	d
+GL_ONE_MINUS_DST_COLOR	GLES2/gl2.h	83;"	d
+GL_ONE_MINUS_SRC_ALPHA	GLES2/gl2.h	75;"	d
+GL_ONE_MINUS_SRC_COLOR	GLES2/gl2.h	73;"	d
+GL_OUT_OF_MEMORY	GLES2/gl2.h	158;"	d
+GL_PACK_ALIGNMENT	GLES2/gl2.h	195;"	d
+GL_PALETTE4_R5_G6_B5_OES	GLES2/gl2ext.h	30;"	d
+GL_PALETTE4_RGB5_A1_OES	GLES2/gl2ext.h	32;"	d
+GL_PALETTE4_RGB8_OES	GLES2/gl2ext.h	28;"	d
+GL_PALETTE4_RGBA4_OES	GLES2/gl2ext.h	31;"	d
+GL_PALETTE4_RGBA8_OES	GLES2/gl2ext.h	29;"	d
+GL_PALETTE8_R5_G6_B5_OES	GLES2/gl2ext.h	35;"	d
+GL_PALETTE8_RGB5_A1_OES	GLES2/gl2ext.h	37;"	d
+GL_PALETTE8_RGB8_OES	GLES2/gl2ext.h	33;"	d
+GL_PALETTE8_RGBA4_OES	GLES2/gl2ext.h	36;"	d
+GL_PALETTE8_RGBA8_OES	GLES2/gl2ext.h	34;"	d
+GL_PERCENTAGE_AMD	GLES2/gl2ext.h	153;"	d
+GL_PERFMON_RESULT_AMD	GLES2/gl2ext.h	156;"	d
+GL_PERFMON_RESULT_AVAILABLE_AMD	GLES2/gl2ext.h	154;"	d
+GL_PERFMON_RESULT_SIZE_AMD	GLES2/gl2ext.h	155;"	d
+GL_POINTS	GLES2/gl2.h	51;"	d
+GL_POLYGON_OFFSET_FACTOR	GLES2/gl2.h	207;"	d
+GL_POLYGON_OFFSET_FILL	GLES2/gl2.h	149;"	d
+GL_POLYGON_OFFSET_UNITS	GLES2/gl2.h	205;"	d
+GL_PROGRAM_BINARY_FORMATS_OES	GLES2/gl2ext.h	62;"	d
+GL_PROGRAM_BINARY_LENGTH_OES	GLES2/gl2ext.h	60;"	d
+GL_RED_BITS	GLES2/gl2.h	199;"	d
+GL_RENDERBUFFER	GLES2/gl2.h	425;"	d
+GL_RENDERBUFFER_ALPHA_SIZE	GLES2/gl2.h	440;"	d
+GL_RENDERBUFFER_BINDING	GLES2/gl2.h	462;"	d
+GL_RENDERBUFFER_BLUE_SIZE	GLES2/gl2.h	439;"	d
+GL_RENDERBUFFER_DEPTH_SIZE	GLES2/gl2.h	441;"	d
+GL_RENDERBUFFER_GREEN_SIZE	GLES2/gl2.h	438;"	d
+GL_RENDERBUFFER_HEIGHT	GLES2/gl2.h	435;"	d
+GL_RENDERBUFFER_INTERNAL_FORMAT	GLES2/gl2.h	436;"	d
+GL_RENDERBUFFER_RED_SIZE	GLES2/gl2.h	437;"	d
+GL_RENDERBUFFER_STENCIL_SIZE	GLES2/gl2.h	442;"	d
+GL_RENDERBUFFER_WIDTH	GLES2/gl2.h	434;"	d
+GL_RENDERER	GLES2/gl2.h	299;"	d
+GL_REPEAT	GLES2/gl2.h	371;"	d
+GL_REPLACE	GLES2/gl2.h	290;"	d
+GL_RGB	GLES2/gl2.h	244;"	d
+GL_RGB565	GLES2/gl2.h	429;"	d
+GL_RGB5_A1	GLES2/gl2.h	428;"	d
+GL_RGB8_OES	GLES2/gl2ext.h	82;"	d
+GL_RGBA	GLES2/gl2.h	245;"	d
+GL_RGBA4	GLES2/gl2.h	427;"	d
+GL_RGBA8_OES	GLES2/gl2ext.h	83;"	d
+GL_SAMPLER_2D	GLES2/gl2.h	389;"	d
+GL_SAMPLER_3D_OES	GLES2/gl2ext.h	107;"	d
+GL_SAMPLER_CUBE	GLES2/gl2.h	390;"	d
+GL_SAMPLES	GLES2/gl2.h	210;"	d
+GL_SAMPLE_ALPHA_TO_COVERAGE	GLES2/gl2.h	150;"	d
+GL_SAMPLE_BUFFERS	GLES2/gl2.h	209;"	d
+GL_SAMPLE_COVERAGE	GLES2/gl2.h	151;"	d
+GL_SAMPLE_COVERAGE_INVERT	GLES2/gl2.h	212;"	d
+GL_SAMPLE_COVERAGE_VALUE	GLES2/gl2.h	211;"	d
+GL_SCISSOR_BOX	GLES2/gl2.h	190;"	d
+GL_SCISSOR_TEST	GLES2/gl2.h	148;"	d
+GL_SGX_BINARY_IMG	GLES2/gl2extimg.h	17;"	d
+GL_SHADER_BINARY_FORMATS	GLES2/gl2.h	412;"	d
+GL_SHADER_COMPILER	GLES2/gl2.h	409;"	d
+GL_SHADER_SOURCE_LENGTH	GLES2/gl2.h	408;"	d
+GL_SHADER_TYPE	GLES2/gl2.h	265;"	d
+GL_SHADING_LANGUAGE_VERSION	GLES2/gl2.h	274;"	d
+GL_SHORT	GLES2/gl2.h	234;"	d
+GL_SRC_ALPHA	GLES2/gl2.h	74;"	d
+GL_SRC_ALPHA_SATURATE	GLES2/gl2.h	84;"	d
+GL_SRC_COLOR	GLES2/gl2.h	72;"	d
+GL_STATIC_DRAW	GLES2/gl2.h	118;"	d
+GL_STENCIL_ATTACHMENT	GLES2/gl2.h	451;"	d
+GL_STENCIL_BACK_FAIL	GLES2/gl2.h	183;"	d
+GL_STENCIL_BACK_FUNC	GLES2/gl2.h	182;"	d
+GL_STENCIL_BACK_PASS_DEPTH_FAIL	GLES2/gl2.h	184;"	d
+GL_STENCIL_BACK_PASS_DEPTH_PASS	GLES2/gl2.h	185;"	d
+GL_STENCIL_BACK_REF	GLES2/gl2.h	186;"	d
+GL_STENCIL_BACK_VALUE_MASK	GLES2/gl2.h	187;"	d
+GL_STENCIL_BACK_WRITEMASK	GLES2/gl2.h	188;"	d
+GL_STENCIL_BITS	GLES2/gl2.h	204;"	d
+GL_STENCIL_BUFFER_BIT	GLES2/gl2.h	43;"	d
+GL_STENCIL_CLEAR_VALUE	GLES2/gl2.h	174;"	d
+GL_STENCIL_FAIL	GLES2/gl2.h	176;"	d
+GL_STENCIL_FUNC	GLES2/gl2.h	175;"	d
+GL_STENCIL_INDEX	GLES2/gl2.h	431;"	d
+GL_STENCIL_INDEX1_OES	GLES2/gl2ext.h	93;"	d
+GL_STENCIL_INDEX4_OES	GLES2/gl2ext.h	98;"	d
+GL_STENCIL_INDEX8	GLES2/gl2.h	432;"	d
+GL_STENCIL_PASS_DEPTH_FAIL	GLES2/gl2.h	177;"	d
+GL_STENCIL_PASS_DEPTH_PASS	GLES2/gl2.h	178;"	d
+GL_STENCIL_REF	GLES2/gl2.h	179;"	d
+GL_STENCIL_TEST	GLES2/gl2.h	146;"	d
+GL_STENCIL_VALUE_MASK	GLES2/gl2.h	180;"	d
+GL_STENCIL_WRITEMASK	GLES2/gl2.h	181;"	d
+GL_STREAM_DRAW	GLES2/gl2.h	117;"	d
+GL_SUBPIXEL_BITS	GLES2/gl2.h	198;"	d
+GL_TEXTURE	GLES2/gl2.h	323;"	d
+GL_TEXTURE0	GLES2/gl2.h	336;"	d
+GL_TEXTURE1	GLES2/gl2.h	337;"	d
+GL_TEXTURE10	GLES2/gl2.h	346;"	d
+GL_TEXTURE11	GLES2/gl2.h	347;"	d
+GL_TEXTURE12	GLES2/gl2.h	348;"	d
+GL_TEXTURE13	GLES2/gl2.h	349;"	d
+GL_TEXTURE14	GLES2/gl2.h	350;"	d
+GL_TEXTURE15	GLES2/gl2.h	351;"	d
+GL_TEXTURE16	GLES2/gl2.h	352;"	d
+GL_TEXTURE17	GLES2/gl2.h	353;"	d
+GL_TEXTURE18	GLES2/gl2.h	354;"	d
+GL_TEXTURE19	GLES2/gl2.h	355;"	d
+GL_TEXTURE2	GLES2/gl2.h	338;"	d
+GL_TEXTURE20	GLES2/gl2.h	356;"	d
+GL_TEXTURE21	GLES2/gl2.h	357;"	d
+GL_TEXTURE22	GLES2/gl2.h	358;"	d
+GL_TEXTURE23	GLES2/gl2.h	359;"	d
+GL_TEXTURE24	GLES2/gl2.h	360;"	d
+GL_TEXTURE25	GLES2/gl2.h	361;"	d
+GL_TEXTURE26	GLES2/gl2.h	362;"	d
+GL_TEXTURE27	GLES2/gl2.h	363;"	d
+GL_TEXTURE28	GLES2/gl2.h	364;"	d
+GL_TEXTURE29	GLES2/gl2.h	365;"	d
+GL_TEXTURE3	GLES2/gl2.h	339;"	d
+GL_TEXTURE30	GLES2/gl2.h	366;"	d
+GL_TEXTURE31	GLES2/gl2.h	367;"	d
+GL_TEXTURE4	GLES2/gl2.h	340;"	d
+GL_TEXTURE5	GLES2/gl2.h	341;"	d
+GL_TEXTURE6	GLES2/gl2.h	342;"	d
+GL_TEXTURE7	GLES2/gl2.h	343;"	d
+GL_TEXTURE8	GLES2/gl2.h	344;"	d
+GL_TEXTURE9	GLES2/gl2.h	345;"	d
+GL_TEXTURE_2D	GLES2/gl2.h	142;"	d
+GL_TEXTURE_3D_OES	GLES2/gl2ext.h	104;"	d
+GL_TEXTURE_BINDING_2D	GLES2/gl2.h	208;"	d
+GL_TEXTURE_BINDING_3D_OES	GLES2/gl2ext.h	105;"	d
+GL_TEXTURE_BINDING_CUBE_MAP	GLES2/gl2.h	326;"	d
+GL_TEXTURE_CUBE_MAP	GLES2/gl2.h	325;"	d
+GL_TEXTURE_CUBE_MAP_NEGATIVE_X	GLES2/gl2.h	328;"	d
+GL_TEXTURE_CUBE_MAP_NEGATIVE_Y	GLES2/gl2.h	330;"	d
+GL_TEXTURE_CUBE_MAP_NEGATIVE_Z	GLES2/gl2.h	332;"	d
+GL_TEXTURE_CUBE_MAP_POSITIVE_X	GLES2/gl2.h	327;"	d
+GL_TEXTURE_CUBE_MAP_POSITIVE_Y	GLES2/gl2.h	329;"	d
+GL_TEXTURE_CUBE_MAP_POSITIVE_Z	GLES2/gl2.h	331;"	d
+GL_TEXTURE_MAG_FILTER	GLES2/gl2.h	316;"	d
+GL_TEXTURE_MAX_ANISOTROPY_EXT	GLES2/gl2ext.h	165;"	d
+GL_TEXTURE_MIN_FILTER	GLES2/gl2.h	317;"	d
+GL_TEXTURE_WRAP_R_OES	GLES2/gl2ext.h	103;"	d
+GL_TEXTURE_WRAP_S	GLES2/gl2.h	318;"	d
+GL_TEXTURE_WRAP_T	GLES2/gl2.h	319;"	d
+GL_TRIANGLES	GLES2/gl2.h	55;"	d
+GL_TRIANGLE_FAN	GLES2/gl2.h	57;"	d
+GL_TRIANGLE_STRIP	GLES2/gl2.h	56;"	d
+GL_TRUE	GLES2/gl2.h	48;"	d
+GL_UNPACK_ALIGNMENT	GLES2/gl2.h	194;"	d
+GL_UNSIGNED_BYTE	GLES2/gl2.h	233;"	d
+GL_UNSIGNED_INT	GLES2/gl2.h	237;"	d
+GL_UNSIGNED_INT64_AMD	GLES2/gl2ext.h	152;"	d
+GL_UNSIGNED_INT_10_10_10_2_OES	GLES2/gl2ext.h	121;"	d
+GL_UNSIGNED_INT_24_8_OES	GLES2/gl2ext.h	76;"	d
+GL_UNSIGNED_INT_2_10_10_10_REV_EXT	GLES2/gl2ext.h	171;"	d
+GL_UNSIGNED_SHORT	GLES2/gl2.h	235;"	d
+GL_UNSIGNED_SHORT_4_4_4_4	GLES2/gl2.h	251;"	d
+GL_UNSIGNED_SHORT_5_5_5_1	GLES2/gl2.h	252;"	d
+GL_UNSIGNED_SHORT_5_6_5	GLES2/gl2.h	253;"	d
+GL_VALIDATE_STATUS	GLES2/gl2.h	268;"	d
+GL_VENDOR	GLES2/gl2.h	298;"	d
+GL_VERSION	GLES2/gl2.h	300;"	d
+GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING	GLES2/gl2.h	399;"	d
+GL_VERTEX_ATTRIB_ARRAY_ENABLED	GLES2/gl2.h	393;"	d
+GL_VERTEX_ATTRIB_ARRAY_NORMALIZED	GLES2/gl2.h	397;"	d
+GL_VERTEX_ATTRIB_ARRAY_POINTER	GLES2/gl2.h	398;"	d
+GL_VERTEX_ATTRIB_ARRAY_SIZE	GLES2/gl2.h	394;"	d
+GL_VERTEX_ATTRIB_ARRAY_STRIDE	GLES2/gl2.h	395;"	d
+GL_VERTEX_ATTRIB_ARRAY_TYPE	GLES2/gl2.h	396;"	d
+GL_VERTEX_SHADER	GLES2/gl2.h	257;"	d
+GL_VIEWPORT	GLES2/gl2.h	189;"	d
+GL_WRITE_ONLY_OES	GLES2/gl2ext.h	67;"	d
+GL_Z400_BINARY_AMD	GLES2/gl2ext.h	144;"	d
+GL_ZERO	GLES2/gl2.h	70;"	d
+GLbitfield	GLES2/gl2.h	/^typedef unsigned int     GLbitfield;$/;"	t
+GLboolean	GLES2/gl2.h	/^typedef unsigned char    GLboolean;$/;"	t
+GLbyte	GLES2/gl2.h	/^typedef khronos_int8_t   GLbyte;$/;"	t
+GLclampf	GLES2/gl2.h	/^typedef khronos_float_t  GLclampf;$/;"	t
+GLeglImageOES	GLES2/gl2ext.h	/^typedef void* GLeglImageOES;$/;"	t
+GLenum	GLES2/gl2.h	/^typedef unsigned int     GLenum;$/;"	t
+GLfixed	GLES2/gl2.h	/^typedef khronos_int32_t  GLfixed;$/;"	t
+GLfloat	GLES2/gl2.h	/^typedef khronos_float_t  GLfloat;$/;"	t
+GLint	GLES2/gl2.h	/^typedef int              GLint;$/;"	t
+GLintptr	GLES2/gl2.h	/^typedef khronos_intptr_t GLintptr;$/;"	t
+GLshort	GLES2/gl2.h	/^typedef short            GLshort;$/;"	t
+GLsizei	GLES2/gl2.h	/^typedef int              GLsizei;$/;"	t
+GLsizeiptr	GLES2/gl2.h	/^typedef khronos_ssize_t  GLsizeiptr;$/;"	t
+GLubyte	GLES2/gl2.h	/^typedef khronos_uint8_t  GLubyte;$/;"	t
+GLuint	GLES2/gl2.h	/^typedef unsigned int     GLuint;$/;"	t
+GLushort	GLES2/gl2.h	/^typedef unsigned short   GLushort;$/;"	t
+GLvoid	GLES2/gl2.h	/^typedef void             GLvoid;$/;"	t
+KHRONOS_APIATTRIBUTES	KHR/khrplatform.h	136;"	d
+KHRONOS_APIATTRIBUTES	KHR/khrplatform.h	138;"	d
+KHRONOS_APICALL	KHR/khrplatform.h	103;"	d
+KHRONOS_APICALL	KHR/khrplatform.h	105;"	d
+KHRONOS_APICALL	KHR/khrplatform.h	109;"	d
+KHRONOS_APICALL	KHR/khrplatform.h	111;"	d
+KHRONOS_APICALL	KHR/khrplatform.h	114;"	d
+KHRONOS_APIENTRY	KHR/khrplatform.h	125;"	d
+KHRONOS_APIENTRY	KHR/khrplatform.h	127;"	d
+KHRONOS_BOOLEAN_ENUM_FORCE_SIZE	KHR/khrplatform.h	/^    KHRONOS_BOOLEAN_ENUM_FORCE_SIZE = KHRONOS_MAX_ENUM$/;"	e	enum:__anon1
+KHRONOS_FALSE	KHR/khrplatform.h	/^    KHRONOS_FALSE = 0,$/;"	e	enum:__anon1
+KHRONOS_MAX_ENUM	KHR/khrplatform.h	287;"	d
+KHRONOS_SUPPORT_FLOAT	KHR/khrplatform.h	153;"	d
+KHRONOS_SUPPORT_FLOAT	KHR/khrplatform.h	167;"	d
+KHRONOS_SUPPORT_FLOAT	KHR/khrplatform.h	180;"	d
+KHRONOS_SUPPORT_FLOAT	KHR/khrplatform.h	192;"	d
+KHRONOS_SUPPORT_FLOAT	KHR/khrplatform.h	209;"	d
+KHRONOS_SUPPORT_FLOAT	KHR/khrplatform.h	221;"	d
+KHRONOS_SUPPORT_FLOAT	KHR/khrplatform.h	232;"	d
+KHRONOS_SUPPORT_FLOAT	KHR/khrplatform.h	245;"	d
+KHRONOS_SUPPORT_INT64	KHR/khrplatform.h	152;"	d
+KHRONOS_SUPPORT_INT64	KHR/khrplatform.h	166;"	d
+KHRONOS_SUPPORT_INT64	KHR/khrplatform.h	179;"	d
+KHRONOS_SUPPORT_INT64	KHR/khrplatform.h	191;"	d
+KHRONOS_SUPPORT_INT64	KHR/khrplatform.h	208;"	d
+KHRONOS_SUPPORT_INT64	KHR/khrplatform.h	220;"	d
+KHRONOS_SUPPORT_INT64	KHR/khrplatform.h	231;"	d
+KHRONOS_SUPPORT_INT64	KHR/khrplatform.h	244;"	d
+KHRONOS_TRUE	KHR/khrplatform.h	/^    KHRONOS_TRUE  = 1,$/;"	e	enum:__anon1
+NativeDisplayType	EGL/eglplatform.h	/^typedef EGLNativeDisplayType NativeDisplayType;$/;"	t
+NativePixmapType	EGL/eglplatform.h	/^typedef EGLNativePixmapType  NativePixmapType;$/;"	t
+NativeWindowType	EGL/eglplatform.h	/^typedef EGLNativeWindowType  NativeWindowType;$/;"	t
+PFNEGLCREATEIMAGEKHRPROC	EGL/eglext.h	/^typedef EGLImageKHR (EGLAPIENTRYP PFNEGLCREATEIMAGEKHRPROC) (EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list);$/;"	t
+PFNEGLDESTROYIMAGEKHRPROC	EGL/eglext.h	/^typedef EGLBoolean (EGLAPIENTRYP PFNEGLDESTROYIMAGEKHRPROC) (EGLDisplay dpy, EGLImageKHR image);$/;"	t
+PFNEGLLOCKSURFACEKHRPROC	EGL/eglext.h	/^typedef EGLBoolean (EGLAPIENTRYP PFNEGLLOCKSURFACEKHRPROC) (EGLDisplay display, EGLSurface surface, const EGLint *attrib_list);$/;"	t
+PFNEGLUNLOCKSURFACEKHRPROC	EGL/eglext.h	/^typedef EGLBoolean (EGLAPIENTRYP PFNEGLUNLOCKSURFACEKHRPROC) (EGLDisplay display, EGLSurface surface);$/;"	t
+PFNGLBEGINPERFMONITORAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLBEGINPERFMONITORAMDPROC) (GLuint monitor);$/;"	t
+PFNGLCOMPRESSEDTEXIMAGE3DOESPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLCOMPRESSEDTEXIMAGE3DOESPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void* data);$/;"	t
+PFNGLCOMPRESSEDTEXSUBIMAGE3DOESPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLCOMPRESSEDTEXSUBIMAGE3DOESPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void* data);$/;"	t
+PFNGLCOPYTEXSUBIMAGE3DOESPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLCOPYTEXSUBIMAGE3DOESPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);$/;"	t
+PFNGLDELETEPERFMONITORSAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLDELETEPERFMONITORSAMDPROC) (GLsizei n, GLuint *monitors);$/;"	t
+PFNGLEGLIMAGETARGETRENDERBUFFERSTORAGEOESPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLEGLIMAGETARGETRENDERBUFFERSTORAGEOESPROC) (GLenum target, GLeglImageOES image);$/;"	t
+PFNGLEGLIMAGETARGETTEXTURE2DOESPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLEGLIMAGETARGETTEXTURE2DOESPROC) (GLenum target, GLeglImageOES image);$/;"	t
+PFNGLENDPERFMONITORAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLENDPERFMONITORAMDPROC) (GLuint monitor);$/;"	t
+PFNGLFRAMEBUFFERTEXTURE3DOES	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLFRAMEBUFFERTEXTURE3DOES) (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset);$/;"	t
+PFNGLGENPERFMONITORSAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLGENPERFMONITORSAMDPROC) (GLsizei n, GLuint *monitors);$/;"	t
+PFNGLGETBUFFERPOINTERVOESPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLGETBUFFERPOINTERVOESPROC) (GLenum target, GLenum pname, void** params);$/;"	t
+PFNGLGETPERFMONITORCOUNTERDATAAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLGETPERFMONITORCOUNTERDATAAMDPROC) (GLuint monitor, GLenum pname, GLsizei dataSize, GLuint *data, GLint *bytesWritten);$/;"	t
+PFNGLGETPERFMONITORCOUNTERINFOAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLGETPERFMONITORCOUNTERINFOAMDPROC) (GLuint group, GLuint counter, GLenum pname, void *data);$/;"	t
+PFNGLGETPERFMONITORCOUNTERSAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLGETPERFMONITORCOUNTERSAMDPROC) (GLuint group, GLint *numCounters, GLint *maxActiveCounters, GLsizei counterSize, GLuint *counters);$/;"	t
+PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC) (GLuint group, GLuint counter, GLsizei bufSize, GLsizei *length, char *counterString);$/;"	t
+PFNGLGETPERFMONITORGROUPSAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLGETPERFMONITORGROUPSAMDPROC) (GLint *numGroups, GLsizei groupsSize, GLuint *groups);$/;"	t
+PFNGLGETPERFMONITORGROUPSTRINGAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLGETPERFMONITORGROUPSTRINGAMDPROC) (GLuint group, GLsizei bufSize, GLsizei *length, char *groupString);$/;"	t
+PFNGLGETPROGRAMBINARYOESPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLGETPROGRAMBINARYOESPROC) (GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, void *binary);$/;"	t
+PFNGLMAPBUFFEROESPROC	GLES2/gl2ext.h	/^typedef void* (GL_APIENTRYP PFNGLMAPBUFFEROESPROC) (GLenum target, GLenum access);$/;"	t
+PFNGLPROGRAMBINARYOESPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLPROGRAMBINARYOESPROC) (GLuint program, GLenum binaryFormat, const void *binary, GLint length);$/;"	t
+PFNGLSELECTPERFMONITORCOUNTERSAMDPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLSELECTPERFMONITORCOUNTERSAMDPROC) (GLuint monitor, GLboolean enable, GLuint group, GLint numCounters, GLuint *countersList);$/;"	t
+PFNGLTEXIMAGE3DOESPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLTEXIMAGE3DOESPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid* pixels);$/;"	t
+PFNGLTEXSUBIMAGE3DOESPROC	GLES2/gl2ext.h	/^typedef void (GL_APIENTRYP PFNGLTEXSUBIMAGE3DOESPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void* pixels);$/;"	t
+PFNGLUNMAPBUFFEROESPROC	GLES2/gl2ext.h	/^typedef GLboolean (GL_APIENTRYP PFNGLUNMAPBUFFEROESPROC) (GLenum target);$/;"	t
+WIN32_LEAN_AND_MEAN	EGL/eglplatform.h	64;"	d
+__eglMustCastToProperFunctionPointerType	EGL/egl.h	/^typedef void (*__eglMustCastToProperFunctionPointerType)(void);$/;"	t
+__egl_h_	EGL/egl.h	30;"	d
+__eglext_h_	EGL/eglext.h	2;"	d
+__eglplatform_h_	EGL/eglplatform.h	2;"	d
+__gl2_h_	GLES2/gl2.h	2;"	d
+__gl2ext_h_	GLES2/gl2ext.h	2;"	d
+__gl2extimg_h_	GLES2/gl2extimg.h	2;"	d
+__gl2platform_h_	GLES2/gl2platform.h	2;"	d
+__khrplatform_h_	KHR/khrplatform.h	2;"	d
+eglBindAPI	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglBindAPI(EGLenum api);$/;"	p	signature:(EGLenum api)
+eglBindTexImage	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglBindTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer);$/;"	p	signature:(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
+eglChooseConfig	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglChooseConfig(EGLDisplay dpy, const EGLint *attrib_list,$/;"	p	signature:(EGLDisplay dpy, const EGLint *attrib_list, EGLConfig *configs, EGLint config_size, EGLint *num_config)
+eglCopyBuffers	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglCopyBuffers(EGLDisplay dpy, EGLSurface surface,$/;"	p	signature:(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType target)
+eglCreateContext	EGL/egl.h	/^EGLAPI EGLContext EGLAPIENTRY eglCreateContext(EGLDisplay dpy, EGLConfig config,$/;"	p	signature:(EGLDisplay dpy, EGLConfig config, EGLContext share_context, const EGLint *attrib_list)
+eglCreateImageKHR	EGL/eglext.h	/^EGLAPI EGLImageKHR EGLAPIENTRY eglCreateImageKHR (EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list);$/;"	p	signature:(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list)
+eglCreatePbufferFromClientBuffer	EGL/egl.h	/^EGLAPI EGLSurface EGLAPIENTRY eglCreatePbufferFromClientBuffer($/;"	p	signature:( EGLDisplay dpy, EGLenum buftype, EGLClientBuffer buffer, EGLConfig config, const EGLint *attrib_list)
+eglCreatePbufferSurface	EGL/egl.h	/^EGLAPI EGLSurface EGLAPIENTRY eglCreatePbufferSurface(EGLDisplay dpy, EGLConfig config,$/;"	p	signature:(EGLDisplay dpy, EGLConfig config, const EGLint *attrib_list)
+eglCreatePixmapSurface	EGL/egl.h	/^EGLAPI EGLSurface EGLAPIENTRY eglCreatePixmapSurface(EGLDisplay dpy, EGLConfig config,$/;"	p	signature:(EGLDisplay dpy, EGLConfig config, EGLNativePixmapType pixmap, const EGLint *attrib_list)
+eglCreateWindowSurface	EGL/egl.h	/^EGLAPI EGLSurface EGLAPIENTRY eglCreateWindowSurface(EGLDisplay dpy, EGLConfig config,$/;"	p	signature:(EGLDisplay dpy, EGLConfig config, EGLNativeWindowType win, const EGLint *attrib_list)
+eglDestroyContext	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglDestroyContext(EGLDisplay dpy, EGLContext ctx);$/;"	p	signature:(EGLDisplay dpy, EGLContext ctx)
+eglDestroyImageKHR	EGL/eglext.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglDestroyImageKHR (EGLDisplay dpy, EGLImageKHR image);$/;"	p	signature:(EGLDisplay dpy, EGLImageKHR image)
+eglDestroySurface	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglDestroySurface(EGLDisplay dpy, EGLSurface surface);$/;"	p	signature:(EGLDisplay dpy, EGLSurface surface)
+eglGetConfigAttrib	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglGetConfigAttrib(EGLDisplay dpy, EGLConfig config,$/;"	p	signature:(EGLDisplay dpy, EGLConfig config, EGLint attribute, EGLint *value)
+eglGetConfigs	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglGetConfigs(EGLDisplay dpy, EGLConfig *configs,$/;"	p	signature:(EGLDisplay dpy, EGLConfig *configs, EGLint config_size, EGLint *num_config)
+eglGetCurrentContext	EGL/egl.h	/^EGLAPI EGLContext EGLAPIENTRY eglGetCurrentContext(void);$/;"	p	signature:(void)
+eglGetCurrentDisplay	EGL/egl.h	/^EGLAPI EGLDisplay EGLAPIENTRY eglGetCurrentDisplay(void);$/;"	p	signature:(void)
+eglGetCurrentSurface	EGL/egl.h	/^EGLAPI EGLSurface EGLAPIENTRY eglGetCurrentSurface(EGLint readdraw);$/;"	p	signature:(EGLint readdraw)
+eglGetDisplay	EGL/egl.h	/^EGLAPI EGLDisplay EGLAPIENTRY eglGetDisplay(EGLNativeDisplayType display_id);$/;"	p	signature:(EGLNativeDisplayType display_id)
+eglGetError	EGL/egl.h	/^EGLAPI EGLint EGLAPIENTRY eglGetError(void);$/;"	p	signature:(void)
+eglGetProcAddress	EGL/egl.h	/^       eglGetProcAddress(const char *procname);$/;"	p	signature:(const char *procname)
+eglInitialize	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglInitialize(EGLDisplay dpy, EGLint *major, EGLint *minor);$/;"	p	signature:(EGLDisplay dpy, EGLint *major, EGLint *minor)
+eglLockSurfaceKHR	EGL/eglext.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglLockSurfaceKHR (EGLDisplay display, EGLSurface surface, const EGLint *attrib_list);$/;"	p	signature:(EGLDisplay display, EGLSurface surface, const EGLint *attrib_list)
+eglMakeCurrent	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglMakeCurrent(EGLDisplay dpy, EGLSurface draw,$/;"	p	signature:(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx)
+eglQueryAPI	EGL/egl.h	/^EGLAPI EGLenum EGLAPIENTRY eglQueryAPI(void);$/;"	p	signature:(void)
+eglQueryContext	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglQueryContext(EGLDisplay dpy, EGLContext ctx,$/;"	p	signature:(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint *value)
+eglQueryString	EGL/egl.h	/^EGLAPI const char * EGLAPIENTRY eglQueryString(EGLDisplay dpy, EGLint name);$/;"	p	signature:(EGLDisplay dpy, EGLint name)
+eglQuerySurface	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglQuerySurface(EGLDisplay dpy, EGLSurface surface,$/;"	p	signature:(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value)
+eglReleaseTexImage	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglReleaseTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer);$/;"	p	signature:(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
+eglReleaseThread	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglReleaseThread(void);$/;"	p	signature:(void)
+eglSurfaceAttrib	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglSurfaceAttrib(EGLDisplay dpy, EGLSurface surface,$/;"	p	signature:(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint value)
+eglSwapBuffers	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglSwapBuffers(EGLDisplay dpy, EGLSurface surface);$/;"	p	signature:(EGLDisplay dpy, EGLSurface surface)
+eglSwapInterval	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglSwapInterval(EGLDisplay dpy, EGLint interval);$/;"	p	signature:(EGLDisplay dpy, EGLint interval)
+eglTerminate	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglTerminate(EGLDisplay dpy);$/;"	p	signature:(EGLDisplay dpy)
+eglUnlockSurfaceKHR	EGL/eglext.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglUnlockSurfaceKHR (EGLDisplay display, EGLSurface surface);$/;"	p	signature:(EGLDisplay display, EGLSurface surface)
+eglWaitClient	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglWaitClient(void);$/;"	p	signature:(void)
+eglWaitGL	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglWaitGL(void);$/;"	p	signature:(void)
+eglWaitNative	EGL/egl.h	/^EGLAPI EGLBoolean EGLAPIENTRY eglWaitNative(EGLint engine);$/;"	p	signature:(EGLint engine)
+glActiveTexture	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glActiveTexture (GLenum texture);$/;"	p	signature:(GLenum texture)
+glAttachShader	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glAttachShader (GLuint program, GLuint shader);$/;"	p	signature:(GLuint program, GLuint shader)
+glBeginPerfMonitorAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glBeginPerfMonitorAMD (GLuint monitor);$/;"	p	signature:(GLuint monitor)
+glBindAttribLocation	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBindAttribLocation (GLuint program, GLuint index, const char* name);$/;"	p	signature:(GLuint program, GLuint index, const char* name)
+glBindBuffer	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBindBuffer (GLenum target, GLuint buffer);$/;"	p	signature:(GLenum target, GLuint buffer)
+glBindFramebuffer	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBindFramebuffer (GLenum target, GLuint framebuffer);$/;"	p	signature:(GLenum target, GLuint framebuffer)
+glBindRenderbuffer	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBindRenderbuffer (GLenum target, GLuint renderbuffer);$/;"	p	signature:(GLenum target, GLuint renderbuffer)
+glBindTexture	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBindTexture (GLenum target, GLuint texture);$/;"	p	signature:(GLenum target, GLuint texture)
+glBlendColor	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBlendColor (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);$/;"	p	signature:(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+glBlendEquation	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBlendEquation ( GLenum mode );$/;"	p	signature:( GLenum mode )
+glBlendEquationSeparate	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBlendEquationSeparate (GLenum modeRGB, GLenum modeAlpha);$/;"	p	signature:(GLenum modeRGB, GLenum modeAlpha)
+glBlendFunc	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBlendFunc (GLenum sfactor, GLenum dfactor);$/;"	p	signature:(GLenum sfactor, GLenum dfactor)
+glBlendFuncSeparate	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBlendFuncSeparate (GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);$/;"	p	signature:(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
+glBufferData	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBufferData (GLenum target, GLsizeiptr size, const void* data, GLenum usage);$/;"	p	signature:(GLenum target, GLsizeiptr size, const void* data, GLenum usage)
+glBufferSubData	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, const void* data);$/;"	p	signature:(GLenum target, GLintptr offset, GLsizeiptr size, const void* data)
+glCheckFramebufferStatus	GLES2/gl2.h	/^GL_APICALL GLenum       GL_APIENTRY glCheckFramebufferStatus (GLenum target);$/;"	p	signature:(GLenum target)
+glClear	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glClear (GLbitfield mask);$/;"	p	signature:(GLbitfield mask)
+glClearColor	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glClearColor (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);$/;"	p	signature:(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+glClearDepthf	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glClearDepthf (GLclampf depth);$/;"	p	signature:(GLclampf depth)
+glClearStencil	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glClearStencil (GLint s);$/;"	p	signature:(GLint s)
+glColorMask	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glColorMask (GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);$/;"	p	signature:(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
+glCompileShader	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glCompileShader (GLuint shader);$/;"	p	signature:(GLuint shader)
+glCompressedTexImage2D	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glCompressedTexImage2D (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void* data);$/;"	p	signature:(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void* data)
+glCompressedTexImage3DOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glCompressedTexImage3DOES (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void* data);$/;"	p	signature:(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void* data)
+glCompressedTexSubImage2D	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glCompressedTexSubImage2D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void* data);$/;"	p	signature:(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void* data)
+glCompressedTexSubImage3DOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glCompressedTexSubImage3DOES (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void* data);$/;"	p	signature:(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void* data)
+glCopyTexImage2D	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glCopyTexImage2D (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);$/;"	p	signature:(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border)
+glCopyTexSubImage2D	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glCopyTexSubImage2D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);$/;"	p	signature:(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height)
+glCopyTexSubImage3DOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glCopyTexSubImage3DOES (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);$/;"	p	signature:(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
+glCreateProgram	GLES2/gl2.h	/^GL_APICALL GLuint       GL_APIENTRY glCreateProgram (void);$/;"	p	signature:(void)
+glCreateShader	GLES2/gl2.h	/^GL_APICALL GLuint       GL_APIENTRY glCreateShader (GLenum type);$/;"	p	signature:(GLenum type)
+glCullFace	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glCullFace (GLenum mode);$/;"	p	signature:(GLenum mode)
+glDeleteBuffers	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDeleteBuffers (GLsizei n, const GLuint* buffers);$/;"	p	signature:(GLsizei n, const GLuint* buffers)
+glDeleteFramebuffers	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDeleteFramebuffers (GLsizei n, const GLuint* framebuffers);$/;"	p	signature:(GLsizei n, const GLuint* framebuffers)
+glDeletePerfMonitorsAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glDeletePerfMonitorsAMD (GLsizei n, GLuint *monitors);$/;"	p	signature:(GLsizei n, GLuint *monitors)
+glDeleteProgram	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDeleteProgram (GLuint program);$/;"	p	signature:(GLuint program)
+glDeleteRenderbuffers	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDeleteRenderbuffers (GLsizei n, const GLuint* renderbuffers);$/;"	p	signature:(GLsizei n, const GLuint* renderbuffers)
+glDeleteShader	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDeleteShader (GLuint shader);$/;"	p	signature:(GLuint shader)
+glDeleteTextures	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDeleteTextures (GLsizei n, const GLuint* textures);$/;"	p	signature:(GLsizei n, const GLuint* textures)
+glDepthFunc	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDepthFunc (GLenum func);$/;"	p	signature:(GLenum func)
+glDepthMask	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDepthMask (GLboolean flag);$/;"	p	signature:(GLboolean flag)
+glDepthRangef	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDepthRangef (GLclampf zNear, GLclampf zFar);$/;"	p	signature:(GLclampf zNear, GLclampf zFar)
+glDetachShader	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDetachShader (GLuint program, GLuint shader);$/;"	p	signature:(GLuint program, GLuint shader)
+glDisable	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDisable (GLenum cap);$/;"	p	signature:(GLenum cap)
+glDisableVertexAttribArray	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDisableVertexAttribArray (GLuint index);$/;"	p	signature:(GLuint index)
+glDrawArrays	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDrawArrays (GLenum mode, GLint first, GLsizei count);$/;"	p	signature:(GLenum mode, GLint first, GLsizei count)
+glDrawElements	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glDrawElements (GLenum mode, GLsizei count, GLenum type, const void* indices);$/;"	p	signature:(GLenum mode, GLsizei count, GLenum type, const void* indices)
+glEGLImageTargetRenderbufferStorageOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glEGLImageTargetRenderbufferStorageOES (GLenum target, GLeglImageOES image);$/;"	p	signature:(GLenum target, GLeglImageOES image)
+glEGLImageTargetTexture2DOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glEGLImageTargetTexture2DOES (GLenum target, GLeglImageOES image);$/;"	p	signature:(GLenum target, GLeglImageOES image)
+glEnable	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glEnable (GLenum cap);$/;"	p	signature:(GLenum cap)
+glEnableVertexAttribArray	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glEnableVertexAttribArray (GLuint index);$/;"	p	signature:(GLuint index)
+glEndPerfMonitorAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glEndPerfMonitorAMD (GLuint monitor);$/;"	p	signature:(GLuint monitor)
+glFinish	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glFinish (void);$/;"	p	signature:(void)
+glFlush	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glFlush (void);$/;"	p	signature:(void)
+glFramebufferRenderbuffer	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glFramebufferRenderbuffer (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);$/;"	p	signature:(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer)
+glFramebufferTexture2D	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glFramebufferTexture2D (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);$/;"	p	signature:(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
+glFramebufferTexture3DOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glFramebufferTexture3DOES (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset);$/;"	p	signature:(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset)
+glFrontFace	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glFrontFace (GLenum mode);$/;"	p	signature:(GLenum mode)
+glGenBuffers	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGenBuffers (GLsizei n, GLuint* buffers);$/;"	p	signature:(GLsizei n, GLuint* buffers)
+glGenFramebuffers	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGenFramebuffers (GLsizei n, GLuint* framebuffers);$/;"	p	signature:(GLsizei n, GLuint* framebuffers)
+glGenPerfMonitorsAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glGenPerfMonitorsAMD (GLsizei n, GLuint *monitors);$/;"	p	signature:(GLsizei n, GLuint *monitors)
+glGenRenderbuffers	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGenRenderbuffers (GLsizei n, GLuint* renderbuffers);$/;"	p	signature:(GLsizei n, GLuint* renderbuffers)
+glGenTextures	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGenTextures (GLsizei n, GLuint* textures);$/;"	p	signature:(GLsizei n, GLuint* textures)
+glGenerateMipmap	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGenerateMipmap (GLenum target);$/;"	p	signature:(GLenum target)
+glGetActiveAttrib	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetActiveAttrib (GLuint program, GLuint index, GLsizei bufsize, GLsizei* length, GLint* size, GLenum* type, char* name);$/;"	p	signature:(GLuint program, GLuint index, GLsizei bufsize, GLsizei* length, GLint* size, GLenum* type, char* name)
+glGetActiveUniform	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetActiveUniform (GLuint program, GLuint index, GLsizei bufsize, GLsizei* length, GLint* size, GLenum* type, char* name);$/;"	p	signature:(GLuint program, GLuint index, GLsizei bufsize, GLsizei* length, GLint* size, GLenum* type, char* name)
+glGetAttachedShaders	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetAttachedShaders (GLuint program, GLsizei maxcount, GLsizei* count, GLuint* shaders);$/;"	p	signature:(GLuint program, GLsizei maxcount, GLsizei* count, GLuint* shaders)
+glGetAttribLocation	GLES2/gl2.h	/^GL_APICALL int          GL_APIENTRY glGetAttribLocation (GLuint program, const char* name);$/;"	p	signature:(GLuint program, const char* name)
+glGetBooleanv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetBooleanv (GLenum pname, GLboolean* params);$/;"	p	signature:(GLenum pname, GLboolean* params)
+glGetBufferParameteriv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetBufferParameteriv (GLenum target, GLenum pname, GLint* params);$/;"	p	signature:(GLenum target, GLenum pname, GLint* params)
+glGetBufferPointervOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glGetBufferPointervOES (GLenum target, GLenum pname, void** params);$/;"	p	signature:(GLenum target, GLenum pname, void** params)
+glGetError	GLES2/gl2.h	/^GL_APICALL GLenum       GL_APIENTRY glGetError (void);$/;"	p	signature:(void)
+glGetFloatv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetFloatv (GLenum pname, GLfloat* params);$/;"	p	signature:(GLenum pname, GLfloat* params)
+glGetFramebufferAttachmentParameteriv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetFramebufferAttachmentParameteriv (GLenum target, GLenum attachment, GLenum pname, GLint* params);$/;"	p	signature:(GLenum target, GLenum attachment, GLenum pname, GLint* params)
+glGetIntegerv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetIntegerv (GLenum pname, GLint* params);$/;"	p	signature:(GLenum pname, GLint* params)
+glGetPerfMonitorCounterDataAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glGetPerfMonitorCounterDataAMD (GLuint monitor, GLenum pname, GLsizei dataSize, GLuint *data, GLint *bytesWritten);$/;"	p	signature:(GLuint monitor, GLenum pname, GLsizei dataSize, GLuint *data, GLint *bytesWritten)
+glGetPerfMonitorCounterInfoAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glGetPerfMonitorCounterInfoAMD (GLuint group, GLuint counter, GLenum pname, void *data);$/;"	p	signature:(GLuint group, GLuint counter, GLenum pname, void *data)
+glGetPerfMonitorCounterStringAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glGetPerfMonitorCounterStringAMD (GLuint group, GLuint counter, GLsizei bufSize, GLsizei *length, char *counterString);$/;"	p	signature:(GLuint group, GLuint counter, GLsizei bufSize, GLsizei *length, char *counterString)
+glGetPerfMonitorCountersAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glGetPerfMonitorCountersAMD (GLuint group, GLint *numCounters, GLint *maxActiveCounters, GLsizei counterSize, GLuint *counters);$/;"	p	signature:(GLuint group, GLint *numCounters, GLint *maxActiveCounters, GLsizei counterSize, GLuint *counters)
+glGetPerfMonitorGroupStringAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glGetPerfMonitorGroupStringAMD (GLuint group, GLsizei bufSize, GLsizei *length, char *groupString);$/;"	p	signature:(GLuint group, GLsizei bufSize, GLsizei *length, char *groupString)
+glGetPerfMonitorGroupsAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glGetPerfMonitorGroupsAMD (GLint *numGroups, GLsizei groupsSize, GLuint *groups);$/;"	p	signature:(GLint *numGroups, GLsizei groupsSize, GLuint *groups)
+glGetProgramBinaryOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glGetProgramBinaryOES (GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, void *binary);$/;"	p	signature:(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, void *binary)
+glGetProgramInfoLog	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetProgramInfoLog (GLuint program, GLsizei bufsize, GLsizei* length, char* infolog);$/;"	p	signature:(GLuint program, GLsizei bufsize, GLsizei* length, char* infolog)
+glGetProgramiv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetProgramiv (GLuint program, GLenum pname, GLint* params);$/;"	p	signature:(GLuint program, GLenum pname, GLint* params)
+glGetRenderbufferParameteriv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetRenderbufferParameteriv (GLenum target, GLenum pname, GLint* params);$/;"	p	signature:(GLenum target, GLenum pname, GLint* params)
+glGetShaderInfoLog	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetShaderInfoLog (GLuint shader, GLsizei bufsize, GLsizei* length, char* infolog);$/;"	p	signature:(GLuint shader, GLsizei bufsize, GLsizei* length, char* infolog)
+glGetShaderPrecisionFormat	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetShaderPrecisionFormat (GLenum shadertype, GLenum precisiontype, GLint* range, GLint* precision);$/;"	p	signature:(GLenum shadertype, GLenum precisiontype, GLint* range, GLint* precision)
+glGetShaderSource	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetShaderSource (GLuint shader, GLsizei bufsize, GLsizei* length, char* source);$/;"	p	signature:(GLuint shader, GLsizei bufsize, GLsizei* length, char* source)
+glGetShaderiv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetShaderiv (GLuint shader, GLenum pname, GLint* params);$/;"	p	signature:(GLuint shader, GLenum pname, GLint* params)
+glGetString	GLES2/gl2.h	/^GL_APICALL const GLubyte* GL_APIENTRY glGetString (GLenum name);$/;"	p	signature:(GLenum name)
+glGetTexParameterfv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetTexParameterfv (GLenum target, GLenum pname, GLfloat* params);$/;"	p	signature:(GLenum target, GLenum pname, GLfloat* params)
+glGetTexParameteriv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetTexParameteriv (GLenum target, GLenum pname, GLint* params);$/;"	p	signature:(GLenum target, GLenum pname, GLint* params)
+glGetUniformLocation	GLES2/gl2.h	/^GL_APICALL int          GL_APIENTRY glGetUniformLocation (GLuint program, const char* name);$/;"	p	signature:(GLuint program, const char* name)
+glGetUniformfv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetUniformfv (GLuint program, GLint location, GLfloat* params);$/;"	p	signature:(GLuint program, GLint location, GLfloat* params)
+glGetUniformiv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetUniformiv (GLuint program, GLint location, GLint* params);$/;"	p	signature:(GLuint program, GLint location, GLint* params)
+glGetVertexAttribPointerv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetVertexAttribPointerv (GLuint index, GLenum pname, void** pointer);$/;"	p	signature:(GLuint index, GLenum pname, void** pointer)
+glGetVertexAttribfv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetVertexAttribfv (GLuint index, GLenum pname, GLfloat* params);$/;"	p	signature:(GLuint index, GLenum pname, GLfloat* params)
+glGetVertexAttribiv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glGetVertexAttribiv (GLuint index, GLenum pname, GLint* params);$/;"	p	signature:(GLuint index, GLenum pname, GLint* params)
+glHint	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glHint (GLenum target, GLenum mode);$/;"	p	signature:(GLenum target, GLenum mode)
+glIsBuffer	GLES2/gl2.h	/^GL_APICALL GLboolean    GL_APIENTRY glIsBuffer (GLuint buffer);$/;"	p	signature:(GLuint buffer)
+glIsEnabled	GLES2/gl2.h	/^GL_APICALL GLboolean    GL_APIENTRY glIsEnabled (GLenum cap);$/;"	p	signature:(GLenum cap)
+glIsFramebuffer	GLES2/gl2.h	/^GL_APICALL GLboolean    GL_APIENTRY glIsFramebuffer (GLuint framebuffer);$/;"	p	signature:(GLuint framebuffer)
+glIsProgram	GLES2/gl2.h	/^GL_APICALL GLboolean    GL_APIENTRY glIsProgram (GLuint program);$/;"	p	signature:(GLuint program)
+glIsRenderbuffer	GLES2/gl2.h	/^GL_APICALL GLboolean    GL_APIENTRY glIsRenderbuffer (GLuint renderbuffer);$/;"	p	signature:(GLuint renderbuffer)
+glIsShader	GLES2/gl2.h	/^GL_APICALL GLboolean    GL_APIENTRY glIsShader (GLuint shader);$/;"	p	signature:(GLuint shader)
+glIsTexture	GLES2/gl2.h	/^GL_APICALL GLboolean    GL_APIENTRY glIsTexture (GLuint texture);$/;"	p	signature:(GLuint texture)
+glLineWidth	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glLineWidth (GLfloat width);$/;"	p	signature:(GLfloat width)
+glLinkProgram	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glLinkProgram (GLuint program);$/;"	p	signature:(GLuint program)
+glMapBufferOES	GLES2/gl2ext.h	/^GL_APICALL void* GL_APIENTRY glMapBufferOES (GLenum target, GLenum access);$/;"	p	signature:(GLenum target, GLenum access)
+glPixelStorei	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glPixelStorei (GLenum pname, GLint param);$/;"	p	signature:(GLenum pname, GLint param)
+glPolygonOffset	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glPolygonOffset (GLfloat factor, GLfloat units);$/;"	p	signature:(GLfloat factor, GLfloat units)
+glProgramBinaryOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glProgramBinaryOES (GLuint program, GLenum binaryFormat, const void *binary, GLint length);$/;"	p	signature:(GLuint program, GLenum binaryFormat, const void *binary, GLint length)
+glReadPixels	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glReadPixels (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels);$/;"	p	signature:(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels)
+glReleaseShaderCompiler	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glReleaseShaderCompiler (void);$/;"	p	signature:(void)
+glRenderbufferStorage	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glRenderbufferStorage (GLenum target, GLenum internalformat, GLsizei width, GLsizei height);$/;"	p	signature:(GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
+glSampleCoverage	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glSampleCoverage (GLclampf value, GLboolean invert);$/;"	p	signature:(GLclampf value, GLboolean invert)
+glScissor	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glScissor (GLint x, GLint y, GLsizei width, GLsizei height);$/;"	p	signature:(GLint x, GLint y, GLsizei width, GLsizei height)
+glSelectPerfMonitorCountersAMD	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glSelectPerfMonitorCountersAMD (GLuint monitor, GLboolean enable, GLuint group, GLint numCounters, GLuint *countersList);$/;"	p	signature:(GLuint monitor, GLboolean enable, GLuint group, GLint numCounters, GLuint *countersList)
+glShaderBinary	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glShaderBinary (GLsizei n, const GLuint* shaders, GLenum binaryformat, const void* binary, GLsizei length);$/;"	p	signature:(GLsizei n, const GLuint* shaders, GLenum binaryformat, const void* binary, GLsizei length)
+glShaderSource	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glShaderSource (GLuint shader, GLsizei count, const char** string, const GLint* length);$/;"	p	signature:(GLuint shader, GLsizei count, const char** string, const GLint* length)
+glStencilFunc	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glStencilFunc (GLenum func, GLint ref, GLuint mask);$/;"	p	signature:(GLenum func, GLint ref, GLuint mask)
+glStencilFuncSeparate	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glStencilFuncSeparate (GLenum face, GLenum func, GLint ref, GLuint mask);$/;"	p	signature:(GLenum face, GLenum func, GLint ref, GLuint mask)
+glStencilMask	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glStencilMask (GLuint mask);$/;"	p	signature:(GLuint mask)
+glStencilMaskSeparate	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glStencilMaskSeparate (GLenum face, GLuint mask);$/;"	p	signature:(GLenum face, GLuint mask)
+glStencilOp	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glStencilOp (GLenum fail, GLenum zfail, GLenum zpass);$/;"	p	signature:(GLenum fail, GLenum zfail, GLenum zpass)
+glStencilOpSeparate	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glStencilOpSeparate (GLenum face, GLenum fail, GLenum zfail, GLenum zpass);$/;"	p	signature:(GLenum face, GLenum fail, GLenum zfail, GLenum zpass)
+glTexImage2D	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glTexImage2D (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void* pixels);$/;"	p	signature:(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void* pixels)
+glTexImage3DOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glTexImage3DOES (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const void* pixels);$/;"	p	signature:(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const void* pixels)
+glTexParameterf	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glTexParameterf (GLenum target, GLenum pname, GLfloat param);$/;"	p	signature:(GLenum target, GLenum pname, GLfloat param)
+glTexParameterfv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glTexParameterfv (GLenum target, GLenum pname, const GLfloat* params);$/;"	p	signature:(GLenum target, GLenum pname, const GLfloat* params)
+glTexParameteri	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glTexParameteri (GLenum target, GLenum pname, GLint param);$/;"	p	signature:(GLenum target, GLenum pname, GLint param)
+glTexParameteriv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glTexParameteriv (GLenum target, GLenum pname, const GLint* params);$/;"	p	signature:(GLenum target, GLenum pname, const GLint* params)
+glTexSubImage2D	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glTexSubImage2D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void* pixels);$/;"	p	signature:(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void* pixels)
+glTexSubImage3DOES	GLES2/gl2ext.h	/^GL_APICALL void GL_APIENTRY glTexSubImage3DOES (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void* pixels);$/;"	p	signature:(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void* pixels)
+glUniform1f	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform1f (GLint location, GLfloat x);$/;"	p	signature:(GLint location, GLfloat x)
+glUniform1fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform1fv (GLint location, GLsizei count, const GLfloat* v);$/;"	p	signature:(GLint location, GLsizei count, const GLfloat* v)
+glUniform1i	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform1i (GLint location, GLint x);$/;"	p	signature:(GLint location, GLint x)
+glUniform1iv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform1iv (GLint location, GLsizei count, const GLint* v);$/;"	p	signature:(GLint location, GLsizei count, const GLint* v)
+glUniform2f	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform2f (GLint location, GLfloat x, GLfloat y);$/;"	p	signature:(GLint location, GLfloat x, GLfloat y)
+glUniform2fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform2fv (GLint location, GLsizei count, const GLfloat* v);$/;"	p	signature:(GLint location, GLsizei count, const GLfloat* v)
+glUniform2i	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform2i (GLint location, GLint x, GLint y);$/;"	p	signature:(GLint location, GLint x, GLint y)
+glUniform2iv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform2iv (GLint location, GLsizei count, const GLint* v);$/;"	p	signature:(GLint location, GLsizei count, const GLint* v)
+glUniform3f	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform3f (GLint location, GLfloat x, GLfloat y, GLfloat z);$/;"	p	signature:(GLint location, GLfloat x, GLfloat y, GLfloat z)
+glUniform3fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform3fv (GLint location, GLsizei count, const GLfloat* v);$/;"	p	signature:(GLint location, GLsizei count, const GLfloat* v)
+glUniform3i	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform3i (GLint location, GLint x, GLint y, GLint z);$/;"	p	signature:(GLint location, GLint x, GLint y, GLint z)
+glUniform3iv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform3iv (GLint location, GLsizei count, const GLint* v);$/;"	p	signature:(GLint location, GLsizei count, const GLint* v)
+glUniform4f	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform4f (GLint location, GLfloat x, GLfloat y, GLfloat z, GLfloat w);$/;"	p	signature:(GLint location, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+glUniform4fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform4fv (GLint location, GLsizei count, const GLfloat* v);$/;"	p	signature:(GLint location, GLsizei count, const GLfloat* v)
+glUniform4i	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform4i (GLint location, GLint x, GLint y, GLint z, GLint w);$/;"	p	signature:(GLint location, GLint x, GLint y, GLint z, GLint w)
+glUniform4iv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniform4iv (GLint location, GLsizei count, const GLint* v);$/;"	p	signature:(GLint location, GLsizei count, const GLint* v)
+glUniformMatrix2fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniformMatrix2fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);$/;"	p	signature:(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
+glUniformMatrix3fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniformMatrix3fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);$/;"	p	signature:(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
+glUniformMatrix4fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUniformMatrix4fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);$/;"	p	signature:(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
+glUnmapBufferOES	GLES2/gl2ext.h	/^GL_APICALL GLboolean GL_APIENTRY glUnmapBufferOES (GLenum target);$/;"	p	signature:(GLenum target)
+glUseProgram	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glUseProgram (GLuint program);$/;"	p	signature:(GLuint program)
+glValidateProgram	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glValidateProgram (GLuint program);$/;"	p	signature:(GLuint program)
+glVertexAttrib1f	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glVertexAttrib1f (GLuint indx, GLfloat x);$/;"	p	signature:(GLuint indx, GLfloat x)
+glVertexAttrib1fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glVertexAttrib1fv (GLuint indx, const GLfloat* values);$/;"	p	signature:(GLuint indx, const GLfloat* values)
+glVertexAttrib2f	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glVertexAttrib2f (GLuint indx, GLfloat x, GLfloat y);$/;"	p	signature:(GLuint indx, GLfloat x, GLfloat y)
+glVertexAttrib2fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glVertexAttrib2fv (GLuint indx, const GLfloat* values);$/;"	p	signature:(GLuint indx, const GLfloat* values)
+glVertexAttrib3f	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glVertexAttrib3f (GLuint indx, GLfloat x, GLfloat y, GLfloat z);$/;"	p	signature:(GLuint indx, GLfloat x, GLfloat y, GLfloat z)
+glVertexAttrib3fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glVertexAttrib3fv (GLuint indx, const GLfloat* values);$/;"	p	signature:(GLuint indx, const GLfloat* values)
+glVertexAttrib4f	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glVertexAttrib4f (GLuint indx, GLfloat x, GLfloat y, GLfloat z, GLfloat w);$/;"	p	signature:(GLuint indx, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+glVertexAttrib4fv	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glVertexAttrib4fv (GLuint indx, const GLfloat* values);$/;"	p	signature:(GLuint indx, const GLfloat* values)
+glVertexAttribPointer	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glVertexAttribPointer (GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* ptr);$/;"	p	signature:(GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* ptr)
+glViewport	GLES2/gl2.h	/^GL_APICALL void         GL_APIENTRY glViewport (GLint x, GLint y, GLsizei width, GLsizei height);$/;"	p	signature:(GLint x, GLint y, GLsizei width, GLsizei height)
+khronos_boolean_enum_t	KHR/khrplatform.h	/^} khronos_boolean_enum_t;$/;"	t	typeref:enum:__anon1
+khronos_float_t	KHR/khrplatform.h	/^typedef          float         khronos_float_t;$/;"	t
+khronos_int16_t	KHR/khrplatform.h	/^typedef signed   short int     khronos_int16_t;$/;"	t
+khronos_int32_t	KHR/khrplatform.h	/^typedef TInt32                 khronos_int32_t;$/;"	t
+khronos_int32_t	KHR/khrplatform.h	/^typedef __int32                 khronos_int32_t;$/;"	t
+khronos_int32_t	KHR/khrplatform.h	/^typedef int                     khronos_int32_t;$/;"	t
+khronos_int32_t	KHR/khrplatform.h	/^typedef int32_t                 khronos_int32_t;$/;"	t
+khronos_int32_t	KHR/khrplatform.h	/^typedef signed int              khronos_int32_t;$/;"	t
+khronos_int64_t	KHR/khrplatform.h	/^typedef TInt64                 khronos_int64_t;$/;"	t
+khronos_int64_t	KHR/khrplatform.h	/^typedef __int64                 khronos_int64_t;$/;"	t
+khronos_int64_t	KHR/khrplatform.h	/^typedef int64_t                 khronos_int64_t;$/;"	t
+khronos_int64_t	KHR/khrplatform.h	/^typedef long int                khronos_int64_t;$/;"	t
+khronos_int64_t	KHR/khrplatform.h	/^typedef long long               khronos_int64_t;$/;"	t
+khronos_int64_t	KHR/khrplatform.h	/^typedef long long int           khronos_int64_t;$/;"	t
+khronos_int8_t	KHR/khrplatform.h	/^typedef signed   char          khronos_int8_t;$/;"	t
+khronos_intptr_t	KHR/khrplatform.h	/^typedef signed   long  int     khronos_intptr_t;$/;"	t
+khronos_ssize_t	KHR/khrplatform.h	/^typedef signed   long  int     khronos_ssize_t;$/;"	t
+khronos_stime_nanoseconds_t	KHR/khrplatform.h	/^typedef khronos_int64_t        khronos_stime_nanoseconds_t;$/;"	t
+khronos_uint16_t	KHR/khrplatform.h	/^typedef unsigned short int     khronos_uint16_t;$/;"	t
+khronos_uint32_t	KHR/khrplatform.h	/^typedef TUint32                khronos_uint32_t;$/;"	t
+khronos_uint32_t	KHR/khrplatform.h	/^typedef uint32_t                khronos_uint32_t;$/;"	t
+khronos_uint32_t	KHR/khrplatform.h	/^typedef unsigned __int32        khronos_uint32_t;$/;"	t
+khronos_uint32_t	KHR/khrplatform.h	/^typedef unsigned int	        khronos_uint32_t;$/;"	t
+khronos_uint32_t	KHR/khrplatform.h	/^typedef unsigned int            khronos_uint32_t;$/;"	t
+khronos_uint64_t	KHR/khrplatform.h	/^typedef TUint64                khronos_uint64_t;$/;"	t
+khronos_uint64_t	KHR/khrplatform.h	/^typedef uint64_t                khronos_uint64_t;$/;"	t
+khronos_uint64_t	KHR/khrplatform.h	/^typedef unsigned __int64        khronos_uint64_t;$/;"	t
+khronos_uint64_t	KHR/khrplatform.h	/^typedef unsigned long int       khronos_uint64_t;$/;"	t
+khronos_uint64_t	KHR/khrplatform.h	/^typedef unsigned long long      khronos_uint64_t;$/;"	t
+khronos_uint64_t	KHR/khrplatform.h	/^typedef unsigned long long int  khronos_uint64_t;$/;"	t
+khronos_uint8_t	KHR/khrplatform.h	/^typedef unsigned char          khronos_uint8_t;$/;"	t
+khronos_uintptr_t	KHR/khrplatform.h	/^typedef unsigned long  int     khronos_uintptr_t;$/;"	t
+khronos_usize_t	KHR/khrplatform.h	/^typedef unsigned long  int     khronos_usize_t;$/;"	t
+khronos_utime_nanoseconds_t	KHR/khrplatform.h	/^typedef khronos_uint64_t       khronos_utime_nanoseconds_t;$/;"	t
