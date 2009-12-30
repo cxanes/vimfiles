@@ -2,7 +2,8 @@
 "===================================================================
 " Setting {{{
 "-------------------------------------------------------------------
-compiler gcc
+" compiler gcc
+setl errorformat&
 if exists('*mylib#AddOptFiles') && isdirectory($HOME . '/local/include')
   call mylib#AddOptFiles('path', $HOME . '/local/include')
 endif
@@ -23,6 +24,10 @@ inoremap <silent> <buffer> <Leader>p <C-R>=<SID>CFuncType()<CR><C-R>=<SID>Imap()
 
 if exists('*mylib#CNewLine')
   inoremap <silent> <buffer> <C-J> <C-R>=mylib#CNewLine()<CR>
+endif
+
+if exists(':Run')
+  nnoremap <silent> <buffer> <F7> :Cwd<CR>:Run<CR>:cd -<CR>
 endif
 
 if exists('*mapping#CompleteParen')
@@ -166,6 +171,15 @@ endif
 if exists('*mylib#AddOptFiles')
   call mylib#AddOptFiles('tags', 'tags/cstd.tags')
   call mylib#AddOptFiles('tags', 'tags/lsb32.tags')
+
+  if !exists('g:opengl_headers')
+    " possible headers: opengl-1.1, opengles-1.1, opengles2, glew 
+    let g:opengl_headers = ['opengl-1.1']
+  endif
+
+  for header in g:opengl_headers
+    call mylib#AddOptFiles('tags', printf('tags/%s.tags', header))
+  endfor
 
   call mylib#AddOptFiles('dict', 'keywords/c')
   set complete+=k
