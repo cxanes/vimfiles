@@ -8,8 +8,7 @@ if exists('loaded_Perl')
 endif
 let loaded_Perl = 1
 
-let s:MSWIN =  has('win32') || has('win32unix') || has('win64')
-          \ || has('win95') || has('win16')
+let s:MSWIN =  has('win32') || has('win32unix') || has('win64') || has('win95') || has('win16')
 if !s:MSWIN
   unlet s:MSWIN
   finish
