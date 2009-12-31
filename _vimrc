@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-11-17 11:27:41
+" Last Modified: 2009-12-30 18:16:55
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1583,6 +1583,9 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
       let b:ECcommentClose = ''
     elseif a:ft ==? 'ruby'
       let b:ECcommentOpen = '#'
+      let b:ECcommentClose = ''
+    elseif a:ft ==? 'glsl'
+      let b:ECcommentOpen = '//'
       let b:ECcommentClose = ''
     endif
   endfunction "}}}
