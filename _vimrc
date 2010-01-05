@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2009-12-30 18:16:55
+" Last Modified: 2010-01-05 11:09:07
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -355,7 +355,7 @@ endif
 
 " let &statusline = '%<%f%( %{OptModifiedFlag(1)}%y%w%r%)%=%-16.( %l/%L,%c%V%) '
 let &statusline = '%<%f%( %{OptModifiedFlag(1)}%{ManBufInfo()}%y%w%r%)'
-      \ . '%( %{OptSetInfo()}%) %=%-14.( %l/%L,%c%V%) '
+      \ . '%( %{OptSetInfo()}%) %k%=%-14.( %l/%L,%c%V%) '
 "}}}
 " Make <M-...> almost work in xterm {{{
 " 
@@ -809,7 +809,7 @@ endif
 " Use CTRL-Q to do what CTRL-V used to do
 noremap <C-Q> <C-V>
 
-inoremap <C-^> <C-\><C-O>:call <SID>MoveBetweenBraces()<CR>
+inoremap <Leader><C-^> <C-\><C-O>:call <SID>MoveBetweenBraces()<CR>
 
 function! s:PosCmp(pos1, pos2) "{{{
   if a:pos1 == a:pos2
@@ -939,6 +939,12 @@ augroup END
 
 " Indent All (<S-=>)
 " nnoremap <silent> + ggVG=
+
+" http://vim.wikia.com/wiki/Insert-mode_only_Caps_Lock
+set imsearch=-1
+set keymap=capslock
+set iminsert=0
+
 "}}}
 " Commands {{{
 
