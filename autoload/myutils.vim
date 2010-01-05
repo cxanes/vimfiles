@@ -871,7 +871,7 @@ function! myutils#WebSearch(query) "{{{
   catch /^Vim\%((\a\+)\)\=:E767/
     let query = printf(url_default, s:WebQueryEncode(iconv(a:query, &enc, enc)))
   endtry
-  call OpenFile(query)
+  call myutils#OpenFile(query)
 endfunction
 " }}}
 function! s:WebQueryEncode(query) "{{{
