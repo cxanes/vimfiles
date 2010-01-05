@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-01-05 11:09:07
+" Last Modified: 2010-01-05 17:36:55
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1046,6 +1046,22 @@ if s:MSWIN
     cd -
   endfunction
   command! UpdateRuntimeFiles call s:UpdateRuntimeFiles()
+  "}}}
+
+  " Set transparent background "{{{
+  " Ref: http://www.vim.org/scripts/script.php?script_id=687
+  function! s:SetAlpha(value) 
+    if empty(a:value)
+      silent! call libcallnr('vimtweak.dll', 'SetAlpha', 255)
+    else
+      let value = a:value + 0
+      if value == 0 || value > 255
+        let value = 255
+      endif
+      silent! call libcallnr('vimtweak.dll', 'SetAlpha', value)
+    endif
+  endfunction
+  command! -nargs=? SetAlpha call s:SetAlpha(<q-args>)
   "}}}
 
   command! Cmd silent !start
