@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-01-06 09:52:56
+" Last Modified: 2010-01-08 15:35:53
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1344,7 +1344,12 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
     let spath = ''
 
     if !empty(a:pathList)
-      let items = split(a:pathList, ',')
+      if type(a:pathList) == type("")
+        let items = split(a:pathList, ',')
+      else
+        let items = a:pathList
+      endif
+
       if !empty(items)
         let spath = join(map(items, 'escape(s:ExpandAlternatePath(v:val, a:relPathBase), '' \,'')'), ',')
       endif
