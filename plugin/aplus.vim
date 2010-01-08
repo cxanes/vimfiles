@@ -14,6 +14,11 @@
 "
 " Patch for spaces in files/directories from Nathan Stien (also reported by
 " Soeren Sonnenburg)
+"
+" NOTE: Modified by Frank Chang
+"
+"   I removed string-emulated list, and used native list directly.
+"
 
 " Do not load a.vim if is has already been loaded.
 if exists("loaded_alternateFile")
@@ -28,7 +33,7 @@ let alternateExtensionsDict = {}
 
 " setup the default set of alternate extensions. The user can override in thier
 " .vimrc if the defaults are not suitable. To override in a .vimrc simply set a
-" g:alternateExtensions_<EXT> variable to a comma separated list of alternates,
+" g:alternateExtensions_<EXT> variable to a (comma separated) list of alternates,
 " where <EXT> is the extension to map.
 " E.g. let g:alternateExtensions_CPP = "inc,h,H,HPP,hpp"
 "      let g:alternateExtensions_{'aspx.cs'} = "aspx"
@@ -42,7 +47,7 @@ let s:maxDotsInExtension = 1
 " Purpose  : simple helper function to add the default alternate extension
 "            mappings.
 " Args     : extension -- the extension to map
-"            alternates -- comma separated list of alternates extensions
+"            alternates -- list of alternates extensions
 " Returns  : nothing
 " Author   : Michael Sharpe <feline@irendi.com>
 function! <SID>AddAlternateExtensionMapping(extension, alternates)
@@ -61,7 +66,7 @@ function! <SID>AddAlternateExtensionMapping(extension, alternates)
       "let g:alternateExtensions_{a:extension} = a:alternates
    "endif
 
-   let g:alternateExtensionsDict[a:extension] = a:alternates
+   let g:alternateExtensionsDict[a:extension] = split(a:alternates, ',')
    let dotsNumber = strlen(substitute(a:extension, "[^.]", "", "g"))
    if s:maxDotsInExtension < dotsNumber
      let s:maxDotsInExtension = dotsNumber
@@ -130,26 +135,7 @@ endif
 " History  : Renamed from GetNthExtensionFromSpec to GetNthItemFromList
 "            to reflect a more generic use of this function. -- Bindu
 function! <SID>GetNthItemFromList(list, n) 
-   let itemStart = 0
-   let itemEnd = -1
-   let pos = 0
-   let item = ""
-   let i = 0
-   while (i != a:n)
-      let itemStart = itemEnd + 1
-      let itemEnd = match(a:list, ",", itemStart)
-      let i = i + 1
-      if (itemEnd == -1)
-         if (i == a:n)
-            let itemEnd = strlen(a:list)
-         endif
-         break
-      endif
-   endwhile 
-   if (itemEnd != -1) 
-      let item = strpart(a:list, itemStart, itemEnd - itemStart)
-   endif
-   return item 
+  return get(a:list, a:n, "")
 endfunction
 
 " Function : ExpandAlternatePath (PRIVATE)
@@ -223,25 +209,17 @@ endfunction
 " History  : inline code written by Bindu Wavell originally
 function! <SID>FindFileInSearchPath(fileName, pathList, relPathBase)
    let filepath = ""
-   let m = 1
-   let pathListLen = strlen(a:pathList)
-   if (pathListLen > 0)
-      while (1)
-         let pathSpec = <SID>GetNthItemFromList(a:pathList, m) 
-         if (pathSpec != "")
-            let path = <SID>ExpandAlternatePath(pathSpec, a:relPathBase)
-            let fullname = path . "/" . a:fileName
-            let foundMatch = <SID>BufferOrFileExists(fullname)
-            if (foundMatch)
-               let filepath = fullname
-               break
-            endif
-         else
-            break
-         endif
-         let m = m + 1
-      endwhile
-   endif
+
+   for pathSpec in a:pathList
+     let path = <SID>ExpandAlternatePath(pathSpec, a:relPathBase)
+     let fullname = path . "/" . a:fileName
+     let foundMatch = <SID>BufferOrFileExists(fullname)
+     if (foundMatch)
+       let filepath = fullname
+       break
+     endif
+   endfor
+     
    return filepath
 endfunction
 
@@ -257,29 +235,13 @@ endfunction
 function! <SID>FindFileInSearchPathEx(fileName, pathList, relPathBase, count)
    let filepath = ""
    let m = 1
-   let spath = ""
-   let pathListLen = strlen(a:pathList)
-   if (pathListLen > 0)
-      while (1)
-         let pathSpec = <SID>GetNthItemFromList(a:pathList, m) 
-         if (pathSpec != "")
-            let path = <SID>ExpandAlternatePath(pathSpec, a:relPathBase)
-            if (spath != "")
-               let spath = spath . ','
-            endif
-            let spath = spath . path
-         else
-            break
-         endif
-         let m = m + 1
-      endwhile
-   endif
+   let spath = join(map(a:pathList, '<SID>ExpandAlternatePath(v:val, a:relPathBase)'), ',')
 
    if (&path != "")
       if (spath != "")
-         let spath = spath . ','
+         let spath .= ','
       endif
-      let spath = spath . &path
+      let spath .= &path
    endif
 
    let filepath = findfile(a:fileName, spath, a:count)
@@ -291,43 +253,36 @@ endfunction
 " Args     : path -- path of a file (not including the file)
 "            baseName -- base name of the file to be expanded
 "            extension -- extension whose alternates are to be enumerated
-" Returns  : comma separated list of files with extensions
+" Returns  : list of files with extensions
 " Author   : Michael Sharpe <feline@irendi.com>
-function! EnumerateFilesByExtension(path, baseName, extension)
-   let enumeration = ""
-   let extSpec = ""
+function! <SID>EnumerateFilesByExtension(path, baseName, extension)
+   let extSpec = []
    if (has_key(g:alternateExtensionsDict, a:extension))
-      let extSpec = g:alternateExtensionsDict[a:extension]
+     let spec = g:alternateExtensionsDict[a:extension]
+     let extSpec = type(spec) == type('') ? split(spec, ',') : spec
+     unlet spec
    endif
-   if (extSpec == "")
+
+   if (empty(extSpec))
       let v:errmsg = ""
       silent! echo g:alternateExtensions_{a:extension}
       if (v:errmsg == "")
-         let extSpec = g:alternateExtensions_{a:extension}
+         let spec = g:alternateExtensions_{a:extension}
+         let extSpec = type(spec) == type('') ? split(spec, ',') : spec
       endif
    endif
-   if (extSpec != "") 
-      let n = 1
-      let done = 0
-      while (!done)
-         let ext = <SID>GetNthItemFromList(extSpec, n)
-         if (ext != "")
-            if (a:path != "")
-               let newFilename = a:path . "/" . a:baseName . "." . ext
-            else
-               let newFilename =  a:baseName . "." . ext
-            endif
-            if (enumeration == "")
-               let enumeration = newFilename
-            else
-               let enumeration = enumeration . "," . newFilename
-            endif
-         else
-            let done = 1
-         endif
-         let n = n + 1
-      endwhile
-   endif
+
+   let enumeration = []
+   for ext in extSpec
+     if (a:path != "")
+       let newFilename = a:path . "/" . a:baseName . "." . ext
+     else
+       let newFilename = a:baseName . "." . ext
+     endif
+
+     call add(enumeration, newFilename)
+   endfor
+
    return enumeration
 endfunction
 
@@ -339,30 +294,14 @@ endfunction
 "            pathList -- the list of paths to enumerate
 "            relPath -- the path of the current file for expansion of relative
 "                       paths in the path list.
-" Returns  : A comma separated list of paths with extensions
+" Returns  : A list of paths with extensions
 " Author   : Michael Sharpe <feline@irendi.com>
-function! EnumerateFilesByExtensionInPath(baseName, extension, pathList, relPathBase)
-   let enumeration = ""
-   let filepath = ""
-   let m = 1
-   let pathListLen = strlen(a:pathList)
-   if (pathListLen > 0)
-      while (1)
-         let pathSpec = <SID>GetNthItemFromList(a:pathList, m) 
-         if (pathSpec != "")
-            let path = <SID>ExpandAlternatePath(pathSpec, a:relPathBase)
-            let pe = EnumerateFilesByExtension(path, a:baseName, a:extension)
-            if (enumeration == "")
-               let enumeration = pe
-            else
-               let enumeration = enumeration . "," . pe
-            endif
-         else
-            break
-         endif
-         let m = m + 1
-      endwhile
-   endif
+function! <SID>EnumerateFilesByExtensionInPath(baseName, extension, pathList, relPathBase)
+   let enumeration = []
+    for pathSpec in a:pathList
+      let path = <SID>ExpandAlternatePath(pathSpec, a:relPathBase)
+      call extend(enumeration, <SID>EnumerateFilesByExtension(path, a:baseName, a:extension))
+    endfor
    return enumeration
 endfunction
 
@@ -427,31 +366,26 @@ function! AlternateFile(splitWindow, ...)
   let baseName    = substitute(expand("%:t"), "\." . extension . '$', "", "")
   let currentPath = expand("%:p:h")
 
+  call <SID>UpdateAlternateSearchPath()
+
   if (a:0 != 0)
      let newFullname = currentPath . "/" .  baseName . "." . a:1
      call <SID>FindOrCreateBuffer(newFullname, a:splitWindow, 0)
   else
-     let allfiles = ""
+     let allfiles = []
      if (extension != "")
-        let allfiles1 = EnumerateFilesByExtension(currentPath, baseName, extension)
-        let allfiles2 = EnumerateFilesByExtensionInPath(baseName, extension, g:alternateSearchPath, currentPath)
+        let allfiles1 = <SID>EnumerateFilesByExtension(currentPath, baseName, extension)
+        let allfiles2 = <SID>EnumerateFilesByExtensionInPath(baseName, extension, s:alternateSearchPath, currentPath)
 
-        if (allfiles1 != "")
-           if (allfiles2 != "")
-              let allfiles = allfiles1 . ',' . allfiles2
-           else
-              let allfiles = allfiles1
-           endif
-        else 
-           let allfiles = allfiles2
-        endif
+        call extend(allfiles, allfiles1)
+        call extend(allfiles, allfiles2)
      endif
 
-     if (allfiles != "") 
+     if (!empty(allfiles))
         let bestFile = ""
         let bestScore = 0
         let score = 0
-        let n = 1
+        let n = 0
          
         let onefile = <SID>GetNthItemFromList(allfiles, n)
         let bestFile = onefile
@@ -487,7 +421,9 @@ function! AlternateOpenFileUnderCursor(splitWindow,...)
    let currentPath = expand("%:p:h")
    let openCount = 1
 
-   let fileName = <SID>FindFileInSearchPathEx(cursorFile, g:alternateSearchPath, currentPath, openCount)
+   call <SID>UpdateAlternateSearchPath()
+
+   let fileName = <SID>FindFileInSearchPathEx(cursorFile, s:alternateSearchPath, currentPath, openCount)
    if (fileName != "")
       call <SID>FindOrCreateBuffer(fileName, a:splitWindow, 1)
       let b:openCount = openCount
@@ -521,15 +457,17 @@ function! AlternateOpenNextFile(bang)
       let openCount = b:openCount + 1
    endif
 
+   call <SID>UpdateAlternateSearchPath()
+
    if (cursorFile != ""  && currentPath != ""  && openCount != 0)
-      let fileName = <SID>FindFileInSearchPathEx(cursorFile, g:alternateSearchPath, currentPath, openCount)
+      let fileName = <SID>FindFileInSearchPathEx(cursorFile, s:alternateSearchPath, currentPath, openCount)
       if (fileName != "")
          call <SID>FindOrCreateBuffer(fileName, "n".a:bang, 0)
          let b:openCount = openCount
          let b:cursorFile = cursorFile
          let b:currentPath = currentPath
       else 
-         let fileName = <SID>FindFileInSearchPathEx(cursorFile, g:alternateSearchPath, currentPath, 1)
+         let fileName = <SID>FindFileInSearchPathEx(cursorFile, s:alternateSearchPath, currentPath, 1)
          if (fileName != "")
             call <SID>FindOrCreateBuffer(fileName, "n".a:bang, 0)
             let b:openCount = 1
@@ -555,7 +493,7 @@ imap <Leader>ihn <ESC>:IHN<CR>
 nmap <Leader>ihn :IHN<CR>
 
 "function! <SID>PrintList(theList) 
-"   let n = 1
+"   let n = 0
 "   let oneFile = <SID>GetNthItemFromList(a:theList, n)
 "   while (oneFile != "")
 "      let n = n + 1
@@ -572,7 +510,7 @@ nmap <Leader>ihn :IHN<CR>
 function! NextAlternate(bang)
    if (exists('b:AlternateAllFiles'))
       let currentFile = expand("%")
-      let n = 1
+      let n = 0
       let onefile = <SID>GetNthItemFromList(b:AlternateAllFiles, n)
       while (onefile != "" && !<SID>EqualFilePaths(fnamemodify(onefile,":p"), fnamemodify(currentFile,":p")))
          let n = n + 1
@@ -580,7 +518,7 @@ function! NextAlternate(bang)
       endwhile
 
       if (onefile != "")
-         let stop = n
+         let stop = n - 1
          let n = n + 1
          let foundAlternate = 0
          let nextAlternate = ""
@@ -822,5 +760,11 @@ function! <SID>EqualFilePaths(path1, path2)
     return substitute(a:path1, "\/", "\\", "g") ==? substitute(a:path2, "\/", "\\", "g")
   else
     return a:path1 == a:path2
+  endif
+endfunction
+
+function! <SID>UpdateAlternateSearchPath()
+  if type(g:alternateSearchPath) == type('')
+    let s:alternateSearchPath = split(g:alternateSearchPath, ',')
   endif
 endfunction
