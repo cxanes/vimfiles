@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-01-05 17:36:55
+" Last Modified: 2010-01-06 09:52:56
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -2031,6 +2031,10 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
     set csto=0
     "set cst
     set nocsverb
+
+    " use quickfix window
+    set csqf=s-,c-,d-,i-,t-,e-
+
     " add any database in current directory
     if filereadable('cscope.out')
         silent! cs add cscope.out
