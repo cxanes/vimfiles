@@ -72,7 +72,7 @@ if [ -z "$FILETYPE" ]; then
                c ) FILETYPE=c    ;;
              ctx ) FILETYPE=ctx  ;;
              tex ) FILETYPE=tex  ;;
-              pl ) FILETYPE=perl ;;
+         pl | pm ) FILETYPE=perl ;;
               mp ) FILETYPE=mp   ;;
             java ) FILETYPE=java ;;
     esac
@@ -100,7 +100,7 @@ case $FILETYPE in
            else
                eval exec tex2pdf $PRE_ARG "\"${FILENAME##*/}\""
            fi ;;
-    perl ) eval exec perl -Wc "\"$FILENAME\"" ;;
+    perl ) eval exec perl -wc "\"$FILENAME\"" ;;
       mp ) cd "$FILE_DIR"
            eval exec mpost -interaction=batchmode -quiet $PRE_ARG "\"${FILENAME##*/}\"" > /dev/null ;;
     java ) cd "$FILE_DIR"
