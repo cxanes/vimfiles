@@ -84,6 +84,10 @@ endif
 if exists('g:use_codeintel') && g:use_codeintel
   setlocal completefunc=codeintel#Complete
 endif
+
+if exists('g:use_perl_omni') && g:use_perl_omni && exists('*Perl#Omni#Setting')
+  call Perl#Omni#Setting()
+endif
 " }}}
 "===================================================================
 " Key Mappings and Commands {{{
