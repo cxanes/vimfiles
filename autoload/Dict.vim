@@ -110,11 +110,7 @@ function! s:Dict_Setup() "{{{
           \ ? join(map(g:dict_list, 'printf(''"%s"'')'), ',')
           \ : g:dict_list 
   else
-    let s:dict_list = '"Collins Cobuild English Dictionary","Oxford Advanced Learner''s Dictionary","Merrian Webster 10th dictionary","朗道漢英字典5.0","XDICT漢英辭典","CDICT5英漢辭典"'
-  endif
-
-  if s:MSWIN
-    let s:dict_list = iconv(s:dict_list, &enc, 'big5')
+    let s:dict_list = '"Collins Cobuild English Dictionary","Oxford Advanced Learner''s Dictionary","Merrian Webster 10th dictionary","LANGDAO-CE","XDICT-CE","CDICT"'
   endif
 endfunction
   "}}}
