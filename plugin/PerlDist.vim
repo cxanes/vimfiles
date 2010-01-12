@@ -19,7 +19,7 @@ set cpo&vim
 "}}}
 
 let g:perlpath = ''
-au FileType perl call Perl#SetOptPath(GetPerlDist())
+au FileType perl call Perl#Dist#SetOptPath(GetPerlDist())
 
 command -nargs=? -bang -complete=custom,<SID>ListPerlDists SetPerlDist call SetPerlDist(<q-args>, <q-bang> == '!')
 command -nargs=0 -bang                                     GetPerlDist echo GetPerlDist(<q-bang> == '!')
@@ -74,10 +74,10 @@ function! SetPerlDist(dist, ...) " ... = local {{{
 
   let {scope}:PERL_DIST = a:dist
 
-  call Perl#SetEnv({scope}:PERL_DIST)
+  call Perl#Dist#SetEnv({scope}:PERL_DIST)
   
   if &ft =~ '\<perl\>'
-    call Perl#SetOptPath({scope}:PERL_DIST, scope == 'b')
+    call Perl#Dist#SetOptPath({scope}:PERL_DIST, scope == 'b')
   endif
 endfunction
 "}}}

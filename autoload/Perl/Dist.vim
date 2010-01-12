@@ -40,7 +40,7 @@ if s:HAS_PYTHON
   py import os, vim
 endif
 
-function! Perl#SetEnv(dist) "{{{
+function! Perl#Dist#SetEnv(dist) "{{{
   if !s:MSWIN
     echohl ErrorMsg
     echo "Only for Win32 versions."
@@ -76,7 +76,7 @@ function! Perl#SetEnv(dist) "{{{
 endfunction
 "}}}
 " ref: $VIMRUNTIME/ftplugin/perl.vim
-function! Perl#SetOptPath(dist, ...) " ... = [local, force] {{{
+function! Perl#Dist#SetOptPath(dist, ...) " ... = [local, force] {{{
   let local = a:0 > 0 && !empty(a:1)
   let force = a:0 > 1 && !empty(a:2)
 
