@@ -1,11 +1,17 @@
 package My::Devel::IntelliPerl::Editor;
 
 use Exporter qw(import);
-our @EXPORT = qw(run);
+our @EXPORT = qw(show_methods get_methods);
 
 use Devel::IntelliPerl;
 
-sub run {
+sub show_methods
+{
+    print join "\n", get_methods();
+}
+
+sub get_methods
+{
     my @data = <STDIN>;
     my ($line_number, $column, $filename, @source) = @data;
 
@@ -18,11 +24,10 @@ sub run {
         source      => join('', @source),
     );
 
+    my @methods = $ip->methods;
     if (my $error = $ip->error) {
         die "$error\n";
     }
 
-
-    my @methods = $ip->methods;
-    print join("\n", @methods);
+    return @methods;
 }

@@ -115,9 +115,9 @@ endfunction
 "}}}
 function! Perl#Omni#Setting() "{{{
   setlocal omnifunc=Perl#Omni#Complete
-  command -buffer -nargs=+ PerlOmniAddPath call Perl#Omni#AddPath(<f-args>)
-  command -buffer -nargs=+ PerlOmniRemovePath call Perl#Omni#RemovePath(<f-args>)
-  command -buffer -bang -nargs=0 PerlOmniRefreshModuleList call Perl#Omni#RefreshModuleList(<q-bang> == '!')
+  command! -buffer -nargs=+ PerlOmniAddPath call Perl#Omni#AddPath(<f-args>)
+  command! -buffer -nargs=+ PerlOmniRemovePath call Perl#Omni#RemovePath(<f-args>)
+  command! -buffer -bang -nargs=0 PerlOmniRefreshModuleList call Perl#Omni#RefreshModuleList(<q-bang> == '!')
 endfunction
 "}}}
 
@@ -196,7 +196,7 @@ function! s:GetMethods(...) "{{{
   let col = col('.')
   let filename = expand("%")
 
-  let cmd = "perl -MMy::Devel::IntelliPerl::Editor -e run"
+  let cmd = "perl -MMy::Devel::IntelliPerl::Editor -e show_methods"
   let buf = [lnum, col, filename] + (a:0 ? a:1 : getline(1, '$'))
 
   let methods = s:System(cmd, join(buf, "\n"))
@@ -205,7 +205,9 @@ endfunction
 "}}}
 
 let s:loaded_python = 0
-if has('python') "{{{
+let s:MSWIN =  has('win32') || has('win32unix') || has('win64')
+          \ || has('win95') || has('win16')
+if has('python') && !s:MSWIN "{{{
 py << END_PY
 try:
   import vim
