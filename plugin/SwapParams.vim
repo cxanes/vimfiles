@@ -16,18 +16,22 @@ set cpo&vim
 "}}}
 " Mappings {{{
 if !hasmapto('<Plug>SwapForwardParam', 'n')
-  nmap <silent> gs <Plug>SwapForwardParam
+  nmap <silent> gs <Plug>SwapDelimitForwardParam
 endif
 
 if !hasmapto('<Plug>SwapBackwardParam', 'n')
-  nmap <silent> gS <Plug>SwapBackwardParam
+  nmap <silent> gS <Plug>SwapDelimitBackwardParam
 endif
+
+nnoremap <silent> <Plug>SwapDelimitForwardParam  :<C-U>call <SID>SwapDelimitParams(1, v:count1)<CR>
+nnoremap <silent> <Plug>SwapDelimitBackwardParam :<C-U>call <SID>SwapDelimitParams(0, v:count1)<CR>
 
 nnoremap <silent> <Plug>SwapForwardParam  :<C-U>call <SID>SwapParams(1, v:count1)<CR>
 nnoremap <silent> <Plug>SwapBackwardParam :<C-U>call <SID>SwapParams(0, v:count1)<CR>
 "}}}
 " Global variables {{{
-let [s:delimit, s:leftBrackets, s:rightBrackets] = [',=+-/|\~%^', '{([', ')]}']
+let s:delimit_default = ',=+-/|\~%^'
+let [s:delimit, s:leftBrackets, s:rightBrackets] = [s:delimit_default, '{([', ')]}']
 "}}}
 function! s:CanIgnore(lnum, col) "{{{
   return has('syntax_items') && synIDattr(synID(a:lnum, a:col, 0), 'name') =~? 'string\|comment'
@@ -172,6 +176,30 @@ function! s:SwapParamsPos(forward, lnum, col) "{{{
         \  . line[param2end     :              ]
         \ )
   return a:forward ? param2end : param1start
+endfunction
+"}}}
+function! s:GetDelimit() "{{{
+  let c = getchar()
+
+  if c =~ '^\d\+$'
+    let c = nr2char(c)
+    if c =~ "\<Esc>" || c =~ "\<C-C>"
+      let c = ''
+    endif
+    return c
+  endif
+
+  return ''
+endfunction
+"}}}
+function! s:SwapDelimitParams(forward, cnt) "{{{
+  let delimit = s:GetDelimit()
+  if empty(delimit)
+    return
+  endif
+
+  let s:delimit = delimit
+  call s:SwapParams(a:forward, a:cnt)
 endfunction
 "}}}
 function! s:SwapParams(forward, cnt) "{{{
