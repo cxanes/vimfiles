@@ -351,16 +351,17 @@ EOF
   return result
 endfunction
 "}}}
-" mylib#StripSurrounding() {{{
-function! s:CanSkip(lnum, col) "{{{
+" mylib#CanSkip() {{{
+function! mylib#CanSkip(lnum, col)
   if has('syntax_items')
     return synIDattr(synID(a:lnum, a:col, 0), 'name') =~? 'string\|comment'
   endif
   return 0
 endfunction
 " }}}
+" mylib#StripSurrounding() {{{
 function! mylib#StripSurrounding(start, middle, end, ...) " ... = skip {{{
-  let skip = a:0 > 0 ? a:1 : 's:CanSkip(line(''.''), col(''.''))'
+  let skip = a:0 > 0 ? a:1 : 'mylib#CanSkip(line(''.''), col(''.''))'
   let [lnum, col] = searchpairpos(a:start, a:middle, a:end, 'nbW', skip)
   if [lnum, col] == [0, 0]
     return [0, 0]

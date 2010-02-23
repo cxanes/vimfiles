@@ -819,7 +819,7 @@ endfunction
 "--------------------------------------------------------------
 " {{{2 Function
 function! myutils#FuncTextObject(mode) " mode = [d|y|v]
-  let skip = 's:CanSkip(line(''.''), col(''.''))'
+  let skip = 'mylib#CanSkip(line(''.''), col(''.''))'
   " let [l:start, l:middle, l:end]  = ['\<\w\+\s*(', '', ')']
   let pos = getpos('.')
 
