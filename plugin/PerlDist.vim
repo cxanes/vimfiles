@@ -24,7 +24,7 @@ au FileType perl call Perl#Dist#SetOptPath(GetPerlDist())
 command -nargs=? -bang -complete=custom,<SID>ListPerlDists SetPerlDist call SetPerlDist(<q-args>, <q-bang> == '!')
 command -nargs=0 -bang                                     GetPerlDist echo GetPerlDist(<q-bang> == '!')
 
-let s:PerlDistCandidates = ['cygwin', 'strawberry', '']
+let s:PerlDistCandidates = ['cygwin', 'strawberry', 'active']
 
 function! s:CheckDist(dist) "{{{
   if type(a:dist) != type('')
@@ -38,7 +38,7 @@ function! s:CheckDist(dist) "{{{
     return 1
   else
     echohl ErrorMsg
-    echo "Unsupported distribution: only 'cygwin' and 'strawberry' are supported."
+    echo "Unsupported distribution: only '" . join(keys(s:PerlDistCandidates), "', '") . "' are supported."
     echohl None
     return 0
   endif
@@ -47,11 +47,7 @@ endfunction
 
 " g:PERL_DIST {{{
 " {only for Win32 versions}
-" possible distribution:
-"   - (empty)
-"   - cygwin
-"   - strawberry
-"   - all other distributions are not supported
+" possible distribution: see s:PerlDistCandidates
 let s:PERL_DIST_DEFAULT = 'strawberry'
 
 if !exists('g:PERL_DIST')
@@ -62,7 +58,7 @@ endif
 "}}}
 
 function! s:ListPerlDists(A,L,P) "{{{
-  return join(s:PerlDistCandidates, "\n")
+  return join(s:PerlDistCandidates + [''], "\n")
 endfunction
 "}}}
 function! SetPerlDist(dist, ...) " ... = local {{{
