@@ -1,2 +1,3 @@
 @ECHO off
-CALL gvim --servername SN -u NORC --cmd "if v:servername=='SN'|ru _vimrc|el|se lpl|en" --remote-silent "+cal cursor(%1, %2+1)" "%3"
+REM GVIM-SN  %l %c "%f" "%d"
+CALL gvim --servername "SN-%~n4" --remote-silent "+cal cursor(%1, %2+1)" "%3"
