@@ -28,7 +28,8 @@ endif
 " General colors
 hi Cursor               guifg=NONE    guibg=#656565 gui=none
 hi Normal               guifg=#f6f3e8 guibg=#242424 gui=none
-hi NonText              guifg=#808080 guibg=#303030 gui=none
+" hi NonText              guifg=#505050 guibg=#303030 gui=none
+hi NonText              guifg=#606060 guibg=#242424 gui=none
 hi LineNr               guifg=#857b6f guibg=#000000 gui=none
 hi StatusLine           guifg=#f6f3e8 guibg=#444444 gui=none
 hi StatusLineNC         guifg=#857b6f guibg=#444444 gui=none
@@ -38,7 +39,8 @@ hi FoldColumn           guifg=#857b6f guibg=#000000 gui=none
 hi SignColumn           guifg=#857b6f guibg=#242424 gui=none
 hi Title                guifg=#f6f3e8 guibg=NONE    gui=bold
 hi Visual               guifg=#f6f3e8 guibg=#444444 gui=none
-hi SpecialKey           guifg=#808080 guibg=#343434 gui=none
+" hi SpecialKey           guifg=#808080 guibg=#343434 gui=none
+hi SpecialKey           guifg=#505050 guibg=#242424 gui=none
 
 " Syntax highlighting
 hi Comment              guifg=#99968b gui=none
