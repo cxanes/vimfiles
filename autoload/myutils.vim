@@ -990,6 +990,7 @@ function! myutils#ColorSelector(mode) "{{{
   endif
 
   let color = substitute(color, '[\f\r\n \t]\+', '', 'g')
+  let color = matchstr(color, '\[\d\+,\d\+,\d\+\]')
   if !empty(color)
     let format = '#%02X%02X%02X'
     try 
