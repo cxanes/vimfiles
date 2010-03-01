@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-01-08 15:35:53
+" Last Modified: 2010-03-01 10:54:52
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -645,6 +645,7 @@ nnoremap <silent> <Leader>hl :<C-U>set hls!    <Bar>set hls?<CR>
 nnoremap <silent> <Leader>wp :<C-U>set wrap!   <Bar>set wrap?<CR>
 nnoremap <silent> <Leader>nu :<C-U>set nu!     <Bar>set nu?<CR>
 nnoremap <silent> <Leader>ba :<C-U>set backup! <Bar>set backup?<CR>
+nnoremap <silent> <Leader>ls :<C-U>set list!   <Bar>set list?<CR>
 
 nnoremap <silent> <Leader>a<Space> :<C-U>call <SID>AddChar('<Leader>a<Space>', ' ', v:count1)<CR>
 function! s:AddChar(map, ch, cnt) "{{{
