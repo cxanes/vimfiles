@@ -1,35 +1,82 @@
 #!/usr/bin/env python
 """Color Selector"""
 
-import gtk
 import sys
 
-def change_color_selector(prev_color):
-    dialog = gtk.ColorSelectionDialog("Color Selector")
-    colorsel = dialog.colorsel
-    
-    if prev_color != None:
-        colorsel.set_previous_color(prev_color)
-        colorsel.set_current_color(prev_color)
+try:
+    import gtk
 
-    # colorsel.set_has_palette(True)
-    
-    color = None
-    response = dialog.run()
-    
-    if response == gtk.RESPONSE_OK:
-        color = colorsel.get_current_color()
-    
-    dialog.destroy()
-    return color
+    def change_color_selector(prev_color):
+        dialog = gtk.ColorSelectionDialog("Color Selector")
+        colorsel = dialog.colorsel
+        
+        if prev_color != None:
+            colorsel.set_previous_color(prev_color)
+            colorsel.set_current_color(prev_color)
 
+        # colorsel.set_has_palette(True)
+        
+        color = None
+        response = dialog.run()
+        
+        if response == gtk.RESPONSE_OK:
+            color = colorsel.get_current_color()
+        
+        dialog.destroy()
+        if color == None:
+            return color
+        else:
+            return tuple(map(lambda v: v/256, (color.red, color.green, color.blue)))
+
+    def parse_color(color):
+        return gtk.gdk.color_parse(color)
+
+except ImportError:
+    try:
+        import wx
+
+        def change_color_selector(prev_color):
+            app = wx.PySimpleApp()
+
+            colourData = wx.ColourData()
+            colourData.SetChooseFull(True) 
+
+            if prev_color != None:
+                colourData.SetColour(prev_color)
+
+            dialog = wx.ColourDialog(None, colourData) 
+
+            color = None
+
+            if dialog.ShowModal() == wx.ID_OK: 
+                color = dialog.GetColourData().GetColour()
+
+            dialog.Destroy()
+            if color == None:
+                return color
+            else:
+                return (color.Red(), color.Green(), color.Blue())
+
+        def parse_color(color):
+            try:
+                if isinstance(color, str):
+                    return wx.NamedColour(color)
+                else:
+                    return wx.Colour(color)
+            except:
+                return None
+
+    except ImportError:
+        def change_color_selector(prev_color):
+            return None
+
+        def parse_color(color):
+            return None
 
 def main(prev_color = None):
     color = change_color_selector(prev_color)
     if color != None:
-        rgb = (color.red, color.green, color.blue)
-        sys.stdout.write('[%d,%d,%d]' % \
-                tuple(map(lambda v: v/256, rgb)))
+        sys.stdout.write('[%d,%d,%d]' % color)
 
 
 if __name__ == '__main__':
@@ -37,7 +84,7 @@ if __name__ == '__main__':
         main()
     else:
         try:
-            color = gtk.gdk.color_parse(sys.argv[1])
+            color = parse_color(sys.argv[1])
         except ValueError:
             color = None
         main(color)
