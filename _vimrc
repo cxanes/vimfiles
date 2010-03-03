@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-03-01 10:54:52
+" Last Modified: 2010-03-03 13:12:14
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -144,7 +144,11 @@ if has('win32') || &term == 'cygwin'
     set fileencoding=utf-8
   endif
 else
-  language zh_TW.UTF-8
+  try
+    language zh_TW.UTF-8
+  catch /^Vim\%((\a\+)\)\=:E123/
+    language C
+  endtry
 endif
 language messages C
 language time C
