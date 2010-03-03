@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-03-03 13:12:14
+" Last Modified: 2010-03-03 13:15:18
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -146,7 +146,7 @@ if has('win32') || &term == 'cygwin'
 else
   try
     language zh_TW.UTF-8
-  catch /^Vim\%((\a\+)\)\=:E123/
+  catch /^Vim\%((\a\+)\)\=:E197/
     language C
   endtry
 endif
