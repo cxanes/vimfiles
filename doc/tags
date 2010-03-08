@@ -2973,6 +2973,7 @@ utl-v_gu	utl_ref.txt	/*utl-v_gu*
 utl-v_gv	utl_ref.txt	/*utl-v_gv*
 utl_ref.txt	utl_ref.txt	/*utl_ref.txt*
 utl_usr.txt	utl_usr.txt	/*utl_usr.txt*
+vS	surround.txt	/*vS*
 v_[%	matchit.txt	/*v_[%*
 v_]%	matchit.txt	/*v_]%*
 v_a%	matchit.txt	/*v_a%*
@@ -3002,6 +3003,7 @@ vcscommand-statusline	vcscommand.txt	/*vcscommand-statusline*
 vcscommand.txt	vcscommand.txt	/*vcscommand.txt*
 verbatim	latexhelp.txt	/*verbatim*
 verse	latexhelp.txt	/*verse*
+vgS	surround.txt	/*vgS*
 viscinr-I	visincr.txt	/*viscinr-I*
 viscinr-contents	visincr.txt	/*viscinr-contents*
 visincr	visincr.txt	/*visincr*
