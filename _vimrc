@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-03-03 13:15:18
+" Last Modified: 2010-03-16 10:39:47
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1492,6 +1492,23 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
 
   let g:pyindent_open_paren   = 'match(getline(plnum),''[({\[][^({\[]*$'')-indent(plnum)+1'
   let g:pyindent_nested_paren = g:pyindent_open_paren
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " Binary (:h hex-editing)
+  "--------------------------------------------------------------
+  function! s:BinaryMode(pattern) 
+    augroup Binary
+      exec 'au BufReadPre   ' . a:pattern . ' let &bin=1'
+      exec 'au BufReadPost  ' . a:pattern . ' if &bin | silent %!xxd'
+      exec 'au BufReadPost  ' . a:pattern . ' set ft=xxd | endif'
+      exec 'au BufWritePre  ' . a:pattern . ' if &bin | silent %!xxd -r'
+      exec 'au BufWritePre  ' . a:pattern . ' endif'
+      exec 'au BufWritePost ' . a:pattern . ' if &bin | silent %!xxd'
+      exec 'au BufWritePost ' . a:pattern . ' set nomod | endif'
+    augroup END
+  endfunction
+
+  command! BinaryMode call <SID>BinaryMode('<lt>buffer>')|e
   "}}}2
 " }}}1
 "============================================================{{{1
