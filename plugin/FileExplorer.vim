@@ -641,7 +641,7 @@ function! s:ShowTree(root, ...) " ... = lnum (put cursor on line 'lnum') or file
   call setpos('.', pos)
 
   if exists('b:_FileExplorer_root')
-    exec 'lcd ' . s:GetFilename(b:_FileExplorer_root)
+    exec 'lcd ' . s:Fnameescape(s:GetFilename(b:_FileExplorer_root))
   endif
 endfunction
 "}}}
