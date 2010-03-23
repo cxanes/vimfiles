@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-03-16 10:39:47
+" Last Modified: 2010-03-23 23:34:54
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1824,7 +1824,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " IMPORTANT: grep will sometimes skip displaying the file name if you
   " search in a singe file. This will confuse latex-suite. Set your grep
   " program to alway generate a file-name.
-  set grepprg=grep\ -nH\ $*
+  set grepprg=grep\ -nH\ -I\ --exclude-dir=.svn\ --exclude-dir=.git\ $*
 
   if s:MSWIN
     let g:Tex_ViewRule_ps =  'gsview32'
@@ -2054,13 +2054,20 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " The usage of cscope
   "--------------------------------------------------------------
   if has('cscope')
-    set csprg=cscope
+    nnoremap <Leader>cf :<C-U>cs find 
+    inoremap <Leader>cf <C-C>:<C-U>cs find 
+
+    if s:MSWIN && executable('cscope_wrapper.bat')
+      set csprg=cscope_wrapper.bat\ -C
+    else
+      set csprg=cscope\ -C
+    endif
     set csto=0
-    "set cst
+    " set cst
     set nocsverb
 
     " use quickfix window
-    set csqf=s-,c-,d-,i-,t-,e-
+    set csqf=s-,c-,d-,i-,t-,e-,g-
 
     " add any database in current directory
     if filereadable('cscope.out')
