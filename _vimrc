@@ -2057,11 +2057,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
     nnoremap <Leader>cf :<C-U>cs find 
     inoremap <Leader>cf <C-C>:<C-U>cs find 
 
-    if s:MSWIN && executable('cscope_wrapper.bat')
-      set csprg=cscope_wrapper.bat\ -C
-    else
-      set csprg=cscope\ -C
-    endif
+    set csprg=cscope\ -C
     set csto=0
     " set cst
     set nocsverb
