@@ -921,8 +921,8 @@ inoremap <silent> <Leader>go <ESC>:call append('.', matchstr(getline('.'), '^\s*
 nnoremap <silent> <Leader>go o<ESC>"_S<ESC>
 nnoremap <silent> <Leader>gO O<ESC>"_S<ESC>
 
-nnoremap <PageDown> <C-]>
-nnoremap <PageUp>   <C-T>
+" nnoremap <PageDown> <C-]>
+" nnoremap <PageUp>   <C-T>
 
 " Map arrow keys to display line movements
 nnoremap <silent> <Up>   gk
