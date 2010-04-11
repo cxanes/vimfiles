@@ -9,14 +9,6 @@ if exists('*mylib#AddOptFiles') && isdirectory($HOME . '/local/include')
 endif
 " }}}
 "===================================================================
-" Commands {{{
-"-------------------------------------------------------------------
-if executable('cfunc')
-  command! -nargs=+ -complete=file CFuncSkel  r !cfunc -m s <args>
-  command! -nargs=+ -complete=file CFuncProto r !cfunc -m p <args>
-endif
-" }}}
-"===================================================================
 " Key Mappings {{{
 "-------------------------------------------------------------------
 inoremap <silent> <buffer> <Leader>k <C-X><C-K>
@@ -45,6 +37,62 @@ endif
 "===================================================================
 " Functions {{{
 "-------------------------------------------------------------------
+" ref: http://strudl.org/coan/index.php
+if !exists('*s:FoldIfdef') && executable('coan')
+  function! s:FoldIfdef(config) "{{{
+    if &foldmethod != 'manual'
+      return
+    endif
+
+    if !exists('b:fold_ifdef')
+      let b:fold_ifdef = []
+    endif
+
+    if !empty(b:fold_ifdef)
+      let pos = getpos('.')
+      for lnum in b:fold_ifdef
+        call cursor(lnum, 1)
+        normal! zd
+      endfor
+      let b:fold_ifdef = []
+      call setpos('.', pos)
+    endif
+
+    let &fml = 0
+    let fdt  = &fdt
+    let new_fdt = "index(b:fold_ifdef,v:foldstart)>=0?repeat(' ',winwidth(0)):" . (!empty(fdt) ? ('('.fdt.')') : 'foldtext()')
+    let &fdt = new_fdt
+
+    let ssl_save = &ssl
+    let &ssl = 0
+    let coan_cmd = 'coan source ' . a:config . ' ' . shellescape(expand('%'))
+    let diff_cmd = 'diff --strip-trailing-cr --to-file=- ' . shellescape(expand('%'))
+    let result = system(coan_cmd . '|' . diff_cmd)
+    let lines = split(result, '\n')
+    unlet result
+    for line in lines
+      let foldstart = ''
+      let result = matchlist(line, '^\(\d\+\),\(\d\+\)d')
+      if !empty(result)
+        let foldstart = result[1]
+        let foldend = result[2]
+      else
+        let result = matchlist(line, '^\(\d\+\)d')
+        if !empty(result)
+          let foldstart = result[1]
+          let foldend = result[1]
+        endif
+      endif
+
+      if !empty(foldstart)
+        exec printf('%d,%dfold', foldstart, foldend)
+        cal  add(b:fold_ifdef, foldstart+0)
+      endif
+    endfor
+    let &ssl = ssl_save
+  endfunction
+  "}}}
+endif
 if !exists('*s:Imap')
   function! s:Imap() "{{{
     if !exists('*IMAP_Jumpfunc')
@@ -160,6 +208,18 @@ if !exists('*CExpandTagCallback')
 endif
 let g:ExpandTagCallback_{split(&ft, '\.')[0]} = 'CExpandTagCallback'
 "}}}
+" }}}
+"===================================================================
+" Commands {{{
+"-------------------------------------------------------------------
+if executable('cfunc')
+  command! -nargs=+ -complete=file CFuncSkel  r !cfunc -m s <args>
+  command! -nargs=+ -complete=file CFuncProto r !cfunc -m p <args>
+endif
+
+if exists('*s:FoldIfdef')
+  command! -nargs=+ -buffer CFoldIfdef call s:FoldIfdef(<q-args>)
+endif
 " }}}
 "===================================================================
 " C Only {{{
