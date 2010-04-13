@@ -65,7 +65,7 @@ if !exists('*s:FoldIfdef') && executable('coan')
 
     let ssl_save = &ssl
     let &ssl = 0
-    let coan_cmd = 'coan source ' . a:config . ' ' . shellescape(expand('%'))
+    let coan_cmd = 'coan source -m ' . a:config . ' ' . shellescape(expand('%'))
     let diff_cmd = 'diff --strip-trailing-cr --to-file=- ' . shellescape(expand('%'))
     let result = system(coan_cmd . '|' . diff_cmd)
     let lines = split(result, '\n')
@@ -218,7 +218,7 @@ if executable('cfunc')
 endif
 
 if exists('*s:FoldIfdef')
-  command! -nargs=+ -buffer CFoldIfdef call s:FoldIfdef(<q-args>)
+  command! -nargs=* -buffer CFoldIfdef call s:FoldIfdef(<q-args>)
 endif
 " }}}
 "===================================================================
