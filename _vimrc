@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-03-23 23:34:54
+" Last Modified: 2010-05-01 22:49:57
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1088,7 +1088,7 @@ endfor
 unlet! s:script
 "}}}
 
-let s:PIM_Dir              = s:MSWIN   ? 'D:/Frank/' : '~/private/'
+let s:PIM_Dir              = !s:MSWIN  ? '~/private/' : isdirectory('D:/Private/') ? 'D:/Private/' : 'D:/Frank/'
 let g:PIM_Account_Glob     = s:PIM_Dir . 'Account/*.account'
 let g:PIM_Account          = s:PIM_Dir . printf('Account/%s.account', strftime('%Y'))
 let g:PIM_Account_Category = s:PIM_Dir . 'Account/category'
