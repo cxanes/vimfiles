@@ -34,6 +34,9 @@ augroup filetypedetect
 
   " GLSL: http://www.opengl.org/documentation/glsl/
   au BufNewFile,BufRead *.frag,*.vert,*.fp,*.fs,*.vp,*.vs,*.glsl,*.vsh,*.fsh setf glsl | setl cin
+
+  " Emacs Org-Mode <http://orgmode.org/>
+  au BufNewFile,BufRead *.org       setf org
 augroup END
 
 " copy from filetype.vim
