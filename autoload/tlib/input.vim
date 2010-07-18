@@ -1,15 +1,12 @@
+
 " input.vim
 " @Author:      Tom Link (micathom AT gmail com?subject=[vim])
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-06-30.
-" @Last Change: 2009-02-25.
-" @Revision:    0.0.637
+" @Last Change: 2010-03-27.
+" @Revision:    0.0.704
 
-if &cp || exists("loaded_tlib_input_autoload")
-    finish
-endif
-let loaded_tlib_input_autoload = 1
 
 " :filedoc:
 " Input-related, select from a list etc.
@@ -96,8 +93,9 @@ function! tlib#input#List(type, ...) "{{{3
         let filter                 = tlib#list#Find(handlers, 'has_key(v:val, "filter")', '', 'v:val.filter')
         if !empty(filter)
             " let world.initial_filter = [[''], [filter]]
-            let world.initial_filter = [[filter]]
+            " let world.initial_filter = [[filter]]
             " TLogVAR world.initial_filter
+            call world.SetInitialFilter(filter)
         endif
     endif
     return tlib#input#ListW(world)
@@ -132,11 +130,12 @@ function! tlib#input#ListW(world, ...) "{{{3
             let key_agents[k] = handler.agent
         endif
     endfor
-    let statusline  = &statusline
-    let laststatus  = &laststatus
+    " let statusline  = &l:statusline
+    " let laststatus  = &laststatus
     let lastsearch  = @/
     let @/ = ''
-    let &laststatus = 2
+    let dlist = []
+    " let &laststatus = 2
     let world.initial_display = 1
 
     try
@@ -189,75 +188,82 @@ function! tlib#input#ListW(world, ...) "{{{3
                     " TLogVAR world.rv
                     throw 'pick'
                 elseif world.state =~ 'display'
-                    if world.IsValidFilter() && world.state =~ '^display'
+                    if world.state =~ '^display'
+                        if world.IsValidFilter()
 
-                        call world.BuildTable()
-                        " TLogDBG 2
-                        " TLogDBG len(world.table)
-                        " TLogVAR world.table
-                        let world.list  = map(copy(world.table), 'world.GetBaseItem(v:val)')
-                        " TLogDBG 3
-                        let world.llen = len(world.list)
-                        " TLogVAR world.index_table
-                        if empty(world.index_table)
-                            let dindex = range(1, world.llen)
-                            let world.index_width = len(world.llen)
-                        else
-                            let dindex = world.index_table
-                            let world.index_width = len(max(dindex))
-                        endif
-                        if world.llen == 0 && !world.show_empty
-                            call world.ReduceFilter()
-                            let world.offset = 1
-                            " TLogDBG 'ReduceFilter'
-                            continue
-                        else
-                            if world.llen == 1
-                                let world.last_item = world.list[0]
-                                if world.pick_last_item
-                                    " echom 'Pick last item: '. world.list[0]
-                                    let world.prefidx = '1'
-                                    " TLogDBG 'pick last item'
-                                    throw 'pick'
+                            call world.BuildTableList()
+                            " TLogDBG 2
+                            " TLogDBG len(world.table)
+                            " TLogVAR world.table
+                            " let world.list  = map(copy(world.table), 'world.GetBaseItem(v:val)')
+                            " TLogDBG 3
+                            let world.llen = len(world.list)
+                            " TLogVAR world.index_table
+                            if empty(world.index_table)
+                                let dindex = range(1, world.llen)
+                                let world.index_width = len(world.llen)
+                            else
+                                let dindex = world.index_table
+                                let world.index_width = len(max(dindex))
+                            endif
+                            if world.llen == 0 && !world.show_empty
+                                call world.ReduceFilter()
+                                let world.offset = 1
+                                " TLogDBG 'ReduceFilter'
+                                continue
+                            else
+                                if world.llen == 1
+                                    let world.last_item = world.list[0]
+                                    if world.pick_last_item
+                                        " echom 'Pick last item: '. world.list[0]
+                                        let world.prefidx = '1'
+                                        " TLogDBG 'pick last item'
+                                        throw 'pick'
+                                    endif
+                                else
+                                    let world.last_item = ''
                                 endif
-                            else
-                                let world.last_item = ''
                             endif
-                        endif
-                        " TLogDBG 4
-                        " TLogVAR world.idx, world.llen, world.state
-                        " TLogDBG world.FilterIsEmpty()
-                        if world.state == 'display'
-                            if world.idx == '' && world.llen < g:tlib_sortprefs_threshold && !world.FilterIsEmpty()
-                                call world.SetPrefIdx()
-                            else
-                                let world.prefidx = world.idx == '' ? world.initial_index : world.idx
+                            " TLogDBG 4
+                            " TLogVAR world.idx, world.llen, world.state
+                            " TLogDBG world.FilterIsEmpty()
+                            if world.state == 'display'
+                                if world.idx == '' && world.llen < g:tlib_sortprefs_threshold && !world.FilterIsEmpty()
+                                    call world.SetPrefIdx()
+                                else
+                                    let world.prefidx = world.idx == '' ? world.initial_index : world.idx
+                                endif
+                                if world.prefidx > world.llen
+                                    let world.prefidx = world.llen
+                                elseif world.prefidx < 1
+                                    let world.prefidx = 1
+                                endif
                             endif
-                            if world.prefidx > world.llen
-                                let world.prefidx = world.llen
-                            elseif world.prefidx < 1
-                                let world.prefidx = 1
+                            " TLogVAR world.initial_index, world.prefidx
+                            " TLogDBG 5
+                            " TLogDBG len(world.list)
+                            " TLogVAR world.list
+                            let dlist = copy(world.list)
+                            if !empty(world.display_format)
+                                let display_format = world.display_format
+                                let cache = world.fmt_display
+                                " TLogVAR display_format, fmt_entries
+                                call map(dlist, 'world.FormatName(cache, display_format, v:val)')
                             endif
-                        endif
-                        " TLogVAR world.initial_index, world.prefidx
-                        " TLogDBG 5
-                        " TLogDBG len(world.list)
-                        " TLogVAR world.list
-                        let dlist = copy(world.list)
-                        if !empty(world.display_format)
-                            let display_format = world.display_format
-                            " TLogVAR display_format
-                            call map(dlist, 'world.FormatName(display_format, v:val)')
-                        endif
-                        " TLogVAR world.prefidx
-                        " TLogDBG 6
-                        if world.offset_horizontal > 0
-                            call map(dlist, 'v:val[world.offset_horizontal:-1]')
-                        endif
-                        " TLogVAR dindex
-                        let dlist = map(range(0, world.llen - 1), 'printf("%0'. world.index_width .'d", dindex[v:val]) .": ". dlist[v:val]')
-                        " TLogVAR dlist
+                            " TLogVAR world.prefidx
+                            " TLogDBG 6
+                            if world.offset_horizontal > 0
+                                call map(dlist, 'v:val[world.offset_horizontal:-1]')
+                            endif
+                            " TLogVAR dindex
+                            let dlist = map(range(0, world.llen - 1), 'printf("%0'. world.index_width .'d", dindex[v:val]) .": ". dlist[v:val]')
+                            " TLogVAR dlist
 
+                        else
+
+                            let dlist = ['Malformed filter']
+
+                        endif
                     endif
 
                     " TLogDBG 7
@@ -277,12 +283,21 @@ function! tlib#input#ListW(world, ...) "{{{3
                     " TLogDBG 8
                     if world.initial_display || !tlib#char#IsAvailable()
                         " TLogDBG len(dlist)
-                        call world.DisplayList(world.query .' (filter: '. world.DisplayFilter() .'; press "?" for help)', dlist)
+                        if g:tlib_inputlist_shortmessage
+                            let query = 'Filter: '. world.DisplayFilter()
+                        else
+                            let query = world.query .' (filter: '. world.DisplayFilter() .'; press "?" for help)'
+                        endif
+                        call world.DisplayList(query, dlist)
                         call world.FollowCursor()
                         let world.initial_display = 0
                         " TLogDBG 9
                     endif
-                    let world.state = ''
+                    if world.state =~ '\<hibernate\>'
+                        let world.state = 'suspend'
+                    else
+                        let world.state = ''
+                    endif
                 else
                     " if world.state == 'scroll'
                     "     let world.prefidx = world.offset
@@ -432,7 +447,14 @@ function! tlib#input#ListW(world, ...) "{{{3
         elseif world.state =~ '\<empty\>'
             " TLog "empty"
             " TLogDBG 'return empty'
-            return stridx(world.type, 'm') != -1 ? [] : stridx(world.type, 'i') != -1 ? 0 : ''
+            " TLogVAR world.type
+            if stridx(world.type, 'm') != -1
+                return []
+            elseif stridx(world.type, 'i') != -1
+                return 0
+            else
+                return ''
+            endif
         elseif !empty(world.return_agent)
             " TLog "return_agent"
             " TLogDBG 'return agent'
@@ -464,14 +486,16 @@ function! tlib#input#ListW(world, ...) "{{{3
         endif
 
     finally
-        let &statusline = statusline
-        let &laststatus = laststatus
+        " TLogVAR statusline
+        " let &l:statusline = statusline
+        " let &laststatus = laststatus
         silent! let @/  = lastsearch
         " TLogDBG 'finally 2'
         " TLogDBG string(world.Methods())
         " TLogVAR world.state
         " TLogDBG string(tlib#win#List())
         if world.state !~ '\<suspend\>'
+            " redraw
             " TLogVAR world.sticky
             if world.sticky
                 " TLogDBG "sticky"
@@ -495,7 +519,7 @@ function! tlib#input#ListW(world, ...) "{{{3
         "     call getchar(0)
         " endfor
         echo
-        " redraw
+        redraw!
     endtry
 endf
 
@@ -519,6 +543,9 @@ function! s:Init(world, cmd) "{{{3
         let a:world.initialized = 1
         call a:world.SetOrigin(1)
         call a:world.Reset(1)
+        if !empty(a:cmd)
+            let a:world.state .= ' '. a:cmd
+        endif
     endif
     " TLogVAR a:world.state, a:world.sticky
 endf
@@ -540,12 +567,18 @@ endf
 " EXAMPLES: >
 "   echo tlib#input#EditList('Edit:', [100,200,300])
 function! tlib#input#EditList(query, list, ...) "{{{3
-    let handlers = a:0 >= 1 ? a:1 : g:tlib_handlers_EditList
-    let rv       = a:0 >= 2 ? a:2 : ''
+    let handlers = a:0 >= 1 && !empty(a:1) ? a:1 : g:tlib_handlers_EditList
+    let default  = a:0 >= 2 ? a:2 : []
     let timeout  = a:0 >= 3 ? a:3 : 0
     " TLogVAR handlers
-    let [success, list] = tlib#input#List('m', a:query, copy(a:list), handlers, rv, timeout)
-    return success ? list : a:list
+    let rv = tlib#input#List('m', a:query, copy(a:list), handlers, default, timeout)
+    " TLogVAR rv
+    if empty(rv)
+        return a:list
+    else
+        let [success, list] = rv
+        return success ? list : a:list
+    endif
 endf
 
 
@@ -557,6 +590,8 @@ function! tlib#input#Resume(name, pick) "{{{3
         endfor
         unlet b:tlib_suspend
     endif
+    call tlib#autocmdgroup#Init()
+    autocmd! TLib InsertEnter,InsertChange <buffer>
     let b:tlib_{a:name}.state = 'display'
     " call tlib#input#List('resume '. a:name)
     let cmd = 'resume '. a:name

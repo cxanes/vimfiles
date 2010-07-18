@@ -85,6 +85,7 @@
 :TLet	tlib.txt	/*:TLet*
 :TRequire	tlib.txt	/*:TRequire*
 :TScratch	tlib.txt	/*:TScratch*
+:TTimeCommand	tlib.txt	/*:TTimeCommand*
 :TVarArg	tlib.txt	/*:TVarArg*
 :TlistAddFiles	taglist.txt	/*:TlistAddFiles*
 :TlistAddFilesRecursive	taglist.txt	/*:TlistAddFilesRecursive*
@@ -2065,6 +2066,7 @@ g:tlib_inputlist_match	tlib.txt	/*g:tlib_inputlist_match*
 g:tlib_inputlist_not	tlib.txt	/*g:tlib_inputlist_not*
 g:tlib_inputlist_or	tlib.txt	/*g:tlib_inputlist_or*
 g:tlib_inputlist_pct	tlib.txt	/*g:tlib_inputlist_pct*
+g:tlib_inputlist_shortmessage	tlib.txt	/*g:tlib_inputlist_shortmessage*
 g:tlib_inputlist_width_filename	tlib.txt	/*g:tlib_inputlist_width_filename*
 g:tlib_keyagents_InputList_m	tlib.txt	/*g:tlib_keyagents_InputList_m*
 g:tlib_keyagents_InputList_s	tlib.txt	/*g:tlib_keyagents_InputList_s*
@@ -2165,6 +2167,7 @@ notitlepage	latexhelp.txt	/*notitlepage*
 o_[%	matchit.txt	/*o_[%*
 o_]%	matchit.txt	/*o_]%*
 o_g%	matchit.txt	/*o_g%*
+o_sp	tlib.txt	/*o_sp*
 omnicpp-download	omnicppcomplete.txt	/*omnicpp-download*
 omnicpp-faq	omnicppcomplete.txt	/*omnicpp-faq*
 omnicpp-features	omnicppcomplete.txt	/*omnicpp-features*
@@ -2266,6 +2269,7 @@ snippets	snipMate.txt	/*snippets*
 sqlanywhere	dbext.txt	/*sqlanywhere*
 sqlite	dbext.txt	/*sqlite*
 sqlsrv	dbext.txt	/*sqlsrv*
+standard-paragraph	tlib.txt	/*standard-paragraph*
 stl-AdaptableBinaryFunction	stlrefvim.txt	/*stl-AdaptableBinaryFunction*
 stl-AdaptableBinaryPredicate	stlrefvim.txt	/*stl-AdaptableBinaryPredicate*
 stl-AdaptableGenerator	stlrefvim.txt	/*stl-AdaptableGenerator*
@@ -2805,6 +2809,8 @@ tlib#cmd#OutputAsList()	tlib.txt	/*tlib#cmd#OutputAsList()*
 tlib#cmd#Time()	tlib.txt	/*tlib#cmd#Time()*
 tlib#cmd#UseVertical()	tlib.txt	/*tlib#cmd#UseVertical()*
 tlib#comments#Comments()	tlib.txt	/*tlib#comments#Comments()*
+tlib#date#DiffInDays()	tlib.txt	/*tlib#date#DiffInDays()*
+tlib#date#SecondsSince1970()	tlib.txt	/*tlib#date#SecondsSince1970()*
 tlib#dir#CD()	tlib.txt	/*tlib#dir#CD()*
 tlib#dir#CanonicName()	tlib.txt	/*tlib#dir#CanonicName()*
 tlib#dir#Ensure()	tlib.txt	/*tlib#dir#Ensure()*
@@ -2836,9 +2842,12 @@ tlib#list#Remove()	tlib.txt	/*tlib#list#Remove()*
 tlib#list#RemoveAll()	tlib.txt	/*tlib#list#RemoveAll()*
 tlib#list#Uniq()	tlib.txt	/*tlib#list#Uniq()*
 tlib#list#Zip()	tlib.txt	/*tlib#list#Zip()*
+tlib#map#PumAccept()	tlib.txt	/*tlib#map#PumAccept()*
 tlib#normal#WithRegister()	tlib.txt	/*tlib#normal#WithRegister()*
 tlib#notify#Echo()	tlib.txt	/*tlib#notify#Echo()*
 tlib#notify#TrimMessage()	tlib.txt	/*tlib#notify#TrimMessage()*
+tlib#paragraph#GetMetric()	tlib.txt	/*tlib#paragraph#GetMetric()*
+tlib#paragraph#Move()	tlib.txt	/*tlib#paragraph#Move()*
 tlib#progressbar#Display()	tlib.txt	/*tlib#progressbar#Display()*
 tlib#progressbar#Init()	tlib.txt	/*tlib#progressbar#Init()*
 tlib#progressbar#Restore()	tlib.txt	/*tlib#progressbar#Restore()*
@@ -2847,6 +2856,9 @@ tlib#rx#EscapeReplace()	tlib.txt	/*tlib#rx#EscapeReplace()*
 tlib#rx#Suffixes()	tlib.txt	/*tlib#rx#Suffixes()*
 tlib#scratch#CloseScratch()	tlib.txt	/*tlib#scratch#CloseScratch()*
 tlib#scratch#UseScratch()	tlib.txt	/*tlib#scratch#UseScratch()*
+tlib#signs#ClearAll()	tlib.txt	/*tlib#signs#ClearAll()*
+tlib#signs#ClearBuffer()	tlib.txt	/*tlib#signs#ClearBuffer()*
+tlib#signs#Mark()	tlib.txt	/*tlib#signs#Mark()*
 tlib#string#Chomp()	tlib.txt	/*tlib#string#Chomp()*
 tlib#string#Count()	tlib.txt	/*tlib#string#Count()*
 tlib#string#Format()	tlib.txt	/*tlib#string#Format()*
@@ -2863,6 +2875,7 @@ tlib#tab#TabWinNr()	tlib.txt	/*tlib#tab#TabWinNr()*
 tlib#tag#Collect()	tlib.txt	/*tlib#tag#Collect()*
 tlib#tag#Format()	tlib.txt	/*tlib#tag#Format()*
 tlib#tag#Retrieve()	tlib.txt	/*tlib#tag#Retrieve()*
+tlib#textobjects#Init()	tlib.txt	/*tlib#textobjects#Init()*
 tlib#time#Diff()	tlib.txt	/*tlib#time#Diff()*
 tlib#time#DiffMSecs()	tlib.txt	/*tlib#time#DiffMSecs()*
 tlib#time#MSecs()	tlib.txt	/*tlib#time#MSecs()*
@@ -2885,6 +2898,7 @@ tlib#win#List()	tlib.txt	/*tlib#win#List()*
 tlib#win#Set()	tlib.txt	/*tlib#win#Set()*
 tlib#win#SetLayout()	tlib.txt	/*tlib#win#SetLayout()*
 tlib#win#Width()	tlib.txt	/*tlib#win#Width()*
+tlib#win#WinDo()	tlib.txt	/*tlib#win#WinDo()*
 tlib.txt	tlib.txt	/*tlib.txt*
 twocolumn	latexhelp.txt	/*twocolumn*
 twoside	latexhelp.txt	/*twoside*
@@ -2978,6 +2992,7 @@ v_[%	matchit.txt	/*v_[%*
 v_]%	matchit.txt	/*v_]%*
 v_a%	matchit.txt	/*v_a%*
 v_g%	matchit.txt	/*v_g%*
+v_sp	tlib.txt	/*v_sp*
 vcscommand	vcscommand.txt	/*vcscommand*
 vcscommand-buffer-management	vcscommand.txt	/*vcscommand-buffer-management*
 vcscommand-buffer-variables	vcscommand.txt	/*vcscommand-buffer-variables*

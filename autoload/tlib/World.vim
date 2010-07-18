@@ -3,18 +3,12 @@
 " @Website:     http://members.a1.net/t.link/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-05-01.
-" @Last Change: 2009-02-25.
-" @Revision:    0.1.696
+" @Last Change: 2010-03-28.
+" @Revision:    0.1.834
 
 " :filedoc:
 " A prototype used by |tlib#input#List|.
 " Inherits from |tlib#Object#New|.
-
-
-if &cp || exists("loaded_tlib_world_autoload")
-    finish
-endif
-let loaded_tlib_world_autoload = 1
 
 
 let s:prototype = tlib#Object#New({
@@ -24,6 +18,8 @@ let s:prototype = tlib#Object#New({
             \ 'base': [], 
             \ 'bufnr': -1,
             \ 'display_format': '',
+            \ 'fmt_display': {},
+            \ 'fmt_filter': {},
             \ 'filetype': '',
             \ 'filter': [['']],
             \ 'filter_format': '',
@@ -103,16 +99,25 @@ endf
 
 " :nodoc:
 function! s:prototype.FormatFilename(file) dict "{{{3
-    let fname = fnamemodify(a:file, ":p:t")
-    " let fname = fnamemodify(a:file, ":t")
-    " if isdirectory(a:file)
-    "     let fname .='/'
-    " endif
-    let dname = fnamemodify(a:file, ":h")
+    let width = eval(g:tlib_inputlist_width_filename)
+    let split = match(a:file, '[/\\]\zs[^/\\]\+$')
+    if split == -1
+        let fname = ''
+        let dname = a:file
+    else
+        let fname = strpart(a:file, split)
+        let dname = strpart(a:file, 0, split - 1)
+    endif
+    " let fname = fnamemodify(a:file, ":p:t")
+    " " let fname = fnamemodify(a:file, ":t")
+    " " if isdirectory(a:file)
+    " "     let fname .='/'
+    " " endif
+    " let dname = fnamemodify(a:file, ":h")
     " let dname = pathshorten(fnamemodify(a:file, ":h"))
-    let dnmax = &co - max([eval(g:tlib_inputlist_width_filename), len(fname)]) - 11 - self.index_width - &fdc
+    let dnmax = &co - max([width, len(fname)]) - 11 - self.index_width - &fdc
     if len(dname) > dnmax
-        let dname = '...'. strpart(fnamemodify(a:file, ":h"), len(dname) - dnmax)
+        let dname = '...'. strpart(dname, len(dname) - dnmax)
     endif
     let marker = []
     if g:tlib_inputlist_filename_indicators
@@ -146,17 +151,25 @@ endf
 
 " :nodoc:
 function! s:prototype.GetSelectedItems(current) dict "{{{3
+    " TLogVAR a:current
     if stridx(self.type, 'i') != -1
         let rv = copy(self.sel_idx)
     else
         let rv = map(copy(self.sel_idx), 'self.GetBaseItem(v:val)')
     endif
-    if a:current != ''
-        let ci = index(rv, a:current)
-        if ci != -1
-            call remove(rv, ci)
+    if !empty(a:current)
+        " TLogVAR a:current, rv, type(a:current)
+        if tlib#type#IsNumber(a:current) || tlib#type#IsString(a:current)
+            call s:InsertSelectedItems(rv, a:current)
+        elseif tlib#type#IsList(a:current)
+            for item in a:current
+                call s:InsertSelectedItems(rv, item)
+            endfor
+        elseif tlib#type#IsDictionary(a:current)
+            for [inum, item] in items(a:current)
+                call s:InsertSelectedItems(rv, item)
+            endfor
         endif
-        call insert(rv, a:current)
     endif
     " TAssert empty(rv) || rv[0] == a:current
     if stridx(self.type, 'i') != -1
@@ -167,6 +180,15 @@ function! s:prototype.GetSelectedItems(current) dict "{{{3
         endif
     endif
     return rv
+endf
+
+
+function! s:InsertSelectedItems(rv, current) "{{{3
+    let ci = index(a:rv, a:current)
+    if ci != -1
+        call remove(a:rv, ci)
+    endif
+    call insert(a:rv, a:current)
 endf
 
 
@@ -226,9 +248,21 @@ endf
 
 
 " :nodoc:
-function! s:prototype.FormatName(format, value) dict "{{{3
-    let world = self
-    return eval(call(function("printf"), self.FormatArgs(a:format, a:value)))
+function! s:prototype.FormatName(cache, format, value) dict "{{{3
+    " TLogVAR a:format, a:value
+    " TLogDBG has_key(self.fmt_display, a:value)
+    if has_key(a:cache, a:value)
+        " TLogDBG "cached"
+        return a:cache[a:value]
+    else
+        let world = self
+        let ftpl = self.FormatArgs(a:format, a:value)
+        let fn = call(function("printf"), ftpl)
+        let fmt = eval(fn)
+        " TLogVAR ftpl, fn, fmt
+        let a:cache[a:value] = fmt
+        return fmt
+    endif
 endf
 
 
@@ -420,7 +454,7 @@ endf
 function! s:prototype.MatchBaseIdx(idx) dict "{{{3
     let text = self.GetBaseItem(a:idx)
     if !empty(self.filter_format)
-        let text = self.FormatName(self.filter_format, text)
+        let text = self.FormatName(self.fmt_filter, self.filter_format, text)
     endif
     " TLogVAR text
     " return self.Match(text)
@@ -429,10 +463,16 @@ endf
 
 
 " :nodoc:
-function! s:prototype.BuildTable() dict "{{{3
+function! s:prototype.BuildTableList() dict "{{{3
     call self.SetFilter()
     " TLogVAR self.filter_neg, self.filter_pos
-    let self.table = filter(range(1, len(self.base)), 'self.MatchBaseIdx(v:val)')
+    if empty(self.filter_pos) && empty(self.filter_neg)
+        let self.table = range(1, len(self.base))
+        let self.list = copy(self.base)
+    else
+        let self.table = filter(range(1, len(self.base)), 'self.MatchBaseIdx(v:val)')
+        let self.list  = map(copy(self.table), 'self.GetBaseItem(v:val)')
+    endif
 endf
 
 
@@ -525,6 +565,7 @@ function! s:prototype.CloseScratch(...) dict "{{{3
         return 0
     else
         let rv = tlib#scratch#CloseScratch(self, reset_scratch)
+        " TLogVAR rv
         if rv
             call self.SwitchWindow('win')
         endif
@@ -548,6 +589,7 @@ function! s:prototype.UseInputListScratch() dict "{{{3
     " hi def link InputlListIndex Special
     " let b:tlibDisplayListMarks = {}
     let b:tlibDisplayListMarks = []
+    let b:tlibDisplayListWorld = self
     call tlib#hook#Run('tlib_UseInputListScratch', self)
     return scratch
 endf
@@ -564,6 +606,8 @@ function! s:prototype.Reset(...) dict "{{{3
     let self.idx       = ''
     let self.prefidx   = 0
     let self.initial_display = 1
+    let self.fmt_display = {}
+    let self.fmt_filter = {}
     call self.UseInputListScratch()
     call self.ResetSelected()
     call self.Retrieve(!initial)
@@ -650,19 +694,25 @@ endf
 " :nodoc:
 function! s:prototype.Resize(hsize, vsize) dict "{{{3
     " TLogVAR self.scratch_vertical, a:hsize, a:vsize
+    let world_resize = ''
     if self.scratch_vertical
         if a:vsize
-            exec 'vert resize '. eval(a:vsize)
+            let world_resize = 'vert resize '. a:vsize
         endif
     else
         if a:hsize
-            exec 'resize '. eval(a:hsize)
+            let world_resize = 'resize '. a:hsize
         endif
+    endif
+    if !empty(world_resize)
+        " TLogVAR world_resize
+        exec world_resize
+        redraw!
     endif
 endf
 
 
-" :def: function! s:prototype.DisplayList(query, ?list)
+" function! s:prototype.DisplayList(query, ?list)
 " :nodoc:
 function! s:prototype.DisplayList(query, ...) dict "{{{3
     " TLogVAR a:query
@@ -673,22 +723,24 @@ function! s:prototype.DisplayList(query, ...) dict "{{{3
     " TLogVAR self.scratch
     " TAssert IsNotEmpty(self.scratch)
     if self.state == 'scroll'
-        exec 'norm! '. self.offset .'zt'
+        call self.ScrollToOffset()
     elseif self.state == 'help'
         call self.DisplayHelp()
     else
+        " TLogVAR query
         " let ll = len(list)
         let ll = self.llen
         " let x  = len(ll) + 1
         let x  = self.index_width + 1
         " TLogVAR ll
         if self.state =~ '\<display\>'
-            let resize = get(self, 'resize', 0)
-            " TLogVAR resize
+            let resize0 = get(self, 'resize', 0)
+            let resize = empty(resize0) ? 0 : eval(resize0)
+            " TLogVAR resize0, resize
             let resize = resize == 0 ? ll : min([ll, resize])
             let resize = min([resize, (&lines * g:tlib_inputlist_pct / 100)])
             " TLogVAR resize, ll, &lines
-            call self.Resize(resize, get(self, 'resize_vertical', 0))
+            call self.Resize(resize, eval(get(self, 'resize_vertical', 0)))
             call tlib#normal#WithRegister('gg"tdG', 't')
             let w = winwidth(0) - &fdc
             " let w = winwidth(0) - &fdc - 1
@@ -713,18 +765,9 @@ function! s:prototype.DisplayList(query, ...) dict "{{{3
         call add(b:tlibDisplayListMarks, base_pref)
         call self.DisplayListMark(x, base_pref, '*')
         call self.SetOffset()
+        call self.SetStatusline(a:query)
         " TLogVAR self.offset
-        " TLogDBG winheight('.')
-        " if self.prefidx > winheight(0)
-            " let lt = len(list) - winheight('.') + 1
-            " if self.offset > lt
-            "     exec 'norm! '. lt .'zt'
-            " else
-                exec 'norm! '. self.offset .'zt'
-            " endif
-        " else
-        "     norm! 1zt
-        " endif
+        call self.ScrollToOffset()
         let rx0 = self.GetRx0()
         " TLogVAR rx0
         if !empty(g:tlib_inputlist_higroup)
@@ -734,18 +777,34 @@ function! s:prototype.DisplayList(query, ...) dict "{{{3
                 exec 'match '. g:tlib_inputlist_higroup .' /\c'. escape(rx0, '/') .'/'
             endif
         endif
-        let query   = a:query
-        let options = [self.matcher.name]
-        if self.sticky
-            call add(options, '#')
-        endif
-        if !empty(options)
-            let query .= printf('%%=[%s] ', join(options, ', '))
-        endif
-        " TLogVAR query
-        let &statusline = query
     endif
     redraw
+endf
+
+
+function! s:prototype.SetStatusline(query) dict "{{{3
+    let query   = a:query
+    let options = [self.matcher.name]
+    if self.sticky
+        call add(options, '#')
+    endif
+    if !empty(options)
+        let sopts = printf('[%s]', join(options, ', '))
+        " let echo  = query . repeat(' ', &columns - len(sopts) - len(query) - 20) . sopts
+        let echo  = query . '  ' . sopts
+        " let query .= '%%='. sopts .' '
+    endif
+    " TLogVAR &l:statusline, query
+    " let &l:statusline = query
+    echo
+    echo echo
+endf
+
+
+" :nodoc:
+function! s:prototype.ScrollToOffset() dict "{{{3
+    " TLogVAR self.scratch_vertical, self.llen, winheight(0)
+    exec 'norm! '. self.offset .'zt'
 endf
 
 

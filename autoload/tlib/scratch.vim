@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-07-18.
-" @Last Change: 2009-02-15.
-" @Revision:    0.0.128
+" @Last Change: 2010-03-12.
+" @Revision:    0.0.154
 
 if &cp || exists("loaded_tlib_scratch_autoload")
     finish
@@ -29,9 +29,12 @@ function! tlib#scratch#UseScratch(...) "{{{3
         if bufnr('%') != id
             exec 'buffer! '. id
         endif
+        " let ft = &ft
+        let ft = '*'
     else
         let bn = bufnr(id)
-        let wpos = g:tlib_scratch_pos
+        let wpos = get(keyargs, 'scratch_pos', g:tlib_scratch_pos)
+        " TLogVAR keyargs.scratch_vertical
         if get(keyargs, 'scratch_vertical')
             let wpos .= ' vertical'
         endif
@@ -56,23 +59,26 @@ function! tlib#scratch#UseScratch(...) "{{{3
         endif
         let ft = get(keyargs, 'scratch_filetype', '')
         " TLogVAR ft
-        " if !empty(ft)
-        let &ft=ft
-        " end
     endif
     setlocal buftype=nofile
     setlocal bufhidden=hide
     setlocal noswapfile
     setlocal nobuflisted
-    setlocal modifiable
     setlocal foldmethod=manual
     setlocal foldcolumn=0
+    setlocal modifiable
+    setlocal nospell
+    if &ft != '*'
+        let &ft = ft
+    endif
     let keyargs.scratch = bufnr('%')
     return keyargs.scratch
 endf
 
 
 " Close a scratch buffer as defined in keyargs (usually a World).
+" Return 1 if the scratch buffer is closed (or if it already was 
+" closed).
 function! tlib#scratch#CloseScratch(keyargs, ...) "{{{3
     TVarArg ['reset_scratch', 1]
     let scratch = get(a:keyargs, 'scratch', '')
@@ -89,8 +95,8 @@ function! tlib#scratch#CloseScratch(keyargs, ...) "{{{3
                 " exec wb 
                 " redraw
                 " TLogVAR winnr()
-                return 1
             endif
+            return 1
         finally
             if reset_scratch
                 let a:keyargs.scratch = ''

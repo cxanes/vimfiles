@@ -3,22 +3,19 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-06-24.
-" @Last Change: 2009-02-25.
-" @Revision:    0.1.168
+" @Last Change: 2010-03-27.
+" @Revision:    0.1.178
 
-if &cp || exists("loaded_tlib_agent_autoload") "{{{2
-    finish
-endif
-let loaded_tlib_agent_autoload = 1
 
 " :filedoc:
 " Various agents for use as key handlers in tlib#input#List()
+
 
 " General {{{1
 
 function! tlib#agent#Exit(world, selected) "{{{3
     call a:world.CloseScratch()
-    let a:world.state = 'exit escape'
+    let a:world.state = 'exit empty escape'
     let a:world.list = []
     " let a:world.base = []
     call a:world.ResetSelected()
@@ -160,6 +157,8 @@ function! tlib#agent#Suspend(world, selected) "{{{3
         let br = tlib#buffer#Set(a:world.scratch)
         " TLogVAR br, a:world.bufnr, a:world.scratch
         " TLogDBG bufnr('%')
+        call tlib#autocmdgroup#Init()
+        autocmd TLib InsertEnter,InsertChange <buffer> call tlib#input#Resume("world", 0)
         let b:tlib_suspend = {
                     \ '<m-z>': 0, '<c-z>': 0, '<space>': 0, 
                     \ '<cr>': 1, 
@@ -475,12 +474,14 @@ function! tlib#agent#DoAtLine(world, selected) "{{{3
         let cmd = input('Command: ', '', 'command')
         if !empty(cmd)
             call a:world.SwitchWindow('win')
-            let pos = getpos('.')
+            " let pos = getpos('.')
+            let view = winsaveview()
             for l in a:selected
                 call tlib#buffer#ViewLine(l, '')
                 exec cmd
             endfor
-            call setpos('.', pos)
+            " call setpos('.', pos)
+            call winrestview(view)
         endif
     endif
     call a:world.ResetSelected()
