@@ -49,7 +49,11 @@ if has("win32")
     " let g:utl_rc_app_browser = 'silent !start C:\Program Files\Internet Explorer\iexplore.exe %u' 
     "
     "	Samples for other browsers are welcome!
-    let g:utl_rc_app_browser = 'silent !start "C:\Program Files\Mozilla Firefox\firefox.exe" %u' 
+    if (empty(glob('C:\Program Files (x86)\Mozilla Firefox\firefox.exe')))
+      let g:utl_rc_app_browser = 'silent !start "C:\Program Files\Mozilla Firefox\firefox.exe" %u' 
+    else
+      let g:utl_rc_app_browser = 'silent !start "C:\Program Files (x86)\Mozilla Firefox\firefox.exe" %u' 
+    endif
 
 elseif has("unix")
 
