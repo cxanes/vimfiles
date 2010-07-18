@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-05-01 22:49:57
+" Last Modified: 2010-07-18 19:07:02
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -288,13 +288,21 @@ endfunction
 function! s:GetCwd() "{{{
   " let cwd = expand('%:p:~:h')
   let cwd = substitute(getcwd(), '^\V' . escape(expand('~'), '\'), '~', '')
-  if strlen(cwd) > max([30, &columns/4])
-    if exists('*pathshorten')
-      let cwd = pathshorten(cwd)
-    else
-      let cwd = substitute(cwd, '\([~.]*[^:/]\)\%([^:/]\)*/', '\1/', 'g')
+
+  if !exists('g:opt_trim_path')
+    let g:opt_trim_path = 1
+  endif
+
+  if g:opt_trim_path != 0
+    if strlen(cwd) > max([30, &columns/4])
+      if exists('*pathshorten')
+        let cwd = pathshorten(cwd)
+      else
+        let cwd = substitute(cwd, '\([~.]*[^:/]\)\%([^:/]\)*/', '\1/', 'g')
+      endif
     endif
   endif
+
   return cwd
 endfunction
 "}}}
@@ -650,6 +658,7 @@ nnoremap <silent> <Leader>wp :<C-U>set wrap!   <Bar>set wrap?<CR>
 nnoremap <silent> <Leader>nu :<C-U>set nu!     <Bar>set nu?<CR>
 nnoremap <silent> <Leader>ba :<C-U>set backup! <Bar>set backup?<CR>
 nnoremap <silent> <Leader>ls :<C-U>set list!   <Bar>set list?<CR>
+nnoremap <silent> <Leader>ssl :<C-U>set ssl!   <Bar>set ssl?<CR>
 
 nnoremap <silent> <Leader>a<Space> :<C-U>call <SID>AddChar('<Leader>a<Space>', ' ', v:count1)<CR>
 function! s:AddChar(map, ch, cnt) "{{{
@@ -1652,6 +1661,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:netrw_winsize = 24
   let g:netrw_silent  = 1
   let g:netrw_cygwin = 1
+  let g:netrw_liststyle = 3
   "}}}2
   "----------------------------------------------------------{{{2
   " imap.vim (Part of Latex-Suite)
