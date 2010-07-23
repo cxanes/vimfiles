@@ -788,7 +788,7 @@ function! myutils#Cscope(output, isCurrentFile) "{{{
     return
   endif
 
-  let cmd = 'silent !cscope -Rb %s %s'
+  let cmd = 'silent !cscope -Rqb %s %s'
   exe printf(cmd, empty(a:output) ? '' : ('-f '.shellescape(a:output)),
         \ a:isCurrentFile && !empty(expand('%')) ? shellescape(expand('%')) : '')
   redraw!
