@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-07-18 19:07:02
+" Last Modified: 2010-08-05 16:43:54
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1834,7 +1834,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " IMPORTANT: grep will sometimes skip displaying the file name if you
   " search in a singe file. This will confuse latex-suite. Set your grep
   " program to alway generate a file-name.
-  set grepprg=grep\ -nH\ -I\ --exclude-dir=.svn\ --exclude-dir=.git\ $*
+  set grepprg=grep\ -nH\ -I\ --exclude-dir=.svn\ --exclude-dir=.git\ --exclude=cscope.out\ --exclude=tags\ $*
 
   if s:MSWIN
     let g:Tex_ViewRule_ps =  'gsview32'
