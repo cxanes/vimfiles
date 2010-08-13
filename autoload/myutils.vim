@@ -782,36 +782,36 @@ endfunction "}}}
 "==========================================================}}}1
 " {{{1 Build Tags
 "--------------------------------------------------------------
-function! myutils#Cscope(output, isCurrentFile) "{{{
+function! myutils#Cscope(args, default) "{{{
   if !executable('cscope')
     call mylib#ShowMesg('ErrorMsg', 'cscope: command not find', 1)
     return
   endif
+  
+  let cmd = 'silent !cscope ' 
 
-  let cmd = 'silent !cscope -Rqb %s %s'
-  exe printf(cmd, empty(a:output) ? '' : ('-f '.shellescape(a:output)),
-        \ a:isCurrentFile && !empty(expand('%')) ? shellescape(expand('%')) : '')
+  if a:default
+    let cmd .= '-Rqb '
+  endif
+
+  exe cmd . a:args
   redraw!
-  return v:shell_error 
-        \    ? '' 
-        \    : !empty(a:output) 
-        \        ? a:output 
-        \        : !empty($CSCOPE_DB) 
-        \            ? $CSCOPE_DB 
-        \            : 'cscope.out'
 endfunction
 "}}}
-function! myutils#Ctags(output, isCurrentFile) "{{{
+function! myutils#Ctags(args, default) "{{{
   if !executable('ctags')
     call mylib#ShowMesg('ErrorMsg', 'ctags: command not find', 1)
     return
   endif
 
-  let cmd = 'silent !ctags -R --c++-kinds=+p --fields=+iaS --extra=+q %s %s'
-  exe printf(cmd, empty(a:output) ? '' : ('-f '.shellescape(a:output)),
-        \ a:isCurrentFile && !empty(expand('%')) ? shellescape(expand('%')) : '.')
+  let cmd =  'silent !ctags --c++-kinds=+p --fields=+iaS --extra=+q '
+
+  if a:default
+    let cmd .= '-R '
+  endif
+
+  exe cmd . a:args
   redraw!
-  return v:shell_error ? '' : !empty(a:output) ? a:output : 'tags'
 endfunction
 "}}}
 "==========================================================}}}1
