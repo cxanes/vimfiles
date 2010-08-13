@@ -32,7 +32,7 @@ endif
 if exists('*mylib#StripSurrounding')
   if !exists('*s:StripFunc')
     function! s:StripFunc()
-      let [lnum, col] = StripSurrounding('\<[a-zA-Z_{}][a-zA-Z0-9_{}]*\s*(', '', ')')
+      let [lnum, col] = mylib#StripSurrounding('\<[a-zA-Z_{}][a-zA-Z0-9_{}]*\s*(', '', ')')
       if [lnum, col] == [0, 0]
         return
       endif

@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-08-05 16:43:54
+" Last Modified: 2010-08-13 19:18:56
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -2064,6 +2064,8 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " The usage of cscope
   "--------------------------------------------------------------
   if has('cscope')
+    command! -nargs=+ CFind cs find <args>
+
     nnoremap <Leader>cf :<C-U>cs find 
     inoremap <Leader>cf <C-C>:<C-U>cs find 
 
