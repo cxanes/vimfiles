@@ -1,4 +1,4 @@
-#ifndef ${1:`mylib#If2(toupper(substitute(expand("%:t:r"), '\W\+\|\([a-z]\)\@<=\([A-Z]\)', '_&', 'g')), 'header' . '_H')`}
+#ifndef ${1:`mylib#If2(toupper(substitute(expand("%:t:r"), '\W\+\|\([a-z]\)\@<=\([A-Z]\)', '_&', 'g')), 'header') . '_H'`}
 #define $1
 
 ${2}

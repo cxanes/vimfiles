@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-08-13 19:18:56
+" Last Modified: 2010-08-18 15:01:44
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1461,6 +1461,13 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   augroup Vimrc
     au FileType help nnoremap <buffer> <CR> <C-]>
     au FileType help nnoremap <buffer> <BS> <C-T>
+  augroup END
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " quickfix
+  "--------------------------------------------------------------
+  augroup Vimrc
+    au FileType qf setl stl=%q%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}%=%-14.(\ %l/%L,%c%V%)
   augroup END
   "}}}2
   "----------------------------------------------------------{{{2
