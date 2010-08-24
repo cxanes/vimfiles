@@ -73,20 +73,24 @@ let b:run_command_perl = function('RunCommandPerl')
 compiler perl
 set complete-=i
 
-if exists('*mylib#AddOptFiles')
+try
   call mylib#AddOptFiles('dict', 'keywords/perl')
   if search('\<use\s\+Moose\>', 'nw')
     call mylib#AddOptFiles('dict', 'keywords/perl_moose')
   endif
   set complete+=k
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 if exists('g:use_codeintel') && g:use_codeintel
   setlocal completefunc=codeintel#Complete
 endif
 
-if exists('g:use_perl_omni') && g:use_perl_omni && exists('*Perl#Omni#Setting')
-  call Perl#Omni#Setting()
+if exists('g:use_perl_omni') && g:use_perl_omni
+  try
+    call Perl#Omni#Setting()
+  catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+  endtry
 endif
 " }}}
 "===================================================================
@@ -98,9 +102,10 @@ command! -range -buffer -bang    PutExtractedSubroutine call <SID>PutExtractedSu
 command! -range -buffer -nargs=1 ExtractMehod call <SID>ExtractSubroutine(<q-args>, <line1>, <line2>)
 command! -range -buffer -bang    PutExtractedMehod call <SID>PutExtractedSubroutine(<count>, <q-bang> == '!')
 
-if exists('*mapping#CompleteParen')
+try
   call mapping#CompleteParen('([{',  '[$@%&*]\|\w')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 if exists('*mapping#MoveTo')
   call mapping#MoveTo('[}\])]')
@@ -114,9 +119,10 @@ if exists('*mylib#CNewLine')
   inoremap <silent> <buffer> <C-J> <C-R>=mylib#CNewLine()<CR>
 endif
 
-if exists('*IndentForComment#IndentForCommentMapping')
+try
   call IndentForComment#IndentForCommentMapping(['#'], [30, 45, 60])
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 if exists('*mylib#StripSurrounding')
   nnoremap <silent> <buffer> <Leader>sf :call <SID>StripFunc()<CR>

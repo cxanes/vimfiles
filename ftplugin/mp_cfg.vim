@@ -56,11 +56,11 @@ function! s:PreviewFig() "{{{2
   silent! echo code
   redir END
 
-  if exists('*mylib#GetPos')
+  try 
     let pos = mylib#GetPos()
-  else
+  catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
     let pos = { 'x': getwinposy(), 'y': getwinposy() }
-  endif
+  endtry
 
   let wd = getcwd()
   let mp_dir = substitute(mp_file, '[\\/][^\\/]\+$', '', '')

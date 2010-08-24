@@ -2,17 +2,12 @@
 "===================================================================
 " Key Mappings {{{
 "-------------------------------------------------------------------
-if exists('*mapping#CompleteParen')
+try
   call mapping#CompleteParen('{')
-endif
-
-if exists('*mapping#MoveTo')
   call mapping#MoveTo('[}]')
-endif
-
-if exists('*mapping#Enter')
   call mapping#Enter('{', '}')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 " }}}
 "===================================================================
 " vim: fdm=marker :

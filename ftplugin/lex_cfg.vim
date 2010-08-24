@@ -13,13 +13,15 @@ inoremap <silent> <buffer> < <lt><C-R>=<SID>CompleteAngleBracket()<CR>
 inoremap <silent> <buffer> <Leader>{  {
 inoremap <silent> <buffer> <Leader><  <
 
-if exists('*mapping#MoveTo')
+try
   call mapping#MoveTo('[{}\])>]')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
-if exists('*mylib#CNewLine')
+try
   inoremap <silent> <buffer> <C-J> <C-R>=mylib#CNewLine()<CR>
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 " }}}
 "===================================================================
 " Functions {{{
@@ -32,14 +34,18 @@ if exists('*mapping#Enter')
   call mapping#Enter('{', '}')
 endif
 
-if !exists('*s:CompleteBrace') && exists('*myutils#CompleteParen')
+if !exists('*s:CompleteBrace')
   function! s:CompleteBrace() "{{{
     let line = getline('.')[ : (col('.')-(col('$') == col('.') ? 1 : 2)) ]
     
     if line =~ '^%{$'
       return "\<CR>0\<C-D>\<CR>0\<C-D>%}\<Up>\<Home>"
     else
-      return myutils#CompleteParen('{')
+      try
+        return myutils#CompleteParen('{')
+      catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+        return ''
+      endtry
     endif
   endfunction
   "}}}

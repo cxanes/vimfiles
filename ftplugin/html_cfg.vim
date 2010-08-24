@@ -27,9 +27,10 @@ endif
 "===================================================================
 " Key Mappings {{{
 "-------------------------------------------------------------------
-if exists('*mapping#MoveTo')
+try
   call mapping#MoveTo('>')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 inoremap <silent> <buffer> <CR> <C-R>=<SID>HtmlEnter()<CR>
 "}}}

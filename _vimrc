@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-08-18 15:01:44
+" Last Modified: 2010-08-24 20:34:11
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -78,11 +78,11 @@ function! s:SetEnv()
   function! s:PrependEnv(env, path, ...) " ... = is_cyg {{{
     let is_cyg = a:0 > 0 ? a:1 : 0
     if s:MSWIN && is_cyg >= 0
-      ru autoload/Cygwin.vim
-      if exists('*Cygwin#PrependEnv')
+      try
         let is_cyg = s:MSWIN && a:0 > 0 && !empty(a:1)
         return Cygwin#PrependEnv(a:env, a:path, is_cyg)
-      endif
+      catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+      endtry
     endif
 
     let path_sep = s:MSWIN ? ';' : ':'
@@ -175,6 +175,9 @@ set backupext=~
 let s:backupdir = exists('g:backupdir') ? g:backupdir : ($HOME . '/.backup/vim')
 if filewritable(s:backupdir) == 2
   let &backupdir = s:backupdir
+  if version >= 703
+    let &backupdir = s:backupdir
+  endif
 endif
 unlet s:backupdir
 "}}}
@@ -1413,6 +1416,48 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
     au VimEnter * call <SID>IncludeExprInit()|delfunction <SID>IncludeExprInit
   augroup END
 
+  " Map special section motion (:h section)
+  if !exists('g:opt_map_special_section_motion')
+    let g:opt_map_special_section_motion = 0
+  endif
+
+  function! s:MapSpecialSectionMotion() "{{{
+    map <buffer> [[ ?{<CR>w99[{
+    map <buffer> ][ /}<CR>b99]}
+    map <buffer> ]] j0[[%/{<CR>
+    map <buffer> [] k$][%?}<CR>
+  endfunction
+  "}}}
+  function! s:UnmapSpecialSectionMotion() "{{{
+    unmap <buffer> [[
+    unmap <buffer> ][
+    unmap <buffer> ]]
+    unmap <buffer> []
+  endfunction
+  "}}}
+  function! s:SetupSpecialSectionMotion() "{{{
+    if !exists('g:opt_map_special_section_motion')
+      let g:opt_map_special_section_motion = 0
+    endif
+
+    if g:opt_map_special_section_motion == 0
+      return
+    endif
+
+    if !empty(maparg('[['))
+      return
+    endif
+
+    call s:MapSpecialSectionMotion()
+  endfunction
+  "}}}
+
+  command! MapSpecialSectionMotion   call <SID>MapSpecialSectionMotion()
+  command! UnmapSpecialSectionMotion call <SID>UnmapSpecialSectionMotion()
+
+  augroup Vimrc
+    au Filetype * call <SID>SetupSpecialSectionMotion()
+  augroup END
   "}}}2
   "----------------------------------------------------------{{{2
   " *.m
@@ -1896,14 +1941,20 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   "--------------------------------------------------------------
   function! FileExplorer_OpenFunc(file) 
 		if a:file =~? '\.\%(jpg\|bmp\|png\|gif\)$'
-			if exists('*ShowImage') && ShowImage(a:file, 1) == 0
-				return 1
-			elseif exists('*myutils#OpenFile') && myutils#OpenFile(a:file) == 0
-				return 1
-			endif
-		elseif exists('*myutils#OpenFile') && a:file =~? '\.\%(pdf\|docx\?\|xls\|odt\)$'
-			call myutils#OpenFile(a:file)
-			return 1
+      try
+        if myutils#ShowImage(a:file, 1) == 0
+          return 1
+        elseif myutils#OpenFile(a:file) == 0
+          return 1
+        endif
+      catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+      endtry
+		elseif a:file =~? '\.\%(pdf\|docx\?\|xls\|odt\)$'
+      try
+        call myutils#OpenFile(a:file)
+        return 1
+      catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+      endtry
 		endif
   endfunction
   let g:FileExplorer_OpenHandler = 'FileExplorer_OpenFunc'

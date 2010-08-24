@@ -2,7 +2,7 @@
 "===================================================================
 " Setting {{{
 "-------------------------------------------------------------------
-if exists('*mylib#AddOptFiles')
+try
   call mylib#AddOptFiles('tags', 'tags/stl.tags')
   call mylib#AddOptFiles('tags', 'tags/lsb32.tags')
   call mylib#AddOptFiles('tags', 'tags/wx.tags')
@@ -18,14 +18,16 @@ if exists('*mylib#AddOptFiles')
 
   call mylib#AddOptFiles('dict', 'keywords/cpp')
   set complete+=k
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 " }}}
 "===================================================================
 " Key Mappings {{{
 "-------------------------------------------------------------------
-if exists('*IndentForComment#IndentForCommentMapping')
+try
   call IndentForComment#IndentForCommentMapping(['//', ['/*', '*/']], [30, 45, 60])
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 " }}}
 "===================================================================
 " vim: fdm=marker :

@@ -717,9 +717,12 @@ function! myutils#ShowMatch(...) "{{{
 
   syn clear
   syn match Number '^\s*\d\+'
+  setl cursorline
   exe "syn match Special " . "'" . escape(pattern, "'") . "'"
   let pattern = "'" . substitute(pattern, "'", "''", 'g') . "'"
-  exe "nmap <buffer> <silent> <CR> :call <SID>ShowMatchGoToLine(" . substitute(pattern, '<', '<lt>', 'g') . "," . curwinnum ")<CR>"
+  let cmd = ":call <SID>ShowMatchGoToLine(" . substitute(pattern, '<', '<lt>', 'g') . "," . curwinnum . ")<CR>"
+  exe "nmap <buffer> <silent> <CR> " . cmd
+  exe "nmap <buffer> <silent> <2-LeftMouse> " . cmd
 endfunction
 " }}}
 function! s:ShowMatchGoToLine(pattern, winnum) "{{{
@@ -918,11 +921,15 @@ function! myutils#ShowImage(files, ...) " ... = NotWithCursor {{{
   call filter(files, 'v:val != ""')
 
   if !empty(files)
-    if exists('*mylib#GetPos') && (a:0 == 0 || a:1 == 0)
-      let pos = mylib#GetPos()
-    else
+    try
+      if a:0 == 0 || a:1 == 0
+        let pos = mylib#GetPos()
+      else
+        let pos = { 'x': getwinposy(), 'y': getwinposy() }
+      endif
+    catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
       let pos = { 'x': getwinposy(), 'y': getwinposy() }
-    endif
+    endtry
 
     let cmd = s:MSWIN ? 'silent !start %s %s -p "%d+%d" %s'
           \ : 'silent !%s %s -p "%d+%d" %s 2>/dev/null&'
@@ -945,11 +952,11 @@ endfunction
 " {{{1 OpenFile(): open file according to the file association
 "--------------------------------------------------------------
 function! myutils#OpenFile(file) "{{{
-	if exists('*mylib#Shellescape')
+  try
 		let file = mylib#Shellescape(a:file, 1)
-	else
+  catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
 		let file = shellescape(a:file, 1)
-	endif
+	endtry
 
 	let cmd = s:MSWIN 
 				\ ? 'start RunDll32.exe shell32.dll,ShellExec_RunDLL'

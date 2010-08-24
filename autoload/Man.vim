@@ -216,12 +216,11 @@ function! Man#Main(type, bang, line) "{{{
   let error_mesg = ''
 
   let q_args = copy(args)
-  if exists('*mylib#Shellescape')
+  try
     call map(q_args, 'mylib#Shellescape(v:val)')
-  else
+  catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
     call map(q_args, 'shellescape(v:val)')
-  endif
-
+  endtry
 
   let has_error = 0
   if type(opts) == type([]) && !empty(opts)

@@ -4,8 +4,11 @@
 "-------------------------------------------------------------------
 " compiler gcc
 setl errorformat&
-if exists('*mylib#AddOptFiles') && isdirectory($HOME . '/local/include')
-  call mylib#AddOptFiles('path', $HOME . '/local/include')
+if isdirectory($HOME . '/local/include')
+  try
+    call mylib#AddOptFiles('path', $HOME . '/local/include')
+  catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+  endtry
 endif
 " }}}
 "===================================================================
@@ -14,25 +17,17 @@ endif
 inoremap <silent> <buffer> <Leader>k <C-X><C-K>
 inoremap <silent> <buffer> <Leader>p <C-R>=<SID>CFuncType()<CR><C-R>=<SID>Imap()<CR>
 
-if exists('*mylib#CNewLine')
-  inoremap <silent> <buffer> <C-J> <C-R>=mylib#CNewLine()<CR>
-endif
-
 if exists(':Run')
   nnoremap <silent> <buffer> <F7> :Cwd<CR>:Run<CR>:cd -<CR>
 endif
 
-if exists('*mapping#CompleteParen')
+try
+  inoremap <silent> <buffer> <C-J> <C-R>=mylib#CNewLine()<CR>
   call mapping#CompleteParen('([{')
-endif
-
-if exists('*mapping#MoveTo')
   call mapping#MoveTo('[{}\])]')
-endif
-
-if exists('*mapping#Enter')
   call mapping#Enter('{', '}')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 " }}}
 "===================================================================
 " Functions {{{
@@ -228,7 +223,7 @@ if &ft != 'c'
   finish
 endif
 
-if exists('*mylib#AddOptFiles')
+try
   call mylib#AddOptFiles('tags', 'tags/cstd.tags')
   call mylib#AddOptFiles('tags', 'tags/lsb32.tags')
 
@@ -243,7 +238,8 @@ if exists('*mylib#AddOptFiles')
 
   call mylib#AddOptFiles('dict', 'keywords/c')
   set complete+=k
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 " <http://mysite.wanadoo-members.co.uk/indent/beautify.html>
 if executable('indent') 
@@ -280,9 +276,10 @@ if executable('insert_missing_includes') && !exists(':CInsMissInc')
   "}}}
 endif
 
-if exists('*IndentForComment#IndentForCommentMapping')
+try
   call IndentForComment#IndentForCommentMapping([['/*', '*/'], '//'], [30, 45, 60])
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 " }}}
 "===================================================================
 " vim: fdm=marker :

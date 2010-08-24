@@ -7,11 +7,12 @@ if !exists('*Tex_PutEnvironment')
   ru ftplugin/tex_latexSuite.vim
 endif
 
-if exists('*mylib#AddOptFiles')
+try
   call mylib#AddOptFiles('dict', 'keywords/tex')
   call mylib#AddOptFiles('dict', split(globpath(&rtp, 'keywords/tex_*'), "\n"))
   set complete+=k
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 function! SetMakePrgTeX() 
   if exists('*SetMakeprg') && exists('g:Tex_DefaultTargetFormat')
@@ -29,9 +30,12 @@ let b:set_makeprg_tex = 'SetMakePrgTeX'
 " Functions {{{
 "------------------------------------------------------------
 " StripCommand() "{{{2
-if exists('*mylib#StripSurrounding') && !exists('*s:StripCommand')
+if !exists('*s:StripCommand')
   function! s:StripCommand()
-    call mylib#StripSurrounding('\\\w\+\s*{', '', '}')
+    try
+      call mylib#StripSurrounding('\\\w\+\s*{', '', '}')
+    catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+    endtry
   endfunction
 endif
 " }}}2
@@ -86,11 +90,11 @@ if !exists('*s:TeXPreview') && executable('tex2img')
       let preamble_file = ''
     endif
 
-    if exists('*mylib#GetPos')
+    try
       let pos = mylib#GetPos()
-    else
+    catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
       let pos = { 'x': getwinposy(), 'y': getwinposy() }
-    endif
+    endtry
 
     let tex_file = tempname()
     exe 'redir! > ' . tex_file
@@ -367,9 +371,10 @@ if exists('*s:InsertEnvironment')
   nnoremap <silent> <buffer> <Leader>ie "_yiwi<C-R>=<SID>InsertEnvironment('n')<CR>
 endif
 
-if exists('*mapping#MoveTo')
+try
   call mapping#MoveTo('[}\]]')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 if exists('*s:StripCommand')
   nnoremap <silent> <buffer> <Leader>sc :call <SID>StripCommand()<CR>

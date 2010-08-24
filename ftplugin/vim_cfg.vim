@@ -13,25 +13,27 @@ command! -range -nargs=0 Exec call <SID>ExecLine(<line1>, <line2>)
 "===================================================================
 " Key Mappings {{{1
 "-------------------------------------------------------------------
-if exists('*mapping#CompleteParen')
+try
   call mapping#CompleteParen('([', '[''"]\|\w')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 if exists('*mapping#MoveTo')
   call mapping#MoveTo('[}\])]')
 endif
 
-if exists('*mylib#StripSurrounding')
+try
   nnoremap <silent> <buffer> <Leader>sf :call <SID>StripFunc()<CR>
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 " }}}1
 "===================================================================
 " Functions {{{1
 "-------------------------------------------------------------------
 " StripFunc() "{{{2
-if exists('*mylib#StripSurrounding')
-  if !exists('*s:StripFunc')
-    function! s:StripFunc()
+if !exists('*s:StripFunc')
+  function! s:StripFunc()
+    try
       let [lnum, col] = mylib#StripSurrounding('\<[a-zA-Z_{}][a-zA-Z0-9_{}]*\s*(', '', ')')
       if [lnum, col] == [0, 0]
         return
@@ -47,8 +49,9 @@ if exists('*mylib#StripSurrounding')
         let @/ = pat_sav
         call cursor(pos)
       endif
-    endfunction
-  endif
+    catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+    endtry
+  endfunction
 endif
 " }}}2
 " Exec() {{{2

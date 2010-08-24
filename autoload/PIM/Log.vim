@@ -24,9 +24,10 @@ endfunction
 "}}}
 function! s:LogInit(category_file) "{{{
   call s:LogSyntaxInit()
-  if exists('*mylib#AddOptFiles')
+  try
     call mylib#AddOptFiles('dict', a:category_file)
-  endi
+  catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+  endtry
 
   imap <F5> <Plug>InsertDate
   imap <F6> <Plug>InsertTime

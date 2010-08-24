@@ -32,10 +32,11 @@ if !exists('*s:NewLine')
   "}}}
 endif
 
-if exists('*mylib#AddOptFiles')
+try
   call mylib#AddOptFiles('dict', 'keywords/python')
   set complete+=k
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 " }}}
 "===================================================================
 " Setting {{{
@@ -58,17 +59,19 @@ endif
 "===================================================================
 " Key Mappings {{{
 "-------------------------------------------------------------------
-if exists('*mapping#CompleteParen')
+try
   call mapping#CompleteParen('([{')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 if exists('*mapping#MoveTo')
   call mapping#MoveTo('[}\])]')
 endif
 
-if exists('*IndentForComment#IndentForCommentMapping')
+try
   call IndentForComment#IndentForCommentMapping(['#'], [30, 45, 60])
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 inoremap <silent> <buffer> <Leader>> <C-\><C-O>:call <SID>Indent()<CR>
 if empty(maparg('<Leader>.', 'i'))

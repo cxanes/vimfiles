@@ -2,17 +2,19 @@
 "===================================================================
 " Key Mappings {{{1
 "-------------------------------------------------------------------
-if exists('*mapping#CompleteParen')
+try
   call mapping#CompleteParen('(')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 if exists('*mapping#MoveTo')
   call mapping#MoveTo('[)]')
 endif
 
-if exists('*IndentForComment#IndentForCommentMapping')
+try
   call IndentForComment#IndentForCommentMapping([';'], [30, 45, 60])
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 " }}}1
 "===================================================================
 " vim: fdm=marker :

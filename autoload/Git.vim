@@ -60,7 +60,16 @@ else
 let s:system = function('system')
 endif
 "}}}
-if executable('bash') && executable('git-compl.sh') && exists('*mylib#ParseCmdArgs')
+function! Exists_ParseCmdArgs() 
+  try
+    call mylib#ParseCmdArgs()
+    return 1
+  catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+    return 0
+  endtry
+endfunction
+
+if executable('bash') && executable('git-compl.sh') && Exists_ParseCmdArgs()
   if exists('g:git_completion')
     let $GIT_COMPL = g:git_completion
   endif

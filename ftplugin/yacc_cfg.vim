@@ -17,13 +17,12 @@ inoremap <silent> <buffer> <Leader><  <
 inoremap <silent> <buffer> <Leader><Bar> <Bar>
 inoremap <silent> <buffer> <Leader>;  ;
 
-if exists('*mapping#MoveTo')
+try
   call mapping#MoveTo('[{}\])>]')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
-if exists('*mylib#CNewLine')
-  inoremap <silent> <buffer> <C-J> <C-R>=mylib#CNewLine()<CR>
-endif
+inoremap <silent> <buffer> <C-J> <C-R>=mylib#CNewLine()<CR>
 " }}}
 "===================================================================
 " Functions {{{
@@ -36,32 +35,38 @@ if exists('*mapping#Enter')
   call mapping#Enter('{', '}')
 endif
 
-if exists('*myutils#CompleteParen')
-  if !exists('*s:CompleteBrace')
-    function! s:CompleteBrace() "{{{
-      let line = getline('.')[ : (col('.')-(col('$') == col('.') ? 1 : 2)) ]
-      
-      if line =~ '^%{$'
-        return "\<CR>0\<C-D>\<CR>0\<C-D>%}\<Up>\<Home>"
-      else
+if !exists('*s:CompleteBrace')
+  function! s:CompleteBrace() "{{{
+    let line = getline('.')[ : (col('.')-(col('$') == col('.') ? 1 : 2)) ]
+    
+    if line =~ '^%{$'
+      return "\<CR>0\<C-D>\<CR>0\<C-D>%}\<Up>\<Home>"
+    else
+      try
         return myutils#CompleteParen('{')
-      endif
-    endfunction
-    "}}}
-  endif
-
-  if !exists('*s:CompleteAngleBracket')
-    function! s:CompleteAngleBracket() "{{{
-      let line = getline('.')[ : (col('.')-(col('$') == col('.') ? 1 : 2)) ]
-      
-      if line =~ '^%\w\+'
-        return myutils#CompleteParen('<')
-      else
+      catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
         return ''
-      endif
-    endfunction
-    "}}}
-  endif
+      endtry
+    endif
+  endfunction
+  "}}}
+endif
+
+if !exists('*s:CompleteAngleBracket')
+  function! s:CompleteAngleBracket() "{{{
+    let line = getline('.')[ : (col('.')-(col('$') == col('.') ? 1 : 2)) ]
+
+    if line =~ '^%\w\+'
+      try
+        return myutils#CompleteParen('<')
+      catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+        return ''
+      endtry
+    else
+      return ''
+    endif
+  endfunction
+  "}}}
 endif
 
 if !exists('*s:IndentDelim')

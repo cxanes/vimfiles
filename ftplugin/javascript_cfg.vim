@@ -7,9 +7,10 @@ set cindent
 "===================================================================
 " Key Mappings {{{
 "-------------------------------------------------------------------
-if exists('*mapping#CompleteParen')
+try
   call mapping#CompleteParen('([')
-endif
+catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
+endtry
 
 if exists('*mapping#MoveTo')
   call mapping#MoveTo('[}\])]')
