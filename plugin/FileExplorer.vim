@@ -50,7 +50,7 @@ endfunction
 "}}}
 "}}}
 " Commands {{{
-command! -nargs=? -count=0 -complete=dir -bang FileExplorer call s:FileExplorer(<q-args>, <count>, <q-bang> == '!')
+command! -nargs=? -bar -count=0 -complete=dir -bang FileExplorer call s:FileExplorer(<q-args>, <count>, <q-bang> == '!')
 "}}}
 " Utilities {{{
 function! s:ShowMessage(mesg) "{{{
