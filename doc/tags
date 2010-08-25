@@ -1,3 +1,4 @@
+$cdir	pyclewn.txt	/*$cdir*
 'Tlist_Auto_Highlight_Tag'	taglist.txt	/*'Tlist_Auto_Highlight_Tag'*
 'Tlist_Auto_Open'	taglist.txt	/*'Tlist_Auto_Open'*
 'Tlist_Auto_Update'	taglist.txt	/*'Tlist_Auto_Update'*
@@ -75,6 +76,7 @@
 :IR	visincr.txt	/*:IR*
 :IX	visincr.txt	/*:IX*
 :MatchDebug	matchit.txt	/*:MatchDebug*
+:Pyclewn	pyclewn.txt	/*:Pyclewn*
 :RI	visincr.txt	/*:RI*
 :RID	visincr.txt	/*:RID*
 :RIDMY	visincr.txt	/*:RIDMY*
@@ -129,8 +131,16 @@ AV	alternate.txt	/*AV*
 Align-copyright	Align.txt	/*Align-copyright*
 Alph	latexhelp.txt	/*Alph*
 BibTeX	latexhelp.txt	/*BibTeX*
+C	pyclewn.txt	/*C*
 C-Reference	crefvim.txt	/*C-Reference*
+Ccommand	pyclewn.txt	/*Ccommand*
+Cdbgvar	pyclewn.txt	/*Cdbgvar*
+Cdelvar	pyclewn.txt	/*Cdelvar*
+Cfoldvar	pyclewn.txt	/*Cfoldvar*
+Cmapkeys	pyclewn.txt	/*Cmapkeys*
 ConqueTerm	conque_term.txt	/*ConqueTerm*
+Csetfmtvar	pyclewn.txt	/*Csetfmtvar*
+Csymcompletion	pyclewn.txt	/*Csymcompletion*
 DBI	dbext.txt	/*DBI*
 EnhComm-Bugs	EnhancedCommentify.txt	/*EnhComm-Bugs*
 EnhComm-Credits	EnhancedCommentify.txt	/*EnhComm-Credits*
@@ -511,6 +521,7 @@ array	latexhelp.txt	/*array*
 article-class	latexhelp.txt	/*article-class*
 asa	dbext.txt	/*asa*
 ase	dbext.txt	/*ase*
+async-option	pyclewn.txt	/*async-option*
 b:VCSCommandCommand	vcscommand.txt	/*b:VCSCommandCommand*
 b:VCSCommandOriginalBuffer	vcscommand.txt	/*b:VCSCommandOriginalBuffer*
 b:VCSCommandSourceFile	vcscommand.txt	/*b:VCSCommandSourceFile*
@@ -2060,6 +2071,7 @@ g:tlib_tag_substitute	tlib.txt	/*g:tlib_tag_substitute*
 g:tlib_tags_extra	tlib.txt	/*g:tlib_tags_extra*
 g:tlib_viewline_position	tlib.txt	/*g:tlib_viewline_position*
 g:visincr_datedivset	visincr.txt	/*g:visincr_datedivset*
+gdb-keys	pyclewn.txt	/*gdb-keys*
 headings	latexhelp.txt	/*headings*
 histwin-browse	histwin.txt	/*histwin-browse*
 histwin-color	histwin.txt	/*histwin-color*
@@ -2192,7 +2204,9 @@ plain	latexhelp.txt	/*plain*
 pre-lengths	latexhelp.txt	/*pre-lengths*
 project	project.txt	/*project*
 project-adding-mappings	project.txt	/*project-adding-mappings*
+project-command	pyclewn.txt	/*project-command*
 project-example	project.txt	/*project-example*
+project-file	pyclewn.txt	/*project-file*
 project-flags	project.txt	/*project-flags*
 project-inheritance	project.txt	/*project-inheritance*
 project-invoking	project.txt	/*project-invoking*
@@ -2231,6 +2245,18 @@ psc_statement_different_from_type	ps_color.txt	/*psc_statement_different_from_ty
 psc_style	ps_color.txt	/*psc_style*
 psc_use_default_for_cterm	ps_color.txt	/*psc_use_default_for_cterm*
 pscolor	ps_color.txt	/*pscolor*
+pyclewn	pyclewn.txt	/*pyclewn*
+pyclewn-console	pyclewn.txt	/*pyclewn-console*
+pyclewn-extending	pyclewn.txt	/*pyclewn-extending*
+pyclewn-gdb	pyclewn.txt	/*pyclewn-gdb*
+pyclewn-intro	pyclewn.txt	/*pyclewn-intro*
+pyclewn-mappings	pyclewn.txt	/*pyclewn-mappings*
+pyclewn-options	pyclewn.txt	/*pyclewn-options*
+pyclewn-starting	pyclewn.txt	/*pyclewn-starting*
+pyclewn-using	pyclewn.txt	/*pyclewn-using*
+pyclewn-variable	pyclewn.txt	/*pyclewn-variable*
+pyclewn-windows	pyclewn.txt	/*pyclewn-windows*
+pyclewn.txt	pyclewn.txt	/*pyclewn.txt*
 quotation	latexhelp.txt	/*quotation*
 quote-l	latexhelp.txt	/*quote-l*
 report-class	latexhelp.txt	/*report-class*
