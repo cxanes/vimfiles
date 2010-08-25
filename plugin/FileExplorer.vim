@@ -811,8 +811,13 @@ function! s:FileExplorer(dir, ...) " ... = max_level [0:Max_Create_Level], other
       endtry
       return
     endif
-    let path = expand('%:p:h')
-    let filename = substitute(expand('%:p'), '/$', '', '')
+    if &ft == 'netrw' && exists('b:netrw_curdir')
+      let path = b:netrw_curdir
+      let filename = path
+    else
+      let path = expand('%:p:h')
+      let filename = substitute(expand('%:p'), '/$', '', '')
+    endif
   elseif a:dir =~ '^//' && exists('*Bookmarks_GetPath') 
     let id = substitute(a:dir, '^//', '', '')
     let path = substitute(Bookmarks_GetPath(id), '[\\/]$', '', '') 

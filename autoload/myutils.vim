@@ -968,7 +968,7 @@ function! myutils#OpenFile(file) "{{{
 
 	if cmd != ''
 		silent exe '!' . cmd . ' ' . file
-		return 0
+    return v:shell_error == 0 ? 0 : 1
 	endif
 
 	return 1

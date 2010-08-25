@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-08-24 20:34:11
+" Last Modified: 2010-08-25 15:32:20
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1008,7 +1008,18 @@ endfunction
 
 " Change working directory to the directory of current file
 nnoremap <silent> <Leader>cd :<C-U>Cwd<CR>
-command! -bang -bar Cwd exe (<q-bang> == '!' ? 'l' : '') . 'cd ' . expand('%:p:h')
+command! -bang -bar Cwd call <SID>Cwd(<q-bang> == '!')
+
+function! s:Cwd(local) 
+    if &ft == 'netrw' && exists('b:netrw_curdir')
+      let path = b:netrw_curdir
+    else
+      let path = expand('%:p:h')
+    endif
+
+    let cd = a:local ? 'lcd' : 'cd'
+    exec cd path
+endfunction
 
 command! -bang Q  q<bang>
 command! -bang Qa qa<bang>
@@ -1051,7 +1062,7 @@ endfunction
 "}}}
 
 if exists("*mkdir")
-  command! -nargs=1 -bang Mkdir call mkdir(<q-args>, <q-bang> == '!' : 'p' ? '')
+  command! -nargs=1 -bang Mkdir call mkdir(<q-args>, <q-bang> == '!' ? 'p' : '')
 endif
 
 if s:MSWIN
@@ -1942,9 +1953,9 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   function! FileExplorer_OpenFunc(file) 
 		if a:file =~? '\.\%(jpg\|bmp\|png\|gif\)$'
       try
-        if myutils#ShowImage(a:file, 1) == 0
+        if myutils#OpenFile(a:file) == 0
           return 1
-        elseif myutils#OpenFile(a:file) == 0
+        elseif myutils#ShowImage(a:file, 1) == 0
           return 1
         endif
       catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
