@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-08-25 15:32:20
+" Last Modified: 2010-08-26 04:50:37
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -453,7 +453,8 @@ if has('gui_running')
     silent! set guifont=Consolas:h9:w5,courier_new:h10:w6
     " silent! set guifont=Monaco:h7.5:w5,courier_new:h10:w6
   else
-    silent! set guifont=Consolas\ 12,Courier\ 10\ Pitch\ 12
+    " silent! set guifont=Consolas\ 12,Courier\ 10\ Pitch\ 12
+    silent! set guifont=Courier\ 10\ Pitch\ 10,Monospace\ 10
   endif
 elseif &t_Co > 2
   if &t_Co < 16
