@@ -1,5 +1,5 @@
 " FileExplorer.vim
-" Last Modified: 2010-09-01 21:50:23
+" Last Modified: 2010-09-02 05:45:13
 "        Author: Frank Chang <frank.nevermind AT gmail.com>
 "
 " A tree view file browser.
@@ -483,7 +483,7 @@ function! s:OpenAllFolds(node, ...) " ... = max_level {{{
 endfunction
 "}}}
 function! s:MoveBetweenFolds(forward, cnt) "{{{
-  if !exists('b:_FileExplorer_lines')
+  if !exists('b:_FileExplorer_root')
     return
   endif
 
@@ -508,6 +508,84 @@ function! s:MoveBetweenFolds(forward, cnt) "{{{
     endif
     let line += inc
   endwhile
+endfunction
+"}}}
+function! s:MoveBetweenSameLevelFolds(forward, cnt) "{{{
+  if !exists('b:_FileExplorer_root')
+    return
+  endif
+
+  if a:cnt == 0
+    return
+  endif
+
+  let line = line('.')
+  let node = s:GetNode(line)
+
+  if Node#IsNullNode(node) || node.nodeName == 'root'
+    return
+  endif
+
+  if node.nodeName == 'leaf'
+    let node = node.parentNode
+  endif
+
+  if Node#IsNullNode(node) || node.nodeName == 'root'
+    return
+  endif
+
+  let parent_node = node.parentNode
+
+  if Node#IsNullNode(parent_node)
+    return
+  endif
+
+  let childNodes = parent_node.childNodes
+
+  let index = 0
+  for child in childNodes
+    if child is node
+      break
+    endif
+    let index += 1
+  endfor
+
+  let lnum = -1
+  let cnt = a:cnt
+
+  while 1
+    if a:forward
+      let index += 1
+      if index >= len(childNodes)
+        break
+      endif
+    else
+      let index -= 1
+      if index < 0
+        break
+      endif
+    endif
+
+    let node = childNodes[index]
+
+    if node.nodeName == 'node'
+      let lnum = node.attributes.line
+      let cnt -= 1
+      if cnt <= 0
+        break
+      endif
+    endif
+  endwhile
+
+  if lnum == -1
+    return
+  endif
+
+  if exists('b:_FileExplorer_help_endlnum')
+    let lnum += b:_FileExplorer_help_endlnum
+  endif
+
+  call cursor(lnum, 1)
 endfunction
 "}}}
 "}}}
@@ -908,6 +986,8 @@ function! s:ShowHelp(...)  " ... = show [0:don't show|1:show|-1(default)] {{{
     let usage .= "\"  [N]zO : Open N level folds under the cursor (default is highest level)\n"
     let usage .= "\"  zj : Move downwards to the next fold\n"
     let usage .= "\"  zk : Move upwards to the previous fold\n"
+    let usage .= "\"  zJ : Move downwards to the next fold of same level\n"
+    let usage .= "\"  zK : Move upwards to the previous fold of same level\n"
     let usage .= "\"  z<CR> : Refresh and goto root line\n"
     let usage .= "\"  r : Refresh\n"
     let usage .= "\"  R : Make root\n"
@@ -1215,6 +1295,8 @@ function! s:InitMappings() "{{{
   nnoremap <buffer> <silent> zO :<C-U>call <SID>OpenAllFolds(<SID>GetNode(line('.')), v:count)<CR>
   nnoremap <buffer> <silent> zj :<C-U>call <SID>MoveBetweenFolds(1, v:count1)<CR>
   nnoremap <buffer> <silent> zk :<C-U>call <SID>MoveBetweenFolds(0, v:count1)<CR>
+  nnoremap <buffer> <silent> zJ :<C-U>call <SID>MoveBetweenSameLevelFolds(1, v:count1)<CR>
+  nnoremap <buffer> <silent> zK :<C-U>call <SID>MoveBetweenSameLevelFolds(0, v:count1)<CR>
 
   nnoremap <buffer> <silent> z<CR> :<C-U>exec v:count . 'Refresh'<CR>:call <SID>GotoRootLine()<CR>
   nnoremap <buffer> <silent> r     :<C-U>exec v:count . 'Refresh'<CR>
