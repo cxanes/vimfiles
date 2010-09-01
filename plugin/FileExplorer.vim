@@ -1,5 +1,5 @@
 " FileExplorer.vim
-" Last Modified: 2009-03-14 17:15:42
+" Last Modified: 2010-09-01 21:50:23
 "        Author: Frank Chang <frank.nevermind AT gmail.com>
 "
 " A tree view file browser.
@@ -898,6 +898,7 @@ function! s:ShowHelp(...)  " ... = show [0:don't show|1:show|-1(default)] {{{
     let usage .= "\"  g<Tab> : Open file in new window\n"
     let usage .= "\"  t : Open file in new tabpage and focus\n"
     let usage .= "\"  T : Open file in new tabpage\n"
+    let usage .= "\"  F : Fine file in previous window\n"
     let usage .= "\"  zc : Close one fold\n"
     let usage .= "\"  zo : Open one fold\n"
     let usage .= "\"  za : Toggle one fold\n"
@@ -961,6 +962,8 @@ function! s:InitCommands() "{{{
   command! -buffer Info echo s:GetNodeInfo(s:GetNode(line('.')))
 
   command! -buffer -nargs=0 Cwd call s:Cwd(s:GetNode(line('.')))
+
+  command! -buffer -nargs=? -complete=file FindFile call s:FindFile(<q-args>)
 
   if exists('*s:Bookmark')
     command! -buffer -nargs=* -bang -complete=file 
@@ -1192,6 +1195,8 @@ function! s:InitMappings() "{{{
   nnoremap <buffer> <silent> t      :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 2, 1)<CR>
   nnoremap <buffer> <silent> T      :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 2, 0)<CR>
 
+  nnoremap <buffer> <silent> F      :<C-U>call <SID>FindFile('')<CR>
+
   if exists('*s:Bookmark')
     nnoremap <buffer> <silent> gb :<C-U>call <SID>Bookmark(v:count, '')<CR>
   endif
@@ -1265,6 +1270,62 @@ function! s:InitHighlight() "{{{
   highlight default link TreeIcon Comment
   highlight default link FileSymlink Function
   highlight default link FileExplorerHelp Comment
+endfunction
+"}}}
+function! s:FindFile(path) "{{{
+  if !exists('b:_FileExplorer_root')
+    return
+  endif
+
+  let root_path = b:_FileExplorer_root.nodeValue
+
+  if (empty(a:path))
+    wincmd p
+    let path = s:Fullpath(expand('%'))
+    wincmd p
+  else
+    let path = s:Fullpath(a:path)
+  endif
+
+  let index = matchend(path, '^\V' . escape(root_path, '\'))
+  if index == -1
+    call s:ShowMessage('FileExplorer: Cannot find file under current root')
+    return
+  endif
+
+  let tail = path[index : ]
+
+  let node = b:_FileExplorer_root
+  let path = root_path
+
+  for term in split(tail, '/')
+    let path .= '/' . term
+
+    let found = 0
+    for child in node.childNodes
+      if child.nodeValue == path
+        if child.nodeName == 'leaf'
+          let pos = getpos('.')
+          let pos[1] = get(child.attributes, 'line', 1)
+          if exists('b:_FileExplorer_help_endlnum')
+            let pos[1] += b:_FileExplorer_help_endlnum
+          endif
+          call setpos('.', pos)
+          return
+        endif
+
+        call s:OpenFold(child)
+        let node = child
+        let found = 1
+        break
+      endif
+    endfor
+
+    if found == 0
+      call s:ShowMessage('FileExplorer: Cannot show given path (nonexistent or hidden)')
+      return
+    endif
+  endfor
 endfunction
 "}}}
 "========================================================
