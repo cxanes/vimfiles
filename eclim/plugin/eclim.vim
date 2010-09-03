@@ -9,7 +9,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -31,41 +31,31 @@ if !exists("g:EclimLogLevel")
   let g:EclimLogLevel = 4
 endif
 
-if !exists("g:EclimSignLevel")
-  if has("signs")
+if !exists("g:EclimTraceHighlight")
+  let g:EclimTraceHighlight = "Normal"
+endif
+if !exists("g:EclimDebugHighlight")
+  let g:EclimDebugHighlight = "Normal"
+endif
+if !exists("g:EclimInfoHighlight")
+  let g:EclimInfoHighlight = "Statement"
+endif
+if !exists("g:EclimWarningHighlight")
+  let g:EclimWarningHighlight = "WarningMsg"
+endif
+if !exists("g:EclimErrorHighlight")
+  let g:EclimErrorHighlight = "Error"
+endif
+if !exists("g:EclimFatalHighlight")
+  let g:EclimFatalHighlight = "Error"
+endif
+
+if has("signs")
+  if !exists("g:EclimSignLevel")
     let g:EclimSignLevel = 5
-  else
-    let g:EclimSignLevel = 0
   endif
-endif
-
-if !exists("g:EclimShowCurrentError")
-  let g:EclimShowCurrentError = 1
-endif
-
-if !exists("g:EclimShowCurrentErrorBalloon")
-  let g:EclimShowCurrentErrorBalloon = 1
-endif
-
-if !exists("g:EclimMakeLCD")
-  let g:EclimMakeLCD = 1
-endif
-
-if !exists("g:EclimMakeQfFilter")
-  let g:EclimMakeQfFilter = 1
-endif
-
-if !exists("g:EclimIndent")
-  if !&expandtab
-    let g:EclimIndent = "\t"
-  else
-    let g:EclimIndent = ""
-    let index = 0
-    while index < &shiftwidth
-      let g:EclimIndent = g:EclimIndent . " "
-      let index = index + 1
-    endwhile
-  endif
+else
+  let g:EclimSignLevel = 0
 endif
 
 if !exists("g:EclimSeparator")
@@ -89,39 +79,57 @@ if !exists("g:EclimTempDir")
   let g:EclimTempDir = substitute(g:EclimTempDir, '\', '/', 'g')
 endif
 
-if !exists("g:EclimTraceHighlight")
-  let g:EclimTraceHighlight = "Normal"
-endif
-if !exists("g:EclimDebugHighlight")
-  let g:EclimDebugHighlight = "Normal"
-endif
-if !exists("g:EclimInfoHighlight")
-  let g:EclimInfoHighlight = "Statement"
-endif
-if !exists("g:EclimWarningHighlight")
-  let g:EclimWarningHighlight = "WarningMsg"
-endif
-if !exists("g:EclimErrorHighlight")
-  let g:EclimErrorHighlight = "Error"
-endif
-if !exists("g:EclimFatalHighlight")
-  let g:EclimFatalHighlight = "Error"
+if !exists("g:EclimShowCurrentError")
+  let g:EclimShowCurrentError = 1
 endif
 
-if !exists("g:EclimEchoErrorHighlight")
-  let g:EclimEchoErrorHighlight = "Error"
+if !exists("g:EclimShowCurrentErrorBalloon")
+  let g:EclimShowCurrentErrorBalloon = 1
+endif
+
+if !exists("g:EclimValidateSortResults")
+  let g:EclimValidateSortResults = 'occurrence'
+endif
+
+if !exists("g:EclimDefaultFileOpenAction")
+  let g:EclimDefaultFileOpenAction = 'split'
+endif
+
+if !exists("g:EclimMakeLCD")
+  let g:EclimMakeLCD = 1
+endif
+
+if !exists("g:EclimMakeQfFilter")
+  let g:EclimMakeQfFilter = 1
+endif
+
+if !exists("g:EclimHome")
+  " set at build/install time.
+  "${vim.eclim.home}"
+  if has('win32unix')
+    let g:EclimHome = eclim#cygwin#CygwinPath(g:EclimHome)
+  endif
+endif
+if !exists("g:EclimEclipseHome")
+  " set at build/install time.
+  "${vim.eclipse.home}"
+  if has('win32unix')
+    let g:EclimEclipseHome = eclim#cygwin#CygwinPath(g:EclimEclipseHome)
+  endif
 endif
 " }}}
 
 " Command Declarations {{{
 if !exists(":PingEclim")
-  command PingEclim :call eclim#PingEclim(1)
+  command -nargs=? -complete=customlist,eclim#eclipse#CommandCompleteWorkspaces
+    \ PingEclim :call eclim#PingEclim(1, '<args>')
 endif
 if !exists(":ShutdownEclim")
   command ShutdownEclim :call eclim#ShutdownEclim()
 endif
 if !exists(":EclimSettings")
-  command -nargs=0 EclimSettings :call eclim#Settings()
+  command -nargs=? -complete=customlist,eclim#eclipse#CommandCompleteWorkspaces
+    \ EclimSettings :call eclim#Settings('<args>')
 endif
 if !exists(":PatchEclim")
   command -nargs=+ -complete=customlist,eclim#CommandCompleteScriptRevision
@@ -144,10 +152,10 @@ endif
 
 " Auto Commands{{{
 
-if g:EclimShowCurrentError && has('signs')
+if g:EclimShowCurrentError
   augroup eclim_show_error
     autocmd!
-    autocmd CursorHold * call eclim#util#ShowCurrentError()
+    autocmd CursorMoved * call eclim#util#ShowCurrentError()
   augroup END
 endif
 
@@ -163,7 +171,7 @@ if g:EclimMakeLCD
       \ if g:EclimMakeLCD | call <SID>QuickFixLocalChangeDirectory() | endif
     autocmd QuickFixCmdPost make
       \ if g:EclimMakeLCD && exists('w:quickfix_dir') |
-      \   exec "lcd " . w:quickfix_dir |
+      \   exec 'lcd ' . escape(w:quickfix_dir, ' ') |
       \ endif
   augroup END
 endif
@@ -178,18 +186,23 @@ if g:EclimMakeQfFilter
   augroup END
 endif
 
-augroup eclim_qf
-  autocmd QuickFixCmdPost *make* call <SID>Show('', 'qf')
-  autocmd QuickFixCmdPost grep*,vimgrep* call <SID>Show('i', 'qf')
-  autocmd QuickFixCmdPost lgrep*,lvimgrep* call <SID>Show('i', 'loc')
-  autocmd BufWinEnter * call eclim#display#signs#Update()
-augroup END
+if g:EclimSignLevel
+  augroup eclim_qf
+    autocmd QuickFixCmdPost *make* call eclim#display#signs#Show('', 'qf')
+    autocmd QuickFixCmdPost grep*,vimgrep* call eclim#display#signs#Show('i', 'qf')
+    autocmd QuickFixCmdPost lgrep*,lvimgrep* call eclim#display#signs#Show('i', 'loc')
+    autocmd BufWinEnter * call eclim#display#signs#Update()
+  augroup END
+endif
 
 if has('netbeans_intg')
   augroup eclim_vimplugin
-    " autocommand used to work around the fact that the "unmodified" event
-    " in vim's netbean support is commentted out for some reason.
+    " autocommands used to work around the fact that the "unmodified" event in
+    " vim's netbean support is commentted out for some reason.
     autocmd BufWritePost * call eclim#vimplugin#BufferWritten()
+    autocmd CursorHold * call eclim#vimplugin#BufferUnmodified()
+    autocmd CursorHold * call eclim#vimplugin#BufferUnmodified()
+    autocmd BufWinLeave * call eclim#vimplugin#BufferClosed()
   augroup END
 endif
 " }}}
@@ -203,43 +216,8 @@ function! s:QuickFixLocalChangeDirectory()
     if dir == ''
       let dir = substitute(expand('%:p:h'), '\', '/', 'g')
     endif
-    exec 'lcd ' . dir
+    exec 'lcd ' . escape(dir, ' ')
   endif
-endfunction " }}}
-
-" Show(type,list) {{{
-" Set the type on each entry in the specified list and mark any matches in the
-" current file.
-function! s:Show(type, list)
-  if a:type != ''
-    if a:list == 'qf'
-      let list = getqflist()
-    else
-      let list = getloclist(0)
-    endif
-
-    let newentries = []
-    for entry in list
-      let newentry = {
-          \ 'filename': bufname(entry.bufnr),
-          \ 'lnum': entry.lnum,
-          \ 'col': entry.col,
-          \ 'text': entry.text,
-          \ 'type': a:type
-        \ }
-      call add(newentries, newentry)
-    endfor
-
-    if a:list == 'qf'
-      call setqflist(newentries, 'r')
-    else
-      call setloclist(0, newentries, 'r')
-    endif
-  endif
-
-  call eclim#display#signs#Update()
-
-  redraw!
 endfunction " }}}
 
 " vim:ft=vim:fdm=marker

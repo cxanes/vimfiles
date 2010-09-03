@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/php/index.html
+"   see http://eclim.org/vim/php/index.html
 "
 " License:
 "
@@ -43,7 +43,7 @@ augroup eclim_html_validate
 augroup END
 
 augroup eclim_php
-  autocmd!
+  autocmd! BufWritePost <buffer>
   autocmd BufWritePost <buffer> call eclim#php#util#UpdateSrcFile(0)
 augroup END
 
@@ -53,14 +53,12 @@ augroup END
 
 command! -nargs=0 -buffer Validate :call eclim#php#util#UpdateSrcFile(1)
 
-if !exists(":PhpFindDefinition")
-  command -buffer PhpFindDefinition :call eclim#php#search#FindDefinition('declarations')
-endif
 if !exists(":PhpSearch")
   command -buffer -nargs=*
     \ -complete=customlist,eclim#php#search#CommandCompletePhpSearch
     \ PhpSearch :call eclim#php#search#Search('<args>')
 endif
+
 if !exists(":PhpSearchContext")
   command -buffer PhpSearchContext :call eclim#php#search#SearchContext()
 endif

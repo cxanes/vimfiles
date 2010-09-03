@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/common/vcs.html
+"   see http://eclim.org/vim/common/vcs.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -27,6 +27,14 @@ if !exists('g:eclim_vcs_git_loaded')
 else
   finish
 endif
+
+" Autocmds {{{
+
+augroup vcs_git
+  autocmd BufReadCmd index_blob_* call <SID>ReadIndex()
+augroup END
+
+" }}}
 
 " Script Variables {{{
   let s:trackerIdPattern = join(eclim#vcs#command#EclimVcsTrackerIdPatterns, '\|')
@@ -52,8 +60,9 @@ function! eclim#vcs#impl#git#GetAnnotations(revision)
 
   let annotations = split(result, '\n')
   call map(annotations,
-      \ "substitute(v:val, '\\(.\\{-}\\)\\s\\+(\\s*\\(.\\{-}\\)\\s\\+\\(.\\{-}\\)\\s\\+[0-9]\\+).*', '\\1 (\\3) \\2', '')")
+      \ "substitute(v:val, '\\(.\\{-}\\)\\s\\+(\\s*\\(.\\{-}\\)\\s\\+\\(\\d\\{4}-\\d\\{2}\-\\d\\{2}\\s.\\{-}\\)\\s\\+[0-9]\\+).*', '\\1 (\\3) \\2', '')")
   " substitute(v:val, '\\(.\\{-}\\)\\s\\+(.*', '\\2 (\\3) \\1', '')")
+  call map(annotations, "v:val =~ '^0\\{5,}' ? 'uncommitted' : v:val")
 
   return annotations
 endfunction " }}}
@@ -70,24 +79,22 @@ endfunction " }}}
 
 " GetPreviousRevision([file, revision]) {{{
 function eclim#vcs#impl#git#GetPreviousRevision(...)
-  let revision = ''
+  let revision = 'HEAD'
   if len(a:000)
     let path = fnamemodify(a:000[0], ':t')
-    let revision = a:000[1]
+    if a:000[1] != ''
+      let revision = a:000[1]
+    endif
   else
     let path = expand('%:t')
   endif
 
-  let cmd = 'log --pretty=oneline -2 ' . revision . ' "' . path . '"'
-  let log = eclim#vcs#impl#git#Git(cmd)
-  if type(log) == 0
+  let cmd = 'rev-list -n 1 --skip=1 ' . revision . ' "' . path . '"'
+  let prev = eclim#vcs#impl#git#Git(cmd)
+  if type(prev) == 0
     return
   endif
-  let revisions = split(log, '\n')
-  if len(revisions) > 1
-    return substitute(revisions[1], '\(.\{-}\)\s.*', '\1', '')
-  endif
-  return 0
+  return substitute(prev, '\n', '', 'g')
 endfunction " }}}
 
 " GetRevision(file) {{{
@@ -99,22 +106,26 @@ function eclim#vcs#impl#git#GetRevision(file)
     \ fnamemodify(a:file, ':p:h'), fnamemodify(a:file, ':p:t'))
   let path = substitute(path, '^/', '', '')
   exec 'lcd ' . escape(root, ' ')
-  let log = eclim#vcs#impl#git#Git('log --pretty=oneline -1 "' . path . '"')
-  if type(log) == 0
+
+  " kind of a hack to support diffs against git's staging (index) area.
+  if path =~ '\<index_blob_[a-z0-9]\{40}_'
+    let path = substitute(path, '\<index_blob_[a-z0-9]\{40}_', '', '')
+  endif
+
+  let rev = eclim#vcs#impl#git#Git('rev-list -n 1 HEAD "' . path . '"')
+  if type(rev) == 0
     return
   endif
-  return substitute(log, '\(.\{-}\)\s.*', '\1', '')
+  return substitute(rev, '\n', '', '')
 endfunction " }}}
 
 " GetRevisions() {{{
 function eclim#vcs#impl#git#GetRevisions()
-  let log = eclim#vcs#impl#git#Git('log --pretty=oneline "' . expand('%:t') . '"')
-  if type(log) == 0
+  let revs = eclim#vcs#impl#git#Git('rev-list HEAD "' . expand('%:t') . '"')
+  if type(revs) == 0
     return
   endif
-  let revisions = split(log, '\n')
-  call map(revisions, "substitute(v:val, '\\(.\\{-}\\)\\s.*', '\\1', '')")
-  return revisions
+  return split(revs, '\n')
 endfunction " }}}
 
 " GetRoot() {{{
@@ -128,13 +139,60 @@ function eclim#vcs#impl#git#GetRoot()
   return root
 endfunction " }}}
 
+" GetInfo() {{{
+function eclim#vcs#impl#git#GetInfo()
+  let info = eclim#vcs#impl#git#Git('branch')
+  if info == '0'
+    return ''
+  endif
+  let info = 'git:' . substitute(info, '.*\*\s*\(.\{-}\)\(\n.*\|$\)', '\1', 'g')
+  return info
+endfunction " }}}
+
 " GetEditorFile() {{{
 function eclim#vcs#impl#git#GetEditorFile()
   let line = getline('.')
   if line =~ '^#\s*modified:.*'
-    return substitute(line, '^#\s*modified:\s\+\(.*\)\s*', '\1', '')
+    let file = substitute(line, '^#\s*modified:\s\+\(.*\)\s*', '\1', '')
+    if search('#\s\+Changed but not updated:', 'nw') > line('.')
+      let result = eclim#vcs#impl#git#Git('diff --full-index --cached "' . file . '"')
+      let lines = split(result, "\n")[:5]
+      call filter(lines, 'v:val =~ "^index \\w\\+\\.\\.\\w\\+"')
+      if len(lines)
+        let index = substitute(lines[0], 'index \w\+\.\.\(\w\+\)\s.*', '\1', '')
+
+        " kind of hacky but so far only git has a staging area, so return a
+        " filename indicating the index blob version of the file which will
+        " trigger an autocmd above that will populate the contents.
+        let path = fnamemodify(file, ':h')
+        let path .= path != '' ? '/' : ''
+        return path . 'index_blob_' . index . '_' . fnamemodify(file, ':t')
+      endif
+    endif
+    return file
+  elseif line =~ '^#\s*new file:.*'
+    return substitute(line, '^#\s*new file:\s\+\(.*\)\s*', '\1', '')
   endif
   return ''
+endfunction " }}}
+
+" GetModifiedFiles() {{{
+function eclim#vcs#impl#git#GetModifiedFiles()
+  let root = eclim#vcs#impl#git#GetRoot()
+  let status = eclim#vcs#impl#git#Git('diff --name-status HEAD')
+  let files = []
+  for file in split(status, "\n")
+    if file !~ '^[AM]\s\+'
+      continue
+    endif
+    let file = substitute(file, '^[AM]\s\+', '', '')
+    call add(files, root . '/' . file)
+  endfor
+
+  let untracked = eclim#vcs#impl#git#Git('ls-files --others --exclude-standard')
+  let files += map(split(untracked, "\n"), 'root . "/" . v:val')
+
+  return files
 endfunction " }}}
 
 " GetVcsWebPath() {{{
@@ -257,6 +315,12 @@ function! eclim#vcs#impl#git#ViewFileRevision(path, revision)
   let path = substitute(path, '^/', '', '')
   let root = eclim#vcs#impl#git#GetRoot()
   exec 'lcd ' . escape(root, ' ')
+
+  " kind of a hack to support diffs against git's staging (index) area.
+  if path =~ '\<index_blob_[a-z0-9]\{40}_'
+    let path = substitute(path, '\<index_blob_[a-z0-9]\{40}_', '', '')
+  endif
+
   let result = eclim#vcs#impl#git#Git('show "' . a:revision . ':' . path . '"')
   return split(result, '\n')
 endfunction " }}}
@@ -297,6 +361,25 @@ function! s:ParseGitLog(lines)
     endif
   endfor
   return log
+endfunction " }}}
+
+" s:ReadIndex() {{{
+" Used to read a file with the name index_blob_<index hash>_<filename>, for
+" use by the git editor diff support.
+function! s:ReadIndex()
+  if !filereadable(expand('%'))
+    let path = eclim#vcs#impl#git#GetRelativePath(expand('%:p:h'), expand('%:t'))
+    let path = substitute(path, '^/', '', '')
+    let root = eclim#vcs#impl#git#GetRoot()
+    exec 'lcd ' . escape(root, ' ')
+    let index = substitute(path, '.*\<index_blob_\([a-z0-9]\{40}\)_.*', '\1', '')
+    let path = substitute(path, '\<index_blob_[a-z0-9]\{40}_', '', '')
+    let result = eclim#vcs#impl#git#Git('show ' . index)
+    call append(1, split(result, "\n"))
+  else
+    read %
+  endif
+  1,1delete _
 endfunction " }}}
 
 " vim:ft=vim:fdm=marker

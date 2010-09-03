@@ -4,7 +4,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ function! eclim#common#history#AddHistory()
   endif
 
   let project = eclim#project#util#GetCurrentProjectName()
-  let file = eclim#project#util#GetProjectRelativeFilePath(expand('%:p'))
+  let file = eclim#project#util#GetProjectRelativeFilePath()
   let command = s:command_add
   let command = substitute(command, '<project>', project, '')
   let command = substitute(command, '<file>', file, '')
@@ -59,7 +59,7 @@ function! eclim#common#history#History()
   endif
 
   let project = eclim#project#util#GetCurrentProjectName()
-  let file = eclim#project#util#GetProjectRelativeFilePath(expand('%:p'))
+  let file = eclim#project#util#GetProjectRelativeFilePath()
   let command = s:command_list
   let command = substitute(command, '<project>', project, '')
   let command = substitute(command, '<file>', file, '')
@@ -71,20 +71,47 @@ function! eclim#common#history#History()
   let history = eval(result)
   let lines = [file]
   let revisions = [0]
+  let indent = eclim#util#GetIndent(1)
   for rev in history
-    call add(lines, g:EclimIndent . rev.datetime . ' (' . rev.delta . ')')
+    call add(lines, indent . rev.datetime . ' (' . rev.delta . ')')
     call add(revisions, rev.timestamp)
   endfor
   call add(lines, '')
-  call add(lines, 'v: view  d: diff  r: revert  c: clear')
   call eclim#util#TempWindow('[History]', lines)
 
-  let b:history_revisions = revisions
+  setlocal modifiable noreadonly
+  call append(line('$'), '" use ? to view help')
+  setlocal nomodifiable readonly
+  syntax match Comment /^".*/
 
-  noremap <buffer> <silent> v :call <SID>View()<cr>
+  let b:history_revisions = revisions
+  call s:Syntax()
+
+  command! -count=1 HistoryDiffNext call s:DiffNextPrev(1, <count>)
+  command! -count=1 HistoryDiffPrev call s:DiffNextPrev(-1, <count>)
+  augroup eclim_history_window
+    autocmd! BufWinLeave <buffer>
+    autocmd BufWinLeave <buffer>
+      \ delcommand HistoryDiffNext |
+      \ delcommand HistoryDiffPrev
+  augroup END
+  noremap <buffer> <silent> <cr> :call <SID>View()<cr>
   noremap <buffer> <silent> d :call <SID>Diff()<cr>
   noremap <buffer> <silent> r :call <SID>Revert()<cr>
   noremap <buffer> <silent> c :call <SID>Clear(1)<cr>
+
+  " assign to buffer var to get around weird vim issue passing list containing
+  " a string w/ a '<' in it on execution of mapping.
+  let b:history_help = [
+      \ '<cr> - view the entry',
+      \ 'd - diff the file with the version under the cursor',
+      \ 'r - revert the file to the version under the cursor',
+      \ 'c - clear the history',
+      \ ':HistoryDiffNext - diff the file with the next version in the history',
+      \ ':HistoryDiffPrev - diff the file with the previous version in the history',
+    \ ]
+  nnoremap <buffer> <silent> ?
+    \ :call eclim#help#BufferHelp(b:history_help, 'vertical', 50)<cr>
 endfunction " }}}
 
 " HistoryClear(bang) {{{
@@ -105,11 +132,12 @@ function s:View(...)
   endif
 
   let current = b:filename
-  let revision = b:history_revisions[line('.') - 1]
+  let entry = line('.') - 1
+  let revision = b:history_revisions[entry]
   if eclim#util#GoToBufferWindow(current)
     let filetype = &ft
     let project = eclim#project#util#GetCurrentProjectName()
-    let file = eclim#project#util#GetProjectRelativeFilePath(expand('%:p'))
+    let file = eclim#project#util#GetProjectRelativeFilePath()
     let command = s:command_revision
     let command = substitute(command, '<project>', project, '')
     let command = substitute(command, '<file>', file, '')
@@ -125,12 +153,15 @@ function s:View(...)
     setlocal modifiable
     setlocal noreadonly
 
-    let saved = @"
-    let @" = result
-    silent 1,$delete _
-    silent put "
-    silent 1,1delete _
-    let @" = saved
+    let temp = tempname()
+    call writefile(split(result, '\n'), temp)
+    try
+      silent 1,$delete _
+      silent read ++edit `=temp`
+      silent 1,1delete _
+    finally
+      call delete(temp)
+    endtry
 
     exec 'setlocal filetype=' . filetype
     setlocal nomodified
@@ -142,7 +173,11 @@ function s:View(...)
     setlocal bufhidden=delete
     doautocmd BufReadPost
 
+    call s:HighlightEntry(entry)
+
     return 1
+  else
+    call eclim#util#EchoWarning('Target file is no longer open.')
   endif
 endfunction " }}}
 
@@ -150,9 +185,23 @@ endfunction " }}}
 " Diff the contents of the revision under the cursor against the current
 " contents.
 function s:Diff()
+  let hist_buf = bufnr('%')
+  let winend = winnr('$')
+  let winnum = 1
+  while winnum <= winend
+    let bufnr = winbufnr(winnum)
+    if getbufvar(bufnr, 'history_diff') != ''
+      exec bufnr . 'bd'
+      continue
+    endif
+    let winnum += 1
+  endwhile
+  call eclim#util#GoToBufferWindow(hist_buf)
+
   let current = b:filename
-  let orien = g:EclimHistoryDiffOrientation == 'horizontal' ? '' : 'vertical '
-  if s:View(orien . 'split')
+  let orien = g:EclimHistoryDiffOrientation == 'horizontal' ? '' : 'vertical'
+  if s:View(orien . ' below split')
+    let b:history_diff = 1
     diffthis
     augroup history_diff
       autocmd! BufWinLeave <buffer>
@@ -162,6 +211,23 @@ function s:Diff()
 
     call eclim#util#GoToBufferWindow(current)
     diffthis
+  endif
+endfunction " }}}
+
+" s:DiffNextPrev(dir, count) {{{
+function s:DiffNextPrev(dir, count)
+  let winnr = winnr()
+  if eclim#util#GoToBufferWindow('[History]')
+    let num = v:count > 0 ? v:count : a:count
+    let cur = exists('b:history_current_entry') ? b:history_current_entry : 0
+    let index = cur + (a:dir * num)
+    if index < 0 || index > len(b:history_revisions)
+      call eclim#util#EchoError('Operation exceeds history stack range.')
+      exec winnr . 'winc w'
+      return
+    endif
+    call cursor(index + 1, 0)
+    call s:Diff()
   endif
 endfunction " }}}
 
@@ -176,7 +242,7 @@ function s:Revert()
   let revision = b:history_revisions[line('.') - 1]
   if eclim#util#GoToBufferWindow(current)
     let project = eclim#project#util#GetCurrentProjectName()
-    let file = eclim#project#util#GetProjectRelativeFilePath(expand('%:p'))
+    let file = eclim#project#util#GetProjectRelativeFilePath()
     let command = s:command_revision
     let command = substitute(command, '<project>', project, '')
     let command = substitute(command, '<file>', file, '')
@@ -186,12 +252,24 @@ function s:Revert()
       return
     endif
 
-    let saved = @"
-    let @" = result
-    silent 1,$delete _
-    silent put "
-    silent 1,1delete _
-    let @" = saved
+    let ff = &ff
+    let temp = tempname()
+    call writefile(split(result, '\n'), temp)
+    try
+      silent 1,$delete _
+      silent read ++edit `=temp`
+      silent 1,1delete _
+    finally
+      call delete(temp)
+    endtry
+
+    if ff != &ff
+      call eclim#util#EchoWarning(
+        \ "Warning: the file format is being reverted from '" . ff . "' to '" .
+        \ &ff . "'. Using vim's undo will not restore the previous format so " .
+        \ "if you choose to undo the reverting of this file, you will need to " .
+        \ "manually set the file format back to " . ff . " (set ff=" . ff . ").")
+    endif
   endif
 endfunction " }}}
 
@@ -220,6 +298,30 @@ function s:Clear(prompt, ...)
       quit
     endif
     call eclim#util#Echo(result)
+  endif
+endfunction " }}}
+
+" s:Syntax() {{{
+function! s:Syntax()
+  set ft=eclim_history
+  hi link HistoryFile Identifier
+  hi link HistoryCurrentEntry Constant
+  syntax match HistoryFile /.*\%1l.*/
+  syntax match Comment /^".*/
+endfunction " }}}
+
+" s:HighlightEntry(index) {{{
+function s:HighlightEntry(index)
+  let winnr = winnr()
+  if eclim#util#GoToBufferWindow('[History]')
+    let b:history_current_entry = a:index
+    try
+      " forces reset of syntax
+      call s:Syntax()
+      exec 'syntax match HistoryCurrentEntry /.*\%' . (a:index + 1) . 'l.*/'
+    finally
+      exec winnr . 'winc w'
+    endtry
   endif
 endfunction " }}}
 

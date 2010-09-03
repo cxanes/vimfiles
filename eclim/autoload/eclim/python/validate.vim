@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/python/validate.html
+"   see http://eclim.org/vim/python/validate.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -22,9 +22,19 @@
 "
 " }}}
 
+" Global Variables {{{
+  " if the user has the pyflakes plugin from vim.org, then disable our
+  " validation since the two overlap and may result in errors
+  let s:pyflakes_enabled = 1
+  if exists('g:pyflakes_builtins')
+    let s:pyflakes_enabled = 0
+  endif
+" }}}
+
 " Script Variables {{{
   let s:warnings = '\(' . join([
       \ 'imported but unused',
+      \ 'local variable .* assigned to but never used',
     \ ], '\|') . '\)'
 " }}}
 
@@ -43,17 +53,19 @@ function! eclim#python#validate#Validate(on_save)
   let syntax_error = eclim#python#validate#ValidateSyntax()
 
   if syntax_error == ''
-    if !executable('pyflakes')
-      if !exists('g:eclim_python_pyflakes_warn')
-        call eclim#util#EchoWarning("Unable to find 'pyflakes' command.")
-        let g:eclim_python_pyflakes_warn = 1
-      endif
-    else
-      let command = 'pyflakes "' . expand('%:p') . '"'
-      let results = split(eclim#util#System(command), '\n')
-      if v:shell_error > 1 " pyflakes returns 1 if there where warnings.
-        call eclim#util#EchoError('Error running command: ' . command)
-        let results = []
+    if s:pyflakes_enabled
+      if !executable('pyflakes')
+        if !exists('g:eclim_python_pyflakes_warn')
+          call eclim#util#EchoWarning("Unable to find 'pyflakes' command.")
+          let g:eclim_python_pyflakes_warn = 1
+        endif
+      else
+        let command = 'pyflakes "' . expand('%:p') . '"'
+        let results = split(eclim#util#System(command), '\n')
+        if v:shell_error > 1 " pyflakes returns 1 if there where warnings.
+          call eclim#util#EchoError('Error running command: ' . command)
+          let results = []
+        endif
       endif
     endif
 
@@ -61,8 +73,8 @@ function! eclim#python#validate#Validate(on_save)
     " currently too slow for running on every save.
     if eclim#project#util#IsCurrentFileInProject(0) && !a:on_save
       let project = eclim#project#util#GetCurrentProjectRoot()
-      let filename = eclim#project#util#GetProjectRelativeFilePath(expand('%:p'))
-      let rope_results = eclim#python#rope#Validate(project, filename)
+      let file = eclim#project#util#GetProjectRelativeFilePath()
+      let rope_results = eclim#python#rope#Validate(project, file)
       " currently rope gets confused with iterator var on list comprehensions
       let rope_results = filter(rope_results, "v:val !~ '^Unresolved variable'")
       let results += rope_results
@@ -123,6 +135,10 @@ try:
   parseFile(vim.eval('expand("%:p")'))
 except SyntaxError, se:
   vim.command("let syntax_error = \"%s\"" % re.sub(r'"', r'\"', str(se)))
+except IndentationError, ie:
+  vim.command("let syntax_error = \"%s (line %s)\"" % (
+    re.sub(r'"', r'\"', ie.msg), ie.lineno)
+  )
 EOF
 
   endif
@@ -172,15 +188,17 @@ function eclim#python#validate#PyLint()
     endif
   endif
 
-  let command = pylint_env . ' pylint --reports=n "' . file . '"'
+  " TODO: switch to 'parseable' output format.
+  let command = pylint_env .
+    \ ' pylint --reports=n --output-format=text "' . file . '"'
   if has('win32') || has('win64')
-    let command = 'cmd /c "' . command . '"'
+    let command = 'cmd /c "' . command . ' "'
   endif
 
   call eclim#util#Echo('Running pylint (ctrl-c to cancel) ...')
   let result = eclim#util#System(command)
   call eclim#util#Echo(' ')
-  if v:shell_error
+  if v:shell_error >= 32
     call eclim#util#EchoError('Error running command: ' . command)
     return
   endif
@@ -188,7 +206,7 @@ function eclim#python#validate#PyLint()
   if result =~ ':'
     let errors = []
     for error in split(result, '\n')
-      if error =~ '^[CWERF]\(: \)\?[0-9]'
+      if error =~ '^[CWERF]\(:\s\+\)\?[0-9]'
         let line = substitute(error, '.\{-}:\s*\([0-9]\+\):.*', '\1', '')
         let message = substitute(error, '.\{-}:\s*[0-9]\+:\(.*\)', '\1', '')
         let dict = {

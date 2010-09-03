@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/php/validate.html
+"   see http://eclim.org/vim/php/validate.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -32,12 +32,15 @@
 function! eclim#php#util#UpdateSrcFile(validate)
   let project = eclim#project#util#GetCurrentProjectName()
   if project != ""
-    let file = eclim#project#util#GetProjectRelativeFilePath(expand("%:p"))
+    let file = eclim#project#util#GetProjectRelativeFilePath()
     let command = s:update_command
     let command = substitute(command, '<project>', project, '')
     let command = substitute(command, '<file>', file, '')
     if (g:EclimPhpValidate || a:validate) && !eclim#util#WillWrittenBufferClose()
-      let command = command . " -v"
+      let command = command . ' -v'
+      if eclim#project#problems#IsProblemsList()
+        let command = command . ' -b'
+      endif
     endif
     let result = eclim#ExecuteEclim(command)
 
@@ -49,11 +52,14 @@ function! eclim#php#util#UpdateSrcFile(validate)
       let result .= "\n" . eclim#ExecuteEclim(command)
 
       if result =~ '|'
-        let errors = eclim#util#ParseLocationEntries(split(result, '\n'))
+        let errors = eclim#util#ParseLocationEntries(
+          \ split(result, '\n'), g:EclimValidateSortResults)
         call eclim#util#SetLocationList(errors)
       else
         call eclim#util#ClearLocationList()
       endif
+
+      call eclim#project#problems#ProblemsUpdate()
     endif
   endif
 endfunction " }}}

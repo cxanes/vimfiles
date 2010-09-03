@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/dtd/index.html
+"   see http://eclim.org/vim/dtd/index.html
 "
 " License:
 "
@@ -34,8 +34,8 @@ endif
 
 if g:EclimDtdValidate
   augroup eclim_css_validate
-    autocmd!
-    autocmd BufWritePost *.dtd call eclim#lang#Validate('dtd', 1)
+    autocmd! BufWritePost <buffer>
+    autocmd BufWritePost <buffer> call eclim#lang#Validate('dtd', 1)
   augroup END
 endif
 

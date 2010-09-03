@@ -49,16 +49,18 @@ augroup END
 
 command! -nargs=0 -buffer Validate :call eclim#lang#UpdateSrcFile('c', 1)
 
-if !exists(":CFindDefinition")
-  command -buffer CFindDefinition :call eclim#c#search#FindDefinition('declarations')
-endif
 if !exists(":CSearch")
   command -buffer -nargs=*
     \ -complete=customlist,eclim#c#search#CommandCompleteCSearch
     \ CSearch :call eclim#c#search#Search('<args>')
 endif
+
 if !exists(":CSearchContext")
   command -buffer CSearchContext :call eclim#c#search#SearchContext()
+endif
+
+if !exists(":CCallHierarchy")
+  command -buffer CCallHierarchy :call eclim#c#hierarchy#CallHierarchy()
 endif
 
 " }}}

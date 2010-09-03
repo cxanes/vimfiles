@@ -232,7 +232,7 @@ endfunction " }}}
 " dictionaries in the location or quickfix list.  It supports 'i' (info), 'w'
 " (warning), and 'e' (error).
 function! eclim#display#signs#Update()
-  if !has("signs")
+  if !has('signs') || !g:EclimSignLevel
     return
   endif
 
@@ -245,7 +245,7 @@ function! eclim#display#signs#Update()
   " remove all existing signs
   let existing = eclim#display#signs#GetExisting()
   for exists in existing
-    if exists.name !~ 'placeholder'
+    if exists.name =~ '^\(error\|info\|warning\|qf_error\|qf_warning\)$'
       call eclim#display#signs#Unplace(exists.id)
     endif
   endfor
@@ -298,15 +298,50 @@ function! eclim#display#signs#Update()
   let &lazyredraw = save_lazy
 endfunction " }}}
 
+" Show(type, list) {{{
+" Set the type on each entry in the specified list ('qf' or 'loc') and mark
+" any matches in the current file.
+function! eclim#display#signs#Show(type, list)
+  if a:type != ''
+    if a:list == 'qf'
+      let list = getqflist()
+    else
+      let list = getloclist(0)
+    endif
+
+    let newentries = []
+    for entry in list
+      let newentry = {
+          \ 'filename': bufname(entry.bufnr),
+          \ 'lnum': entry.lnum,
+          \ 'col': entry.col,
+          \ 'text': entry.text,
+          \ 'type': a:type
+        \ }
+      call add(newentries, newentry)
+    endfor
+
+    if a:list == 'qf'
+      call setqflist(newentries, 'r')
+    else
+      call setloclist(0, newentries, 'r')
+    endif
+  endif
+
+  call eclim#display#signs#Update()
+
+  redraw!
+endfunction " }}}
+
 " SetPlaceholder([only_if_necessary]) {{{
 " Set sign at line 1 to prevent sign column from collapsing, and subsiquent
 " screen redraw.
 function! eclim#display#signs#SetPlaceholder(...)
-  if !has("signs")
+  if !has('signs') || !g:EclimSignLevel
     return
   endif
 
-  if len(a:000) > 0 && a:000
+  if len(a:000) > 0 && a:000[0]
     let existing = eclim#display#signs#GetExisting()
     if !len(existing)
       return
@@ -324,7 +359,7 @@ endfunction " }}}
 
 " RemovePlaceholder() {{{
 function! eclim#display#signs#RemovePlaceholder()
-  if !has("signs")
+  if !has('signs') || !g:EclimSignLevel
     return
   endif
 

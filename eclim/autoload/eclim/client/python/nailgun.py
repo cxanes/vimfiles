@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @author: Anton Sharonov
 @author: Eric Van Dewoestine
 """
-import os, re, socket
+import socket
 
 try:
   from cStringIO import StringIO
@@ -31,25 +31,9 @@ class Nailgun(object):
 
   def __init__(self, **kwargs):
     self.socket = None
+    self.port = kwargs.get('port')
     self.keepAlive = int(kwargs.get('keepAlive', 0))
-    self.vimFiles = kwargs.get('vimFiles', '~/.vim')
     self.reconnectCounter = 0
-    self.port = 9091
-
-    # check ~/.eclimrc for alternate port
-    eclimrc = os.path.expanduser('~/.eclimrc')
-    if os.path.exists(eclimrc):
-      rcfile = open(eclimrc)
-      try:
-        line = rcfile.readline()
-        while line:
-          line = line.strip()
-          if line.startswith('nailgun.server.port'):
-            self.port = int(re.sub(r'.*=\s*(.*)', r'\1', line))
-            break
-          line = rcfile.readline()
-      finally:
-        rcfile.close()
 
   def send(self, cmdline):
     """
@@ -73,8 +57,6 @@ class Nailgun(object):
 
     try: # outer try for pre python 2.5 support.
       try:
-        self.sendChunk("A", "-Dvim.files=%s" % self.vimFiles)
-
         for arg in self.parseArgs(cmdline):
           self.sendChunk("A", arg)
 
@@ -90,10 +72,14 @@ class Nailgun(object):
 
         return (retcode, result)
       except socket.error, ex:
-        return ex.args
+        return (ex.args[0], 'connect: %s' % ex.args[1])
     finally:
       if not self.keepAlive:
-        self.close()
+        try:
+          self.close()
+        except:
+          # don't let an error on close mask any previous error.
+          pass
 
   def connect(self, port=None):
     """

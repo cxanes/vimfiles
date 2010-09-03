@@ -4,7 +4,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -30,6 +30,10 @@ if !exists("g:EclimProjectKeepLocalHistory")
   let g:EclimProjectKeepLocalHistory = 1
 endif
 
+if !exists("g:EclimProjectProblemsUpdateOnSave")
+  let g:EclimProjectProblemsUpdateOnSave = 1
+endif
+
 let g:EclimProjectTreeTitle = 'ProjectTree_'
 
 if !exists('g:EclimProjectTreeAutoOpen')
@@ -38,6 +42,10 @@ endif
 
 if !exists('g:EclimProjectTreeExpandPathOnOpen')
   let g:EclimProjectTreeExpandPathOnOpen = 0
+endif
+
+if !exists('g:EclimProjectTreeSharedInstance')
+  let g:EclimProjectTreeSharedInstance = 0
 endif
 
 if g:EclimProjectTreeAutoOpen && !exists('g:EclimProjectTreeAutoOpenProjects')
@@ -64,105 +72,111 @@ if g:EclimProjectKeepLocalHistory
 endif
 
 if g:EclimProjectTreeAutoOpen
-  autocmd VimEnter *
-    \ if eclim#project#util#GetCurrentProjectRoot() != '' |
-    \   call eclim#project#tree#ProjectTree(copy(g:EclimProjectTreeAutoOpenProjects)) |
-    \   exec g:EclimProjectTreeContentWincmd |
-    \ endif
+  augroup project_tree_autoopen
+    autocmd!
+    autocmd VimEnter *
+      \ if eclim#project#util#GetCurrentProjectRoot() != '' |
+      \   call eclim#project#tree#ProjectTree(copy(g:EclimProjectTreeAutoOpenProjects)) |
+      \   exec g:EclimProjectTreeContentWincmd |
+      \ endif
+  augroup END
+
   autocmd BufWinEnter *
     \ if tabpagenr() > 1 &&
     \     !exists('t:project_tree_auto_opened') &&
+    \     !exists('g:SessionLoad') &&
     \     eclim#project#util#GetCurrentProjectRoot() != '' |
     \   call eclim#project#tree#ProjectTree(copy(g:EclimProjectTreeAutoOpenProjects)) |
     \   exec g:EclimProjectTreeContentWincmd |
     \   let t:project_tree_auto_opened = 1 |
     \ endif
 endif
+
+autocmd SessionLoadPost * call eclim#project#tree#Restore()
 " }}}
 
 " Command Declarations {{{
 if !exists(":ProjectCreate")
-  command -nargs=+ -complete=customlist,eclim#project#util#CommandCompleteProjectCreate
+  command -nargs=+
+    \ -complete=customlist,eclim#project#util#CommandCompleteProjectCreate
     \ ProjectCreate :call eclim#project#util#ProjectCreate('<args>')
-endif
-if !exists(":ProjectImport")
   command -nargs=1 -complete=dir
     \ ProjectImport :call eclim#project#util#ProjectImport('<args>')
-endif
-if !exists(":ProjectDelete")
-  command -nargs=1 -complete=customlist,eclim#project#util#CommandCompleteProject
+  command -nargs=1
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectDelete :call eclim#project#util#ProjectDelete('<args>')
-endif
-if !exists(":ProjectRefresh")
-  command -nargs=* -complete=customlist,eclim#project#util#CommandCompleteProject
+  command -nargs=+
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
+    \ ProjectRename :call eclim#project#util#ProjectRename('<args>')
+  command -nargs=+
+    \ -complete=customlist,eclim#project#util#CommandCompleteProjectMove
+    \ ProjectMove :call eclim#project#util#ProjectMove('<args>')
+  command -nargs=*
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectRefresh :call eclim#project#util#ProjectRefresh('<args>')
-endif
-if !exists(":ProjectRefreshAll")
   command ProjectRefreshAll :call eclim#project#util#ProjectRefreshAll()
-endif
-if !exists(":ProjectList")
-  command ProjectList :call eclim#project#util#ProjectList()
-endif
-if !exists(":ProjectSettings")
-  command -nargs=? -complete=customlist,eclim#project#util#CommandCompleteProject
+  command ProjectCacheClear :call eclim#project#util#ClearProjectsCache()
+  command -nargs=? -complete=customlist,eclim#eclipse#CommandCompleteWorkspaces
+    \ ProjectList :call eclim#project#util#ProjectList('<args>')
+  command -nargs=?
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectSettings :call eclim#project#util#ProjectSettings('<args>')
-endif
-if !exists(":ProjectInfo")
-  command -nargs=? -complete=customlist,eclim#project#util#CommandCompleteProject
+  command -nargs=?
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectInfo :call eclim#project#util#ProjectInfo('<args>')
-endif
-if !exists(":ProjectOpen")
-  command -nargs=? -complete=customlist,eclim#project#util#CommandCompleteProject
+  command -nargs=?
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectOpen :call eclim#project#util#ProjectOpen('<args>')
-endif
-if !exists(":ProjectClose")
-  command -nargs=? -complete=customlist,eclim#project#util#CommandCompleteProject
+  command -nargs=?
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectClose :call eclim#project#util#ProjectClose('<args>')
-endif
-if !exists(":ProjectNatures")
-  command -nargs=? -complete=customlist,eclim#project#util#CommandCompleteProject
+  command -nargs=?
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectNatures :call eclim#project#util#ProjectNatures('<args>')
+  command -nargs=+
+    \ -complete=customlist,eclim#project#util#CommandCompleteProjectNatureAdd
+    \ ProjectNatureAdd
+    \ :call eclim#project#util#ProjectNatureModify('add', '<args>')
+  command -nargs=+
+    \ -complete=customlist,eclim#project#util#CommandCompleteProjectNatureRemove
+    \ ProjectNatureRemove
+    \ :call eclim#project#util#ProjectNatureModify('remove', '<args>')
 endif
-if !exists(":ProjectNatureAdd")
-  command -nargs=+ -complete=customlist,eclim#project#util#CommandCompleteProjectNatureAdd
-    \ ProjectNatureAdd :call eclim#project#util#ProjectNatureModify('add', '<args>')
-endif
-if !exists(":ProjectNatureRemove")
-  command -nargs=+ -complete=customlist,eclim#project#util#CommandCompleteProjectNatureRemove
-    \ ProjectNatureRemove :call eclim#project#util#ProjectNatureModify('remove', '<args>')
+
+if !exists(":ProjectProblems")
+  command -nargs=?
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
+    \ ProjectProblems :call eclim#project#problems#Problems('<args>', 1)
 endif
 
 if !exists(":ProjectTree")
-  command -nargs=* -complete=customlist,eclim#project#util#CommandCompleteProject
+  command -nargs=*
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectTree :call eclim#project#tree#ProjectTree(<f-args>)
-endif
-if !exists(":ProjectsTree")
-  command -nargs=0 -complete=customlist,eclim#project#util#CommandCompleteProject
-    \ ProjectsTree
+  command -nargs=0 ProjectsTree
     \ :call eclim#project#tree#ProjectTree(eclim#project#util#GetProjectNames())
+  command -nargs=1
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
+    \ ProjectTab :call eclim#project#util#ProjectTab('<args>')
 endif
 
 if !exists(":ProjectCD")
   command ProjectCD :call eclim#project#util#ProjectCD(0)
-endif
-if !exists(":ProjectLCD")
   command ProjectLCD :call eclim#project#util#ProjectCD(1)
 endif
 
 if !exists(":ProjectGrep")
-  command -nargs=+ -complete=customlist,eclim#project#util#CommandCompleteProjectRelative
+  command -nargs=+
+    \ -complete=customlist,eclim#project#util#CommandCompleteProjectRelative
     \ ProjectGrep :call eclim#project#util#ProjectGrep('vimgrep', <q-args>)
-endif
-if !exists(":ProjectGrepAdd")
-  command -nargs=+ -complete=customlist,eclim#project#util#CommandCompleteProjectRelative
+  command -nargs=+
+    \ -complete=customlist,eclim#project#util#CommandCompleteProjectRelative
     \ ProjectGrepAdd :call eclim#project#util#ProjectGrep('vimgrepadd', <q-args>)
-endif
-if !exists(":ProjectLGrep")
-  command -nargs=+ -complete=customlist,eclim#project#util#CommandCompleteProjectRelative
+  command -nargs=+
+    \ -complete=customlist,eclim#project#util#CommandCompleteProjectRelative
     \ ProjectLGrep :call eclim#project#util#ProjectGrep('lvimgrep', <q-args>)
-endif
-if !exists(":ProjectGrepAdd")
-  command -nargs=+ -complete=customlist,eclim#project#util#CommandCompleteProjectRelative
+  command -nargs=+
+    \ -complete=customlist,eclim#project#util#CommandCompleteProjectRelative
     \ ProjectLGrepAdd :call eclim#project#util#ProjectGrep('lvimgrepadd', <q-args>)
 endif
 

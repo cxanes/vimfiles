@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/python/rope.html
+"   see http://eclim.org/vim/python/rope.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 " }}}
 
 " Init(project) {{{
-function eclim#python#rope#Init(project)
+function! eclim#python#rope#Init(project)
   if !has('python')
     call eclim#util#EchoError(
       \ "This functionality requires 'python' support compiled into vim.")
@@ -133,7 +133,7 @@ endfunction " }}}
 
 " RopePath() {{{
 " Gets the base directory where the rope code is located.
-function eclim#python#rope#RopePath()
+function! eclim#python#rope#RopePath()
   if !exists("g:RopePath")
     let savewig = &wildignore
     set wildignore=""
@@ -155,7 +155,7 @@ endfunction " }}}
 " Completions(project, filename, offset, encoding) {{{
 " Attempts to suggest code completions for a given project path, project
 " relative file path and offset.
-function eclim#python#rope#Completions(project, filename, offset, encoding)
+function! eclim#python#rope#Completions(project, filename, offset, encoding)
   if !eclim#python#rope#Init(a:project)
     return []
   endif
@@ -193,7 +193,7 @@ with(projectroot()):
       "let completion_error = 'Completion failed due to indentation error.'"
     )
   except ModuleSyntaxError, e:
-    message = 'Completion failed due to syntax error: %s' % e.message
+    message = 'Completion failed due to syntax error: %s' % e.args[0]
     vim.command("let completion_error = %s" % repr(message))
   except RopeError, e:
     message = 'Completion failed due to rope error: %s' % type(e)
@@ -209,7 +209,7 @@ EOF
 endfunction " }}}
 
 " Find(project, filename, offset, encoding, context) {{{
-function eclim#python#rope#Find(project, filename, offset, encoding, context)
+function! eclim#python#rope#Find(project, filename, offset, encoding, context)
   if !eclim#python#rope#Init(a:project)
     return []
   endif
@@ -222,6 +222,7 @@ from __future__ import with_statement
 with(projectroot()):
   from rope.base import project
   from rope.base.exceptions import ModuleSyntaxError, RopeError
+  from rope.contrib import codeassist
   from rope.contrib import findit
   project = project.Project(vim.eval('a:project'))
 
@@ -241,16 +242,32 @@ with(projectroot()):
       locations = findit.find_occurrences(project, resource, offset)
     else:
       code = resource.read()
-      location = findit.find_definition(
-        project, code, offset, resource=resource, maxfixes=3)
+      location = codeassist.get_definition_location(
+        project, code, offset, maxfixes=3)
+      # using codeassist instead since it seems able to find some things that
+      # findit cannot.
+      #location = findit.find_definition(
+      #  project, code, offset, resource=resource, maxfixes=3)
       locations = location and [location]
 
     results = []
     if locations:
       for location in locations:
-        path = location.resource.real_path.replace('\\', '/')
+        if hasattr(location, 'resource'): # findit result
+          path = location.resource.real_path.replace('\\', '/')
+          lineno = location.lineno
+        else: # codeassist result
+          if location[1] is None:
+            continue
+
+          path = location[0] and \
+            location[0].real_path or \
+            '%s/%s' % (vim.eval('a:project'), vim.eval('a:filename'))
+          path = path.replace('\\', '/')
+          lineno = location[1]
+
         # TODO: use location.offset
-        results.append('%s|%s col 1|' % (path, location.lineno))
+        results.append(str('%s|%s col 1|' % (path, lineno)))
 
     vim.command("let results = %s" % repr(results))
   except IndentationError, e:
@@ -258,7 +275,7 @@ with(projectroot()):
       "let search_error = 'Search failed due to indentation error.'"
     )
   except ModuleSyntaxError, e:
-    message = 'Search failed due to syntax error: %s' % e.message
+    message = 'Search failed due to syntax error: %s' % e.args[0]
     vim.command("let search_error = %s" % repr(message))
   except RopeError, e:
     message = 'Search failed due to rope error: %s' % type(e)
@@ -275,7 +292,7 @@ endfunction " }}}
 
 " GetOffset() {{{
 " Gets the character offset for the current cursor position.
-function eclim#python#rope#GetOffset()
+function! eclim#python#rope#GetOffset()
   " NOTE: rope doesn't recognize dos line endings as 2 characters, so just
   " handle as a single character.  It uses true character offsets, vs eclipse
   " which uses bytes.
@@ -296,7 +313,7 @@ endfunction " }}}
 
 " GetSourceDirs(project) {{{
 " Attempts to determine the source directories for the supplied project.
-function eclim#python#rope#GetSourceDirs(project)
+function! eclim#python#rope#GetSourceDirs(project)
   if !eclim#python#rope#Init(a:project)
     return []
   endif
@@ -325,7 +342,7 @@ endfunction " }}}
 
 " Validate(project, filename) {{{
 " Attempts to validate the supplied file.
-function eclim#python#rope#Validate(project, filename)
+function! eclim#python#rope#Validate(project, filename)
   if !eclim#python#rope#Init(a:project)
     return []
   endif

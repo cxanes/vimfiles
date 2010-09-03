@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -22,12 +22,21 @@
 "
 " }}}
 
+" Global Variables {{{
+  if !exists('g:EclimArchiveActions')
+    let g:EclimArchiveActions = [
+        \ {'pattern': '.*', 'name': 'Split', 'action': 'split'},
+        \ {'pattern': '.*', 'name': 'Tab', 'action': 'tablast | tabnew'},
+        \ {'pattern': '.*', 'name': 'Edit', 'action': 'edit'},
+      \ ]
+  endif
+" }}}
+
 " Script Variables {{{
 let s:command_list = '-command archive_list -f "<file>"'
 let s:command_list_all = '-command archive_list_all -f "<file>"'
 let s:command_read = '-command archive_read -f "<file>"'
-let s:command_read_class =
-  \ '-command java_class_prototype -p "<project>" -c <class>'
+let s:command_read_class = '-command java_class_prototype -c <class>'
 
 let s:urls = {
     \ 'jar:': ['.jar', '.ear', '.war'],
@@ -44,19 +53,40 @@ let s:file_regex =
 " List() {{{
 " Lists the contents of the archive.
 function! eclim#common#archive#List()
+  if !eclim#PingEclim(0)
+    call s:DefaultList()
+    return
+  endif
+  if !exists('b:archive_loaded')
+    for action in g:EclimArchiveActions
+      call eclim#tree#RegisterFileAction(action.pattern, action.name, action.action)
+    endfor
+
+    let b:archive_loaded = 1
+  endif
+
   let b:file_info = {}
   let file = substitute(expand('%:p'), '\', '/', 'g')
+  if has('win32unix')
+    let file = eclim#cygwin#WindowsPath(file)
+  endif
   let root = fnamemodify(file, ':t') . '/'
   let b:file_info[root] = {'url': s:FileUrl(file)}
 
   if exists('g:EclimArchiveLayout') && g:EclimArchiveLayout == 'list'
+    setlocal modifiable
     call eclim#common#archive#ListAll()
     let g:EclimArchiveLayout = 'list'
-    1,1delete _
+    call append(0, '" use ? to view help')
+    setlocal nomodifiable
   else
+    setlocal modifiable
     call setline(1, root)
     call eclim#common#archive#ExpandDir()
     let g:EclimArchiveLayout = 'tree'
+    setlocal modifiable
+    call append(line('$'), ['', '" use ? to view help'])
+    setlocal nomodifiable
   endif
 
   setlocal ft=archive
@@ -75,23 +105,27 @@ endfunction " }}}
 " Reads the contents of an archived file.
 function! eclim#common#archive#ReadFile()
   let file = substitute(expand('%'), '\', '/', 'g')
-  echom 'file = ' . file
   if file =~ '.class$'
-    let class = substitute(file, '.*!\(.*\)\.class', '\1', '')
+    let class = substitute(file, '.*![/]\?\(.*\)\.class', '\1', '')
     let class = substitute(class, '/', '.', 'g')
 
-    let project = exists('g:EclimLastProject') ?
-      \ g:EclimLastProject : eclim#project#util#GetCurrentProjectName()
-
-    if project == ''
-      call eclim#util#EchoError(
-        \ 'Could not open archive file: Unable to determine project.')
-      return
-    endif
+    let archive = substitute(file, '^\w\+:file://\(.\{-}\)!.*', '\1', '')
+    let project = eclim#project#util#GetProject(archive)
+    let project_name = get(project, 'name', '')
 
     let command = s:command_read_class
-    let command = substitute(command, '<project>', project, '')
     let command = substitute(command, '<class>', class, '')
+
+    if project_name != ''
+      let command .= ' -p "' . project_name . '"'
+    else
+      let read = substitute(s:command_read, '<file>', file, '')
+      let file = eclim#ExecuteEclim(read)
+      if string(file) == '0'
+        return
+      endif
+      let command .= ' -f "' . file . '"'
+    endif
   else
     let command = substitute(s:command_read, '<file>', file, '')
   endif
@@ -100,6 +134,9 @@ function! eclim#common#archive#ReadFile()
 
   if string(file) != '0'
     let bufnum = bufnr('%')
+    if has('win32unix')
+      let file = eclim#cygwin#CygwinPath(file)
+    endif
     silent exec "keepjumps edit! " . escape(file, ' ')
 
     exec 'bdelete ' . bufnum
@@ -123,7 +160,11 @@ function! eclim#common#archive#ReadFile()
 endfunction " }}}
 
 " Execute(alt) {{{
-function eclim#common#archive#Execute(alt)
+function! eclim#common#archive#Execute(alt)
+  if getline('.') =~ '^"\|^\s*$'
+    return
+  endif
+
   let path = eclim#tree#GetPath()
 
   " execute action on dir
@@ -136,21 +177,51 @@ function eclim#common#archive#Execute(alt)
 
   " execute action on file
   else
-    if g:EclimArchiveLayout == 'list'
-      let file = substitute(getline('.'), s:file_regex, '\1', '')
-      let archive = substitute(expand('%:p'), '\', '/', 'g')
-      let url = s:FileUrl(archive) . '!/' . file
+    let url = s:GetFilePath()
+    let actions = eclim#tree#GetFileActions(path)
+    if a:alt
+      call eclim#tree#DisplayActionChooser(
+        \ url, actions, 'eclim#common#archive#ExecuteAction')
     else
-      let url = b:file_info[getline('.')].url
+      call eclim#common#archive#ExecuteAction(url, actions[0].action)
     endif
-    silent! noautocmd exec 'split ' . escape(url, ' ')
-    call eclim#common#archive#ReadFile()
   endif
 endfunction " }}}
 
+" ExecuteAction(file, command) {{{
+function! eclim#common#archive#ExecuteAction(file, command)
+  if a:command == 'edit'
+    if !exists('b:archive_edit_window') ||
+     \ getwinvar(b:archive_edit_window, 'archive_edit_window') == ''
+      let bufnr = bufnr('%')
+      new
+      let w:archive_edit_window = 1
+      call setbufvar(bufnr, 'archive_edit_window', winnr())
+    else
+      exec b:archive_edit_window . 'winc w'
+    endif
+  endif
+
+  if exists('b:archive_edit_window') &&
+   \ getwinvar(b:archive_edit_window, 'archive_edit_window') == 1
+    exec b:archive_edit_window . 'winc w'
+  endif
+
+  try
+    noautocmd exec a:command . ' ' . escape(a:file, ' ')
+  catch /E303/
+    " ignore error to create swap file (seems to only be an issue on windows)
+  endtry
+  call eclim#common#archive#ReadFile()
+endfunction " }}}
+
 " ExpandDir() {{{
-function eclim#common#archive#ExpandDir()
+function! eclim#common#archive#ExpandDir()
   let path = substitute(expand('%:p'), '\', '/', 'g')
+  if has('win32unix')
+    let path = eclim#cygwin#WindowsPath(path)
+  endif
+
   let dir = b:file_info[getline('.')].url
   if dir !~ path . '$' && s:IsArchive(dir)
     let dir = s:FileUrl(dir) . '!/'
@@ -180,7 +251,7 @@ function eclim#common#archive#ExpandDir()
   for key in sort(keys(temp_info))
     let index = 0
     for line in content
-      if line =~ '\s*+\?\s*' . escape(key, '.') . '/\?$'
+      if line =~ '^\s*+\?\s*' . escape(key, '.') . '/\?$'
         let b:file_info[line] = temp_info[key]
         call remove(content, index)
         continue
@@ -192,8 +263,11 @@ endfunction " }}}
 
 " ListAll() {{{
 " Function for listing all the archive files (for 'list' layout).
-function eclim#common#archive#ListAll()
+function! eclim#common#archive#ListAll()
   let path = substitute(expand('%:p'), '\', '/', 'g')
+  if has('win32unix')
+    let path = eclim#cygwin#WindowsPath(path)
+  endif
   let command = s:command_list_all
   let command = substitute(command, '<file>', path, '')
   let results = split(eclim#ExecuteEclim(command), '\n')
@@ -201,8 +275,28 @@ function eclim#common#archive#ListAll()
     return
   endif
 
-  exec 'read ' . results[0]
-  call delete(results[0])
+  let temp = substitute(results[0], '\', '/', 'g')
+  if has('win32unix')
+    let temp = eclim#cygwin#CygwinPath(temp)
+  endif
+
+  exec 'read ' . escape(temp, ' ')
+  call delete(temp)
+endfunction " }}}
+
+" s:GetFilePath() {{{
+function! s:GetFilePath()
+  if g:EclimArchiveLayout == 'list'
+    let file = substitute(getline('.'), s:file_regex, '\1', '')
+    let archive = substitute(expand('%:p'), '\', '/', 'g')
+    if has('win32unix')
+      let archive = eclim#cygwin#WindowsPath(archive)
+    endif
+    let url = s:FileUrl(archive) . '!/' . file
+  else
+    let url = b:file_info[getline('.')].url
+  endif
+  return url
 endfunction " }}}
 
 " s:ParseEntry(entry) {{{
@@ -252,9 +346,15 @@ endfunction " }}}
 function! s:ChangeLayout(layout)
   if g:EclimArchiveLayout != a:layout
     let g:EclimArchiveLayout = a:layout
-    set modifiable
+    setlocal modifiable
     edit
   endif
+endfunction " }}}
+
+" s:OpenFile(action) " {{{
+function! s:OpenFile(action)
+  let path = s:GetFilePath()
+  call eclim#common#archive#ExecuteAction(path, a:action)
 endfunction " }}}
 
 " s:FileInfo() {{{
@@ -266,14 +366,28 @@ function! s:FileInfo()
 endfunction " }}}
 
 " s:Mappings() {{{
-function s:Mappings()
+function! s:Mappings()
   nmap <buffer> <silent> <cr> :call eclim#common#archive#Execute(0)<cr>
+  nmap <buffer> <silent> E :call <SID>OpenFile('edit')<cr>
+  nmap <buffer> <silent> S :call <SID>OpenFile('split')<cr>
+  nmap <buffer> <silent> T :call <SID>OpenFile('tablast \| tabnew')<cr>
 
   if g:EclimArchiveLayout == 'tree'
     let b:tree_mappings_active = 1
+    let b:hierarchy_help = [
+        \ '<cr> - open/close dir, open file',
+        \ 'o - toggle dir fold, choose file open action',
+        \ 'E - open with :edit',
+        \ 'S - open in a new split window',
+        \ 'T - open in a new tab',
+        \ 'p - move cursor to parent dir',
+        \ 'P - move cursor to last child of dir',
+        \ 'i - view file info',
+        \ ':AsList - switch to list view',
+      \ ]
+    nmap <buffer> <silent> j    :TreeNextPrevLine j<cr>
+    nmap <buffer> <silent> k    :TreeNextPrevLine k<cr>
     nmap <buffer> <silent> o    :call eclim#common#archive#Execute(1)<cr>
-    nmap <buffer> <silent> j    j:call eclim#tree#Cursor(line('.'))<cr>
-    nmap <buffer> <silent> k    k:call eclim#tree#Cursor(line('.'))<cr>
     nmap <buffer> <silent> p    :call eclim#tree#MoveToParent()<cr>
     nmap <buffer> <silent> P    :call eclim#tree#MoveToLastChild()<cr>
     nmap <buffer> <silent> i    :call <SID>FileInfo()<cr>
@@ -281,6 +395,14 @@ function s:Mappings()
 
     silent! delcommand AsTree
     command! -nargs=0 AsList :call <SID>ChangeLayout('list')
+
+    " only needed as a command to support counts on the j/k mappings
+    command! -nargs=? -count=1 -buffer TreeNextPrevLine
+      \ let c = <count> |
+      \ let c = c > 1 ? c - line('.') + 1 : c |
+      \ let prev = line('.') |
+      \ exec 'normal! ' . c . '<args>' |
+      \ call eclim#tree#Cursor(line('.'), prev)
   else
     if exists('b:tree_mappings_active')
       unlet b:tree_mappings_active
@@ -289,12 +411,47 @@ function s:Mappings()
       unmap <buffer> k
       unmap <buffer> p
       unmap <buffer> P
+      unmap <buffer> i
+      unmap <buffer> I
     endif
+
+    let b:hierarchy_help = [
+        \ '<cr> - open/close dir, open file',
+        \ 'E - open with :edit',
+        \ 'S - open in a new split window',
+        \ 'T - open in a new tab',
+        \ ':AsList - switch to tree view',
+      \ ]
 
     silent! delcommand AsList
     command! -nargs=0 AsTree :call <SID>ChangeLayout('tree')
   endif
 
+  nnoremap <buffer> <silent> ?
+    \ :call eclim#help#BufferHelp(b:hierarchy_help, 'horizontal', 10)<cr>
+
+endfunction " }}}
+
+" s:DefaultList() {{{
+function! s:DefaultList()
+  " once the tar and zip plugins are loaded, we must disable the eclim viewer
+  " since they will conflict.
+  let g:EclimArchiveViewerEnabled = 0
+  augroup eclim_archive
+    autocmd!
+  augroup END
+
+  if exists('g:loaded_tarPlugin') && g:loaded_tarPlugin == '1'
+    unlet g:loaded_tarPlugin
+    runtime plugin/tarPlugin.vim
+  endif
+  if exists('g:loaded_zipPlugin') && g:loaded_zipPlugin == '1'
+    unlet g:loaded_zipPlugin
+    runtime plugin/zipPlugin.vim
+  endif
+  silent doautocmd tar BufReadCmd
+  silent doautocmd zip BufReadCmd
+  call cursor(1, 1)
 endfunction " }}}
 
 " vim:ft=vim:fdm=marker

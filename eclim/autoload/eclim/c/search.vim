@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/c/search.html
+"   see http://eclim.org/vim/c/search.html
 "
 " License:
 "
@@ -25,16 +25,14 @@
 " Global Varables {{{
   if !exists("g:EclimCSearchSingleResult")
     " possible values ('split', 'edit', 'lopen')
-    let g:EclimCSearchSingleResult = "split"
+    let g:EclimCSearchSingleResult = g:EclimDefaultFileOpenAction
   endif
 " }}}
 
 " Script Varables {{{
-  let s:search_element =
-    \ '-command c_search -n "<project>" -f "<file>" ' .
-    \ '-o <offset> -l <length> -e <encoding> -x <context>'
-  let s:search_pattern = '-command c_search -n "<project>" <args>'
+  let s:search = '-command c_search'
   let s:includepaths = '-command c_includepaths -p "<project>"'
+  let s:sourcepaths = '-command c_sourcepaths -p "<project>"'
   let s:options = ['-p', '-t', '-s', '-x', '-i']
   let s:scopes = ['all', 'project']
   let s:types = [
@@ -53,134 +51,16 @@
   let s:contexts = [
       \ 'all',
       \ 'declarations',
+      \ 'definitions',
       \ 'references'
     \ ]
 " }}}
 
-" Search(...) {{{
+" Search(argline) {{{
 " Executes a search.
-function! eclim#c#search#Search(...)
-  if !eclim#project#util#IsCurrentFileInProject(1)
-    return
-  endif
-
-  let argline = ""
-  let index = 1
-  while index <= a:0
-    if index != 1
-      let argline = argline . " "
-    endif
-    let argline = argline . a:{index}
-    let index = index + 1
-  endwhile
-
-  if argline == ''
-    call eclim#util#EchoError('You must supply a search pattern.')
-    return
-  endif
-
-  " check if pattern supplied without -p.
-  if argline !~ '^\s*-[a-z]'
-    let argline = '-p ' . argline
-  endif
-
-  let project = eclim#project#util#GetCurrentProjectName()
-
-  let search_cmd = s:search_pattern
-  let search_cmd = substitute(search_cmd, '<project>', project, '')
-  let search_cmd = substitute(search_cmd, '<args>', argline, '')
-  " quote the search pattern
-  let search_cmd =
-    \ substitute(search_cmd, '\(.*-p\s\+\)\(.\{-}\)\(\s\|$\)\(.*\)', '\1"\2"\3\4', '')
-  let result =  eclim#ExecuteEclim(search_cmd)
-  let results = split(result, '\n')
-  if len(results) == 1 && results[0] == '0'
-    return
-  endif
-
-  if !empty(results)
-    call eclim#util#SetLocationList(eclim#util#ParseLocationEntries(results))
-    " if only one result and it's for the current file, just jump to it.
-    " note: on windows the expand result must be escaped
-    if len(results) == 1 && results[0] =~ escape(expand('%:p'), '\') . '|'
-      if results[0] !~ '|1 col 1|'
-        lfirst
-      endif
-
-    " single result in another file.
-    elseif len(results) == 1 && g:EclimCSearchSingleResult != "lopen"
-      let entry = getloclist(0)[0]
-      call eclim#util#GoToBufferWindowOrOpen
-        \ (bufname(entry.bufnr), g:EclimCSearchSingleResult)
-      call eclim#util#SetLocationList(eclim#util#ParseLocationEntries(results))
-      call eclim#display#signs#Update()
-
-      call cursor(entry.lnum, entry.col)
-    else
-      lopen
-    endif
-  else
-    let searchedFor = substitute(argline, '.*-p \(.\{-}\)\( .*\|$\)', '\1', '')
-    call eclim#util#EchoInfo("Pattern '" . searchedFor . "' not found.")
-  endif
-
-endfunction " }}}
-
-" FindDefinition(context) {{{
-" Finds the defintion of the element under the cursor.
-function eclim#c#search#FindDefinition(context)
-  if !eclim#project#util#IsCurrentFileInProject(1)
-    return
-  endif
-
-  " update the file.
-  call eclim#util#ExecWithoutAutocmds('silent update')
-
-  let project = eclim#project#util#GetCurrentProjectName()
-  let file = eclim#project#util#GetProjectRelativeFilePath(expand("%:p"))
-  let position = eclim#util#GetCurrentElementPosition()
-  let offset = substitute(position, '\(.*\);\(.*\)', '\1', '')
-  let length = substitute(position, '\(.*\);\(.*\)', '\2', '')
-
-  let search_cmd = s:search_element
-  let search_cmd = substitute(search_cmd, '<project>', project, '')
-  let search_cmd = substitute(search_cmd, '<file>', file, '')
-  let search_cmd = substitute(search_cmd, '<offset>', offset, '')
-  let search_cmd = substitute(search_cmd, '<length>', length, '')
-  let search_cmd = substitute(search_cmd, '<context>', a:context, '')
-  let search_cmd = substitute(search_cmd, '<encoding>', eclim#util#GetEncoding(), '')
-
-  let result =  eclim#ExecuteEclim(search_cmd)
-  let results = split(result, '\n')
-  if len(results) == 1 && results[0] == '0'
-    return
-  endif
-
-  if !empty(results)
-    call eclim#util#SetLocationList(eclim#util#ParseLocationEntries(results))
-
-    " if only one result and it's for the current file, just jump to it.
-    " note: on windows the expand result must be escaped
-    if len(results) == 1 && results[0] =~ escape(expand('%:p'), '\') . '|'
-      if results[0] !~ '|1 col 1|'
-        lfirst
-      endif
-
-    " single result in another file.
-    elseif len(results) == 1 && g:EclimCSearchSingleResult != "lopen"
-      let entry = getloclist(0)[0]
-      call eclim#util#GoToBufferWindowOrOpen
-        \ (bufname(entry.bufnr), g:EclimCSearchSingleResult)
-      call eclim#util#SetLocationList(eclim#util#ParseLocationEntries(results))
-      call eclim#display#signs#Update()
-
-      call cursor(entry.lnum, entry.col)
-    else
-      lopen
-    endif
-  else
-    call eclim#util#EchoInfo("Element not found.")
-  endif
+function! eclim#c#search#Search(argline)
+  return eclim#lang#Search(
+    \ s:search, g:EclimCSearchSingleResult, a:argline)
 endfunction " }}}
 
 " FindInclude() {{{
@@ -190,14 +70,22 @@ function eclim#c#search#FindInclude()
     return
   endif
 
-  let file = substitute(getline('.'), '.*#include\s\+<\(.*\)>.*', '\1', '')
+  let file = substitute(getline('.'), '.*#include\s\+[<"]\(.*\)[>"].*', '\1', '')
 
   let project = eclim#project#util#GetCurrentProjectName()
   let command = substitute(s:includepaths, '<project>', project, '')
   let result =  eclim#ExecuteEclim(command)
   let paths = split(result, '\n')
 
-  let results = split(globpath(expand('%:h') . ',' . join(paths, ','), file), '\n')
+  let command = substitute(s:sourcepaths, '<project>', project, '')
+  let result =  eclim#ExecuteEclim(command)
+  let paths += split(result, '\n')
+
+  let dir = expand('%:p:h')
+  if index(paths, dir) == -1
+    call add(paths, dir)
+  endif
+  let results = split(globpath(join(paths, ','), file), '\n')
 
   if !empty(results)
     call eclim#util#SetLocationList(eclim#util#ParseLocationEntries(results))
@@ -227,16 +115,15 @@ function! eclim#c#search#SearchContext()
     let cnum = eclim#util#GetCurrentElementColumn()
   endif
 
-  if getline('.') =~ '#include\s\+<[A-Za-z0-9.]*\%' . cnum . 'c'
+  if getline('.') =~ '#include\s\+[<"][A-Za-z0-9.]*\%' . cnum . 'c'
     call eclim#c#search#FindInclude()
     return
   "elseif getline('.') =~ '\<\(class\|????\)\s\+\%' . cnum . 'c'
-  "  call eclim#c#search#FindDefinition('references')
+  "  call eclim#c#search#Search('-x references')
     return
   endif
 
-  call eclim#c#search#FindDefinition('declarations')
-
+  call eclim#c#search#Search('-x context')
 endfunction " }}}
 
 " CommandCompleteCSearch(argLead, cmdLine, cursorPos) {{{

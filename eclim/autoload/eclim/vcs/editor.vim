@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/common/vcs.html
+"   see http://eclim.org/vim/common/vcs.html
 "
 " License:
 "
@@ -45,7 +45,13 @@ function eclim#vcs#editor#ViewDiff()
 
     exec 'belowright split ' . escape(file, ' ')
     let b:vcs_editor_diff = 1
-    :VcsDiff
+
+    " if file is versioned, execute VcsDiff
+    let path = substitute(expand('%:p'), '\', '/', 'g')
+    let revision = eclim#vcs#util#GetRevision(path)
+    if revision != ''
+      VcsDiff
+    endif
   endif
 endfunction " }}}
 

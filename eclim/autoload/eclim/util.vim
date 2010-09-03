@@ -8,7 +8,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 " }}}
 
 " Script Variables {{{
-  let s:buffing_write_closing_commands = '^\s*\(' .
+  let s:buffer_write_closing_commands = '^\s*\(' .
     \ 'wq\|xa\|' .
     \ '\d*w[nN]\|\d*wp\|' .
     \ 'ZZ' .
@@ -34,33 +34,9 @@
 
   let s:bourne_shells = ['sh', 'bash', 'dash', 'ksh', 'zsh']
   let s:c_shells = ['csh', 'tcsh']
+
+  let s:show_current_error_displaying = 0
 " }}}
-
-" Abbreviate(lhs, abbreviation) {{{
-function! eclim#util#Abbreviate(lhs, abbreviation)
-  " ensure that the abbreviation never kicks off while in a word.
-  if getline('.') =~ '\(^\|.*\s\)\%' . col('.') . 'c'
-    " gobble up the space char used to kick off the abbreviation
-    let char = nr2char(getchar())
-
-    " support <indent> placemark to combat indenting issues when attempting to
-    " start the cursor on a blank line, and possibly else where.
-    let indent = eclim#util#GetIndent(indent(line('.')))
-    let abbrev = substitute(a:abbreviation, '<indent>', indent, 'g')
-
-    " insert the abbreviation text.
-    exec "normal! i" . abbrev
-
-    call eclim#util#FillTemplate("${", "}")
-
-    if getline('.') =~ '^\s\+$'
-      return "\<right>"
-    endif
-
-    return ""
-  endif
-  return a:lhs
-endfunction " }}}
 
 " Balloon(message) {{{
 " Function for use as a vim balloonexpr expression.
@@ -73,28 +49,38 @@ function! eclim#util#Balloon(message)
   return message
 endfunction " }}}
 
-" DelayedCommand(command [, delay]) {{{
+" DelayedCommand(command, [delay]) {{{
 " Executes a delayed command.  Useful in cases where one would expect an
 " autocommand event (WinEnter, etc) to fire, but doesn't, or you need a
 " command to execute after other autocommands have finished.
-" Note: Nesting is not supported.  A delayed command cannot invoke off another
-" delayed command.
+" Note: Nesting is not supported.  A delayed command cannot be invoke off
+" another delayed command.
 function! eclim#util#DelayedCommand(command, ...)
-  let g:eclim_updatetime_save = &updatetime
-  let g:eclim_delayed_command = a:command
+  let uid = fnamemodify(tempname(), ':t:r')
+  if &updatetime > 1
+    exec 'let g:eclim_updatetime_save' . uid . ' = &updatetime'
+  endif
+  exec 'let g:eclim_delayed_command' . uid . ' = a:command'
   let &updatetime = len(a:000) ? a:000[0] : 1
-  augroup delayed_command
-    autocmd CursorHold *
-      \ let &updatetime = g:eclim_updatetime_save |
-      \ exec g:eclim_delayed_command |
-      \ unlet g:eclim_updatetime_save g:eclim_delayed_command |
-      \ autocmd! delayed_command
-  augroup END
+  exec 'augroup delayed_command' . uid
+    exec 'autocmd CursorHold * ' .
+      \ '  if exists("g:eclim_updatetime_save' . uid . '") | ' .
+      \ '    let &updatetime = g:eclim_updatetime_save' . uid . ' | ' .
+      \ '    unlet g:eclim_updatetime_save' . uid . ' | ' .
+      \ '  endif | ' .
+      \ '  exec g:eclim_delayed_command' . uid . ' | ' .
+      \ '  unlet g:eclim_delayed_command' . uid . ' | ' .
+      \ '  autocmd! delayed_command' . uid
+  exec 'augroup END'
 endfunction " }}}
 
-" EchoTrace(message) {{{
-function! eclim#util#EchoTrace(message)
-  call s:EchoLevel(a:message, 6, g:EclimTraceHighlight)
+" EchoTrace(message, [time_elapsed]) {{{
+function! eclim#util#EchoTrace(message, ...)
+  if a:0 > 0
+    call s:EchoLevel('(' . a:1 . 's) ' . a:message, 6, g:EclimTraceHighlight)
+  else
+    call s:EchoLevel(a:message, 6, g:EclimTraceHighlight)
+  endif
 endfunction " }}}
 
 " EchoDebug(message) {{{
@@ -122,7 +108,7 @@ function! eclim#util#EchoFatal(message)
   call s:EchoLevel(a:message, 1, g:EclimFatalHighlight)
 endfunction " }}}
 
-" EchoLevel(message) {{{
+" s:EchoLevel(message) {{{
 " Echos the supplied message at the supplied level with the specified
 " highlight.
 function! s:EchoLevel(message, level, highlight)
@@ -134,10 +120,6 @@ function! s:EchoLevel(message, level, highlight)
       echom line
     endfor
     echohl None
-    " prevent ShowCurrentError from overriding the displayed message.
-    if a:message !~ '^\s*$'
-      let b:eclim_last_message_line = line('.')
-    endif
   endif
 endfunction " }}}
 
@@ -151,11 +133,20 @@ function! eclim#util#Echo(message)
       echom line
     endfor
     echohl None
-    " prevent ShowCurrentError from overriding the displayed message.
-    if a:message !~ '^\s*$'
-      let b:eclim_last_message_line = line('.')
-    endif
   endif
+endfunction " }}}
+
+" EscapeBufferName(name) {{{
+" Escapes the supplied buffer name so that it can be safely used by buf*
+" functions.
+function! eclim#util#EscapeBufferName(name)
+  let name = a:name
+  " escaping the space in cygwin could lead to the dos path error message that
+  " cygwin throws when a dos path is referenced.
+  if !has('win32unix')
+    let name = escape(a:name, ' ')
+  endif
+  return substitute(name, '\(.\{-}\)\[\(.\{-}\)\]\(.\{-}\)', '\1[[]\2[]]\3', 'g')
 endfunction " }}}
 
 " Exec(cmd) {{{
@@ -165,31 +156,17 @@ function! eclim#util#Exec(cmd)
   call eclim#util#System(a:cmd, 1)
 endfunction " }}}
 
-" ExecWithoutAutocmds(cmd) {{{
+" ExecWithoutAutocmds(cmd, [events]) {{{
 " Execute a command after disabling all autocommands (borrowed from taglist.vim)
-function! eclim#util#ExecWithoutAutocmds(cmd)
+function! eclim#util#ExecWithoutAutocmds(cmd, ...)
   let save_opt = &eventignore
-  set eventignore=all
+  let events = len(a:000) == 0 ? 'all' : a:000[0]
+  exec 'set eventignore=' . events
   try
     exec a:cmd
   finally
     let &eventignore = save_opt
   endtry
-endfunction " }}}
-
-" FillTemplate(prefix, suffix) {{{
-" Used as part of a vim normal map to allow the user to fill in values for
-" variables in a newly added template of code.
-function! eclim#util#FillTemplate(prefix, suffix)
-  let line = getline('.')
-  let prefixCol = stridx(line, a:prefix)
-  let suffixCol = stridx(line, a:suffix, prefixCol)
-  if prefixCol != -1 && suffixCol != -1
-    let line = strpart(line, 0, prefixCol) . strpart(line, suffixCol + 1)
-    call setline(line('.'), line)
-    call cursor(line('.'), prefixCol + 1)
-    startinsert
-  endif
 endfunction " }}}
 
 " FindFileInPath(file, exclude_relative) {{{
@@ -207,7 +184,7 @@ function! eclim#util#FindFileInPath(file, exclude_relative)
   return split(eclim#util#Globpath(path, "**/" . a:file), '\n')
 endfunction " }}}
 
-" Findfile(name, [, path [, count]]) {{{
+" Findfile(name, [path, count]) {{{
 " Used to issue a findfile() handling any vim options that may otherwise
 " disrupt it.
 function! eclim#util#Findfile(name, ...)
@@ -304,16 +281,32 @@ function! eclim#util#GetCurrentElementOffset()
   return offset
 endfunction " }}}
 
-" GetIndent(indent) {{{
-" Gets an indentation string for the supplied number of spaces the indent
-" consists of.  Ex. eclim#util#GetIndent(indent(line('.')))
-function! eclim#util#GetIndent(indent)
+" GetIndent(level) {{{
+" Gets an indentation string for the supplied indentation level.
+function! eclim#util#GetIndent(level)
   let result = ''
 
-  if a:indent
-    let num = a:indent / &sw
-    while num >= 0
-      let result .= g:EclimIndent
+  if a:level
+    if !exists('b:eclim_indent')
+      if exists('g:EclimIndent')
+        let b:eclim_indent = g:EclimIndent
+      else
+        if !&expandtab
+          let b:eclim_indent = "\t"
+        else
+          let b:eclim_indent = ''
+          let index = 0
+          while index < &shiftwidth
+            let b:eclim_indent = b:eclim_indent . " "
+            let index = index + 1
+          endwhile
+        endif
+      endif
+    endif
+
+    let num = a:level
+    while num > 0
+      let result .= b:eclim_indent
       let num -= 1
     endwhile
   endif
@@ -383,6 +376,34 @@ function! eclim#util#GetPathEntry(file)
   return 0
 endfunction " }}}
 
+" GetVisualSelection(line1, line2, default) {{{
+" Returns the contents of, and then clears, the last visual selection.
+" If default is set, the default range will be honor.
+function! eclim#util#GetVisualSelection(line1, line2, default)
+  let lines = a:default ? getline(a:line1, a:line2) : []
+  let mode = visualmode(1)
+  if mode != '' && line("'<") == a:line1
+    if len(lines) == 0
+      let lines = getline(a:line1, a:line2)
+    endif
+    if mode == "v"
+      let start = col("'<") - 1
+      let end = col("'>") - 1
+      " slice in end before start in case the selection is only one line
+      let lines[-1] = lines[-1][: end]
+      let lines[0] = lines[0][start :]
+    elseif mode == "\<c-v>"
+      let start = col("'<")
+      if col("'>") < start
+        let start = col("'>")
+      endif
+      let start = start - 1
+      call map(lines, 'v:val[start :]')
+    endif
+  endif
+  return join(lines, "\n")
+endfunction " }}}
+
 " Glob(expr, [honor_wildignore]) {{{
 " Used to issue a glob() handling any vim options that may otherwise disrupt
 " it.
@@ -428,32 +449,48 @@ endfunction " }}}
 " Focuses the window containing the supplied buffer name or buffer number.
 " Returns 1 if the window was found, 0 otherwise.
 function! eclim#util#GoToBufferWindow(buf)
-  let winnr = type(a:buf) == 0 ? bufwinnr(a:buf) : bufwinnr(bufnr('^' . a:buf))
+  if type(a:buf) == 0
+    let winnr = bufwinnr(a:buf)
+  else
+    let name = eclim#util#EscapeBufferName(a:buf)
+    let winnr = bufwinnr(bufnr('^' . name))
+  endif
   if winnr != -1
     exec winnr . "winc w"
+    call eclim#util#DelayedCommand('doautocmd WinEnter')
     return 1
   endif
   return 0
 endfunction " }}}
 
-" GoToBufferWindowOrOpen(filename, cmd) {{{
+" GoToBufferWindowOrOpen(name, cmd) {{{
 " Gives focus to the window containing the buffer for the supplied file, or if
 " none, opens the file using the supplied command.
-function! eclim#util#GoToBufferWindowOrOpen(filename, cmd)
-  let winnr = bufwinnr(bufnr('^' . a:filename))
+function! eclim#util#GoToBufferWindowOrOpen(name, cmd)
+  let name = eclim#util#EscapeBufferName(a:name)
+  let winnr = bufwinnr(bufnr('^' . name))
   if winnr != -1
     exec winnr . "winc w"
+    call eclim#util#DelayedCommand('doautocmd WinEnter')
   else
-    silent exec a:cmd . ' ' . eclim#util#Simplify(a:filename)
+    let cmd = a:cmd
+    " if splitting and the buffer is a unamed empty buffer, then switch to an
+    " edit.
+    if cmd == 'split' && expand('%') == '' &&
+     \ !&modified && line('$') == 1 && getline(1) == ''
+      let cmd = 'edit'
+    endif
+    silent exec cmd . ' ' . escape(eclim#util#Simplify(a:name), ' ')
   endif
 endfunction " }}}
 
-" GoToBufferWindowRegister(bufname) {{{
+" GoToBufferWindowRegister(buf) {{{
 " Registers the autocmd for returning the user to the supplied buffer when the
 " current buffer is closed.
-function! eclim#util#GoToBufferWindowRegister(bufname)
-  exec 'autocmd BufWinLeave <buffer> call eclim#util#GoToBufferWindow("' .
-    \ escape(a:bufname, '\') . '") | doautocmd BufEnter'
+function! eclim#util#GoToBufferWindowRegister(buf)
+  exec 'autocmd BufWinLeave <buffer> ' .
+    \ 'call eclim#util#GoToBufferWindow("' . escape(a:buf, '\') . '") | ' .
+    \ 'doautocmd BufEnter'
 endfunction " }}}
 
 " GrabUri([line, col]) {{{
@@ -495,11 +532,11 @@ function! eclim#util#ListContains(list, element)
   return 0
 endfunction " }}}
 
-" MakeWithCompiler(compiler, bang, args, [exec]) {{{
+" MakeWithCompiler(compiler, bang, args) {{{
 " Executes :make using the supplied compiler.
-" If the 'exec' arg is > 0, then instead of using :make, this function will
-" execute the make program using exec (useful if the make program doesn't
-" behave on windows).
+" Note: on windows the make program will be executed manually if the 'tee'
+" progam is available (only the cygwin version is currenty supported) to allow
+" the display of the make program output while running.
 function! eclim#util#MakeWithCompiler(compiler, bang, args, ...)
   if exists('g:current_compiler')
     let saved_compiler = g:current_compiler
@@ -521,22 +558,11 @@ function! eclim#util#MakeWithCompiler(compiler, bang, args, ...)
     exec 'compiler ' . a:compiler
     let make_cmd = substitute(&makeprg, '\$\*', a:args, '')
 
-    let exec = len(a:000) > 0 ? a:000[0] : 0
-    if !exec
-      call eclim#util#EchoTrace('make: ' . make_cmd)
-      exec 'make' . a:bang . ' ' . a:args
-    else
-      let command = '!' . make_cmd
+    " windows machines where 'tee' is available
+    if (has('win32') || has('win64')) && executable('tee')
       let outfile = g:EclimTempDir . '/eclim_make_output.txt'
-      if has("win32") || has("win64")
-        if executable("tee")
-          let command .= ' | tee "' . outfile . '" 2>&1"'
-        else
-          let command .= ' >"' . outfile . '" 2>&1"'
-        endif
-      else
-        let command .= ' 2>&1| tee "' . outfile . '"'
-      endif
+      let teefile = eclim#cygwin#CygwinPath(outfile)
+      let command = '!cmd /c "' . make_cmd . ' 2>&1 | tee "' . teefile . '" "'
 
       doautocmd QuickFixCmdPre make
       call eclim#util#Exec(command)
@@ -549,6 +575,11 @@ function! eclim#util#MakeWithCompiler(compiler, bang, args, ...)
         call delete(outfile)
       endif
       doautocmd QuickFixCmdPost make
+
+    " all other platforms
+    else
+      call eclim#util#EchoTrace('make: ' . make_cmd)
+      exec 'make' . a:bang . ' ' . a:args
     endif
   finally
     if exists('saved_compiler')
@@ -629,38 +660,90 @@ function! eclim#util#ParseArgs(args)
   return args
 endfunction " }}}
 
-" ParseLocationEntries(entries) {{{
+" ParseLocationEntries(entries, [sort]) {{{
 " Parses the supplied list of location entry lines (%f|%l col %c|%m) into a
 " vim compatable list of dictionaries that can be passed to setqflist() or
 " setloclist().
 " In addition to the above line format, this function also supports
 " %f|%l col %c|%m|%s, where %s is the type of the entry.  The value will
 " be placed in the dictionary under the 'type' key.
-function! eclim#util#ParseLocationEntries(entries)
-  let entries = []
+" The optional 'sort' parameter currently only supports 'severity' as an
+" argument.
+function! eclim#util#ParseLocationEntries(entries, ...)
+  if len(a:000) > 0 && a:1 == 'severity'
+    let entries = {}
+  else
+    let entries = []
+  endif
 
   for entry in a:entries
-    let file = substitute(entry, '\(.\{-}\)|.*', '\1', '')
-    let line = substitute(entry, '.*|\([0-9]\+\) col.*', '\1', '')
-    let col = substitute(entry, '.*col \([0-9]\+\)|.*', '\1', '')
-    let message = substitute(entry, '.*col [0-9]\+|\(.\{-}\)\(|.*\|$\)', '\1', '')
-    let type = substitute(entry, '.*|\(e\|w\)$', '\1', '')
-    if type == entry
-      let type = ''
+    let dict = s:ParseLocationEntry(entry)
+
+    " partition by severity
+    if type(entries) == 4 " dictionary
+      " empty key not allowed
+      let type = dict.type == '' ? ' ' : tolower(dict.type)
+      if !has_key(entries, type)
+        let entries[type] = []
+      endif
+      call add(entries[type], dict)
+
+    " default sort
+    else
+      call add(entries, dict)
     endif
-
-    let dict = {
-        \ 'filename': eclim#util#Simplify(file),
-        \ 'lnum': line,
-        \ 'col': col,
-        \ 'text': message,
-        \ 'type': type
-      \ }
-
-    call add(entries, dict)
   endfor
 
+  " re-assemble severity partitioned results
+  if type(entries) == 4 " dictionary
+    let results = []
+    if has_key(entries, 'e')
+      let results += remove(entries, 'e')
+    endif
+    if has_key(entries, 'w')
+      let results += remove(entries, 'w')
+    endif
+    if has_key(entries, 'i')
+      let results += remove(entries, 'i')
+    endif
+    " should only be key '' (no type), but we don't want to accidentally
+    " filter out other possible types.
+    let keys = keys(entries)
+    call reverse(sort(keys))
+    for key in keys
+      let results += entries[key]
+    endfor
+    return results
+  endif
+
   return entries
+endfunction " }}}
+
+" s:ParseLocationEntry(entry) {{{
+function! s:ParseLocationEntry(entry)
+  let entry = a:entry
+  let file = substitute(entry, '\(.\{-}\)|.*', '\1', '')
+  let line = substitute(entry, '.*|\([0-9]\+\) col.*', '\1', '')
+  let col = substitute(entry, '.*col \([0-9]\+\)|.*', '\1', '')
+  let message = substitute(entry, '.*col [0-9]\+|\(.\{-}\)\(|.*\|$\)', '\1', '')
+  let type = substitute(entry, '.*|\(e\|w\)$', '\1', '')
+  if type == entry
+    let type = ''
+  endif
+
+  if has('win32unix')
+    let file = eclim#cygwin#CygwinPath(file)
+  endif
+
+  let dict = {
+      \ 'filename': eclim#util#Simplify(file),
+      \ 'lnum': line,
+      \ 'col': col,
+      \ 'text': message,
+      \ 'type': type
+    \ }
+
+  return dict
 endfunction " }}}
 
 " PromptList(prompt, list, highlight) {{{
@@ -781,6 +864,9 @@ function! eclim#util#SetLocationList(list, ...)
   else
     call setloclist(0, loclist, a:1)
   endif
+  if g:EclimShowCurrentError && len(loclist) > 0
+    call eclim#util#DelayedCommand('call eclim#util#ShowCurrentError()')
+  endif
   call eclim#display#signs#Update()
 endfunction " }}}
 
@@ -815,7 +901,7 @@ function! eclim#util#ClearLocationList(...)
   call eclim#display#signs#Update()
 endfunction " }}}
 
-" SetQuickfixList(list, ...) {{{
+" SetQuickfixList(list, [action]) {{{
 " Sets the contents of the quickfix list.
 function! eclim#util#SetQuickfixList(list, ...)
   let qflist = a:list
@@ -842,29 +928,32 @@ function! eclim#util#SetQuickfixList(list, ...)
   else
     call setqflist(qflist, a:1)
   endif
+  if g:EclimShowCurrentError && len(qflist) > 0
+    call eclim#util#DelayedCommand('call eclim#util#ShowCurrentError()')
+  endif
   call eclim#display#signs#Update()
 endfunction " }}}
 
 " ShowCurrentError() {{{
 " Shows the error on the cursor line if one.
 function! eclim#util#ShowCurrentError()
-  if !exists('b:eclim_last_message_line') || line('.') != b:eclim_last_message_line
-    let message = eclim#util#GetLineError(line('.'))
-    if message != ''
-      " remove any new lines
-      let message = substitute(message, '\n', ' ', 'g')
+  let message = eclim#util#GetLineError(line('.'))
+  if message != ''
+    " remove any new lines
+    let message = substitute(message, '\n', ' ', 'g')
 
-      if len(message) > (&columns - 1)
-        let message = strpart(message, 0, &columns - 4) . '...'
-      endif
-
-      call eclim#util#WideMessage('echo', message)
+    if len(message) > (&columns - 1)
+      let message = strpart(message, 0, &columns - 4) . '...'
     endif
+
     call eclim#util#WideMessage('echo', message)
+    let s:show_current_error_displaying = 1
   else
-    " reset the value so next time cursor on this line, the message will be
-    " shown.
-    let b:eclim_last_message_line = 0
+    " clear the message if one of our error messages was displaying
+    if s:show_current_error_displaying
+      call eclim#util#WideMessage('echo', message)
+      let s:show_current_error_displaying = 0
+    endif
   endif
 endfunction " }}}
 
@@ -892,7 +981,7 @@ function! eclim#util#Simplify(file)
   return file
 endfunction " }}}
 
-" System(cmd [, exec]) {{{
+" System(cmd, [exec]) {{{
 " Executes system() accounting for possibly disruptive vim options.
 function! eclim#util#System(cmd, ...)
   let saveshell = &shell
@@ -931,11 +1020,19 @@ function! eclim#util#System(cmd, ...)
 
   if len(a:000) > 0 && a:000[0]
     let result = ''
-    call eclim#util#EchoTrace('exec: ' . a:cmd)
-    exec a:cmd
+    let begin = localtime()
+    try
+      exec a:cmd
+    finally
+      call eclim#util#EchoTrace('exec: ' . a:cmd, localtime() - begin)
+    endtry
   else
-    call eclim#util#EchoTrace('system: ' . a:cmd)
-    let result = system(a:cmd)
+    let begin = localtime()
+    try
+      let result = system(a:cmd)
+    finally
+      call eclim#util#EchoTrace('system: ' . a:cmd, localtime() - begin)
+    endtry
   endif
 
   let &shell = saveshell
@@ -971,16 +1068,15 @@ function! eclim#util#System(cmd, ...)
   return result
 endfunction " }}}
 
-" TempWindow(name, lines [, readonly]) {{{
-" Opens a temp window w/ the given name and contents.
+" TempWindow(name, lines, [readonly]) {{{
+" Opens a temp window w/ the given name and contents which is readonly unless
+" specified otherwise.
 function! eclim#util#TempWindow(name, lines, ...)
   let filename = expand('%:p')
   let winnr = winnr()
 
   call eclim#util#TempWindowClear(a:name)
-  "let name = escape(a:name, ' []')
-  " hack for windows
-  let name = substitute(a:name, '\(.\{-}\)\[\(.\{-}\)\]\(.\{-}\)', '\1[[]\2[]]\3', 'g')
+  let name = eclim#util#EscapeBufferName(a:name)
 
   if bufwinnr(name) == -1
     silent! noautocmd exec "botright 10sview " . escape(a:name, ' ')
@@ -1001,8 +1097,8 @@ function! eclim#util#TempWindow(name, lines, ...)
     exec bufwinnr(name) . "winc w"
   endif
 
-  set modifiable
-  set noreadonly
+  setlocal modifiable
+  setlocal noreadonly
   call append(1, a:lines)
   retab
   silent 1,1delete _
@@ -1013,7 +1109,7 @@ function! eclim#util#TempWindow(name, lines, ...)
     setlocal readonly
   endif
 
-  doautocmd BufEnter
+  silent doautocmd BufEnter
 
   " Store filename and window number so that plugins can use it if necessary.
   if filename != expand('%:p')
@@ -1030,9 +1126,7 @@ endfunction " }}}
 " TempWindowClear(name) {{{
 " Clears the contents of the temp window with the given name.
 function! eclim#util#TempWindowClear(name)
-  "let name = escape(a:name, ' []')
-  " hack for windows
-  let name = substitute(a:name, '\(.\{-}\)\[\(.\{-}\)\]\(.\{-}\)', '\1[[]\2[]]\3', 'g')
+  let name = eclim#util#EscapeBufferName(a:name)
   if bufwinnr(name) != -1
     let curwinnr = winnr()
     exec bufwinnr(name) . "winc w"
@@ -1043,13 +1137,11 @@ function! eclim#util#TempWindowClear(name)
   endif
 endfunction " }}}
 
-" TempWindowCommand(command, name) {{{
+" TempWindowCommand(command, name, [port]) {{{
 " Opens a temp window w/ the given name and contents from the result of the
 " supplied command.
-function! eclim#util#TempWindowCommand(command, name)
-  "let name = escape(a:name, ' []')
-  " hack for windows
-  let name = substitute(a:name, '\(.\{-}\)\[\(.\{-}\)\]\(.\{-}\)', '\1[[]\2[]]\3', 'g')
+function! eclim#util#TempWindowCommand(command, name, ...)
+  let name = eclim#util#EscapeBufferName(a:name)
 
   let line = 1
   let col = 1
@@ -1060,7 +1152,14 @@ function! eclim#util#TempWindowCommand(command, name)
     let col = col('.')
   endif
 
-  let results = split(eclim#ExecuteEclim(a:command), '\n')
+  if len(a:000) > 0
+    let port = a:000[0]
+    let result = eclim#ExecuteEclim(a:command, port)
+  else
+    let result = eclim#ExecuteEclim(a:command)
+  endif
+
+  let results = split(result, '\n')
   if len(results) == 1 && results[0] == '0'
     return 0
   endif
@@ -1100,7 +1199,7 @@ endfunction " }}}
 " command (:) prompt, not any normal mappings which may hide/close/delete the
 " buffer.
 function! eclim#util#WillWrittenBufferClose()
-  return histget("cmd") =~ s:buffing_write_closing_commands
+  return histget("cmd") =~ s:buffer_write_closing_commands
 endfunction " }}}
 
 " CommandCompleteFile(argLead, cmdLine, cursorPos) {{{
@@ -1119,9 +1218,10 @@ endfunction " }}}
 " CommandCompleteDir(argLead, cmdLine, cursorPos) {{{
 " Custom command completion for directories.
 function! eclim#util#CommandCompleteDir(argLead, cmdLine, cursorPos)
-  let cmdTail = strpart(a:cmdLine, a:cursorPos)
-  let argLead = substitute(a:argLead, cmdTail . '$', '', '')
-  let results = split(eclim#util#Glob(argLead . '*', 1), '\n')
+  let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
+  let args = eclim#util#ParseCmdLine(cmdLine)
+  let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
+  let results = split(eclim#util#Glob(expand(argLead) . '*', 1), '\n')
   let index = 0
   for result in results
     if !isdirectory(result)

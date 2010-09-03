@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -52,33 +52,29 @@ function! eclim#vcs#command#Annotate(...)
 
   let path = exists('b:vcs_props') ? b:vcs_props.path : expand('%:p')
   let revision = len(a:000) > 0 ? a:000[0] : ''
-  if revision == ''
-    let revision = eclim#vcs#util#GetRevision()
+
+  " let the vcs annotate the current working version so that the results line
+  " up with the contents (assuming the underlying vcs supports it).
+  "if revision == ''
+  "  let revision = eclim#vcs#util#GetRevision()
+  "endif
+
+  let dir = fnamemodify(path, ':h')
+  let cwd = getcwd()
+  if isdirectory(dir)
+    exec 'lcd ' . escape(dir, ' ')
   endif
-  let key = 'annotate_' . path . '_' . revision
-  let cached = eclim#cache#Get(key)
-  if has_key(cached, 'content')
-    let annotations = cached.content
-  else
-    let dir = fnamemodify(path, ':h')
-    let cwd = getcwd()
-    if isdirectory(dir)
-      exec 'lcd ' . escape(dir, ' ')
+  try
+    let Annotate = eclim#vcs#util#GetVcsFunction('GetAnnotations')
+    if type(Annotate) != 2
+      call eclim#util#EchoError(
+        \ 'Current file is not under cvs, svn, hg, or git version control.')
+      return
     endif
-    try
-      let Annotate = eclim#vcs#util#GetVcsFunction('GetAnnotations')
-      if type(Annotate) != 2
-        call eclim#util#EchoError(
-          \ 'Current file is not under cvs, svn, hg, or git version control.')
-        return
-      endif
-      let annotations = Annotate(revision)
-      call eclim#cache#Set(key, annotations,
-        \ {'path': path, 'revision': revision})
-    finally
-      exec 'lcd ' . escape(cwd, ' ')
-    endtry
-  endif
+    let annotations = Annotate(revision)
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
 
   call s:ApplyAnnotations(annotations)
 endfunction " }}}
@@ -103,32 +99,28 @@ function! eclim#vcs#command#ChangeSet(path, revision)
     let revision = eclim#vcs#util#GetPreviousRevision(path)
   endif
 
-  let key = 'changeset_' . path . '_' . revision
-  let cached = eclim#cache#Get(key)
-  if has_key(cached, 'content')
-    let info = {'changeset': cached.content, 'props': cached.metadata.props}
-  else
-    let cwd = getcwd()
-    let dir = fnamemodify(path, ':h')
-    if isdirectory(dir)
-      exec 'lcd ' . escape(dir, ' ')
-    endif
-    try
-      let ChangeSet = eclim#vcs#util#GetVcsFunction('ChangeSet')
-      if type(ChangeSet) != 2
-        return
-      endif
-      let info = ChangeSet(revision)
-    finally
-      exec 'lcd ' . escape(cwd, ' ')
-    endtry
-    let info.props = has_key(info, 'props') ? info.props : {}
-    let info.props.view = 'changeset'
-    let info.props.path = path
-    let info.props.revision = revision
-    call eclim#cache#Set(key, info.changeset,
-      \ {'path': path, 'revision': revision, 'props': info.props})
+  let cwd = getcwd()
+  let dir = fnamemodify(path, ':h')
+  if isdirectory(dir)
+    exec 'lcd ' . escape(dir, ' ')
   endif
+  try
+    let ChangeSet = eclim#vcs#util#GetVcsFunction('ChangeSet')
+    if type(ChangeSet) != 2
+      return
+    endif
+    let info = ChangeSet(revision)
+  catch /E117:.*/
+    let type = eclim#vcs#util#GetVcsType()
+    call eclim#util#EchoError('This function is not supported by "' . type . '".')
+    return
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
+  let info.props = has_key(info, 'props') ? info.props : {}
+  let info.props.view = 'changeset'
+  let info.props.path = path
+  let info.props.revision = revision
 
   call s:TempWindow(info.changeset)
   call s:LogSyntax()
@@ -172,19 +164,16 @@ function! eclim#vcs#command#Diff(path, revision)
   augroup vcs_diff
     autocmd! BufWinLeave <buffer>
     call eclim#util#GoToBufferWindowRegister(b:filename)
-    autocmd BufWinLeave <buffer> diffoff |
-      \ call eclim#util#DelayedCommand('call eclim#display#maximize#RestoreWindows(0)')
+    autocmd BufWinLeave <buffer> diffoff
   augroup END
 
-  exec bufwinnr(buf1) . 'winc w'
+  call eclim#util#GoToBufferWindow(buf1)
   diffthis
-
-  call eclim#display#maximize#RestoreWindows(0)
 endfunction " }}}
 
 " Info() {{{
 " Retrieves and echos info on the current file.
-function eclim#vcs#command#Info()
+function! eclim#vcs#command#Info()
   let cwd = getcwd()
   let dir = expand('%:p:h')
   exec 'lcd ' . escape(dir, ' ')
@@ -236,40 +225,29 @@ function! eclim#vcs#command#Log(path)
     return
   endif
 
+  let cwd = getcwd()
   let path = substitute(a:path, '\', '/', 'g')
-  let key = 'log_' . path . '_' . g:EclimVcsLogMaxEntries
-  let cached = eclim#cache#Get(key, function('eclim#vcs#util#IsCacheValid'))
-  if has_key(cached, 'content')
-    let info = {'log': cached.content, 'props': cached.metadata.props}
-  else
-    let cwd = getcwd()
-    let dir = fnamemodify(path, ':h')
-    if isdirectory(dir)
-      exec 'lcd ' . escape(dir, ' ')
-    endif
-    try
-      let Log = eclim#vcs#util#GetVcsFunction('Log')
-      if type(Log) != 2
-        return
-      endif
-      let info = Log(path)
-    finally
-      exec 'lcd ' . escape(cwd, ' ')
-    endtry
-    if g:EclimVcsLogMaxEntries > 0 && len(info.log) == g:EclimVcsLogMaxEntries
-      call add(info.log, '------------------------------------------')
-      call add(info.log, 'Note: entries limited to ' . g:EclimVcsLogMaxEntries . '.')
-      call add(info.log, '      let g:EclimVcsLogMaxEntries = ' . g:EclimVcsLogMaxEntries)
-    endif
-    let info.props = has_key(info, 'props') ? info.props : {}
-    let info.props.view = 'log'
-    let info.props.path = path
-    call eclim#cache#Set(key, info.log, {
-      \  'path': path,
-      \  'revision': eclim#vcs#util#GetRevision(path),
-      \  'props': info.props
-      \ })
+  let dir = fnamemodify(path, ':h')
+  if isdirectory(dir)
+    exec 'lcd ' . escape(dir, ' ')
   endif
+  try
+    let Log = eclim#vcs#util#GetVcsFunction('Log')
+    if type(Log) != 2
+      return
+    endif
+    let info = Log(path)
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
+  if g:EclimVcsLogMaxEntries > 0 && len(info.log) == g:EclimVcsLogMaxEntries
+    call add(info.log, '------------------------------------------')
+    call add(info.log, 'Note: entries limited to ' . g:EclimVcsLogMaxEntries . '.')
+    call add(info.log, '      let g:EclimVcsLogMaxEntries = ' . g:EclimVcsLogMaxEntries)
+  endif
+  let info.props = has_key(info, 'props') ? info.props : {}
+  let info.props.view = 'log'
+  let info.props.path = path
 
   " if annotations are on, jump to the revision for the current line
   let jumpto = ''
@@ -339,31 +317,24 @@ function! eclim#vcs#command#ViewFileRevision(path, revision, open_cmd)
   let b:vcs_props.view = 'cat'
 
   " load in content
-  let key = 'cat_' . path . '_' . revision
-  let cached = eclim#cache#Get(key)
-  if has_key(cached, 'content')
-    let lines = cached.content
-  else
-    let cwd = getcwd()
-    let dir = fnamemodify(path, ':h')
-    if has_key(props, 'root_dir')
-      let dir = b:vcs_props.root_dir . '/' . dir
-    endif
-    if isdirectory(dir)
-      exec 'lcd ' . escape(dir, ' ')
-      let path = fnamemodify(path, ':t')
-    endif
-    try
-      let ViewFileRevision = eclim#vcs#util#GetVcsFunction('ViewFileRevision')
-      if type(ViewFileRevision) != 2
-        return
-      endif
-      let lines = ViewFileRevision(path, revision)
-      call eclim#cache#Set(key, lines, {'path': path, 'revision': revision})
-    finally
-      exec 'lcd ' . escape(cwd, ' ')
-    endtry
+  let cwd = getcwd()
+  let dir = fnamemodify(path, ':h')
+  if has_key(props, 'root_dir')
+    let dir = b:vcs_props.root_dir . '/' . dir
   endif
+  if isdirectory(dir)
+    exec 'lcd ' . escape(dir, ' ')
+    let path = fnamemodify(path, ':t')
+  endif
+  try
+    let ViewFileRevision = eclim#vcs#util#GetVcsFunction('ViewFileRevision')
+    if type(ViewFileRevision) != 2
+      return
+    endif
+    let lines = ViewFileRevision(path, revision)
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
 
   call append(1, lines)
   silent 1,1delete
@@ -381,23 +352,62 @@ endfunction " }}}
 
 " s:ApplyAnnotations(annotations) {{{
 function! s:ApplyAnnotations(annotations)
+  let existing = {}
+  let existing_annotations = {}
+  for exists in eclim#display#signs#GetExisting()
+    if exists.name !~ '^\(vcs_annotate_\|placeholder\)'
+      let existing[exists.line] = exists
+    else
+      let existing_annotations[exists.line] = exists
+    endif
+  endfor
+
   let defined = eclim#display#signs#GetDefined()
   let index = 1
   for annotation in a:annotations
-    let user = substitute(annotation, '^.\{-})\s\+\(.*\)', '\1', '')
-    let user_abbrv = user[:1]
-    if index(defined, user) == -1
-      call eclim#display#signs#Define(user, user_abbrv, g:EclimInfoHighlight)
-      call add(defined, user_abbrv)
+    if annotation == 'uncommitted'
+      if has_key(existing_annotations, index)
+        call eclim#display#signs#Unplace(existing_annotations[index].id)
+      endif
+      let index += 1
+      continue
     endif
-    call eclim#display#signs#Place(user, index)
+
+    if has_key(existing, index)
+      let index += 1
+      continue
+    endif
+
+    let user = substitute(annotation, '^.\{-})\s\+\(.\{-}\)\s*$', '\1', '')
+    let user_abbrv = user[:1]
+    let name_parts = split(user)
+    " if the user name appears to be in the form of First Last, then try using
+    " using the first letter of each as initials
+    if len(name_parts) > 1 && name_parts[0] =~ '^\w' && name_parts[1] =~ '^\w'
+      let user_abbrv = name_parts[0][0] . name_parts[1][0]
+    endif
+    let sign_name = 'vcs_annotate_' . substitute(user[:5], ' ', '_', 'g')
+    if index(defined, sign_name) == -1
+      call eclim#display#signs#Define(sign_name, user_abbrv, g:EclimInfoHighlight)
+      call add(defined, sign_name)
+    endif
+    call eclim#display#signs#Place(sign_name, index)
     let index += 1
   endfor
+
   let b:vcs_annotations = a:annotations
+  call s:AnnotateInfo()
 
   augroup vcs_annotate
     autocmd!
-    autocmd CursorHold <buffer> call <SID>AnnotateInfo()
+    autocmd CursorMoved <buffer> call <SID>AnnotateInfo()
+    autocmd BufWritePost <buffer>
+      \ if !eclim#util#WillWrittenBufferClose() |
+      \   if exists('b:vcs_annotations') |
+      \     unlet b:vcs_annotations |
+      \   endif |
+      \   call eclim#vcs#command#Annotate() |
+      \ endif
   augroup END
 endfunction " }}}
 
@@ -413,14 +423,15 @@ function! s:AnnotateOff()
   if exists('b:vcs_annotations')
     let defined = eclim#display#signs#GetDefined()
     for annotation in b:vcs_annotations
-      let user = substitute(annotation, '^.*)\s\+\(.\{-}\)\s*$', '\1', '')
-      if index(defined, user) != -1
-        let signs = eclim#display#signs#GetExisting(user)
+      let user = substitute(annotation, '^.\{-})\s\+\(.\{-}\)\s*$', '\1', '')
+      let sign_name = 'vcs_annotate_' . substitute(user[:5], ' ', '_', 'g')
+      if index(defined, sign_name) != -1
+        let signs = eclim#display#signs#GetExisting(sign_name)
         for sign in signs
           call eclim#display#signs#Unplace(sign.id)
         endfor
-        call eclim#display#signs#Undefine(user)
-        call remove(defined, index(defined, user))
+        call eclim#display#signs#Undefine(sign_name)
+        call remove(defined, index(defined, sign_name))
       endif
     endfor
     unlet b:vcs_annotations
@@ -488,9 +499,8 @@ function! s:FollowLink()
         let orien = g:EclimVcsDiffOrientation == 'horizontal' ? '' : 'vertical'
         call eclim#vcs#command#ViewFileRevision(file, r2, 'bel ' . orien . ' split')
         diffthis
-        exec bufwinnr(buf1) . 'winc w'
+        call eclim#util#GoToBufferWindow(buf1)
         diffthis
-        call eclim#display#maximize#RestoreWindows(0)
       elseif link !~ '^\s*$'
         call eclim#vcs#command#Log(link)
       endif
@@ -523,9 +533,8 @@ function! s:FollowLink()
       let orien = g:EclimVcsDiffOrientation == 'horizontal' ? '' : 'vertical'
       call eclim#vcs#command#ViewFileRevision(file, r2, 'bel ' . orien . ' split')
       diffthis
-      exec bufwinnr(buf1) . 'winc w'
+      call eclim#util#GoToBufferWindow(buf1)
       diffthis
-      call eclim#display#maximize#RestoreWindows(0)
 
     " link to diff against working copy
     elseif link == 'working copy'
@@ -542,13 +551,11 @@ function! s:FollowLink()
       augroup vcs_diff
         autocmd! BufWinLeave <buffer>
         call eclim#util#GoToBufferWindowRegister(b:filename)
-        autocmd BufWinLeave <buffer> diffoff |
-          \ call eclim#util#DelayedCommand('call eclim#display#maximize#RestoreWindows(0)')
+        autocmd BufWinLeave <buffer> diffoff
       augroup END
 
       call eclim#util#GoToBufferWindow(filename)
       diffthis
-      call eclim#display#maximize#RestoreWindows(0)
 
     " link to bug / feature report
     elseif link =~ '^' . s:trackerIdPattern . '$'

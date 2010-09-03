@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/python/django.html
+"   see http://eclim.org/vim/python/django.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -151,7 +151,7 @@ function! eclim#python#django#manage#Manage(args)
           set filetype=html
         elseif action =~ '\(diffsettings\|inspectdb\)'
         endif
-        set nomodified
+        setlocal nomodified
         " Store filename so that plugins can use it if necessary.
         let b:filename = filename
 

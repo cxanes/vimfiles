@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/taglist.html
+"   see http://eclim.org/vim/taglist.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -405,7 +405,8 @@ function! eclim#taglist#taglisttoo#AutoOpen()
   let buf_num = winbufnr(i)
   while buf_num != -1
     let filename = fnamemodify(bufname(buf_num), ':p')
-    if s:FileSupported(filename, getbufvar(buf_num, '&filetype'))
+    if !getbufvar(buf_num, '&diff') &&
+     \ s:FileSupported(filename, getbufvar(buf_num, '&filetype'))
       let open_window = 1
       break
     endif
@@ -439,14 +440,16 @@ function! eclim#taglist#taglisttoo#Taglist(...)
   if action == -1 || action == 0
     let winnum = bufwinnr(g:TagList_title)
     if winnum != -1
+      let prevbuf = bufnr('%')
       exe winnum . 'wincmd w'
       call s:CloseTaglist()
+      exec bufwinnr(prevbuf) . 'wincmd w'
       return
     endif
   endif
 
   if action == -1 || action == 1
-    call s:ProcessTags()
+    call s:ProcessTags(1)
     call s:StartAutocmds()
 
     augroup taglisttoo
@@ -457,13 +460,39 @@ function! eclim#taglist#taglisttoo#Taglist(...)
   endif
 endfunction " }}}
 
+" Restore() {{{
+" Restore the taglist, typically after loading from a session file.
+function! eclim#taglist#taglisttoo#Restore()
+  if exists('t:taglistoo_restoring')
+    return
+  endif
+  let t:taglistoo_restoring = 1
+
+  " prevent auto open from firing after session is loaded.
+  augroup taglisttoo_autoopen
+    autocmd!
+  augroup END
+
+  call eclim#util#DelayedCommand(
+    \ 'let winnum = bufwinnr(g:TagList_title) | ' .
+    \ 'if winnum != -1 | ' .
+    \ '  exec "TlistToo" | ' .
+    \ '  exec "TlistToo" | ' .
+    \ '  unlet t:taglistoo_restoring | ' .
+    \ 'endif')
+endfunction " }}}
+
 " s:StartAutocmds() {{{
 function! s:StartAutocmds()
   augroup taglisttoo_file
     autocmd!
-    autocmd BufEnter,BufWritePost *
+    autocmd BufEnter *
       \ if bufwinnr(g:TagList_title) != -1 |
-      \   call s:ProcessTags() |
+      \   call s:ProcessTags(0) |
+      \ endif
+    autocmd BufWritePost *
+      \ if bufwinnr(g:TagList_title) != -1 |
+      \   call s:ProcessTags(1) |
       \ endif
     " bit of a hack to re-process tags if the filetype changes after the tags
     " have been processed.
@@ -471,7 +500,7 @@ function! s:StartAutocmds()
       \ if exists('b:ft') |
       \   if b:ft != &ft |
       \     if bufwinnr(g:TagList_title) != -1 |
-      \       call s:ProcessTags() |
+      \       call s:ProcessTags(1) |
       \     endif |
       \   endif |
       \ else |
@@ -508,12 +537,29 @@ function! s:Cleanup()
   augroup END
 endfunction " }}}
 
-" s:ProcessTags() {{{
-function! s:ProcessTags()
-  let filename = expand('%')
+" s:ProcessTags(on_open_or_write) {{{
+function! s:ProcessTags(on_open_or_write)
+  " on insert completion prevent vim's jumping back and forth from the
+  " completion preview window from triggering a re-processing of tags
+  if pumvisible()
+    return
+  endif
+
+  " if we are entering a buffer whose taglist list is already loaded, then
+  " don't do anything.
+  if !a:on_open_or_write
+    let bufnr = bufnr(g:TagList_title)
+    let filebuf = getbufvar(bufnr, 'taglisttoo_file_bufnr')
+    if filebuf == bufnr('%')
+      return
+    endif
+  endif
+
+  let filename = expand('%:p')
   if filename =~ s:taglisttoo_ignore || filename == ''
     return
   endif
+  let filewin = winnr()
 
   let tags = []
   if s:FileSupported(expand('%:p'), &ft)
@@ -539,14 +585,31 @@ function! s:ProcessTags()
     endif
 
     try
-      let command = g:Tlist_Ctags_Cmd . ' -f - --format=2 --excmd=pattern ' .
+      let command = g:Tlist_Ctags_Cmd_Ctags
+      if eclim#EclimAvailable() && !exists('g:EclimDisabled')
+        let port = eclim#client#nailgun#GetNgPort()
+        let command = substitute(g:Tlist_Ctags_Cmd_Eclim, '<port>', port, '')
+      endif
+
+      if has('win32unix')
+        let file = eclim#cygwin#WindowsPath(file)
+      endif
+
+      let command .= ' -f - --format=2 --excmd=pattern ' .
           \ '--fields=nks --sort=no --language-force=<lang> ' .
           \ '--<lang>-types=<types> "<file>"'
       let command = substitute(command, '<lang>', settings.lang, 'g')
       let command = substitute(command, '<types>', types, 'g')
       let command = substitute(command, '<file>', file, '')
 
+      if has('win32') || has('win64') || has('win32unix')
+        let command .= ' "'
+      endif
+
       let response = eclim#util#System(command)
+      if has('win32unix')
+        let response = substitute(response, "\<c-m>\n", '\n', 'g')
+      endif
     finally
       if tempfile != ''
         call delete(tempfile)
@@ -576,10 +639,6 @@ function! s:ProcessTags()
         let truncated = 1
       endif
 
-      if g:Tlist_Sort_Type == 'name'
-        call sort(results)
-      endif
-
       for result in results
         let values = s:ParseOutputLine(result)
 
@@ -607,6 +666,10 @@ function! s:ProcessTags()
       exec 'call s:Window(settings.tags, tags, ' .
         \ s:tlist_format_{&ft} . '(settings.tags, tags))'
     else
+      if g:Tlist_Sort_Type == 'name'
+        call sort(tags)
+      endif
+
       call s:Window(settings.tags, tags, s:FormatDefault(settings.tags, tags))
     endif
 
@@ -619,13 +682,23 @@ function! s:ProcessTags()
       setlocal nomodifiable
     endif
 
-    let filewin = bufwinnr(filename)
+    " if the file buffer is no longer in the same window it was, then find its
+    " new location. Occurs when taglist first opens.
+    if winbufnr(filewin) != bufnr(filename)
+      let filewin = bufwinnr(filename)
+    endif
+
     if filewin != -1
       exec filewin . 'winc w'
     endif
   else
-    call s:Window({}, tags, [[],[]])
-    winc p
+    " if the file isn't supported, then don't open the taglist window if it
+    " isn't open already.
+    let winnum = bufwinnr(g:TagList_title)
+    if winnum != -1
+      call s:Window({}, tags, [[],[]])
+      winc p
+    endif
   endif
 
   call s:ShowCurrentTag()
@@ -690,7 +763,11 @@ function! s:JumpToTag()
   let lnum = s:GetTagLineNumber(tag_info)
   let pattern = eclim#taglist#util#GetTagPattern(tag_info)
 
-  if getline(lnum) =~ escape(pattern, '*[]')
+  " account for my plugin which removes trailing spaces from the file
+  let pattern = escape(pattern, '.~*[]')
+  let pattern = substitute(pattern, '\s\+\$$', '\\s*$', '')
+
+  if getline(lnum) =~ pattern
     mark '
     call cursor(lnum, 1)
     call s:ShowCurrentTag()
@@ -760,14 +837,28 @@ function! s:Window(types, tags, content)
     nnoremap <silent> <buffer> <cr> :call <SID>JumpToTag()<cr>
   endif
 
-  let pos = getpos('.')
+  let pos = [0, 1, 1, 0]
+  " if we are updating the taglist for the same file, then preserve the
+  " cursor position.
+  if len(a:content[1]) > 0 && getline(1) == a:content[1][0]
+    let pos = getpos('.')
+  endif
+
   setlocal modifiable
   silent 1,$delete _
   call append(1, a:content[1])
   silent retab
   silent 1,1delete _
   setlocal nomodifiable
+
   call setpos('.', pos)
+
+  " if the entire taglist can fit in the window, then reposition the content
+  " just in case the previous contents result in the current contents being
+  " scrolled up a bit.
+  if len(a:content[1]) < winheight(winnr())
+    normal! zb
+  endif
 
   silent! syn clear TagListKeyword
   for value in values(a:types)
@@ -821,11 +912,11 @@ function! s:ShowCurrentTag()
   endif
 endfunction " }}}
 
-" s:FileSupported() {{{
+" s:FileSupported(filename, ftype) {{{
 " Check whether tag listing is supported for the specified file
 function! s:FileSupported(filename, ftype)
-  " Skip buffers with no names and buffers with filetype not set
-  if a:filename == '' || a:ftype == ''
+  " Skip buffers with no names, buffers with filetype not set, and vimballs
+  if a:filename == '' || a:ftype == '' || expand('%:e') == 'vba'
     return 0
   endif
 
