@@ -986,8 +986,8 @@ function! s:ShowHelp(...)  " ... = show [0:don't show|1:show|-1(default)] {{{
     let usage .= "\"  [N]zO : Open N level folds under the cursor (default is highest level)\n"
     let usage .= "\"  zj : Move downwards to the next fold\n"
     let usage .= "\"  zk : Move upwards to the previous fold\n"
-    let usage .= "\"  zJ : Move downwards to the next fold of same level\n"
-    let usage .= "\"  zK : Move upwards to the previous fold of same level\n"
+    let usage .= "\"  zJ|J : Move downwards to the next fold of same level\n"
+    let usage .= "\"  zK|K : Move upwards to the previous fold of same level\n"
     let usage .= "\"  z<CR> : Refresh and goto root line\n"
     let usage .= "\"  r : Refresh\n"
     let usage .= "\"  R : Make root\n"
@@ -1297,6 +1297,8 @@ function! s:InitMappings() "{{{
   nnoremap <buffer> <silent> zk :<C-U>call <SID>MoveBetweenFolds(0, v:count1)<CR>
   nnoremap <buffer> <silent> zJ :<C-U>call <SID>MoveBetweenSameLevelFolds(1, v:count1)<CR>
   nnoremap <buffer> <silent> zK :<C-U>call <SID>MoveBetweenSameLevelFolds(0, v:count1)<CR>
+  nnoremap <buffer> <silent> J  :<C-U>call <SID>MoveBetweenSameLevelFolds(1, v:count1)<CR>
+  nnoremap <buffer> <silent> K  :<C-U>call <SID>MoveBetweenSameLevelFolds(0, v:count1)<CR>
 
   nnoremap <buffer> <silent> z<CR> :<C-U>exec v:count . 'Refresh'<CR>:call <SID>GotoRootLine()<CR>
   nnoremap <buffer> <silent> r     :<C-U>exec v:count . 'Refresh'<CR>
