@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-08-31 21:13:56
+" Last Modified: 2010-09-06 10:51:08
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -882,8 +882,8 @@ inoremap <C-Z> <C-\><C-O>u
 "}}}
 " Map: <F*> {{{
 " Quick save & quit <id=Save> <id=Quit>
-map  <silent> <F2> :<C-U>up<Bar>call histdel(':', -1)<CR>
-imap <silent> <F2> <C-\><C-O>:up<Bar>call histdel(':', -1)<CR>
+map  <silent> <F2> :<C-U>up<CR>
+imap <silent> <F2> <C-\><C-O>:up<CR>
 map  <silent> <F4> :<C-U>q<CR>
 imap <silent> <F4> <C-\><C-O>:q<CR>
 
@@ -894,12 +894,12 @@ map  <silent> <S-F4> :<C-U>qa<CR>
 imap <silent> <S-F4> <C-\><C-O>:qa<CR>
 
 " Wipe out the highlight of the matching strings. <id=Search>
-imap <silent> <F11> <C-\><C-O>:let @/ = ''<Bar>call histdel(':', -1)<CR>
-nmap <silent> <F11> :<C-U>let @/ = ''<Bar>call histdel(':', -1)<CR>
+imap <silent> <F11> <C-\><C-O>:let @/ = ''<CR>
+nmap <silent> <F11> :<C-U>let @/ = ''<CR>
 
 " Toggle Spellcheck <id=Spell>
-map  <silent> <F12> :<C-U>setlocal spell! spelllang=en_us<Bar>call histdel(':', -1)<Bar>setlocal spell?<CR>
-imap <silent> <F12> <C-\><C-O>:setlocal spell! spelllang=en_us<Bar>call histdel(':', -1)<Bar>setlocal spell?<CR>
+map  <silent> <F12> :<C-U>setlocal spell! spelllang=en_us<Bar>setlocal spell?<CR>
+imap <silent> <F12> <C-\><C-O>:setlocal spell! spelllang=en_us<Bar>setlocal spell?<CR>
 
 "}}}
 " Map: Others {{{
