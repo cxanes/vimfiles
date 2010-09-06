@@ -791,10 +791,10 @@ function! myutils#Cscope(args, default) "{{{
     return
   endif
   
-  let cmd = 'silent !cscope ' 
+  let cmd = 'silent !cscope -b ' 
 
   if a:default
-    let cmd .= '-Rqb '
+    let cmd .= '-Rq '
   endif
 
   exe cmd . a:args
@@ -815,6 +815,25 @@ function! myutils#Ctags(args, default) "{{{
 
   exe cmd . a:args
   redraw!
+endfunction
+"}}}
+function! myutils#SimpleRetag() "{{{
+  try
+    cs kill 0
+  catch /^Vim\%((\a\+)\)\=:E261/
+  endtry
+
+  echohl MoreMsg
+  echo "rebuild cscope database..."
+  echohl None
+  call myutils#Cscope('', 1)
+
+  echohl MoreMsg
+  echo "rebuild ctags..."
+  echohl None
+  call myutils#Ctags('', 1)
+
+  cs add cscope.out
 endfunction
 "}}}
 "==========================================================}}}1

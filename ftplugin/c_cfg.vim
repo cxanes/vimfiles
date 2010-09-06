@@ -43,8 +43,6 @@ if !exists('*s:FoldIfdef') && executable('coan')
     " we eliminate all folds first.
     normal! zE
 
-    let &fml = 0
-
     if exists('b:fold_ifdef_config')
       let extra_config = b:fold_ifdef_config
     elseif exists('g:fold_ifdef_config')
@@ -60,33 +58,35 @@ if !exists('*s:FoldIfdef') && executable('coan')
 
     let ssl_save = &ssl
     let &ssl = 0
-    let fname = shellescape(expand('%'))
-    let coan_cmd = 'coan source -m ' . config . ' ' . fname
-    let diff_cmd = 'diff --strip-trailing-cr -d --to-file=- ' . fname
-    let result = system(coan_cmd . '|' . diff_cmd)
-    let lines = split(result, '\n')
-    unlet result
-    for line in lines
-      let foldstart = ''
-      let result = matchlist(line, '^\(\d\+\),\(\d\+\)d')
-      if !empty(result)
-        let foldstart = result[1]
-        let foldend = result[2]
-      else
-        let result = matchlist(line, '^\(\d\+\)d')
+    try
+      let fname = shellescape(expand('%'))
+      let coan_cmd = 'coan source -m ' . config . ' ' . fname
+      let diff_cmd = 'diff --strip-trailing-cr -d --to-file=- ' . fname
+      let result = system(coan_cmd . '|' . diff_cmd)
+      let lines = split(result, '\n')
+      unlet result
+      for line in lines
+        let foldstart = ''
+        let result = matchlist(line, '^\(\d\+\),\(\d\+\)d')
         if !empty(result)
           let foldstart = result[1]
-          let foldend = result[1]
+          let foldend = result[2]
+        else
+          let result = matchlist(line, '^\(\d\+\)d')
+          if !empty(result)
+            let foldstart = result[1]
+            let foldend = result[1]
+          endif
         endif
-      endif
 
-      if !empty(foldstart)
-        exec printf('%d,%dfold', foldstart, foldend)
-      endif
-    endfor
-    let &ssl = ssl_save
+        if !empty(foldstart)
+          exec printf('%d,%dfold', foldstart, foldend)
+        endif
+      endfor
+    finally
+      let &ssl = ssl_save
+    endtry
   endfunction
-  
 endif
 if !exists('*s:Imap')
   function! s:Imap() 
