@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-09-06 10:51:08
+" Last Modified: 2010-09-07 11:17:13
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -175,8 +175,9 @@ set backupext=~
 let s:backupdir = exists('g:backupdir') ? g:backupdir : ($HOME . '/.backup/vim')
 if filewritable(s:backupdir) == 2
   let &backupdir = s:backupdir
+  let &viewdir   = s:backupdir
   if version >= 703
-    let &backupdir = s:backupdir
+    let &undodir = s:backupdir
   endif
 endif
 unlet s:backupdir
