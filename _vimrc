@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-09-07 11:17:13
+" Last Modified: 2010-09-16 11:51:05
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -204,7 +204,7 @@ set matchpairs=(:),{:},[:],<:>
 set whichwrap+=<,>,[,]
 set updatetime=2500
 set selection=exclusive
-set listchars=eol:$,tab:>-,trail:-,precedes:<,extends:>,nbsp:%
+set listchars=tab:>-,trail:-,precedes:<,extends:>,nbsp:%
 set winaltkeys=no
 set complete+=k
 set laststatus=2
@@ -215,6 +215,7 @@ set sidescroll=1
 set showbreak=>
 set diffopt+=vertical
 set display=lastline
+set list
 
 " If you run VIM in GNU SCREEN, be sure to set timeout set by the SCREEN 
 " command 'maptimeout' smaller then the option 'ttimeoutlen', otherwise the
@@ -334,7 +335,7 @@ endfunction
 "}}}
 function! OptSetInfo() "{{{
   let info = [s:OptTabInfo()]
-  for opt in ['spell', 'paste']
+  for opt in ['spell', 'paste', 'list']
     let val = eval('&'.opt)
     if type(val) == type(0) && val == 1
       call add(info, opt)
@@ -1519,6 +1520,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   augroup Vimrc
     au FileType help nnoremap <buffer> <CR> <C-]>
     au FileType help nnoremap <buffer> <BS> <C-T>
+    au FileType help set nolist
   augroup END
   "}}}2
   "----------------------------------------------------------{{{2
