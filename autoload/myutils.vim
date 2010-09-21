@@ -1,7 +1,7 @@
 " File: autoload/myutils.vim
 " Author: Frank Chang (frank.nevermind AT gmail.com)
 " Version: 1.0
-" Last Modified: 2008-07-16 22:21:30
+" Last Modified: 2010-09-21 13:56:38
 "
 " My own defined functions and mappings (autoload)
 "
@@ -691,46 +691,114 @@ endfunction
 "      NOTE: :vimgrep /pattern/ %|copen 
 "            may do the same job (except using file).
 "--------------------------------------------------------------
-function! myutils#ShowMatch(...) "{{{
+function! myutils#ShowMatch(all_buffers, ...) "{{{
   let pattern = a:0 > 0 ? a:1 : ('\<' . expand('<cword>') . '\>')
   if pattern == ''
     return
   endif
 
-  let output = ''
-  redir => output
-  exe printf('silent! g/%s/num', escape(pattern, '/'))
-  redir END
+  let curlnum = line('.')
 
-  if output =~ '^\_s*E486:'
-    echohl ErrorMsg | echo output | echohl None
+  let bufout = {}
+
+  let bufnum = bufnr('$')
+  let curbuf = bufnr('%')
+
+  let errormsg = ''
+  let errorcnt = 0
+
+  let i = 0
+  while i < bufnum
+    let output = ''
+    redir => output
+    exe printf('silent! g/%s/num', escape(pattern, '/'))
+    redir END
+
+    if output =~ '^\_s*E486:'
+      let errormsg = output
+      let errorcnt += 1
+    else
+      let bufout[bufnr('%')] = output
+    endif
+
+    if a:all_buffers
+      bnext
+      let i += 1
+    else
+      break
+    endif
+  endwhile
+
+  if a:all_buffers
+    exe 'b' curbuf
+  endif
+
+  if (a:all_buffers && errorcnt == bufnum) || !(a:all_buffers || empty(errormsg))
+    call mylib#ShowMesg('ErrorMsg', errormsg)
     return
+  endif
+
+  let bufnrs = keys(bufout)
+  if a:all_buffers
+    call sort(bufnrs, '<SID>NumCompare')
   endif
 
   let curwinnum = winnr()
   let winnum = CreateTempBuffer('-MatchPreview-')
 
   exe winnum . 'wincmd w'
+
   silent %d _
-  silent! put =output
-  g/^\s*$/d
+  for nr in bufnrs
+    let lines = split(bufout[nr], '\r\?\n')
+    call map(lines, 'substitute(v:val,''^\s*\(\d\+\)'', printf(''%s|%d|\1|'',bufname(nr+0),nr),''g'')')
+    call append(line('$'), lines)
+  endfor
+  silent 1d _
+
+  setl cursorline
+  setl nowrap
 
   syn clear
-  syn match Number '^\s*\d\+'
-  setl cursorline
-  exe "syn match Special " . "'" . escape(pattern, "'") . "'"
+  exe "syn match showMatchPattern " . "'" . escape(pattern, "'") . "'"
+  syn match showMatchBufName '^[^|]*|'he=e-1 nextgroup=showMatchBufNr
+  syn match showMatchBufNr   '\d\+|'he=e-1 nextgroup=showMatchLineNr contained
+  syn match showMatchLineNr  '\d\+|'he=e-1 contained
+  syn match showMatchSeparator  '|' contained containedin=showMatchBufNr,showMatchBufName,showMatchLineNr
+  hi link showMatchBufNr LineNr
+  hi link showMatchBufName Identifier
+  hi link showMatchLineNr LineNr
+  hi link showMatchPattern Special
+
+  call cursor(1, 1)
+  call search('^[^|]*|' . curbuf . '|')
+  call search('^[^|]*|' . curbuf . '|' . curlnum . '|')
+
   let pattern = "'" . substitute(pattern, "'", "''", 'g') . "'"
-  let cmd = ":call <SID>ShowMatchGoToLine(" . substitute(pattern, '<', '<lt>', 'g') . "," . curwinnum . ")<CR>"
-  exe "nmap <buffer> <silent> <CR> " . cmd
-  exe "nmap <buffer> <silent> <2-LeftMouse> " . cmd
+  let pattern = substitute(pattern, '<', '<lt>', 'g')
+  let cmd = ":call <SID>ShowMatchGoToLine(" . pattern . "," . curwinnum . ")<CR>"
+  exe "nnoremap <buffer> <silent> <CR> " . cmd
+  exe "nnoremap <buffer> <silent> <Leader><CR> " . cmd . '<Bar>:winc w<CR>'
+  exe "nnoremap <buffer> <silent> <2-LeftMouse> " . cmd
+endfunction
+" }}}
+function! s:NumCompare(v1, v2) "{{{
+  let v1 = a:v1 + 0
+  let v2 = a:v2 + 0
+  return v1 == v2 ? 0 : v1 > v2 ? 1 : -1
 endfunction
 " }}}
 function! s:ShowMatchGoToLine(pattern, winnum) "{{{
-  let lnum = str2nr(matchstr(getline('.'), '^\s*\zs\d\+'))
-  if lnum > 0
-    exe a:winnum . 'wincmd w'
-    call cursor(lnum, 1)
-    call search(a:pattern, 'c', lnum)
+  let bufnr = str2nr(matchstr(getline('.'), '^[^|]*|\zs\d\+|'))
+  if bufnr > 0
+    let lnum = str2nr(matchstr(getline('.'), '^[^|]*|\d\+|\zs\d\+|'))
+
+    if lnum > 0
+      exe a:winnum . 'wincmd w'
+      exe bufnr 'b'
+      call cursor(lnum, 1)
+      call search(a:pattern, 'c', lnum)
+    endif
   endif
 endfunction
 " }}}

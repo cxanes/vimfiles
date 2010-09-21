@@ -115,7 +115,7 @@ nnoremap <silent> <Plug>HungryDeleteN :<C-U>call myutils#HungryDelete()<CR>
 "      NOTE: :vimgrep /pattern/ %|copen 
 "            may do the same job (except using file).
 "--------------------------------------------------------------
-command! -nargs=? ShowMatch call myutils#ShowMatch(<q-args>)
+command! -nargs=? -bang ShowMatch call myutils#ShowMatch(<q-bang> == '!', <q-args>)
 "==========================================================}}}1
 " {{{1 Seq: Insert a list of number (the same options as seq)
 "--------------------------------------------------------------
