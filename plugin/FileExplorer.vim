@@ -1364,9 +1364,10 @@ function! s:FindFile(path) "{{{
   let root_path = b:_FileExplorer_root.nodeValue
 
   if (empty(a:path))
+    let curwin = winnr()
     wincmd p
     let path = s:Fullpath(expand('%'))
-    wincmd p
+    exe curwin . 'wincmd w'
   else
     let path = s:Fullpath(a:path)
   endif
