@@ -157,10 +157,14 @@ ConqueTerm_Color	conque_term.txt	/*ConqueTerm_Color*
 ConqueTerm_EscKey	conque_term.txt	/*ConqueTerm_EscKey*
 ConqueTerm_InsertOnEnter	conque_term.txt	/*ConqueTerm_InsertOnEnter*
 ConqueTerm_PromptRegex	conque_term.txt	/*ConqueTerm_PromptRegex*
+ConqueTerm_PyExe	conque_term.txt	/*ConqueTerm_PyExe*
+ConqueTerm_PyVersion	conque_term.txt	/*ConqueTerm_PyVersion*
 ConqueTerm_ReadUnfocused	conque_term.txt	/*ConqueTerm_ReadUnfocused*
+ConqueTerm_SendFunctionKeys	conque_term.txt	/*ConqueTerm_SendFunctionKeys*
 ConqueTerm_SendVisKey	conque_term.txt	/*ConqueTerm_SendVisKey*
 ConqueTerm_Syntax	conque_term.txt	/*ConqueTerm_Syntax*
 ConqueTerm_TERM	conque_term.txt	/*ConqueTerm_TERM*
+ConqueTerm_ToggleKey	conque_term.txt	/*ConqueTerm_ToggleKey*
 Csetfmtvar	pyclewn.txt	/*Csetfmtvar*
 Csymcompletion	pyclewn.txt	/*Csymcompletion*
 DBI	dbext.txt	/*DBI*
@@ -588,6 +592,7 @@ camelcasemotion.txt	camelcasemotion.txt	/*camelcasemotion.txt*
 camelcasemotion.vim	camelcasemotion.txt	/*camelcasemotion.vim*
 center	latexhelp.txt	/*center*
 conque-term-Esc	conque_term.txt	/*conque-term-Esc*
+conque-term-F8	conque_term.txt	/*conque-term-F8*
 conque-term-F9	conque_term.txt	/*conque-term-F9*
 conque-term-api	conque_term.txt	/*conque-term-api*
 conque-term-bugs	conque_term.txt	/*conque-term-bugs*
@@ -595,8 +600,8 @@ conque-term-close	conque_term.txt	/*conque-term-close*
 conque-term-contribute	conque_term.txt	/*conque-term-contribute*
 conque-term-feedback	conque_term.txt	/*conque-term-feedback*
 conque-term-get-instance	conque_term.txt	/*conque-term-get-instance*
-conque-term-install	conque_term.txt	/*conque-term-install*
 conque-term-installation	conque_term.txt	/*conque-term-installation*
+conque-term-installation-instructions	conque_term.txt	/*conque-term-installation-instructions*
 conque-term-misc	conque_term.txt	/*conque-term-misc*
 conque-term-open	conque_term.txt	/*conque-term-open*
 conque-term-options	conque_term.txt	/*conque-term-options*
@@ -606,6 +611,7 @@ conque-term-set-callback	conque_term.txt	/*conque-term-set-callback*
 conque-term-special-keys	conque_term.txt	/*conque-term-special-keys*
 conque-term-subprocess	conque_term.txt	/*conque-term-subprocess*
 conque-term-usage	conque_term.txt	/*conque-term-usage*
+conque-term-windows	conque_term.txt	/*conque-term-windows*
 conque-term-write	conque_term.txt	/*conque-term-write*
 conque-term-writeln	conque_term.txt	/*conque-term-writeln*
 crefvim	crefvim.txt	/*crefvim*
