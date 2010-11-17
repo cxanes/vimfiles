@@ -9,21 +9,21 @@ syn match vimOper "\<isnot\>\|\<is\>" skipwhite nextgroup=vimString,vimSpecFile
 " Highlight the balanced parentheses in different line.
 syn clear  vimOperParen
 
-syn region vimOperParen matchgroup=vimOper start="("  end=")" matchgroup=NONE end="\%(^\s*\%([^[:blank:]\\]\|$\)\)\@=" contains=@vimOperGroup containedin=vimOperParen
+syn region vimOperParen matchgroup=vimOper start="("  end=")" matchgroup=vimParenSep end="\%(^\s*\%([^[:blank:]\\]\|$\)\)\@=" contains=@vimOperGroup containedin=vimOperParen
 syn region vimOperParen matchgroup=vimOper start="\[" end='\]' matchgroup=NONE end="\%(^\s*\%([^[:blank:]\\]\|$\)\)\@=" contains=@vimOperGroup containedin=vimOperParen
-syn region vimOperParen	matchgroup=vimSep  start="{"  end='}' matchgroup=NONE end="\%(^\s*\%([^[:blank:]\\]\|$\)\)\@=" contains=@vimOperGroup containedin=vimOperParen nextgroup=vimVar
+syn region vimOperParen	matchgroup=vimSep  start="\%({\)\@<!{\%({\)\@!"  end='}' matchgroup=vimSep end="\%(^\s*\%([^[:blank:]\\]\|$\)\)\@=" contains=@vimOperGroup containedin=vimOperParen nextgroup=vimVar,vimFuncVar
 
 if !exists("g:vimsyn_noerror")
   syn clear  vimOperError
-  syn match  vimOperError	")"
-  syn match  vimOperError	"]"
-  syn match  vimOperError	"}"
+  syn match  vimOperError ")"
+  syn match  vimOperError "]"
+  syn match  vimOperError "\%(}\)\@<!}\%(}\)\@!"
 endif
 
 " Echo and Execute {{{1
 " ================
 syn clear  vimEcho
-syn region vimEcho oneline excludenl matchgroup=vimCommand start="\<ec\%[ho]\>" skip="\(\\\\\)*\\|" end="$\||" contains=vimFunc,vimString,vimVar,vimOperParen,vimOperError
+syn region vimEcho oneline excludenl matchgroup=vimCommand start="\<ec\%[ho]\>" skip="\(\\\\\)*\\|" end="$\||" contains=vimFunc,vimFuncVar,vimString,vimVar,vimOperParen,vimOperError
 
 syn clear vimExecute
 syn region vimExecute	oneline excludenl matchgroup=vimCommand start="\<exe\%[cute]\>" skip="\(\\\\\)*\\|" end="$\||\|<[cC][rR]>" contains=vimFunc,vimFuncVar,vimIsCommand,vimString,vimOper,vimVar,vimNotation,vimOperParen,vimNumber,vimOperError
@@ -89,7 +89,9 @@ syn match vimMenuCommand '\%(\%(^\s*\d\+\)\@<=\|\<\)\%(am\%[enu]\|an\%[oremenu]\
 
 " Synchronizing {{{1
 " =============
-syn sync minlines=100
+if !exists("g:vimsyn_minlines")
+  syn sync minlines=100
+endif
 
 hi link vimMenuCommand vimCommand
 
