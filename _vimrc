@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2010-09-16 11:51:05
+" Last Modified: 2011-01-05 12:16:58
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -2161,38 +2161,38 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
     endif
     set csverb
 
-    nmap <C-_>s :<C-U>cs find s <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-_>g :<C-U>cs find g <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-_>c :<C-U>cs find c <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-_>t :<C-U>cs find t <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-_>e :<C-U>cs find e <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-_>f :<C-U>cs find f <C-R>=expand('<cfile>')<CR><CR>
-    nmap <C-_>i :<C-U>cs find i ^<C-R>=expand('<cfile>')<CR>$<CR>
-    nmap <C-_>d :<C-U>cs find d <C-R>=expand('<cword>')<CR><CR>
+    nmap <C-_>s :<C-U>cs find s <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-_>g :<C-U>cs find g <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-_>c :<C-U>cs find c <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-_>t :<C-U>cs find t <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-_>e :<C-U>cs find e <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-_>f :<C-U>cs find f <C-R>=tolower(expand('<cfile>'))<CR><CR>
+    nmap <C-_>i :<C-U>cs find i ^<C-R>=tolower(expand('<cfile>'))<CR>$<CR>
+    nmap <C-_>d :<C-U>cs find d <C-R>=tolower(expand('<cword>'))<CR><CR>
 
     " Using 'CTRL-\' then a search type makes the vim window
     " split horizontally, with search result displayed in
     " the new window.
 
-    nmap <C-\>s :<C-U>scs find s <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-\>g :<C-U>scs find g <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-\>c :<C-U>scs find c <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-\>t :<C-U>scs find t <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-\>e :<C-U>scs find e <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-\>f :<C-U>scs find f <C-R>=expand('<cfile>')<CR><CR>
-    nmap <C-\>i :<C-U>scs find i ^<C-R>=expand('<cfile>')<CR>$<CR>
-    nmap <C-\>d :<C-U>scs find d <C-R>=expand('<cword>')<CR><CR>
+    nmap <C-\>s :<C-U>scs find s <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-\>g :<C-U>scs find g <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-\>c :<C-U>scs find c <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-\>t :<C-U>scs find t <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-\>e :<C-U>scs find e <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-\>f :<C-U>scs find f <C-R>=tolower(expand('<cfile>'))<CR><CR>
+    nmap <C-\>i :<C-U>scs find i ^<C-R>=tolower(expand('<cfile>'))<CR>$<CR>
+    nmap <C-\>d :<C-U>scs find d <C-R>=tolower(expand('<cword>'))<CR><CR>
 
     " Hitting 'CTRL-\' *twice* before the search type does a vertical
     " split instead of a horizontal one
 
-    nmap <C-\><C-\>s :<C-U>vert scs find s <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-\><C-\>g :<C-U>vert scs find g <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-\><C-\>c :<C-U>vert scs find c <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-\><C-\>t :<C-U>vert scs find t <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-\><C-\>e :<C-U>vert scs find e <C-R>=expand('<cword>')<CR><CR>
-    nmap <C-\><C-\>i :<C-U>vert scs find i ^<C-R>=expand('<cfile>')<CR>$<CR>
-    nmap <C-\><C-\>d :<C-U>vert scs find d <C-R>=expand('<cword>')<CR><CR>
+    nmap <C-\><C-\>s :<C-U>vert scs find s <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-\><C-\>g :<C-U>vert scs find g <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-\><C-\>c :<C-U>vert scs find c <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-\><C-\>t :<C-U>vert scs find t <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-\><C-\>e :<C-U>vert scs find e <C-R>=tolower(expand('<cword>'))<CR><CR>
+    nmap <C-\><C-\>i :<C-U>vert scs find i ^<C-R>=tolower(expand('<cfile>'))<CR>$<CR>
+    nmap <C-\><C-\>d :<C-U>vert scs find d <C-R>=tolower(expand('<cword>'))<CR><CR>
   endif
   " }}}2
   "----------------------------------------------------------{{{2
