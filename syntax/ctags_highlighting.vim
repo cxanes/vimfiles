@@ -1,0 +1,13 @@
+hi def link CTagsClassName          Structure
+hi def link CTagsDefinedName        Define
+hi def link CTagsEnumerator         Define
+hi def link CTagsFunction           Function
+hi def link CTagsEnumerationName    Label
+hi def link CTagsEnumeratorName     Label
+hi def link CTagsEnumerationValue   Number
+hi def link CTagsMember             Normal
+hi def link CTagsStructure          Structure
+hi def link CTagsType               Type
+hi def link CTagsUnion              Structure
+hi def link CTagsGlobalConstant     Constant
+hi def link CTagsGlobalVariable     Identifier
