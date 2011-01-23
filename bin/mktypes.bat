@@ -1,2 +1,2 @@
 @echo off
-python "%~dp0mktypes.py" %*
+python "%~dp0mktypes" %*
