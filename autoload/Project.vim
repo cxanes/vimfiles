@@ -22,12 +22,12 @@ function! Project#AddSyntax(syn_file, ft)
     endif
     let syn_file = join(map(split(syn_file, '\n'), 'fnameescape(v:val)'), ' ')
   else
-    echohl ErrorMsg | echo printf('Syntax file not found: %s"', a:syn_file) | echohl None
+    echohl ErrorMsg | echo printf('Syntax file not found: %s', a:syn_file) | echohl None
     return
   endif
 
   if a:ft !~ '^\w\+\%(,\w\+\)*$'
-    echohl ErrorMsg | echo printf('Invalid filetype: %s"', a:ft) | echohl None
+    echohl ErrorMsg | echo printf('Invalid filetype: %s', a:ft) | echohl None
     return
   endif
 
@@ -42,11 +42,11 @@ function! Project#Open(proj_name)
   if filereadable(proj_name)
     let proj_dir  = fnamemodify(proj_name, ":p:h")
     let proj_name = fnamemodify(proj_name, ":p:t")
-  elseif isdirectory(a:proj_name)
-    let proj_dir = a:proj_name
+  elseif isdirectory(proj_name)
+    let proj_dir = proj_name
     let proj_name = 'project.vim'
   else
-    echohl ErrorMsg | echo printf('Project not found: %s"', proj_name) | echohl None
+    echohl ErrorMsg | echo printf('Project not found: %s', proj_name) | echohl None
     return
   endif
 
