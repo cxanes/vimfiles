@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-01-10 22:16:57
+" Last Modified: 2011-01-27 14:48:04
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1067,6 +1067,9 @@ endfunction
 if exists("*mkdir")
   command! -nargs=1 -bang Mkdir call mkdir(<q-args>, <q-bang> == '!' ? 'p' : '')
 endif
+
+command -nargs=? -complete=file OpenProject call Project#Open(<q-args>)
+command -nargs=? -complete=file ProjectOpen call Project#Open(<q-args>)
 
 if s:MSWIN
   " Update runtime files: "{{{
