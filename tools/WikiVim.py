@@ -8,6 +8,7 @@
 
 import sys
 import os
+import os.path
 from stat import *
 
 import threading
@@ -19,7 +20,7 @@ import time
 
 from pwiki.Configuration import isUnicode, isWin9x
 from pwiki.StringOps import *
-import pwiki.WikiFormatting as WikiFormatting
+from .wikidPadParser.WikidPadParser import _TheHelper
 
 import wx
 
@@ -59,9 +60,9 @@ def describeMenuItems(wiki):
         - the filename of a bitmap (if file not found, no icon is used)
         - a tuple of filenames, first existing file is used
     """
-    return ((StartVim,  "Vim|Start\tShift-Ctrl-V",  "Start Vim"),
-            (StopVim,   "Vim|Stop\tShift-Ctrl-S",   "Stop Vim"),
-            (UpdateVim, "Vim|Update\tShift-Ctrl-U", "Update Vim"),
+    return ((StartVim,  "Edit with Vim|Start\tShift-Ctrl-V",  "Start Vim"),
+            (StopVim,   "Edit with Vim|Stop\tShift-Ctrl-S",   "Stop Vim"),
+            (UpdateVim, "Edit with Vim|Update\tShift-Ctrl-U", "Update Vim"),
            )
 
 
@@ -70,11 +71,10 @@ SERVER_ADDR = ('localhost', 8000)
 WikidPadServer = None
 Wiki = None
 
-CurrentPage = None
-CurrentWords = None
+WikiPageCond = threading.Condition()
 
 Flag_SendToVim = False
-Flag_EventHandler = False
+Flag_EventHandler = True
 
 def StartVim(wiki, evt):
     global Wiki
@@ -107,86 +107,64 @@ def bytelenSct_mbcs(us):
     """
     return len(mbcsEnc(us)[0])
 
-if isUnicode():
-    bytelenSct = bytelenSct_utf8
-else:
-    bytelenSct = bytelenSct_mbcs
+bytelenSct = bytelenSct_utf8 if isUnicode() else bytelenSct_mbcs
 
 
-def UpdateCurrentPage(text):
+def _UpdateCurrentPage(text):
     global Flag_EventHandler
-    Flag_EventHandler = True
-    Wiki.saveDocPage(Wiki.getCurrentDocPage(), text, None)
+    Flag_EventHandler = False
+    with Wiki.getCurrentDocPage().getTextOperationLock():
+        Wiki.getCurrentDocPage().replaceLiveText(text)
+    Wiki.saveDocPage(Wiki.getCurrentDocPage())
     Wiki.openWikiPage(Wiki.getCurrentWikiWord(), 
             addToHistory = False,
             forceTreeSyncFromRoot = True, 
             forceReopen = True)
-    Flag_EventHandler = False
-
-
-def OpenWikiPage(word):
-    global Flag_EventHandler
     Flag_EventHandler = True
-    Wiki.openWikiPage(word, motionType = 'child', anchor = None)
+
+
+def _GetCurrentPage():
+    config = Wiki.getWikiConfigPath()
+    config = '' if config is None else os.path.dirname(config.encode('utf-8'))
+    return (xmlrpclib.Binary(Wiki.getCurrentWikiWord().encode('utf-8')),
+            xmlrpclib.Binary(Wiki.getActiveEditor().GetText().encode('utf-8')),
+            xmlrpclib.Binary(config))
+
+
+def _OpenWikiPage(word):
+    global Flag_EventHandler
     Flag_EventHandler = False
-
-    GetCurrentPage()
-
-
-def GetCurrentPage():
-    global CurrentPage
-    CurrentPage = (xmlrpclib.Binary(Wiki.getCurrentWikiWord().encode('utf-8')),
-                xmlrpclib.Binary(Wiki.getActiveEditor().GetText().encode('utf-8')))
+    with WikiPageCond:
+        Wiki.openWikiPage(word, motionType = 'child', anchor = None)
+        WikiPageCond.notify()
+    Flag_EventHandler = True
 
 
-def GetCompleteWords(line):
-    rline = revStr(line)
-    mat1 = WikiFormatting.RevWikiWordRE.match(rline)
-    mat2 = WikiFormatting.RevWikiWordRE2.match(rline)
-    mat3 = WikiFormatting.RevPropertyValue.match(rline)
-    acresult = []
-    autoCompBackBytesWithoutBracket = 0
-    autoCompBackBytesWithBracket = 0
+def _GetCompleteWords(line):
+    tofind = ''
+    acresultTuples = []
 
-    # TODO Sort entries appropriate 
+    wikiDocument = Wiki.getWikiDocument()
+    closingBracket = Wiki.getConfig().getboolean("main",
+            "editor_autoComplete_closingBracket", False)
 
-    wikiData = Wiki.getWikiDocument().getWikiData()
+    text = line
+    charPos = len(text)
+    lineStartCharPos = 0
 
-    tofind = u''
+    editor = Wiki.getActiveEditor()
+    try:
+        acresult = editor.wikiLanguageHelper.prepareAutoComplete(editor, text,
+                    charPos, lineStartCharPos, wikiDocument,
+                    {"closingBracket": closingBracket})
 
-    if mat1:
-        # may be CamelCase word
-        tofind = line[-mat1.end():]
-        autoCompBackBytesWithoutBracket = bytelenSct(tofind)
-        formatting = Wiki.getFormatting()
-        acresult += filter(formatting.isCcWikiWord, 
-                wikiData.getWikiWordsStartingWith(
-                tofind, True))
+    except:
+        self.wiki.displayErrorMessage(GetUni(sys.exc_info()[0]))
+        acresult = []
 
-    if mat2:
-        # may be not-CamelCase word or in a property name
-        tofind = line[-mat2.end():]
-        autoCompBackBytesWithBracket = bytelenSct(tofind)
-        acresult = map(lambda s: u"[" + s,
-                wikiData.getWikiWordsStartingWith(tofind[1:], True)) + acresult
-        acresult = map(lambda s: u"[" + s,
-                wikiData.getPropertyNamesStartingWith(tofind[1:])) + acresult
+    tofind = 0 if len(acresult) == 0 else acresult[0][2]
 
-    elif mat3:
-        # In a property value
-        tofind = line[-mat3.end():]
-        propkey = revStr(mat3.group(3))
-        propfill = revStr(mat3.group(2))
-        propvalpart = revStr(mat3.group(1))
-        autoCompBackBytesWithBracket = bytelenSct(tofind)
-        values = filter(lambda pv: pv.startswith(propvalpart),
-                wikiData.getDistinctPropertyValues(propkey))
-        acresult += map(lambda v: u"[" + propkey + propfill + 
-                v +  u"]", values)
-
-    global CurrentWords
-    CurrentWords = [xmlrpclib.Binary(tofind.encode('utf-8')), 
-            map(lambda v: xmlrpclib.Binary(v.encode('utf-8')), acresult)]
+    return [tofind, map(lambda v: xmlrpclib.Binary(v[1].encode('utf-8')), acresult)]
 
 
 class WikiMethod:
@@ -200,40 +178,21 @@ class WikiMethod:
         if anchor == u'':
             anchor = None
 
-        global CurrentPage
-        CurrentPage = None
-
-        # GUI operations must be run in the main thread.
-        wx.CallAfter(OpenWikiPage, unicode(word.data, 'utf-8'))
-        while 1:
-            time.sleep(0.05)
-            if CurrentPage is not None:
-                break
-        return CurrentPage
+        with WikiPageCond:
+            # GUI operations must be run in the main thread.
+            wx.CallAfter(_OpenWikiPage, unicode(word.data, 'utf-8'))
+            WikiPageCond.wait()
+            return _GetCurrentPage()
 
     def GetCurrentPage(self):
-        global CurrentPage
-        CurrentPage = None
-        wx.CallAfter(GetCurrentPage)
-        while 1:
-            time.sleep(0.05)
-            if CurrentPage is not None:
-                break
-        return CurrentPage
+        return _GetCurrentPage()
 
     def UpdateCurrentPage(self, text):
-        wx.CallAfter(UpdateCurrentPage, unicode(text.data, 'utf-8'))
+        wx.CallAfter(_UpdateCurrentPage, unicode(text.data, 'utf-8'))
         return 0
 
     def GetCompleteWords(self, line):
-        global CurrentWords
-        CurrentWords = None
-        wx.CallAfter(GetCompleteWords, unicode(line.data, 'utf-8'))
-        while 1:
-            time.sleep(0.05)
-            if CurrentWords is not None:
-                break
-        return CurrentWords
+        return _GetCompleteWords(unicode(line.data, 'utf-8'))
 
 
 class WikidPadServerThread(threading.Thread):
@@ -256,7 +215,7 @@ def StartWikidPadServer():
         thread = WikidPadServerThread(SERVER_ADDR)
         thread.setDaemon(True)
         thread.start()
-        while 1:
+        while True:
             time.sleep(0.05)
             if WikidPadServer is not None:
                 break
@@ -307,9 +266,7 @@ class Vim:
         if self.error:
             return
 
-        global Flag_SendToVim, Flag_EventHandler
-        if Flag_SendToVim and not Flag_EventHandler:
-            Flag_EventHandler = True
+        if Flag_SendToVim and Flag_EventHandler:
             try:
                 if mswindows:
                     STARTF_USESHOWWINDOW = 1
@@ -320,7 +277,7 @@ class Vim:
                         show_window = 0  # SW_HIDE
                     startupinfo.dwFlags = STARTF_USESHOWWINDOW
                     startupinfo.wShowWindow = show_window
-                    
+
                     subprocess.call([self.vimExe, '-u', 'NONE', 
                         '-c', command, '-c', 'q'],
                         startupinfo=startupinfo)
@@ -329,8 +286,6 @@ class Vim:
                         '-c', command, '-c', 'q'])
             except OSError, e:
                 self.wiki.displayErrorMessage(GetUni(e.strerror))
-            finally:
-                Flag_EventHandler = False
 
     def GetCurrentPage(self):
         self.SendCommand('call wikidpad#RemoteGetCurrentPage()')
@@ -340,6 +295,7 @@ class Vim:
 
 
 # ===============================================
+# Following are event handlers for specific events
 
 def openedWikiWord(docPagePresenter, wikiWord):
     """
@@ -397,7 +353,7 @@ def exit(wikidPad):
     """
     if Wiki is not None:
         Vim(Wiki).ExitWikidPad()
-    
+
 # ===============================================
 
 def registerOptions(ver, app):
@@ -424,7 +380,7 @@ class VimOptionsPanel(wx.Panel):
         """
         wx.Panel.__init__(self, parent)
         self.app = app
-        
+
         pt = self.app.getGlobalConfig().get("main", "plugin_gvim_exePath", "")
         self.gVimExePath = wx.TextCtrl(self, -1, pt, size = (250, -1))
 
@@ -436,7 +392,7 @@ class VimOptionsPanel(wx.Panel):
         mainsizer.Add(wx.StaticText(self, -1, "Path to gVim:"), 0,
                 wx.ALL | wx.EXPAND, 5)
         mainsizer.Add(self.gVimExePath, 1, wx.ALL | wx.EXPAND, 5)
-        
+
         mainsizer.Add(wx.StaticText(self, -1, "Path to Vim:"), 0,
                 wx.ALL | wx.EXPAND, 5)
         mainsizer.Add(self.vimExePath, 1, wx.ALL | wx.EXPAND, 5)
@@ -448,7 +404,7 @@ class VimOptionsPanel(wx.Panel):
         """
         Called when panel is shown or hidden. The actual wxWindow.Show()
         function is called automatically.
-        
+
         If a panel is visible and becomes invisible because another panel is
         selected, the plugin can veto by returning False.
         When becoming visible, the return value is ignored.
@@ -460,7 +416,7 @@ class VimOptionsPanel(wx.Panel):
         Called when "OK" is pressed in dialog. The plugin should check here if
         all input values are valid. If not, it should return False, then the
         Options dialog automatically shows this panel.
-        
+
         There should be a visual indication about what is wrong (e.g. red
         background in text field). Be sure to reset the visual indication
         if field is valid again.

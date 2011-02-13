@@ -80,12 +80,14 @@ class WikidPad(object):
   
   @classmethod
   @check_server
-  def SetContent(cls, wikiword, content):
+  def SetContent(cls, wikiword, content, root_dir = None):
     vim.command('silent %d_')
     vim.command("let b:wikiword = '%s'" % wikiword.replace("'", "''"))
     vim.command("silent exec 'file ' . s:Fnameescape('%s')" % (wikiword.replace("'", "''"), ))
     vim.current.buffer.append(content.split("\n"))
     del vim.current.buffer[0]
+    if root_dir is not None:
+      vim.command("silent exec 'lcd ' . s:Fnameescape('%s')" % (root_dir.replace("'", "''"), ))
 
   @classmethod
   @check_server
@@ -98,10 +100,11 @@ class WikidPad(object):
   def GetCurrentPage(cls, s = None):
     if s is None:
       s = WikidPad.GetServer()
-    [wikiword, content] = s.GetCurrentPage()
+    [wikiword, content, root_dir] = s.GetCurrentPage()
     wikiword = wikiword.data
     content = content.data
-    WikidPad.SetContent(wikiword, content)
+    root_dir = root_dir.data
+    WikidPad.SetContent(wikiword, content, root_dir)
     vim.command('setl nomod')
 
   @classmethod
@@ -117,10 +120,11 @@ class WikidPad(object):
   def OpenWikiPage(cls, word, anchor = '', s = None):
     if s is None:
       s = WikidPad.GetServer()
-    [wikiword, content] = s.OpenWikiPage(xmlrpclib.Binary(word), xmlrpclib.Binary(anchor))
+    [wikiword, content, root_dir] = s.OpenWikiPage(xmlrpclib.Binary(word), xmlrpclib.Binary(anchor))
     wikiword = wikiword.data
     content = content.data
-    WikidPad.SetContent(wikiword, content)
+    root_dir = root_dir.data
+    WikidPad.SetContent(wikiword, content, root_dir)
 
   @classmethod
   @check_server
@@ -135,7 +139,6 @@ class WikidPad(object):
     if s is None:
       s = WikidPad.GetServer()
     [tofind, words] = s.GetCompleteWords(xmlrpclib.Binary(line))
-    tofind = tofind.data
     words = map(lambda v: v.data, words)
     return [tofind, words]
 
@@ -198,6 +201,11 @@ function! wikidpad#VimClosed()
 endfunction
 
 function! wikidpad#OpenWikiPage(word, ...) 
+  if &mod != 0
+    echohl ErrorMsg | echo "WikidPad: No write since last change" | echohl None
+    return
+  endif
+
   let anchor = a:0 > 0 ? a:1 : ''
   if exists('b:wikiword') && b:wikiword == a:word
     py WikidPad.OpenWikiPage(vim.eval('a:word'), vim.eval('anchor'))
@@ -244,7 +252,7 @@ function! wikidpad#GetCurrentPage(...)
   if a:0 > 0 && a:1 != 0
     call s:PushWikiWordHistory()
   endif
-    
+
   try
     let ul = &ul
 
@@ -258,11 +266,11 @@ endfunction
 
 function! s:GetCompleteWords() 
   let line = col('.') == 1 ? '' : getline('.')[ : (col('.')-2)]
-  let [tofind, words] = ['', []]
+  let [tofind, words] = [0, []]
 python << EOF
 [tofind, words] = WikidPad.GetCompleteWords(vim.eval('line'))
-if tofind != '':
-  vim.command("let tofind = '%s'" % tofind.replace("'", "''"))
+if tofind != 0:
+  vim.command("let tofind = %d" % tofind)
   vim.command("let words = [%s]" % ",".join(map(lambda v: ("'%s'" % v.replace("'", "''")), words)))
 EOF
   return [tofind, words]
@@ -271,10 +279,10 @@ endfunction
 function! s:CompleteWords(findstart, base) 
   if a:findstart
     let [s:wikidpad_tofind, s:wikidpad_words] = s:GetCompleteWords()
-    if s:wikidpad_tofind == ''
+    if s:wikidpad_tofind == 0
       return -1
     else
-      return col('.') - strlen(substitute(s:wikidpad_tofind, ".", "x", "g")) - 1
+      return col('.') - s:wikidpad_tofind - 1
     endif
   else
     return s:wikidpad_words
@@ -285,7 +293,7 @@ function! s:PushWikiWordHistory()
   if !exists('b:wikiword_history')
     let b:wikiword_history = []
   endif
-  
+
   if exists('b:wikiword')
     call add(b:wikiword_history, [b:wikiword, getpos('.')])
   endif
@@ -293,10 +301,10 @@ endfunction
 
 function! s:PopWikiWordHistory() 
   if !exists('b:wikiword_history') || empty(b:wikiword_history)
-		echohl ErrorMsg | echo "WikidPad: at bottom of wikiword stack" | echohl None
+    echohl ErrorMsg | echo "WikidPad: at bottom of wikiword stack" | echohl None
     return []
   endif
-  
+
   return remove(b:wikiword_history, -1)
 endfunction
 
@@ -322,15 +330,20 @@ function! s:ParseWikiWord(word)
   endif
 endfunction
 
-function! s:JumpToWikiword() 
-  let word = s:GetCursorWikiWord()
-  if word == ''
-		echohl ErrorMsg | echo "WikidPad: not wikiword" | echohl None
+function! s:JumpToWikiword(...) 
+  if &mod != 0
+    echohl ErrorMsg | echo "WikidPad: No write since last change" | echohl None
     return
   endif
 
-  call s:PushWikiWordHistory()
+  let word = a:0 > 0 ? a:1 : s:GetCursorWikiWord()
+  if word == ''
+    echohl ErrorMsg | echo "WikidPad: not wikiword" | echohl None
+    return
+  endif
+
   let [word, anchor] = s:ParseWikiWord(word)
+  call s:PushWikiWordHistory()
   call wikidpad#OpenWikiPage(word, anchor)
   if anchor != ''
     let pos = getpos('.')
@@ -349,6 +362,11 @@ function! s:JumpToWikiword()
 endfunction
 
 function! s:JumpToOlderWikiword() 
+  if &mod != 0
+    echohl ErrorMsg | echo "WikidPad: No write since last change" | echohl None
+    return
+  endif
+
   let history = s:PopWikiWordHistory()
   if empty(history)
     return
@@ -371,6 +389,7 @@ function! s:SetupBuffer()
 
     command! -buffer GetCurrentPage    call wikidpad#GetCurrentPage()
     command! -buffer UpdateCurrentPage call wikidpad#UpdateCurrentPage()
+    command! -nargs=1 -buffer OpenWikiPage call s:JumpToWikiword(<q-args>)
 
     noremap <buffer> <silent> <C-]> :<C-U>call <SID>JumpToWikiword()<CR>
     noremap <buffer> <silent> <C-T> :<C-U>call <SID>JumpToOlderWikiword()<CR>

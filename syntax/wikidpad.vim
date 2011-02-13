@@ -58,10 +58,10 @@ syn match wikiToDo '\<\%(todo\|done\|wait\|action\|track\|issue\|question\|proje
 syn match wikiHorizLine  '----\+'
 syn match wikiAnchor  '^\s*anchor:\s*\w\+$'
 
-syn cluster wikiHighlighting contains=wikiBold,wikiItalic,wikiWikiWord,wikiEscape
+syn cluster wikiHighlighting contains=wikiBold,wikiItalic,wikiWikiWord,wikiEscape,wikiUrl,wikiTitledUrl
 
 syn region wikiSuppressHighlighting matchgroup=wikiDelimiter start='^\s*<<\s*$' end='^\s*>>\s*$'
-syn region wikiTable matchgroup=wikiDelimiter start='^\s*<<|\s*$' end='^\s*>>\s*$' contains=@wikiHighlighting,wikiTableCellDelimiter
+syn region wikiTable matchgroup=wikiDelimiter start='^\s*<<|t\?\s*$' end='^\s*>>\s*$' contains=@wikiHighlighting,wikiTableCellDelimiter
 syn region wikiPreBloc matchgroup=wikiDelimiter start='^\s*<<pre\s*$' end='^\s*>>\s*$'
 syn match wikiTableCellDelimiter '|' contained
 syn match wikiEscape '\\.'
