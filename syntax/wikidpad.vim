@@ -1,5 +1,5 @@
 " Vim syntax file
-" Language:	WikidPad (v1.8rc14)
+" Language:	WikidPad (v2.0)
 " Maintainer:	Frank Chang <frank.nevermind AT gmail.com>
 " Reference: http://wikidpad.python-hosting.com/
 
@@ -54,7 +54,14 @@ syn match wikiHtmlTag '</\?[A-Za-z][A-Za-z0-9]*>'
 syn include @Python syntax/python.vim
 syn region wikiScript matchgroup=wikiScriptDelimiter start='<%' end='%>' contains=@Python
 
-syn match wikiToDo '\<\%(todo\|done\|wait\|action\|track\|issue\|question\|project\)\%(\.[^: \t]\+\)\?\%(:\)\@='
+syn match wikiToDoKeyword '\<\%(todo\|done\|wait\|action\|track\|issue\|question\|project\)\%(\.[^: \t]\+\)\?\%(:\)\@=' nextgroup=wikiToDo
+
+syn match wikiToDo '\%([^|]\+\|\\|\)\+' contained contains=wikiToDoSetting,wikiToDoDate1,wikiToDoDate2
+
+syn match wikiToDoSetting '\%(^\|\%(\s\)\@<=\)[!#@]\w\+\%($\|\s\+\)' contained
+syn match wikiToDoDate1 '\%(^\|\%(\s\)\@<=\)\d\+/\d\+/\d\+\%(T\d\+:\d\+\)\?\%(-\d\+/\d\+/\d\+\%(T\d\+:\d\+\)\?\)\?\%($\|\s\+\)' contained
+syn match wikiToDoDate2 '\%(^\|\%(\s\)\@<=\)\%(-\d\+/\d\+/\d\+\%(T\d\+:\d\+\)\?\)\%($\|\s\+\)' contained
+
 syn match wikiHorizLine  '----\+'
 syn match wikiAnchor  '^\s*anchor:\s*\w\+$'
 
@@ -91,7 +98,10 @@ hi def link wikiHtmlTag            Identifier
 hi def link wikiDelimiter          Delimiter
 hi def link wikiInsertionDelimiter wikiDelimiter
 hi def link wikiScriptDelimiter    wikiDelimiter
-hi def link wikiToDo               Keyword
+hi def link wikiToDoKeyword        Keyword
+hi def link wikiToDoSetting        Tag
+hi def link wikiToDoDate1          Identifier
+hi def link wikiToDoDate2          Identifier
 hi def link wikiHorizLine          Constant
 hi def link wikiAnchor             Define
 hi def link wikiPreBloc            Comment

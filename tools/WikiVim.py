@@ -14,7 +14,7 @@ from stat import *
 import threading
 import subprocess
 
-from SimpleXMLRPCServer import SimpleXMLRPCServer
+from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
 import xmlrpclib
 import time
 
@@ -23,6 +23,7 @@ from pwiki.StringOps import *
 from .wikidPadParser.WikidPadParser import _TheHelper
 
 import wx
+import re
 
 WIKIDPAD_PLUGIN = (("MenuFunctions",1), 
                    ("hooks", 1), 
@@ -77,13 +78,9 @@ Flag_SendToVim = False
 Flag_EventHandler = True
 
 def StartVim(wiki, evt):
-    global Wiki
-
-    Wiki = wiki
-    StartWikidPadServer()
-
+    StartWikidPadServer(wiki)
     Vim(Wiki).Start()
-    
+
 def StopVim(wiki, evt):
     global Flag_SendToVim
     Flag_SendToVim = False
@@ -157,7 +154,6 @@ def _GetCompleteWords(line):
         acresult = editor.wikiLanguageHelper.prepareAutoComplete(editor, text,
                     charPos, lineStartCharPos, wikiDocument,
                     {"closingBracket": closingBracket})
-
     except:
         self.wiki.displayErrorMessage(GetUni(sys.exc_info()[0]))
         acresult = []
@@ -194,12 +190,20 @@ class WikiMethod:
     def GetCompleteWords(self, line):
         return _GetCompleteWords(unicode(line.data, 'utf-8'))
 
+class XMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
+    def do_GET(self):
+        wikiWord = re.sub(r'^/', '', self.path)
+        if len(wikiWord) > 0:
+            with WikiPageCond:
+                # GUI operations must be run in the main thread.
+                wx.CallAfter(_OpenWikiPage, unicode(wikiWord, 'utf-8'))
+                WikiPageCond.wait()
 
 class WikidPadServerThread(threading.Thread):
     def __init__(self, addr):
         threading.Thread.__init__(self)
 
-        self.server = SimpleXMLRPCServer(addr, logRequests = False)
+        self.server = SimpleXMLRPCServer(addr, XMLRPCRequestHandler, logRequests = False)
         self.server.register_introspection_functions()
         self.server.register_multicall_functions()
         self.server.register_instance(WikiMethod())
@@ -209,7 +213,11 @@ class WikidPadServerThread(threading.Thread):
         WikidPadServer = self.server
         self.server.serve_forever()
 
-def StartWikidPadServer():
+def StartWikidPadServer(wiki):
+    global Wiki
+    if Wiki is None:
+        Wiki = wiki
+
     global WikidPadServer
     if WikidPadServer is None:
         thread = WikidPadServerThread(SERVER_ADDR)
@@ -296,6 +304,14 @@ class Vim:
 
 # ===============================================
 # Following are event handlers for specific events
+
+def startup(wikidPad):
+    """
+    Called when application starts
+
+    wikidPad -- PersonalWikiFrameObject
+    """
+    StartWikidPadServer(wikidPad)
 
 def openedWikiWord(docPagePresenter, wikiWord):
     """
