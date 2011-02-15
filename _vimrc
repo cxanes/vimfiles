@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-01-27 14:48:04
+" Last Modified: 2011-02-15 20:01:50
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -679,8 +679,8 @@ function! s:AddChar(map, ch, cnt) "{{{
 endfunction
 "}}}
 
-inoremap <silent> <Leader>tif <C-R>=strftime('%Y-%m-%d %H:%M:%S')<CR>
-inoremap <silent> <Leader>tid <C-R>=strftime('%Y-%m-%d')<CR>
+inoremap <silent> <Leader>tif <C-R>=strftime('%Y/%m/%dT%H:%M')<CR>
+inoremap <silent> <Leader>tid <C-R>=strftime('%Y/%m/%d')<CR>
 inoremap <silent> <Leader><BS><BS> <C-G>u<C-O>0<C-O>"_D<BS>
 
 " Maximize window {{{
@@ -2015,6 +2015,26 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " Bookmarks.vim (My works, modified for NavMenu.vim)
   "--------------------------------------------------------------
   let g:Bookmarks_menu = 0
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " calendar.vim
+  " <http://www.vim.org/scripts/script.php?script_id=52>
+  "--------------------------------------------------------------
+  inoremap <silent> <Leader>tic <C-\><C-O>:CalendarH<CR>
+
+  function! CalendarInsertDate(day, month, year, week, dir)
+    let date = printf('%04d/%02d/%02d', a:year, a:month, a:day)
+    exe "norm q"
+    if col("'^") != col('$')
+      exe "norm! i" . date
+      exe "norm! l"
+      startinsert
+    else
+      exe "norm! a" . date
+      startinsert!
+    endif
+  endfunction
+  let g:calendar_action = "CalendarInsertDate"
   "}}}2
   "----------------------------------------------------------{{{2
   " eclim.vim
