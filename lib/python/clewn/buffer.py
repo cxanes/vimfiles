@@ -48,6 +48,31 @@ def is_clewnbuf(bufname):
             return True
     return False
 
+class Sernum(misc.Singleton):
+    """Netbeans sernum counter."""
+
+    def init(self, *args):
+        """Singleton initialisation."""
+        unused = args
+        self.i = 0
+
+    def __init__(self, *args):
+        """Constructor."""
+        if args:
+            self.i = args[0]
+
+    def __int__(self):
+        """Return sernum value."""
+        self.i += 1
+        return self.i
+
+class LastSernum(object):
+    """Last annotation serial number."""
+
+    def __init__(self):
+        """Constructor."""
+        self.value = int(Sernum())
+
 class Buffer(dict):
     """A Vim buffer is a dictionary of annotations {anno_id: annotation}.
 
@@ -66,14 +91,10 @@ class Buffer(dict):
             cursor line number
         col: int
             cursor column
-        type_num: int
-            last sequence number of a defined annotation
-        bp_tnum: int
-            sequence number of the enabled breakpoint annotation
-            the sequence number of the disabled breakpoint annotation
-            is bp_tnum + 1
-        frame_tnum: int
-            sequence number of the frame annotation
+        last_typeNum: int
+            index+1 in vim netbeans.c signmap array
+        frame_typeNum: int
+            index+1 of the frame sign in vim netbeans.c signmap array
 
     """
 
@@ -86,35 +107,24 @@ class Buffer(dict):
         self.editport = None
         self.lnum = None
         self.col = None
-        self.type_num = self.bp_tnum = self.frame_tnum = 0
+        self.__last_typeNum = 0
+        self.frame_typeNum = 0
+
+    # readonly property
+    def get_typeNum(self):
+        """Return a unique typeNum."""
+        self.__last_typeNum += 1
+        return self.__last_typeNum
+
+    last_typeNum = property(get_typeNum, None, None,
+                                'last annotation serial number')
 
     def define_frameanno(self):
         """Define the frame annotation."""
-        if not self.frame_tnum:
-            self.type_num += 1
-            self.frame_tnum = self.type_num
-            color = '15710005'
-            if self.nbsock.nbversion >= '2.5':
-                color = 'Magenta'
+        if self.frame_typeNum == 0:
+            self.frame_typeNum = self.last_typeNum
             self.nbsock.send_cmd(self, 'defineAnnoType',
-                '%d "frame" "" "=>" none %s' % (self.frame_tnum, color))
-        return self.frame_tnum
-
-    def define_bpanno(self):
-        """Define the two annotations for breakpoints."""
-        if not self.bp_tnum:
-            self.bp_tnum = self.type_num + 1
-            self.type_num += 2 # two annotations are defined in sequence
-            bpena_color = '802287'
-            bpdis_color = '4190027'
-            if self.nbsock.nbversion >= '2.5':
-                bpena_color = 'Blue'
-                bpdis_color = 'Green'
-            self.nbsock.send_cmd(self, 'defineAnnoType',
-                '%d "bpEnabled" "" "bp" none %s' % (self.bp_tnum, bpena_color))
-            self.nbsock.send_cmd(self, "defineAnnoType",
-                '%d "bpDisabled" "" "bp" none %s' % (self.type_num , bpdis_color))
-        return self.bp_tnum
+                '0 "0" "" "=>" none %s' % self.nbsock.bg_colors[2])
 
     def add_anno(self, anno_id, lnum):
         """Add an annotation."""
@@ -122,7 +132,7 @@ class Buffer(dict):
         if anno_id == FRAME_ANNO_ID:
             self[anno_id] = FrameAnnotation(self, lnum, self.nbsock)
         else:
-            self[anno_id] = Annotation(self, lnum, self.nbsock)
+            self[anno_id] = Annotation(self, anno_id, lnum, self.nbsock)
         self.update(anno_id)
 
     def delete_anno(self, anno_id):
@@ -147,7 +157,7 @@ class Buffer(dict):
             for anno_id in self.keys():
                 self[anno_id].update()
 
-    def removeall(self, lnum=None):
+    def remove_all(self, lnum=None):
         """Remove all netbeans annotations at line lnum.
 
         When lnum is None, remove all annotations.
@@ -169,28 +179,51 @@ class Annotation(object):
     Instance attributes:
         buf: Buffer
             buffer container
+        bp: int
+            the breakpoint number
         lnum: int
             line number
         nbsock: netbeans.Netbeans
             the netbeans asynchat socket
         disabled: boolean
             True when the breakpoint is disabled
-        sernum: int
+        sernum: LastSernum
             serial number of this placed annotation,
             used to be able to remove it
         is_set: boolean
             True when annotation has been added with netbeans
+        defined: boolean
+            True after completion of the defineAnnoType netbeans command
 
     """
 
-    def __init__(self, buf, lnum, nbsock, disabled=False):
+    def __init__(self, buf, bp, lnum, nbsock, disabled=False):
         """Constructor."""
         self.buf = buf
+        self.bp = bp
         self.lnum = lnum
         self.nbsock = nbsock
         self.disabled = disabled
-        self.sernum = nbsock.last_sernum
+        self.enabled_sernum = self.sernum = LastSernum()
+        self.disabled_sernum  = LastSernum()
+
+        self.enabled_typeNum = buf.last_typeNum
+        self.disabled_typeNum = buf.last_typeNum
         self.is_set = False
+        self.defined = False
+
+    def define_bpanno(self):
+        """Define the two annotations for breakpoints."""
+        if not self.defined:
+            self.defined = True
+            self.nbsock.send_cmd(self.buf, 'defineAnnoType',
+                '0 "%d" "" "%s" none %s'
+                % ((2 * self.bp), str(self.bp)[-2:],
+                   self.nbsock.bg_colors[0]))
+            self.nbsock.send_cmd(self.buf, "defineAnnoType",
+                '0 "%d" "" "%s" none %s'
+                % ((2 * self.bp + 1), str(self.bp)[-2:],
+                   self.nbsock.bg_colors[1]))
 
     def update(self, disabled=False):
         """Update the annotation."""
@@ -198,11 +231,15 @@ class Annotation(object):
             self.remove_anno()
             self.disabled = disabled
         if not self.is_set:
-            typeNum = self.buf.define_bpanno()
+            self.define_bpanno()
             if self.disabled:
-                typeNum += 1
+                self.sernum = self.disabled_sernum
+                typeNum = self.disabled_typeNum
+            else:
+                self.sernum = self.enabled_sernum
+                typeNum = self.enabled_typeNum
             self.nbsock.send_cmd(self.buf, 'addAnno', '%d %d %d/0 -1'
-                                % (self.sernum, typeNum, self.lnum))
+                                    % (self.sernum.value, typeNum, self.lnum))
             self.nbsock.last_buf = self.buf
             self.nbsock.last_buf.lnum = self.lnum
             self.nbsock.last_buf.col = 0
@@ -213,7 +250,7 @@ class Annotation(object):
     def remove_anno(self):
         """Remove the annotation."""
         if self.buf.registered and self.is_set:
-            self.nbsock.send_cmd(self.buf, 'removeAnno', str(self.sernum))
+            self.nbsock.send_cmd(self.buf, 'removeAnno', str(self.sernum.value))
         self.is_set = False
 
     def __repr__(self):
@@ -231,7 +268,7 @@ class FrameAnnotation(misc.Singleton, Annotation):
         unused = buf
         unused = lnum
         self.disabled = False
-        self.sernum = nbsock.last_sernum
+        self.sernum = LastSernum()
         self.nbsock = nbsock
 
     def __init__(self, buf, lnum, nbsock):
@@ -244,15 +281,15 @@ class FrameAnnotation(misc.Singleton, Annotation):
         # this happens when running regtests
         if self.nbsock is not nbsock:
             self.nbsock = nbsock
-            self.sernum = nbsock.last_sernum
+            self.sernum = LastSernum()
 
     def update(self, disabled=False):
         """Update the annotation."""
         unused = disabled
         if not self.is_set:
-            typeNum = self.buf.define_frameanno()
+            self.buf.define_frameanno()
             self.nbsock.send_cmd(self.buf, 'addAnno', '%d %d %d/0 -1'
-                                % (self.sernum, typeNum, self.lnum))
+                            % (self.sernum.value, self.buf.frame_typeNum, self.lnum))
             self.nbsock.last_buf = self.buf
             self.nbsock.last_buf.lnum = self.lnum
             self.nbsock.last_buf.col = 0
@@ -336,7 +373,10 @@ class BufferSet(dict):
         if not bp_id in self.anno_dict.keys():
             self.add_anno(bp_id, pathname, lnum)
         else:
-            error('attempt to add a breakpoint that already exists')
+            # occurs when 'debugger' instance has removed Annotations on closing
+            buf = self.anno_dict[bp_id]
+            buf[bp_id].lnum = lnum
+            buf.update(bp_id)
 
     def update_bp(self, bp_id, disabled=False):
         """Update the breakpoint.
@@ -378,7 +418,7 @@ class BufferSet(dict):
         for buf in self.buf_list:
             if pathname is None or buf.name == pathname:
                 # remove annotations from the buffer
-                buf.removeall(lnum)
+                buf.remove_all(lnum)
 
                 # delete annotations from anno_dict
                 anno_list = []
@@ -394,6 +434,16 @@ class BufferSet(dict):
                 deleted.extend(anno_list)
 
         return deleted
+
+    def remove_all(self):
+        """Remove all annotations.
+
+        Vim signs are unplaced.
+        Annotations are not deleted.
+
+        """
+        for buf in self.buf_list:
+            buf.remove_all()
 
     def get_lnum_list(self, pathname):
         """Return the list of line numbers of all enabled breakpoints.

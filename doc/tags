@@ -145,10 +145,13 @@ Alph	latexhelp.txt	/*Alph*
 BibTeX	latexhelp.txt	/*BibTeX*
 C	pyclewn.txt	/*C*
 C-Reference	crefvim.txt	/*C-Reference*
+Cclear	pyclewn.txt	/*Cclear*
 Ccommand	pyclewn.txt	/*Ccommand*
 Cdbgvar	pyclewn.txt	/*Cdbgvar*
 Cdelvar	pyclewn.txt	/*Cdelvar*
+Cdetach	pyclewn.txt	/*Cdetach*
 Cfoldvar	pyclewn.txt	/*Cfoldvar*
+Cinterrupt	pyclewn.txt	/*Cinterrupt*
 Cmapkeys	pyclewn.txt	/*Cmapkeys*
 ConqueTerm	conque_term.txt	/*ConqueTerm*
 ConqueTerm_CWInsert	conque_term.txt	/*ConqueTerm_CWInsert*
@@ -165,8 +168,10 @@ ConqueTerm_SendVisKey	conque_term.txt	/*ConqueTerm_SendVisKey*
 ConqueTerm_Syntax	conque_term.txt	/*ConqueTerm_Syntax*
 ConqueTerm_TERM	conque_term.txt	/*ConqueTerm_TERM*
 ConqueTerm_ToggleKey	conque_term.txt	/*ConqueTerm_ToggleKey*
+Cquit	pyclewn.txt	/*Cquit*
 Csetfmtvar	pyclewn.txt	/*Csetfmtvar*
 Csymcompletion	pyclewn.txt	/*Csymcompletion*
+Cthreadstack	pyclewn.txt	/*Cthreadstack*
 DBI	dbext.txt	/*DBI*
 EnhComm-Bugs	EnhancedCommentify.txt	/*EnhComm-Bugs*
 EnhComm-Credits	EnhancedCommentify.txt	/*EnhComm-Credits*
@@ -2290,6 +2295,8 @@ openright	latexhelp.txt	/*openright*
 ora	dbext.txt	/*ora*
 oracle	dbext.txt	/*oracle*
 paragraph-mode	latexhelp.txt	/*paragraph-mode*
+pdb-keys	pyclewn.txt	/*pdb-keys*
+pdb-pdbrc	pyclewn.txt	/*pdb-pdbrc*
 pgsql	dbext.txt	/*pgsql*
 picture	latexhelp.txt	/*picture*
 picture-makebox	latexhelp.txt	/*picture-makebox*
@@ -2345,7 +2352,7 @@ pyclewn-gdb	pyclewn.txt	/*pyclewn-gdb*
 pyclewn-intro	pyclewn.txt	/*pyclewn-intro*
 pyclewn-mappings	pyclewn.txt	/*pyclewn-mappings*
 pyclewn-options	pyclewn.txt	/*pyclewn-options*
-pyclewn-starting	pyclewn.txt	/*pyclewn-starting*
+pyclewn-pdb	pyclewn.txt	/*pyclewn-pdb*
 pyclewn-using	pyclewn.txt	/*pyclewn-using*
 pyclewn-variable	pyclewn.txt	/*pyclewn-variable*
 pyclewn-windows	pyclewn.txt	/*pyclewn-windows*

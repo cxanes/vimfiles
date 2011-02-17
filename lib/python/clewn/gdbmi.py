@@ -183,7 +183,7 @@ class VarObjList(misc.OrderedDict):
         """Collect all varobj children data.
 
         Return True when dbgvarbuf must be set as dirty
-        at the next update run (for syntax highlighting).
+        for the next update run (for syntax highlighting).
 
         """
         if not self:
@@ -286,6 +286,7 @@ class VarObj(dict):
         self['exp'] = ''
         self['type'] = ''
         self['value'] = ''
+        self['chged'] = '={=}'
         self['in_scope'] = 'true'
         self['numchild'] = 0
         self['children'] = VarObjList()
@@ -295,6 +296,7 @@ class VarObj(dict):
     def collect(self, parents, lnum, stream, indent, tab):
         """Collect varobj data."""
         dirty = False
+
         if self.chged:
             self['chged'] = '={*}'
             self.chged = False
@@ -317,7 +319,8 @@ class VarObj(dict):
         stream.write(' ' * indent + fold + format % self)
         if self['children']:
             assert self['numchild'] != 0
-            self['children'].collect(parents, lnum, stream, indent + 2)
+            status = self['children'].collect(parents, lnum, stream, indent + 2)
+            dirty = dirty or status
 
         return dirty
 
@@ -417,6 +420,8 @@ class Info(object):
 
     def update_breakpoints(self):
         """Update the breakpoints."""
+        is_changed = False
+
         # build the breakpoints dictionary
         bp_dictionary = {}
         for bp in self.breakpoints:
@@ -429,6 +434,7 @@ class Info(object):
         for num in (nset & oldset):
             state = bp_dictionary[num]['enabled']
             if state != self.bp_dictionary[num]['enabled']:
+                is_changed = True
                 enabled = (state == 'y')
                 self.gdb.update_bp(int(num), not enabled)
 
@@ -445,6 +451,23 @@ class Info(object):
                 self.gdb.add_bp(int(num), pathname, lnum)
 
         self.bp_dictionary = bp_dictionary
+
+        if (oldset - nset) or (nset - oldset):
+            is_changed = True
+        if is_changed:
+            f_bps = open(self.gdb.globaal.f_bps.name, 'w')
+            for num in sorted(bp_dictionary.keys()):
+                pathname = self.get_fullpath(bp_dictionary[num]['file'])
+                if pathname is not None:
+                    lnum = bp_dictionary[num]['line']
+                    state = bp_dictionary[num]['enabled']
+                    if state == 'y':
+                        state = 'enabled'
+                    else:
+                        state = 'disabled'
+                    f_bps.write('%s:%s:breakpoint %s %s\n'
+                                        % (pathname, lnum, num, state))
+            f_bps.close()
 
     def update_frame(self, hide=False):
         """Update the frame sign."""
@@ -659,7 +682,7 @@ class CliCommand(Command):
                     "gdb busy: command discarded, please retry\n")
             return False
 
-        self.gdb.gotprmpt = False
+        self.gdb.gdb_busy = True
         cmd = misc.norm_unixpath(cmd)
         return self.send('-interpreter-exec console %s\n', misc.quote(cmd))
 
@@ -757,10 +780,14 @@ class MiCommand(Command):
 
     def docmd(self, fmt, *args):
         """Send the gdb command."""
-        if self.gdb.accepting_cmd():
-            self.result = ''
-            return self.send(fmt, *args)
-        return False
+        if not self.gdb.accepting_cmd():
+            self.gdb.console_print(
+                    "gdb busy: command discarded, please retry\n")
+            return False
+
+        self.gdb.gdb_busy = True
+        self.result = ''
+        return self.send(fmt, *args)
 
     def handle_strrecord(self, stream_record):
         """Process the gdb/mi stream records."""
@@ -885,6 +912,7 @@ class ShowBalloon(Command):
         """Send the gdb command."""
         if self.gdb.accepting_cmd():
             self.result = ''
+            self.gdb.gdb_busy = True
             return self.send('-data-evaluate-expression %s\n',
                                         misc.quote(self.text))
         return False
