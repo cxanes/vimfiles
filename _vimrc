@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-03-02 10:40:18
+" Last Modified: 2011-03-02 21:17:40
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1861,7 +1861,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " bufexplorer.vim <id=BufExplorer>
   " <http://www.vim.org/scripts/script.php?script_id=42>
   "--------------------------------------------------------------
-  nnoremap <silent> <F3> :<C-U>exec v:count == 0 ? 'BufExplorer' : v:count == 1 ? 'HSBufExplorer' : 'VSBufExplorer'<CR>
+  nnoremap <silent> <F3> :<C-U>exec v:count == 0 ? 'BufExplorer' : v:count == 1 ? 'BufExplorerHorizontalSplit' : 'BufExplorerVerticalSplit'<CR>
   "}}}2
   "----------------------------------------------------------{{{2
   " cctree.vim
