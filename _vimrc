@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-02-15 20:01:50
+" Last Modified: 2011-03-02 10:40:18
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1862,6 +1862,13 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " <http://www.vim.org/scripts/script.php?script_id=42>
   "--------------------------------------------------------------
   nnoremap <silent> <F3> :<C-U>exec v:count == 0 ? 'BufExplorer' : v:count == 1 ? 'HSBufExplorer' : 'VSBufExplorer'<CR>
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " cctree.vim
+  " <http://www.vim.org/scripts/script.php?script_id=2368>
+  "--------------------------------------------------------------
+  au BufRead,BufNewFile CCTree-Preview setlocal nowrap
+  let g:CCTreeWindowWidth = 24
   "}}}2
   "----------------------------------------------------------{{{2
   " editexisting.vim -> $VIMRUNTIME/macros/editexisting.vim
