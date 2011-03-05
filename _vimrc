@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-03-06 03:15:40
+" Last Modified: 2011-03-06 03:33:00
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1869,6 +1869,8 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   "--------------------------------------------------------------
   au BufRead,BufNewFile CCTree-View setlocal nowrap
   let g:CCTreeWindowWidth = 24
+  highlight link CCTreeMarkers Comment
+  highlight link CCTreeHiMarkers PmenuSel
   "}}}2
   "----------------------------------------------------------{{{2
   " DirDiff.vim

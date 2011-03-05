@@ -1792,20 +1792,20 @@ endfunction
 " }}}
 " {{{ Syntax coloring definitions
 "Standard display
-highlight link CCTreeSymbol  Function
-highlight link CCTreeMarkers LineNr
-highlight link CCTreeArrow CCTreeMarkers
-highlight link CCTreePathMark CCTreeArrow
-highlight link CCTreeHiPathMark CCTreePathMark
+highlight default link CCTreeSymbol  Function
+highlight default link CCTreeMarkers LineNr
+highlight default link CCTreeArrow CCTreeMarkers
+highlight default link CCTreePathMark CCTreeArrow
+highlight default link CCTreeHiPathMark CCTreePathMark
 
 " highlighted display
-highlight link CCTreeHiSymbol  TODO
-highlight link CCTreeHiMarkers NonText
-highlight link CCTreeHiArrow  CCTreeHiMarkers
-highlight link CCTreeUpArrowBlock CCTreeHiArrow
+highlight default link CCTreeHiSymbol  TODO
+highlight default link CCTreeHiMarkers NonText
+highlight default link CCTreeHiArrow  CCTreeHiMarkers
+highlight default link CCTreeUpArrowBlock CCTreeHiArrow
 
-highlight link CCTreeMarkExcl Ignore
-highlight link CCTreeMarkTilde Ignore
+highlight default link CCTreeMarkExcl Ignore
+highlight default link CCTreeMarkTilde Ignore
 "}}}
 " {{{  CCTree global state
 
