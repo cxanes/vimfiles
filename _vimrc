@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-03-02 21:17:40
+" Last Modified: 2011-03-06 03:11:43
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1867,7 +1867,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " cctree.vim
   " <http://www.vim.org/scripts/script.php?script_id=2368>
   "--------------------------------------------------------------
-  au BufRead,BufNewFile CCTree-Preview setlocal nowrap
+  au BufRead,BufNewFile CCTree-View setlocal nowrap
   let g:CCTreeWindowWidth = 24
   "}}}2
   "----------------------------------------------------------{{{2
