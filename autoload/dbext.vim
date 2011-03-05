@@ -5811,7 +5811,7 @@ function! dbext#DB_auBufDelete(del_buf_nr) "{{{
 
     let idx = index(s:dbext_buffers_with_dict_files, del_buf)
     
-    if idx > -1 || exists('g:loaded_dbext_auto')
+    if idx > -1
         " Switch to the buffer being deleted
         silent! exec del_buf.'buffer'
 
