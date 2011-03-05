@@ -24,7 +24,9 @@ hi DiffAdd guibg=DarkGreen guifg=White ctermbg=DarkGreen ctermfg=White
 hi DiffText gui=NONE guibg=DarkCyan guifg=Yellow ctermbg=DarkCyan ctermfg=Yellow
 hi DiffChange guibg=DarkCyan guifg=White ctermbg=DarkCyan ctermfg=White
 hi Constant ctermfg=Red
-hi Comment guifg=LightBlue3
+hi Comment guifg=DarkGray ctermfg=Gray
+hi Function guifg=LightBlue3 ctermfg=LightBlue
+hi Identifier guifg=LightBlue3 ctermfg=LightBlue
 hi PreProc guifg=Plum ctermfg=Magenta
 hi StatusLine guibg=White guifg=Sienna4 cterm=NONE ctermfg=Black ctermbg=Brown
 hi StatusLineNC gui=NONE guifg=Black guibg=Gray ctermbg=Black ctermfg=Gray
