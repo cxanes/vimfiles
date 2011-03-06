@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-03-06 03:33:00
+" Last Modified: 2011-03-07 00:37:03
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -820,11 +820,6 @@ inoremap <silent> <C-J> <C-\><C-O>o
 
 " Move to the end of the line
 inoremap <silent> <C-L> <C-\><C-O>$
-
-" For vimsh: pseudo-terminal emulator
-if !empty(globpath(&rtp, 'vimsh/vimsh.vim'))
-  nmap <C-W>e :<C-U>ru vimsh/vimsh.vim<CR>
-endif
 
 " Use CTRL-Q to do what CTRL-V used to do
 noremap <C-Q> <C-V>
@@ -1871,6 +1866,18 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:CCTreeWindowWidth = 24
   highlight link CCTreeMarkers Comment
   highlight link CCTreeHiMarkers PmenuSel
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " Conque Term: Vim terminal/console emulator
+  " <http://www.vim.org/scripts/script.php?script_id=2771>
+  "--------------------------------------------------------------
+  augroup Vimrc
+  au VimEnter * 
+        \ if exists(':ConqueTerm') == 2 |
+        \   exec 'nmap <C-W>e :<C-U>ConqueTerm ' . (s:MSWIN ? 'cmd' : 'bash') . '<CR>' |
+        \ fi
+  augroup END
+  au Filetype conque_term setlocal nolist
   "}}}2
   "----------------------------------------------------------{{{2
   " DirDiff.vim
