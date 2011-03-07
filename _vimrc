@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-03-07 00:38:53
+" Last Modified: 2011-03-07 10:58:44
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1868,7 +1868,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   au BufRead,BufNewFile CCTree-View 
         \ nnoremap <silent> <buffer> <Leader>h :exec (g:CCTreeHilightCallTree ? 'CCTreeOptsDisable' : 'CCTreeOptsEnable') 'DynamicTreeHiLights'<CR>
 
-  highlight link CCTreeMarkers Comment
+  highlight CCTreeMarkers guifg=DarkGray ctermfg=DarkGray
   highlight link CCTreeHiMarkers PmenuSel
   "}}}2
   "----------------------------------------------------------{{{2
