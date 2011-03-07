@@ -1540,6 +1540,11 @@ function! s:CCTreeWindow.mEnter() dict
         nnoremap <buffer> <silent> <CR>  :CCTreeLoadBufferUsingTag<CR>
         nnoremap <buffer> <silent> <2-LeftMouse> :CCTreeLoadBufferUsingTag<CR>
 
+        " Static highlighting <Ctrl-r>
+        nnoremap <buffer> <silent> <C-r> :CCTreeWindowHiCallTree<CR>
+        " Compress call-tree  <zs>
+        nnoremap <buffer> <silent> zs :2,.foldclose!<CR>zv
+
         let &cpoptions = cpo_save
     endif
     setlocal foldmethod=expr
@@ -1684,10 +1689,6 @@ function! s:CCTreeBufferKeyMappingsCreate()
      let func_expr = '<SNR>'.s:sid.'CCTreeWindowGetHiKeyword()'
      exec 'nnoremap <buffer> <silent> <C-\>< :CCTreeTraceReverse <C-R>='.func_expr.'<CR><CR>'
      exec 'nnoremap <buffer> <silent> <C-\>> :CCTreeTraceForward <C-R>='.func_expr.'<CR><CR>'
-     " Static highlighting <Ctrl-r>
-     exec 'nnoremap <buffer> <silent> <C-r> :CCTreeWindowHiCallTree<CR>'
-     " Compress call-tree  <zs>
-     exec 'nnoremap <buffer> <silent> zs :2,.foldclose!<CR>zv'
 
      exec 'nnoremap <silent> <C-\>y :CCTreeWindowSaveCopy<CR>'
      exec 'nnoremap <silent> <C-\>w :CCTreeWindowToggle<CR>'
