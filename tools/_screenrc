@@ -1,0 +1,74 @@
+
+startup_message off
+# Close the 'vbell' to prevent the window flashing when warning.
+vbell off
+
+shelltitle '] |bash'
+hardstatus alwayslastline "%{= dd}%{wk} %H %?%{bw} %-w%:%{yb} %?%{yb}%n %t%{bw}%+w %=%{wk} %c %Y/%m/%d %D "
+
+# 'maptimeout timo' set the inter-character timer for input sequence detection
+# to a timeout of 'timo' ms.  For example, the key code of '<M-j>' is actually
+# '<ESC>j' in some terminal.  If user types '<ESC>' and 'j' fast enough (within
+# 'timo' ms), SCREEN will recognize the key sequences as '<M-j>'. This key may
+# be defined in 'bindkey' command to initiate some other command, otherwise the
+# key code will be resent to the program running in the current window.
+#
+# The problem is that VIM itself also detects key code (see |term.txt|), and it
+# also provides an option called 'ttimeoutlen' to set the timeout to wait for a
+# key code. If VIM is running in SCREEN, all key strokes will be caught by
+# SCREEN first, and resent to VIM if the key code is not used by SCREEN. If the
+# SCREEN command 'maptimeout' sets timeout larger than the VIM option
+# 'ttimeoutlen', then all key codes recognized by SCREEN - for example, the key
+# code of '<M-j>' mentioned above - will also be recognized by VIM (if VIM
+# understand the key code), no matter how small the 'ttimeoutlen' is, because
+# SCREEN always sends recognized key code together (within 'ttimeoutlen').
+#
+# If user has mapped '<M-j>' in VIM to execute some commands, and he or she
+# accidentally type '<ESC>' and 'j' (leave insert mode and move to the next
+# line) so fast (within 'timo' ms defined by the command 'maptimeout'), then
+# the key strokes will be recognized by SCREEN as the key code of '<M-j>' and
+# be resent to VIM, causing the commands mapped by '<M-j>' to execute, which is
+# not the user wants.
+#
+# We must reduce the inter-character timer for input sequence detection (the
+# default timeout is 300ms) to the value smaller then the VIM option
+# 'ttimeoutlen', which prevent the user from accidentally typing some key
+# strokes and generating the wrong key code.
+maptimeout 30
+
+# =============================================================================
+# Simulate the key bindings of the windows manipulation in 'VIM' (CTRL-W).
+
+# Move the input focus to the next region.
+bind -c vim j focus down
+bind -c vim k focus up
+bind -c vim t focus top
+bind -c vim b focus bottom
+
+# Resize the region
+bind -c vim + resize +1
+bind -c vim - resize -1
+bind -c vim = resize =
+bind -c vim2 " " resize max
+bind -c vim2 1   resize min
+bind -c vim2 5   resize +5
+bind -c vim _ command -c vim2
+
+# Quit the screen
+bind -c vim q quit
+
+# Split the screen and open the new shell to the other region.
+bind -c vim s eval split focus screen focus clear
+
+# Exit the shell and close the region.
+bind -c vim c eval kill remove clear
+
+# Delete all regions but the current one.
+bind -c vim o only
+
+# All keys mentioned above follow specific command character C-E
+# to avoid the overlay of the default key bindings.
+bind -c vim e stuff "^E"
+bindkey "^E" command -c vim
+
+setenv LD_LIBRARY_PATH "$LIBRARY_PATH"
