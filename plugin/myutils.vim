@@ -149,6 +149,10 @@ nnoremap <silent> <Leader>sf :call myutils#StripFunc()<CR>
 "--------------------------------------------------------------
 inoremap <silent> <S-CR> <C-\><C-O>:call myutils#PutNewLine()<CR>
 "==========================================================}}}1
+" {{{1 CloseAllOtherWindows()
+"--------------------------------------------------------------
+nnoremap <silent> <C-W>o :<C-U>call myutils#CloseAllOtherWindows()<CR>
+"==========================================================}}}1
 " {{{1 Build Tags
 "--------------------------------------------------------------
 command! -nargs=* -bang Cscope       call myutils#Cscope(<q-args>, expand('<bang>') == '!')
