@@ -851,6 +851,77 @@ endfunction "}}}
 " }}}3
 " }}}
 "==========================================================}}}1
+" {{{1 CloseAllOtherWindows(): Close all windows except current and reserved windows
+"--------------------------------------------------------------
+function! s:MatchPattern(str, patterns) "{{{
+  for pattern in a:patterns
+    if a:str =~ pattern
+      return 1
+    endif
+  endfor
+  return 0
+endfunction
+"}}}
+function! s:NumWinBuf(buf) "{{{
+  let bufnr = bufnr(a:buf)
+  let num = 0
+  for winnr in range(1, winnr('$'))
+    if winbufnr(winnr) == bufnr
+      let num += 1
+    endif
+  endfor
+  return num
+endfunction
+"}}}
+function! myutils#CloseAllOtherWindows() "{{{
+  if exists('g:reserved_window_patterns')
+    if type('') == type(g:reserved_window_patterns)
+      let reserved_window_patterns = [ g:reserved_window_patterns ]
+    else
+      let reserved_window_patterns = g:reserved_window_patterns
+    endif
+  else
+    let reserved_window_patterns = [ '^__Tag_List__$', '^_FileExplorer_\%(<\d\+>\)\?$', '^CCTree-View$']
+  endif
+
+  if s:MatchPattern(bufname('%'), reserved_window_patterns)
+    return
+  endif
+
+  let curbuf = bufnr('%')
+  let num_win = s:NumWinBuf(curbuf)
+
+  while num_win > 1
+    let winnr = bufwinnr(curbuf)
+    exe winnr . "wincmd w"
+    silent close!
+    let num_win -= 1
+  endwhile
+
+  for i in range(1, bufnr('$'))
+    let winnr = bufwinnr(i)
+    if (winnr == -1)
+      continue
+    endif
+
+    exe winnr . "wincmd w"
+
+    if bufnr('%') == curbuf
+        continue
+    endif
+
+    if !s:MatchPattern(bufname('%'), reserved_window_patterns)
+      silent close!
+    endif
+  endfor
+
+  let winnr = bufwinnr(curbuf)
+  if (winnr != -1)
+    exe winnr . "wincmd w"
+  endif
+endfunction
+"}}}
+" }}}
 " {{{1 Build Tags
 "--------------------------------------------------------------
 function! myutils#Cscope(args, default) "{{{
