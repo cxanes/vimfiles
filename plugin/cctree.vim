@@ -16,8 +16,8 @@
 "  Description: C Call-Tree Explorer Vim Plugin
 "   Maintainer: Hari Rangarajan <hari.rangarajan@gmail.com>
 "          URL: http://vim.sourceforge.net/scripts/script.php?script_id=2368
-"  Last Change: March 05, 2011
-"      Version: 1.02
+"  Last Change: March 06, 2011
+"      Version: 1.04
 "
 "=============================================================================
 " 
@@ -88,6 +88,20 @@
 "             (This is useful for viewing long
 "              call trees which span across
 "              multiple pages)
+"
+"           Custom user-mappings:
+"           Users can custom-map the short-cut keys by 
+"           overriding the following variables in their
+"           Vim start-up configuration            
+"
+"            g:CCTreeKeyTraceForwardTree = '<C-\>>' 
+"            g:CCTreeKeyTraceReverseTree = '<C-\><' 
+"            g:CCTreeKeyHilightTree = '<C-l>'        " Static highlighting
+"            g:CCTreeKeySaveWindow = '<C-\>y' 
+"            g:CCTreeKeyToggleWindow = '<C-\>w' 
+"            g:CCTreeKeyCompressTree = 'zs'     " Compress call-tree 
+"            g:CCTreeKeyDepthPlus = '<C-\>=' 
+"            g:CCTreeKeyDepthMinus = '<C-\>-'
 "
 "          Command List:
 "             CCTreeLoadDB                <dbname>
@@ -301,6 +315,7 @@
 "   }}}
 "   {{{ Thanks:
 "
+"    Frank Chang                    (ver 1.04 -- testing/UI enhancement ideas)
 "    Arun Chaganty/Timo Tiefel	    (Ver 0.60 -- bug report)
 "    Michael Wookey                 (Ver 0.4 -- Testing/bug report/patches)
 "    Yegappan Lakshmanan            (Ver 0.2 -- Patches)
@@ -314,7 +329,7 @@ if !exists('loaded_cctree') && v:version >= 700
   " First time loading the cctree plugin
   let loaded_cctree = 1
 else
-  "finish 
+  finish 
 endif
 
 " Line continuation used here
@@ -327,6 +342,7 @@ let s:sid = substitute(maparg('<SID>xx'), '<SNR>\(\d\+_\)xx$', '\1', '')
 unmap <SID>xx
 "}}}
 " {{{ Global variables; Modify in .vimrc to modify default behavior
+" {{{General
 if !exists('CCTreeCscopeDb')
     let CCTreeCscopeDb = "cscope.out"
 endif
@@ -336,6 +352,34 @@ endif
 if !exists('CCTreeMinVisibleDepth')
     let CCTreeMinVisibleDepth = 3
 endif
+" }}}
+" {{{ Custom user-key mappings
+if !exists('CCTreeKeyTraceForwardTree')
+    let g:CCTreeKeyTraceForwardTree = '<C-\>>' 
+endif
+if !exists('CCTreeKeyTraceReverseTree')
+    let g:CCTreeKeyTraceReverseTree = '<C-\><' 
+endif
+if !exists('CCTreeKeyHilightTree')
+    let g:CCTreeKeyHilightTree = '<C-l>'        " Static highlighting
+endif
+if !exists('CCTreeKeySaveWindow ')
+    let g:CCTreeKeySaveWindow = '<C-\>y' 
+endif
+if !exists('CCTreeKeyToggleWindow ')
+    let g:CCTreeKeyToggleWindow = '<C-\>w' 
+endif
+if !exists('CCTreeKeyCompressTree ')
+    let g:CCTreeKeyCompressTree = 'zs'     " Compress call-tree 
+endif
+if !exists('CCTreeKeyDepthPlus')
+    let g:CCTreeKeyDepthPlus = '<C-\>='     
+endif
+if !exists('CCTreeKeyDepthMinus')
+    let g:CCTreeKeyDepthMinus = '<C-\>-'    
+endif
+" }}}
+" {{{ CCTree UI settings
 if !exists('CCTreeOrientation')
     let CCTreeOrientation = "topleft"
 endif
@@ -358,7 +402,8 @@ endif
 if !exists('CCTreeHilightCallTree')
     let CCTreeHilightCallTree = 1
 endif
-
+" }}}
+" {{{ Split prog
 if !exists('CCTreeSplitProgCmd')
     let CCTreeSplitProgCmd = 'PROG_SPLIT SPLIT_OPT SPLIT_SIZE IN_FILE OUT_FILE_PREFIX'
 endif
@@ -385,6 +430,8 @@ if !exists('CCTreeDbFileMaxSize')
     let CCTreeDbFileMaxSize = 40000000 "40 Mbytes
 endif
 
+" }}}
+" {{{ Misc (perl)
 if !exists('CCTreeUsePerl')
     " Disabled by default
     let CCTreeUsePerl = 0
@@ -396,17 +443,15 @@ PERL_EOF
     endif
 endif
 endif
-
 if !exists('CCTreeUseUTF8Symbols')
     let CCTreeUseUTF8Symbols = 0
 endif
-
+" }}}
 " }}}
 " {{{ Plugin related local variables
 let s:pluginname = 'CCTree'
 let s:windowtitle = 'CCTree-View'
 let s:windowsavetitle = 'CCTree-View-Copy'
-
 
 " }}}
 " {{{ Turn on/off debugs
@@ -425,9 +470,6 @@ function! DBGredir(...)
     endif
 endfunction
 
-function! Pause()
-    call input("sasasD", "asdads")
-endfunction
 " }}}
 " {{{ Progress bar
 let s:ProgressBar = {
@@ -1349,6 +1391,18 @@ function! s:CCTreeMarkers.mGetArrow(direction) dict
     return '?'
 endfunction
 " }}}
+" {{{ User key mappings 
+let s:CCTreeKeyMappings = {
+                    \ 'CTreeF': g:CCTreeKeyTraceForwardTree,
+                    \ 'CTreeR': g:CCTreeKeyTraceReverseTree,
+                    \ 'CTreeHilight': g:CCTreeKeyHilightTree,
+                    \ 'CTreeWSave': g:CCTreeKeySaveWindow,
+                    \ 'CTreeWToggle': g:CCTreeKeyToggleWindow,
+                    \ 'CTreeCompress': g:CCTreeKeyCompressTree,
+                    \ 'CTreeDepthMinus': g:CCTreeKeyDepthMinus,
+                    \ 'CTreeDepthPlus': g:CCTreeKeyDepthPlus
+                    \}
+" }}}
 " {{{ CCTreeWindow
 let s:CCTreeWindow =  {
                         \ 'hiKeyword': '',
@@ -1385,6 +1439,9 @@ function! s:CCTreeWindow.mGetKeywordAtCursor() dict
             return s:CCTreeRC.Error
         endif 
     endif  
+    if self.hiKeyword == ''
+        return s:CCTreeRC.Error
+    endif
     return s:CCTreeRC.Success
 endfunction
 
@@ -1533,17 +1590,19 @@ function! s:CCTreeWindow.mEnter() dict
         let cpo_save = &cpoptions
         set cpoptions&vim
 
-        call s:CCTreeBufferKeyMappingsCreate() 
-        call s:CCTreeGlobals.mSetupDynamicCallTreeHiLightEvent()
+        call s:CCTreeBufferKeyMappingsCreate(s:CCTreeKeyMappings) 
 	
         nnoremap <buffer> <silent> <C-p>  :CCTreePreviewBufferUsingTag<CR>
         nnoremap <buffer> <silent> <CR>  :CCTreeLoadBufferUsingTag<CR>
         nnoremap <buffer> <silent> <2-LeftMouse> :CCTreeLoadBufferUsingTag<CR>
 
-        " Static highlighting <Ctrl-r>
-        nnoremap <buffer> <silent> <C-r> :CCTreeWindowHiCallTree<CR>
-        " Compress call-tree  <zs>
-        nnoremap <buffer> <silent> zs :2,.foldclose!<CR>zv
+        command! -buffer -nargs=0 CCTreeWindowHiCallTree 
+                                    \ call s:CCTreeGlobals.mCursorHoldHandleEvent()
+
+        exec 'nnoremap <buffer> <silent> '.s:CCTreeKeyMappings.CTreeHilight.
+                                                    \' :CCTreeWindowHiCallTree<CR>'
+        exec 'nnoremap <buffer> <silent> '.s:CCTreeKeyMappings.CTreeCompress.
+                                                    \ ' :2,.foldclose!<CR>zv'
 
         let &cpoptions = cpo_save
     endif
@@ -1664,6 +1723,7 @@ endfunction
 
 " }}}
 " {{{ CCTree Buffer mappings
+
 function! s:CCTreeWindowGetHiKeyword()
     let keyw = expand("<cword>")
     let keyf = expand("<cfile>")
@@ -1682,19 +1742,21 @@ function! s:CCTreeWindowGetHiKeyword()
     return ''
 endfunction
 
-function! s:CCTreeBufferKeyMappingsCreate()
-     exec 'command! -buffer -nargs=0 CCTreeWindowHiCallTree call <SNR>'.s:sid.
-                                \'CCTreeCursorHoldHandleEvent()'
-     command! -buffer -nargs=0 CCTreeWindowHiCallTree call s:CCTreeGlobals.mCursorHoldHandleEvent()
+
+function! s:CCTreeBufferKeyMappingsCreate(kmaps)
      let func_expr = '<SNR>'.s:sid.'CCTreeWindowGetHiKeyword()'
-     exec 'nnoremap <buffer> <silent> <C-\>< :CCTreeTraceReverse <C-R>='.func_expr.'<CR><CR>'
-     exec 'nnoremap <buffer> <silent> <C-\>> :CCTreeTraceForward <C-R>='.func_expr.'<CR><CR>'
+     exec 'nnoremap <buffer> <silent> '.a:kmaps.CTreeR.' :CCTreeTraceReverse <C-R>='.
+                                                  \ func_expr.'<CR><CR>'
+     exec 'nnoremap <buffer> <silent> '.a:kmaps.CTreeF.' :CCTreeTraceForward <C-R>='
+                                                \ .func_expr.'<CR><CR>'
 
-     exec 'nnoremap <silent> <C-\>y :CCTreeWindowSaveCopy<CR>'
-     exec 'nnoremap <silent> <C-\>w :CCTreeWindowToggle<CR>'
+     exec 'nnoremap <silent> '.a:kmaps.CTreeWSave. ' :CCTreeWindowSaveCopy<CR>'
+     exec 'nnoremap <silent> '.a:kmaps.CTreeWToggle. ' :CCTreeWindowToggle<CR>'
 
-     nnoremap <buffer> <silent> <C-\>= :CCTreeRecurseDepthPlus<CR> 
-     nnoremap <buffer> <silent> <C-\>- :CCTreeRecurseDepthMinus<CR> 
+     exec 'nnoremap <buffer> <silent> '.a:kmaps.CTreeDepthPlus.
+                                    \ ' :CCTreeRecurseDepthPlus<CR>'
+     exec 'nnoremap <buffer> <silent> '.a:kmaps.CTreeDepthMinus.
+                                    \ ' :CCTreeRecurseDepthMinus<CR>'
 endfunction
 
 augroup CCTreeMaps
@@ -1703,7 +1765,9 @@ au!
 " This is a bug in Vim 7.2, a patch needs to be applied to the runtime c
 " syntax files
 " For now, use this hack to make *.h files work
-autocmd FileType * if &ft == 'c'|| &ft == 'cpp' |call s:CCTreeBufferKeyMappingsCreate()| endif
+autocmd FileType *   if &ft == 'c'|| &ft == 'cpp' |
+                   \ call s:CCTreeBufferKeyMappingsCreate(s:CCTreeKeyMappings)|
+                   \ endif
 augroup END
 
 
@@ -2009,9 +2073,11 @@ function! s:CCTreeCursorHoldHandleEvent()
     call s:CCTreeGlobals.mCursorHoldHandleEvent()
 endfunction
 
+function! s:CCTreeGlobals.mInit() dict
+    call self.mSetupDynamicCallTreeHiLightEvent()
+endfunction
 
 " }}}
-
 " {{{ CCTree options
 function! s:CCTreeSetUseCallTreeHiLights(val) 
     let g:CCTreeHilightCallTree = a:val
@@ -2037,7 +2103,6 @@ let s:CCTreeOptions = {'UseUnicodeSymbols': function('s:CCTreeSetUseUtf8Symbols'
             \}
 
 " }}}
-
 " {{{ Vim tags interface
 
 " CCTreeCompleteKwd
@@ -2100,6 +2165,8 @@ function! s:CCTreeGlobals.mLoadBufferFromKeyword()
             try
                 " Ctags is smart enough to figure the path
                 exec "tag ".fnamemodify(hiKeyword, ":t")
+            catch /^Vim\%((\a\+)\)\=:E433/
+                call s:CCTreeUtils.mWarningMsg('Tag file not found')
             catch /^Vim\%((\a\+)\)\=:E426/
                 call s:CCTreeUtils.mWarningMsg('Tag '. hiKeyword .' not found')
                 wincmd p
@@ -2147,8 +2214,8 @@ command! -nargs=0 CCTreeWindowSaveCopy call s:CCTreeGlobals.mPreviewSave()
 command! -nargs=1 -complete=customlist,s:CCTreeOptionsList CCTreeOptsEnable call s:CCTreeGlobals.mEnable(<q-args>)
 command! -nargs=1 -complete=customlist,s:CCTreeOptionsList CCTreeOptsDisable call s:CCTreeGlobals.mDisable(<q-args>)
 "}}}
-" {{{ finish
-
+" {{{ finish (and init)
+call s:CCTreeGlobals.mInit()
 " restore 'cpo'
 let &cpoptions = s:cpo_save
 unlet s:cpo_save

@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-03-07 10:58:44
+" Last Modified: 2011-03-09 10:12:20
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1870,6 +1870,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
 
   highlight CCTreeMarkers guifg=DarkGray ctermfg=DarkGray
   highlight link CCTreeHiMarkers PmenuSel
+  let g:CCTreeKeyHilightTree = '<F3>'
   "}}}2
   "----------------------------------------------------------{{{2
   " Conque Term: Vim terminal/console emulator
