@@ -1583,6 +1583,7 @@ function! s:CCTreeWindow.mEnter() dict
         setlocal noswapfile
         setlocal nonumber
         setlocal nowrap
+        setlocal nobuflisted
 
         setlocal statusline=%=%{CCTreeWindowPreviewStatusLine()}
 
