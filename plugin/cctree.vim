@@ -1500,20 +1500,20 @@ endfunction
 
 function! s:CCTreeWindow.mClose() dict
     if s:FindOpenWindow(s:windowtitle) == 1
-        silent! exec ":q!"
+        silent! q!
     endif
 endfunction
 
 function! s:CCTreeWindow.mDisplayToggle() dict
     if s:FindOpenWindow(s:windowtitle) == 1
-	silent! exec "hide"
+	silent! hide
     else 
 	let winbufnr = s:FindOpenBuffer(s:windowtitle)
 	if winbufnr > 0 
 	   call self.mEnter()
 	   silent! exec "buf ".winbufnr
 	   call self.mResize()
-	   silent! exec "wincmd p"
+	   silent! wincmd p
 	else
 	   call s:CCTreeUtils.mWarningMsg(" No active window found.")
 	endif
@@ -1543,12 +1543,15 @@ function! s:CCTreeWindow.mDisplayTree(atree, direction) dict
     endif
 
     setlocal modifiable
-    1,$d
+    silent 1,$d
     let b:maxwindowlen = g:CCTreeWindowMinWidth
     let b:displayTree = s:DisplayTree.mCreate(a:atree,
                     \ a:direction, self.treeMarkers)
     call s:CCTreeDisplay.mPopulateTreeInCurrentBuffer(b:displayTree)
-    exec "normal gg"
+    if empty(getline('$'))
+        silent $d
+    endif
+    normal! gg
 
     " Need to force this again
     let &l:foldlevel=g:CCTreeMinVisibleDepth
@@ -1698,7 +1701,7 @@ function! s:CCTreeDisplay.mPopulateTreeInCurrentBuffer(dtree)
         "let b:maxwindowlen = max([strlen(aline)+1, b:maxwindowlen])
         let b:maxwindowlen = max([len+1, b:maxwindowlen])
         call setline(".", aline)
-        exec "normal o"
+        normal! o
     endfor
 endfunction
 
@@ -2151,7 +2154,7 @@ function! s:CCTreeGlobals.mLoadBufferFromKeyword()
 
     let hiKeyword = s:CCTreeGlobals.Window.hiKeyword
     try 
-        exec 'wincmd p'
+        wincmd p
     catch
         call s:CCTreeUtils.mWarningMsg('No buffer to load file')
     finally
