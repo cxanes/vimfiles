@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-03-09 10:12:20
+" Last Modified: 2011-03-09 17:37:41
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -616,8 +616,12 @@ nnoremap <silent> <Leader>rd :<C-U>redraw!<CR>
 nnoremap <silent> <Leader>V  0v$
 
 nnoremap <silent> <Leader>/  :<C-U>exec 'cc' (v:count == 0 ? '' : v:count)<CR>
-nnoremap <silent> <Leader>,  :<C-U>cN<CR>
-nnoremap <silent> <Leader>.  :<C-U>cn<CR>
+nnoremap <silent> <Leader>,  :<C-U>exec v:count1 . 'cN'<CR>
+nnoremap <silent> <Leader>.  :<C-U>exec v:count1 . 'cn'<CR>
+
+nnoremap <silent> <Leader>[   :<C-U>exec v:count1 . 'tN'<CR>
+nnoremap <silent> <Leader>]   :<C-U>exec v:count1 . 'tn'<CR>
+nnoremap <silent> <Leader>tj  :<C-U>tj<CR>
 
 nnoremap <silent> <Leader>cw :<C-U>exec 'cwindow' (v:count ? v:count : '')<CR>
 nnoremap <silent> <Leader>co :<C-U>exec 'copen'   (v:count ? v:count : '')<CR>
@@ -663,7 +667,7 @@ nnoremap <silent> <Leader>hl :<C-U>set hls!    <Bar>set hls?<CR>
 nnoremap <silent> <Leader>wp :<C-U>set wrap!   <Bar>set wrap?<CR>
 nnoremap <silent> <Leader>nu :<C-U>set nu!     <Bar>set nu?<CR>
 nnoremap <silent> <Leader>ba :<C-U>set backup! <Bar>set backup?<CR>
-nnoremap <silent> <Leader>ls :<C-U>set list!   <Bar>set list?<CR>
+nnoremap <silent> <Leader>lt :<C-U>set list!   <Bar>set list?<CR>
 nnoremap <silent> <Leader>ssl :<C-U>set ssl!   <Bar>set ssl?<CR>
 
 nnoremap <silent> <Leader>a<Space> :<C-U>call <SID>AddChar('<Leader>a<Space>', ' ', v:count1)<CR>
