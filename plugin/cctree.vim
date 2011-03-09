@@ -16,8 +16,8 @@
 "  Description: C Call-Tree Explorer Vim Plugin
 "   Maintainer: Hari Rangarajan <hari.rangarajan@gmail.com>
 "          URL: http://vim.sourceforge.net/scripts/script.php?script_id=2368
-"  Last Change: March 06, 2011
-"      Version: 1.04
+"  Last Change: March 08, 2011
+"      Version: 1.06
 "
 "=============================================================================
 " 
@@ -235,8 +235,18 @@
 "                 in incorrectly identified function blocks, etc.
 "  }}}
 "  {{{ History:
+"           Version 1.06: March 06, 2011
+"                 1. Fix new keymaps incorrectly applied to buffer
+"                 2. CCTreeOptsToggle command for toggling options
+"
+"           Version 1.04: March 06, 2011
+"                 1. Customization for key mappings
+"                 2. Dynamic configuration of UI variables
+"                 3. Folding long call-trees to show current path dynamically
+"
 "           Version 1.01: March 04, 2011
 "                 1. Make UTF-8 symbols for tree optional
+"
 "           Version 1.00: March 02, 2011
 "                 1. Staging release for upcoming features
 "                    - Complete refactoring of code to take 
@@ -1427,6 +1437,7 @@ let s:CCTreeKeywordRegEx = '[A-Za-z0-9_\\\.\/]\+'
 
 function! s:CCTreeWindow.mGetKeywordAtCursor() dict
     let curline = line(".")
+    let self.hiKeyword = ''
     if foldclosed(curline) == -1
         let curkeyword = matchstr(getline("."), s:CCTreeKeywordRegEx)
         if curkeyword != ''
@@ -1506,14 +1517,14 @@ endfunction
 
 function! s:CCTreeWindow.mDisplayToggle() dict
     if s:FindOpenWindow(s:windowtitle) == 1
-	silent! hide
+        silent! hide
     else 
 	let winbufnr = s:FindOpenBuffer(s:windowtitle)
 	if winbufnr > 0 
 	   call self.mEnter()
 	   silent! exec "buf ".winbufnr
 	   call self.mResize()
-	   silent! wincmd p
+           silent! wincmd p
 	else
 	   call s:CCTreeUtils.mWarningMsg(" No active window found.")
 	endif
@@ -1538,8 +1549,7 @@ endfunction
 function! s:CCTreeWindow.mDisplayTree(atree, direction) dict
     let incctreewin = 1
     if (bufname('%') != s:windowtitle) 
-    	call self.mEnter()
-        let incctreewin = 0
+        let incctreewin = self.mEnter()
     endif
 
     setlocal modifiable
@@ -1572,7 +1582,8 @@ endfunction
 
 function! s:CCTreeWindow.mEnter() dict
     let self.lastbufname = bufname("%")
-    if s:FindOpenWindow(s:windowtitle) == 0
+    let foundWindow = s:FindOpenWindow(s:windowtitle)
+    if foundWindow == 0
         if g:CCTreeWindowVertical == 1
             exec  g:CCTreeOrientation." vsplit ". s:windowtitle
             set winfixwidth
@@ -1595,18 +1606,18 @@ function! s:CCTreeWindow.mEnter() dict
         set cpoptions&vim
 
         call s:CCTreeBufferKeyMappingsCreate(s:CCTreeKeyMappings) 
+     
+        command! -buffer -nargs=0 CCTreeWindowHiCallTree 
+                                \ call s:CCTreeGlobals.mCursorHoldHandleEvent()
+     
+        exec 'nnoremap <buffer> <silent> '.s:CCTreeKeyMappings.CTreeHilight.
+                                                 \' :CCTreeWindowHiCallTree<CR>'
+        exec 'nnoremap <buffer> <silent> '.s:CCTreeKeyMappings.CTreeCompress.
+                                                 \ ' :2,.foldclose!<CR>zv'
 	
         nnoremap <buffer> <silent> <C-p>  :CCTreePreviewBufferUsingTag<CR>
         nnoremap <buffer> <silent> <CR>  :CCTreeLoadBufferUsingTag<CR>
         nnoremap <buffer> <silent> <2-LeftMouse> :CCTreeLoadBufferUsingTag<CR>
-
-        command! -buffer -nargs=0 CCTreeWindowHiCallTree 
-                                    \ call s:CCTreeGlobals.mCursorHoldHandleEvent()
-
-        exec 'nnoremap <buffer> <silent> '.s:CCTreeKeyMappings.CTreeHilight.
-                                                    \' :CCTreeWindowHiCallTree<CR>'
-        exec 'nnoremap <buffer> <silent> '.s:CCTreeKeyMappings.CTreeCompress.
-                                                    \ ' :2,.foldclose!<CR>zv'
 
         let &cpoptions = cpo_save
     endif
@@ -1614,6 +1625,8 @@ function! s:CCTreeWindow.mEnter() dict
     setlocal foldexpr=CCTreeFoldExpr(getline(v:lnum))
     setlocal foldtext=CCTreeFoldText()
     let &l:foldlevel=g:CCTreeMinVisibleDepth
+
+    return foundWindow
 endfunction   
 " }}}
 " {{{ Dynamic call-tree highlighting using 
@@ -1747,6 +1760,7 @@ function! s:CCTreeWindowGetHiKeyword()
 endfunction
 
 
+" Keymappings used common to source files and CCTree window
 function! s:CCTreeBufferKeyMappingsCreate(kmaps)
      let func_expr = '<SNR>'.s:sid.'CCTreeWindowGetHiKeyword()'
      exec 'nnoremap <buffer> <silent> '.a:kmaps.CTreeR.' :CCTreeTraceReverse <C-R>='.
@@ -1937,11 +1951,27 @@ let s:CCTreeGlobals = {
 let g:CCTreeGlobals = s:CCTreeGlobals
 
 function! s:CCTreeGlobals.mEnable(opt) dict
-    call s:CCTreeOptions[a:opt](1)
+    if (has_key(s:CCTreeOptions, a:opt))
+        call s:CCTreeOptions[a:opt](1)
+    else
+        call s:CCTreeUtils.mWarningMsg('Invalid option')
+    endif
 endfunction
 
 function! s:CCTreeGlobals.mDisable(opt) dict
-    call s:CCTreeOptions[a:opt](0)
+    if (has_key(s:CCTreeOptions, a:opt))
+        call s:CCTreeOptions[a:opt](0)
+    else
+        call s:CCTreeUtils.mWarningMsg('Invalid option')
+    endif
+endfunction
+
+function! s:CCTreeGlobals.mToggle(opt) dict
+    if (has_key(s:CCTreeOptions, a:opt))
+        call s:CCTreeOptions[a:opt](-1)
+    else
+        call s:CCTreeUtils.mWarningMsg('Invalid option')
+    endif
 endfunction
 
 function! s:CCTreeGlobals.mGetSymNames() dict
@@ -2084,12 +2114,20 @@ endfunction
 " }}}
 " {{{ CCTree options
 function! s:CCTreeSetUseCallTreeHiLights(val) 
-    let g:CCTreeHilightCallTree = a:val
+    if a:val == -1 
+        let g:CCTreeHilightCallTree = !g:CCTreeHilightCallTree
+    else
+        let g:CCTreeHilightCallTree = a:val
+    endif
     call s:CCTreeGlobals.mSetupDynamicCallTreeHiLightEvent()
 endfunction
 
 function! s:CCTreeSetUseUtf8Symbols(val) 
-    let g:CCTreeUseUTF8Symbols = a:val
+    if a:val == -1 
+        let g:CCTreeUseUTF8Symbols = !g:CCTreeUseUTF8Symbols
+    else
+        let g:CCTreeUseUTF8Symbols = a:val
+    endif
     call s:CCTreeGlobals.mEncodingChangedHandleEvent()
 endfunction
 
@@ -2217,6 +2255,7 @@ command! -nargs=0 CCTreeWindowSaveCopy call s:CCTreeGlobals.mPreviewSave()
 " Run-time dynamic options
 command! -nargs=1 -complete=customlist,s:CCTreeOptionsList CCTreeOptsEnable call s:CCTreeGlobals.mEnable(<q-args>)
 command! -nargs=1 -complete=customlist,s:CCTreeOptionsList CCTreeOptsDisable call s:CCTreeGlobals.mDisable(<q-args>)
+command! -nargs=1 -complete=customlist,s:CCTreeOptionsList CCTreeOptsToggle call s:CCTreeGlobals.mToggle(<q-args>)
 "}}}
 " {{{ finish (and init)
 call s:CCTreeGlobals.mInit()
