@@ -16,8 +16,8 @@
 "  Description: C Call-Tree Explorer Vim Plugin
 "   Maintainer: Hari Rangarajan <hari.rangarajan@gmail.com>
 "          URL: http://vim.sourceforge.net/scripts/script.php?script_id=2368
-"  Last Change: March 08, 2011
-"      Version: 1.06
+"  Last Change: March 09, 2011
+"      Version: 1.07
 "
 "=============================================================================
 " 
@@ -121,6 +121,7 @@
 "          Dynamic configuration:
 "             CCTreeOptsEnable <option>    (<tab> for auto-complete)
 "             CCTreeOptsDisable <option>   (<tab> for auto-complete)
+"             CCTreeOptsToggle <option>   (<tab> for auto-complete)
 "             Options:
 "                   DynamicTreeHiLights: Control dynamic tree highlighting
 "                   UseUnicodeSymbols: Use of UTF-8 special characters for
@@ -235,7 +236,7 @@
 "                 in incorrectly identified function blocks, etc.
 "  }}}
 "  {{{ History:
-"           Version 1.06: March 06, 2011
+"           Version 1.07: March 09, 2011
 "                 1. Fix new keymaps incorrectly applied to buffer
 "                 2. CCTreeOptsToggle command for toggling options
 "
@@ -325,7 +326,7 @@
 "   }}}
 "   {{{ Thanks:
 "
-"    Frank Chang                    (ver 1.04 -- testing/UI enhancement ideas)
+"    Frank Chang                    (ver 1.0x -- testing/UI enhancement ideas/bug fixes)
 "    Arun Chaganty/Timo Tiefel	    (Ver 0.60 -- bug report)
 "    Michael Wookey                 (Ver 0.4 -- Testing/bug report/patches)
 "    Yegappan Lakshmanan            (Ver 0.2 -- Patches)
@@ -1558,10 +1559,7 @@ function! s:CCTreeWindow.mDisplayTree(atree, direction) dict
     let b:displayTree = s:DisplayTree.mCreate(a:atree,
                     \ a:direction, self.treeMarkers)
     call s:CCTreeDisplay.mPopulateTreeInCurrentBuffer(b:displayTree)
-    if empty(getline('$'))
-        silent $d
-    endif
-    normal! gg
+    exec "normal gg"
 
     " Need to force this again
     let &l:foldlevel=g:CCTreeMinVisibleDepth
@@ -1716,6 +1714,7 @@ function! s:CCTreeDisplay.mPopulateTreeInCurrentBuffer(dtree)
         call setline(".", aline)
         normal! o
     endfor
+    silent $d
 endfunction
 
 
