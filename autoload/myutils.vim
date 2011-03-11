@@ -873,6 +873,27 @@ function! s:NumWinBuf(buf) "{{{
   return num
 endfunction
 "}}}
+function! s:CloseBuffer(buf, left) "{{{
+  let num_win = s:NumWinBuf(a:buf)
+
+  if num_win == 0
+    return
+  endif
+
+  let left = a:left + 0
+  if left < 0
+    let left = 0
+  endif
+
+  while num_win > a:left
+    let winnr = bufwinnr(a:buf)
+    exe winnr . "wincmd w"
+    silent! close!
+    let num_win -= 1
+  endwhile
+endfunction
+"}}}
+let s:default_reserved_window_patterns = [ '^__Tag_List__$', '^_FileExplorer_\%(<\d\+>\)\?$', '^CCTree-View$']
 function! myutils#CloseAllOtherWindows() "{{{
   if exists('g:reserved_window_patterns')
     if type('') == type(g:reserved_window_patterns)
@@ -881,7 +902,7 @@ function! myutils#CloseAllOtherWindows() "{{{
       let reserved_window_patterns = g:reserved_window_patterns
     endif
   else
-    let reserved_window_patterns = [ '^__Tag_List__$', '^_FileExplorer_\%(<\d\+>\)\?$', '^CCTree-View$']
+    let reserved_window_patterns = s:default_reserved_window_patterns
   endif
 
   if s:MatchPattern(bufname('%'), reserved_window_patterns)
@@ -889,14 +910,6 @@ function! myutils#CloseAllOtherWindows() "{{{
   endif
 
   let curbuf = bufnr('%')
-  let num_win = s:NumWinBuf(curbuf)
-
-  while num_win > 1
-    let winnr = bufwinnr(curbuf)
-    exe winnr . "wincmd w"
-    silent close!
-    let num_win -= 1
-  endwhile
 
   for i in range(1, bufnr('$'))
     let winnr = bufwinnr(i)
@@ -905,13 +918,12 @@ function! myutils#CloseAllOtherWindows() "{{{
     endif
 
     exe winnr . "wincmd w"
+    let buf = bufnr('%')
 
-    if bufnr('%') == curbuf
-        continue
-    endif
-
-    if !s:MatchPattern(bufname('%'), reserved_window_patterns)
-      silent close!
+    if buf == curbuf
+      call s:CloseBuffer(buf, 1)
+    elseif !s:MatchPattern(bufname('%'), reserved_window_patterns)
+      call s:CloseBuffer(buf, 0)
     endif
   endfor
 
