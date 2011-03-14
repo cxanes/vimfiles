@@ -70,6 +70,7 @@ syn cluster wikiHighlighting contains=wikiBold,wikiItalic,wikiWikiWord,wikiEscap
 syn region wikiSuppressHighlighting matchgroup=wikiDelimiter start='^\s*<<\s*$' end='^\s*>>\s*$'
 syn region wikiTable matchgroup=wikiDelimiter start='^\s*<<|t\?\s*$' end='^\s*>>\s*$' contains=@wikiHighlighting,wikiTableCellDelimiter
 syn region wikiPreBloc matchgroup=wikiDelimiter start='^\s*<<pre\s*$' end='^\s*>>\s*$'
+syn region wikiHideBloc matchgroup=wikiDelimiter start='^\s*<<hide\s*$' end='^\s*>>\s*$'
 syn match wikiTableCellDelimiter '|' contained
 syn match wikiEscape '\\.'
 
@@ -88,7 +89,7 @@ hi def link wikiBullet             Operator
 hi def link wikiNumericBullet      Operator
 hi def link wikiWikiWord           Function
 hi def link wikiWikiWordEditor     Statement
-hi def link wikiFootnote           Tag   
+hi def link wikiFootnote           Tag
 hi def link wikiProperty           Tag
 hi def link wikiInsertionError     Error
 hi def link wikiInsertionValue     String
@@ -105,6 +106,7 @@ hi def link wikiToDoDate2          Identifier
 hi def link wikiHorizLine          Constant
 hi def link wikiAnchor             Define
 hi def link wikiPreBloc            Comment
+hi def link wikiHideBloc           Comment
 hi def link wikiTableCellDelimiter Structure
 
 let b:current_syntax = 'wikidpad'
