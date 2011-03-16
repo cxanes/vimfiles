@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-03-10 01:00:47
+" Last Modified: 2011-03-16 21:27:46
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -126,7 +126,9 @@ delfunction s:SetEnv
 "============================================================{{{1
 " Settings
 "================================================================
-" let did_install_default_menus = 1
+if !has('gui_running')
+  let did_install_default_menus = 1
+endif
 let did_install_syntax_menu = 1
 let no_buffers_menu = 1
 
@@ -183,9 +185,6 @@ endif
 unlet s:backupdir
 "}}}
 
-" Enable file type detection.
-filetype plugin indent on
-
 " set guioptions-=m         " Exclude Menu bar.
 set guioptions-=M         " Do NOT source system menu
 set guioptions-=T         " Exclude Toolbar.
@@ -216,6 +215,9 @@ set showbreak=>
 set diffopt+=vertical
 set display=lastline
 set list
+
+" Enable file type detection.
+filetype plugin indent on
 
 " If you run VIM in GNU SCREEN, be sure to set timeout set by the SCREEN 
 " command 'maptimeout' smaller then the option 'ttimeoutlen', otherwise the
