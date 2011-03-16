@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-03-16 21:57:28
+" Last Modified: 2011-03-17 03:03:20
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1104,17 +1104,12 @@ endif
 
 " Tools {{{
 for s:script in [
-      \          'Ar30',
-      \          'ImageBrowser',
-      \          'JpPronunciation',
-      \          'AutoCorrect',
-      \          'eclim',
-      \          'ropevim',
-      \          'dbext',
-      \          'AlignMapsPlugin',
-      \          'FlyMake',
-      \          'codeintel',
-      \          'vstplugin',
+      \          'Ar30', 'ImageBrowser', 'JpPronunciation',
+      \          'AutoCorrect', 'eclim', 'ropevim',
+      \          'dbext', 'AlignMapsPlugin', 'FlyMake',
+      \          'codeintel', 'vstplugin', 'Dict',
+      \          'Project', 'imaps', 'SourceNavigator',
+      \          'KillRing',
       \ ]
   if globpath(&rtp, printf('macros/%s.vim', s:script)) != ''
     exec printf('command! Load%s ru macros/%s.vim', substitute(s:script, '^.', '\u&', ''), s:script)
