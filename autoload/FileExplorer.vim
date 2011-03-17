@@ -1051,7 +1051,7 @@ function! s:InitCommands() "{{{
   au BufEnter <buffer> setlocal cul
 
   " When FileExplorer is the only window left in the current tabpage, quit this window
-  au BufEnter <buffer> if winnr() == winnr('$')|q|endif
+  au BufEnter <buffer> if winnr('$') == 1|q|endif
 endfunction
 
 if exists('*fnameescape')
