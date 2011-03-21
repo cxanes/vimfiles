@@ -37,13 +37,14 @@ endif
 " CCTree : C Call-Tree Explorer
 " http://www.vim.org/scripts/script.php?script_id=2368 {{{
 if globpath(&rtp, 'autoload/cctree.vim') != ''
-  function! s:CCTreeLoadAndRun(args)
+  function! s:CCTreeLoadAndRun(cmd, args)
     delcommand CCTreeLoadDB
     ru autoload/cctree.vim
-    exec 'CCTreeLoadDB' s:FnameEscape(a:args)
+    exec a:cmd s:FnameEscape(a:args)
   endfunction
 
-  command! -nargs=? -complete=file CCTreeLoadDB  call s:CCTreeLoadAndRun(<q-args>)
+  command! -nargs=? -complete=file CCTreeLoadDB  call s:CCTreeLoadAndRun('CCTreeLoadDB', <q-args>)
+  command! -nargs=? -complete=file CCTreeLoadXRefDB  call s:CCTreeLoadAndRun('CCTreeLoadXRefDB', <q-args>)
 
   function! s:CCTreeLoadOnce() 
     ru autoload/cctree.vim
