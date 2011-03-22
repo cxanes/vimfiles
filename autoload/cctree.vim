@@ -16,8 +16,8 @@
 "  Description: C Call-Tree Explorer Vim Plugin
 "   Maintainer: Hari Rangarajan <hari.rangarajan@gmail.com>
 "          URL: http://vim.sourceforge.net/scripts/script.php?script_id=2368
-"  Last Change: March 17, 2011
-"      Version: 1.20 (experimental)
+"  Last Change: March 21, 2011
+"      Version: 1.21 
 "
 "=============================================================================
 " 
@@ -239,6 +239,19 @@
 "	
 "			For more info on setting up perl interface
 "			:help perl-using or :help perl-dynamic
+"
+"               Writing large Xref Databases:
+"                   CCTree can use external utilities to write extremely large files beyond
+"               VimScripts capabilities. It requires the use of an external tool that can 
+"               join text files (i.e., 'cat' in unix). This utility is triggered if the size
+"               of the file being written exceeds g:CCTreeDbFileMaxSize (40 Mb or as configured)
+"
+"               The join utility command is configured by default as follows:
+"               let CCTreeJoinProgCmd = 'PROG_JOIN JOIN_OPT IN_FILES > OUT_FILE'
+"
+"               let  g:CCTreeJoinProg = 'cat'           " PROG_JOIN
+"               let  g:CCTreeJoinProgOpts = ""          " JOIN_OPT
+"
 "
 "  }}}		
 "  {{{ Limitations:
@@ -463,7 +476,7 @@ if !exists('CCTreeDbFileMaxSize')
 endif
 
 " }}}
-" {{{ Misc (perl)
+" {{{ Join/Cat prog
 if !exists('CCTreeJoinProgCmd')
     let CCTreeJoinProgCmd = 'PROG_JOIN JOIN_OPT IN_FILES > OUT_FILE'
 endif
@@ -476,7 +489,8 @@ endif
 if !exists('CCTreeJoinProgOpts')
     let CCTreeJoinProgOpts = ""
 endif
-
+" }}}
+" {{{ Misc (perl)
 if !exists('CCTreeUsePerl')
     " Disabled by default
     let CCTreeUsePerl = 0
@@ -1210,7 +1224,11 @@ endfunction
 
 
 function! s:CCTreeTagDbRdr.mParseDbHeader(hdr) dict
-    return s:CCTreeRC.Success
+    " just check line 3 for sanity
+    if a:hdr[2] =~ "CCTree"
+        return s:CCTreeRC.Success
+    endif
+    return s:CCTreeRC.Error
 endfunction
 
 function! s:CCTreeTagDbRdr.mProcessingStateInit() dict
@@ -1236,13 +1254,17 @@ function! s:CCTreeTagDbRdr.mProcessSymbol(xrefdb, aline) dict
 endfunction
 
 function! s:CCTreeTagDbRdr.mDecodeTagLine(tagline) dict
-	let items = split(a:tagline, "\t")
-        let idxBr = stridx(items[0], '[')
-        "revisit
 
+	let items = split(a:tagline, "\t")
         let newsym = s:CCTreeSym.mCreate("")
-        let newsym.idx = strpart(items[0], 0, idxBr)
-        let newsym.n =  items[0][ idxBr+1 : -2] "strpart(items[0], idxBr+1, strlen(items[0])-1)
+        try 
+            let [newsym.idx, newsym.n] = split(items[0], '#')
+        catch
+            echomsg "problem decoding ". a:tagline
+        endtry
+
+        "let newsym.idx = strpart(items[0], 0, idxBr)
+        "let newsym.n =  items[0][ idxBr+1 : -2] "strpart(items[0], idxBr+1, strlen(items[0])-1)
         if empty(get(items, 3)) != 1
             let newsym.c = items[3][2:]
         endif
@@ -1321,7 +1343,7 @@ function! s:CCTreeTagDbWriter.mBuildHeader() dict
 endfunction
 
 function! s:CCTreeTagDbWriter.mBuildTagLine(sym, symid) dict
-	let basetag = a:symid .'['. a:sym.n.']'."\t"."\t"."/^\$/".";\""
+	let basetag = a:symid .'#'. a:sym.n."\t"."\t"."/^\$/".";\""
         let basetag .= "\tc:". self.tmaps.mTranslateFast(a:sym.c)
         let basetag .= "\tp:". self.tmaps.mTranslateFast(a:sym.p)
 
@@ -1861,7 +1883,6 @@ function! s:CCTreeDBList.mLoadDB(gDbLdr, xRefDb, gRdr)
             call a:xRefDb.mTranslateSymbols(a:gRdr.mGetPostProcessingMaps(),
                                                 \ a:gRdr.mapPostKeys)
         endif
-        
         call swatch.mSnapElapsed()
         " restore normalcy
         call garbagecollect()
