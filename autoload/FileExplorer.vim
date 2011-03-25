@@ -921,6 +921,10 @@ function! FileExplorer#Open(dir, ...) " ... = max_level [0:Max_Create_Level], ot
 
     exe 'vertical resize ' . s:GetOption('WinWidth')
     setlocal cul nonu nowrap
+    setlocal fdc=0
+    if exists('+rnu')
+      setlocal nornu
+    endif
 
     if !exists('b:_FileExplorer_show_help')
       let b:_FileExplorer_show_help = 0
