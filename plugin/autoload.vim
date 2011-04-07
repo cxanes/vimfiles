@@ -45,6 +45,7 @@ if globpath(&rtp, 'autoload/cctree.vim') != ''
 
   command! -nargs=? -complete=file CCTreeLoadDB  call s:CCTreeLoadAndRun('CCTreeLoadDB', <q-args>)
   command! -nargs=? -complete=file CCTreeLoadXRefDB  call s:CCTreeLoadAndRun('CCTreeLoadXRefDB', <q-args>)
+  command! -nargs=? -complete=file CCTreeLoadXRefDBFromDisk  call s:CCTreeLoadAndRun('CCTreeLoadXRefDBFromDisk', <q-args>)
 
   function! s:CCTreeLoadOnce() 
     ru autoload/cctree.vim
