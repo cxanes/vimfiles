@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-03-17 03:03:20
+" Last Modified: 2011-04-22 01:04:46
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -617,7 +617,7 @@ nnoremap <silent> <Leader>rd :<C-U>redraw!<CR>
 
 nnoremap <silent> <Leader>V  0v$
 
-nnoremap <silent> <Leader>/  :<C-U>exec 'cc' (v:count == 0 ? '' : v:count)<CR>
+nnoremap <silent> <Leader>'  :<C-U>exec 'cc' (v:count == 0 ? '' : v:count)<CR>
 nnoremap <silent> <Leader>,  :<C-U>exec v:count1 . 'cN'<CR>
 nnoremap <silent> <Leader>.  :<C-U>exec v:count1 . 'cn'<CR>
 
@@ -1895,6 +1895,14 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " <http://www.vim.org/scripts/script.php?script_id=2368>
   "--------------------------------------------------------------
   let g:DirDiffExcludes = "*.class,*.exe,.*.sw?,*.py[cod]"
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " mark.vim
+  " <http://www.vim.org/scripts/script.php?script_id=2666>
+  "--------------------------------------------------------------
+	nmap <unique> <silent> <Leader>im <Plug>MarkRegex
+	vmap <unique> <silent> <Leader>im <Plug>MarkRegex
+	nmap <unique> <silent> <Leader>cm <Plug>MarkClear
   "}}}2
   "----------------------------------------------------------{{{2
   " editexisting.vim -> $VIMRUNTIME/macros/editexisting.vim
