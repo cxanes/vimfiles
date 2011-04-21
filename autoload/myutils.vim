@@ -975,16 +975,20 @@ function! myutils#SimpleRetag() "{{{
   endtry
 
   echohl MoreMsg
-  echo "rebuild cscope database..."
+  echo "Rebuild cscope database..."
   echohl None
   call myutils#Cscope('', 1)
 
   echohl MoreMsg
-  echo "rebuild ctags..."
+  echo "Rebuild ctags..."
   echohl None
   call myutils#Ctags('', 1)
 
   cs add cscope.out
+
+  echohl MoreMsg
+  echo "Done"
+  echohl None
 endfunction
 "}}}
 "==========================================================}}}1
