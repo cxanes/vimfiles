@@ -87,12 +87,19 @@ hi link vimOptvarErr Error
 " =====
 syn match vimMenuCommand '\%(\%(^\s*\d\+\)\@<=\|\<\)\%(am\%[enu]\|an\%[oremenu]\|aun\%[menu]\|cme\%[nu]\|cnoreme\%[nu]\|cunme\%[nu]\|ime\%[nu]\|inoreme\%[nu]\|iunme\%[nu]\|me\%[nu]\|nme\%[nu]\|nnoreme\%[nu]\|noreme\%[nu]\|nunme\%[nu]\|ome\%[nu]\|onoreme\%[nu]\|ounme\%[nu]\|unme\%[nu]\|vme\%[nu]\|vnoreme\%[nu]\|vunme\%[nu]\)\>' skipwhite nextgroup=@vimMenuList
 
+hi link vimMenuCommand vimCommand
+
+" Embedded Syntax {{{1
+" ===============
+if hlexists('vimPythonRegion')
+  syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]3\=\s\%(\s*<<\)\@!+ end=+\n+ contains=@vimPythonScript oneline
+endif
+
+
 " Synchronizing {{{1
 " =============
 if !exists("g:vimsyn_minlines")
   syn sync minlines=100
 endif
-
-hi link vimMenuCommand vimCommand
 
 " vim: set fdm=marker : {{{1
