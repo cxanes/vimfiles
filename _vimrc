@@ -111,6 +111,12 @@ function! s:SetEnv()
   let $PYTHONPATH = s:PrependEnv($PYTHONPATH, s:GetPath(['lib/python']), cyg_python)
   let $PERL5LIB   = s:PrependEnv($PERL5LIB,   s:GetPath(['lib/perl']),   cyg_perl)
 
+  if s:MSWIN && has('python')
+    " python.dll is loaded before $PYTHONPATH is set
+    py import sys, os, vim
+    py sys.path = [v for v in vim.eval('$PYTHONPATH').split(os.pathsep) if len(v) != 0] + sys.path
+  endif
+
   if s:MSWIN && exists('*SetPerlDist') && exists('*GetPerlDist')
     call SetPerlDist(GetPerlDist())
   endif
