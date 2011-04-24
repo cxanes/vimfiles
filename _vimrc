@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-04-22 01:04:46
+" Last Modified: 2011-04-24 22:16:40
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1115,7 +1115,7 @@ for s:script in [
       \          'dbext', 'AlignMapsPlugin', 'FlyMake',
       \          'codeintel', 'vstplugin', 'Dict',
       \          'Project', 'imaps', 'SourceNavigator',
-      \          'KillRing',
+      \          'KillRing', 'Stickies'
       \ ]
   if globpath(&rtp, printf('macros/%s.vim', s:script)) != ''
     exec printf('command! Load%s ru macros/%s.vim', substitute(s:script, '^.', '\u&', ''), s:script)
