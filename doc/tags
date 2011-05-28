@@ -2178,6 +2178,7 @@ g:tlib_viewline_position	tlib.txt	/*g:tlib_viewline_position*
 g:visincr_datedivset	visincr.txt	/*g:visincr_datedivset*
 gdb-keys	pyclewn.txt	/*gdb-keys*
 gundo.txt	gundo.txt	/*gundo.txt*
+gundo_close_on_revert	gundo.txt	/*gundo_close_on_revert*
 gundo_disable	gundo.txt	/*gundo_disable*
 gundo_help	gundo.txt	/*gundo_help*
 gundo_map_move_newer	gundo.txt	/*gundo_map_move_newer*
