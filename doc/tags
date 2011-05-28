@@ -222,6 +222,8 @@ IHV	alternate.txt	/*IHV*
 IMDY	visincr.txt	/*IMDY*
 IYMD	visincr.txt	/*IYMD*
 LaTeX	latexhelp.txt	/*LaTeX*
+LargeFile-copyright	LargeFile.txt	/*LargeFile-copyright*
+LargeFile.txt	LargeFile.txt	/*LargeFile.txt*
 MatchError	matchit.txt	/*MatchError*
 ODBC	dbext.txt	/*ODBC*
 OmniCpp_DefaultNamespaces	omnicppcomplete.txt	/*OmniCpp_DefaultNamespaces*
@@ -2225,6 +2227,8 @@ l9-introduction	l9.txt	/*l9-introduction*
 l9-usage	l9.txt	/*l9-usage*
 l9.txt	l9.txt	/*l9.txt*
 landscape	latexhelp.txt	/*landscape*
+largefile	LargeFile.txt	/*largefile*
+largefile-history	LargeFile.txt	/*largefile-history*
 latex	latexhelp.txt	/*latex*
 latex-boxes	latexhelp.txt	/*latex-boxes*
 latex-breaking	latexhelp.txt	/*latex-breaking*

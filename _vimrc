@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-04-24 22:16:40
+" Last Modified: 2011-05-29 01:14:31
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1901,6 +1901,12 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " <http://www.vim.org/scripts/script.php?script_id=2368>
   "--------------------------------------------------------------
   let g:DirDiffExcludes = "*.class,*.exe,.*.sw?,*.py[cod]"
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " LargeFile.vim
+  " <http://www.vim.org/scripts/script.php?script_id=1506>
+  "--------------------------------------------------------------
+  let g:LargeFile= 10
   "}}}2
   "----------------------------------------------------------{{{2
   " mark.vim
