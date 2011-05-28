@@ -968,7 +968,7 @@ function! myutils#Ctags(args, default) "{{{
   redraw!
 endfunction
 "}}}
-function! myutils#SimpleRetag() "{{{
+function! myutils#SimpleRetag(dir) "{{{
   try
     cs kill 0
   catch /^Vim\%((\a\+)\)\=:E261/
@@ -977,15 +977,18 @@ function! myutils#SimpleRetag() "{{{
   echohl MoreMsg
   echo "Rebuild cscope database..."
   echohl None
-  call myutils#Cscope('', 1)
+  call myutils#Cscope(a:dir, 1)
 
   echohl MoreMsg
   echo "Rebuild ctags..."
   echohl None
-  call myutils#Ctags('', 1)
+  call myutils#Ctags(a:dir, 1)
 
-  cs add cscope.out
+  if filereadable('cscope.out')
+    cs add cscope.out
+  endif
 
+  redraw
   echohl MoreMsg
   echo "Done"
   echohl None
