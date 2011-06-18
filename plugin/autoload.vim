@@ -24,7 +24,7 @@ endfunction
 
 " Gundo : Visualize your undo tree
 " http://www.vim.org/scripts/script.php?script_id=3304 {{{
-if globpath(&rtp, 'autoload/gundo.vim') != ''
+if !exists('loaded_gundo') && globpath(&rtp, 'autoload/gundo.vim') != ''
   function! s:GundoLoadAndRun()
     delcommand GundoToggle
     ru autoload/gundo.vim
@@ -36,7 +36,7 @@ endif
 "}}}
 " CCTree : C Call-Tree Explorer
 " http://www.vim.org/scripts/script.php?script_id=2368 {{{
-if globpath(&rtp, 'autoload/cctree.vim') != ''
+if !exists('loaded_cctree') && globpath(&rtp, 'autoload/cctree.vim') != ''
   function! s:CCTreeLoadAndRun(cmd, args)
     delcommand CCTreeLoadDB
     ru autoload/cctree.vim
@@ -51,18 +51,19 @@ if globpath(&rtp, 'autoload/cctree.vim') != ''
     ru autoload/cctree.vim
     au! CCTreeLoadOnce
     augroup! CCTreeLoadOnce
+    do CCTreeMaps FileType
   endfunction
 
   augroup CCTreeLoadOnce
     au!
-    au FileType c call s:CCTreeLoadOnce()|do CCTreeMaps FileType
-    au FileType cpp call s:CCTreeLoadOnce()|do CCTreeMaps FileType
+    au FileType c call s:CCTreeLoadOnce()
+    au FileType cpp call s:CCTreeLoadOnce()
   augroup END
 endif
 "}}}
 " DirDiff.vim : A plugin to diff and merge two directories recursively.
 " http://www.vim.org/scripts/script.php?script_id=102 {{{
-if globpath(&rtp, 'autoload/DirDiff.vim') != ''
+if !exists('loaded_dirdiff') && globpath(&rtp, 'autoload/DirDiff.vim') != ''
   function! s:DirDiffLoadAndRun(srcA, srcB)
     delcommand DirDiff
     ru autoload/DirDiff.vim
@@ -72,10 +73,9 @@ if globpath(&rtp, 'autoload/DirDiff.vim') != ''
   command! -nargs=* -complete=dir DirDiff call s:DirDiffLoadAndRun(<f-args>)
 endif
 "}}}
-
 " calendar.vim : Calendar
 " http://www.vim.org/scripts/script.php?script_id=52 {{{
-if globpath(&rtp, 'autoload/calendar.vim') != ''
+if !exists('loaded_calendar') && globpath(&rtp, 'autoload/calendar.vim') != ''
   function! s:CalendarLoadAndRun(...)
     delcommand Calendar
     delcommand CalendarH
@@ -87,6 +87,7 @@ if globpath(&rtp, 'autoload/calendar.vim') != ''
   command! -nargs=* CalendarH call s:CalendarLoadAndRun(1,<f-args>)
 endif
 "}}}
+
 " Restore {{{
 let &cpo = s:save_cpo
 unlet s:save_cpo
