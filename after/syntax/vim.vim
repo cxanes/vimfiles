@@ -28,6 +28,34 @@ syn region vimEcho oneline excludenl matchgroup=vimCommand start="\<ec\%[ho]\>" 
 syn clear vimExecute
 syn region vimExecute	oneline excludenl matchgroup=vimCommand start="\<exe\%[cute]\>" skip="\(\\\\\)*\\|" end="$\||\|<[cC][rR]>" contains=vimFunc,vimFuncVar,vimIsCommand,vimString,vimOper,vimVar,vimNotation,vimOperParen,vimNumber,vimOperError
 
+" Embedded Syntax {{{1
+" ===============
+" The original vim syntax script has some problems for embedded script highlighting
+if !hlexists('vimPythonRegion')
+  let s:pythonpath= split(globpath(&rtp,"syntax/python.vim"), "\n")
+  if (g:vimsyn_embed =~ 'P' && has("python")) && !empty(s:pythonpath) && filereadable(s:pythonpath[0])
+    unlet! b:current_syntax
+    exe "syn include @vimPythonScript ".fnameescape(s:pythonpath[0])
+    let b:current_syntax = 'vim'
+    if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'P'
+      syn region vimPythonRegion fold matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*\z(.*\)$+ end=+^\z1$+	contains=@vimPythonScript
+      syn region vimPythonRegion fold matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*$+ end=+\.$+		contains=@vimPythonScript
+    else
+      syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*\z(.*\)$+ end=+^\z1$+		contains=@vimPythonScript
+      syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*$+ end=+\.$+		contains=@vimPythonScript
+    endif
+    syn cluster vimFuncBodyList	add=vimPythonRegion
+  else
+    syn region vimEmbedError start=+py\%[thon]3\=\s*<<\s*\z(.*\)$+ end=+^\z1$+
+    syn region vimEmbedError start=+py\%[thon]3\=\s*<<\s*$+ end=+\.$+
+  endif
+  unlet s:pythonpath
+endif
+
+if hlexists('vimPythonRegion')
+  syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]3\=\s\%(\s*<<\)\@!+ end=+\n+ contains=@vimPythonScript oneline
+endif
+
 " Functions {{{1
 " =========
 syn cluster vimFuncBodyList remove=vimFuncName add=vimPythonRegion,vimRubyRegion,vimPerlRegion,vimUserCmd,vimSyntax,vimHighlight,vimEnvvar,vimRegvar,vimOptvar,vimOperError,vimMenuCommand,vimAugroupKey
@@ -88,13 +116,6 @@ hi link vimOptvarErr Error
 syn match vimMenuCommand '\%(\%(^\s*\d\+\)\@<=\|\<\)\%(am\%[enu]\|an\%[oremenu]\|aun\%[menu]\|cme\%[nu]\|cnoreme\%[nu]\|cunme\%[nu]\|ime\%[nu]\|inoreme\%[nu]\|iunme\%[nu]\|me\%[nu]\|nme\%[nu]\|nnoreme\%[nu]\|noreme\%[nu]\|nunme\%[nu]\|ome\%[nu]\|onoreme\%[nu]\|ounme\%[nu]\|unme\%[nu]\|vme\%[nu]\|vnoreme\%[nu]\|vunme\%[nu]\)\>' skipwhite nextgroup=@vimMenuList
 
 hi link vimMenuCommand vimCommand
-
-" Embedded Syntax {{{1
-" ===============
-if hlexists('vimPythonRegion')
-  syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]3\=\s\%(\s*<<\)\@!+ end=+\n+ contains=@vimPythonScript oneline
-endif
-
 
 " Synchronizing {{{1
 " =============
