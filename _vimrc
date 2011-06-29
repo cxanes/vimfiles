@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-05-29 01:14:31
+" Last Modified: 2011-06-29 23:46:02
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1112,7 +1112,7 @@ endif
 for s:script in [
       \          'Ar30', 'ImageBrowser', 'JpPronunciation',
       \          'AutoCorrect', 'eclim', 'ropevim',
-      \          'dbext', 'AlignMapsPlugin', 'FlyMake',
+      \          'dbext', 'FlyMake',
       \          'codeintel', 'vstplugin', 'Dict',
       \          'Project', 'imaps', 'SourceNavigator',
       \          'KillRing', 'Stickies'
