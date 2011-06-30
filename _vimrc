@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-06-29 23:46:02
+" Last Modified: 2011-07-01 02:17:48
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1224,6 +1224,30 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   "}}}
   "}}}2
   "----------------------------------------------------------{{{2
+  " CheckExpandTab()
+  "--------------------------------------------------------------
+  function! s:CheckExpandTab()
+    let has_syn_items = has('syntax_items')
+    let cur_pos = getpos('.')
+    call cursor(1, 1)
+
+    " It's just a heuristic guess: Once we find a line beginning with a tab,
+    " we consider the buffer is in 'noexpandtab' mode
+    " (the default is 'expandtab' mode)
+    let lnum = search('^\t', 'cW')
+    while lnum != 0
+      if !has_syn_items || synIDattr(synID(lnum, 1, 0), 'name') !~? 'string\|comment'
+        setl noet
+        call setpos('.', cur_pos)
+        return
+      endif
+
+      let lnum = search('^\t', 'cW')
+    endwhile
+    call setpos('.', cur_pos)
+  endfunction
+  "}}}2
+  "----------------------------------------------------------{{{2
   " Buffer-related Functions
   "--------------------------------------------------------------
   " Move to the next or previous modifiable buffer. <id=MoveToBuf>
@@ -1511,9 +1535,12 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   "}}}
   "}}}2
   "----------------------------------------------------------{{{2
-  " c
+  " c, cpp
   "--------------------------------------------------------------
   " let g:c_comment_strings	= 1
+  augroup Vimrc
+    au FileType c,cpp call s:CheckExpandTab()
+  augroup END
   "}}}2
   "----------------------------------------------------------{{{2
   " changelog
