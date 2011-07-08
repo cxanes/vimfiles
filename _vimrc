@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-07-01 02:17:48
+" Last Modified: 2011-07-08 22:05:13
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1242,7 +1242,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
         return
       endif
 
-      let lnum = search('^\t', 'cW')
+      let lnum = search('^\t', 'W')
     endwhile
     call setpos('.', cur_pos)
   endfunction
