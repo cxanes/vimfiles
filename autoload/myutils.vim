@@ -910,6 +910,7 @@ function! myutils#CloseAllOtherWindows() "{{{
   endif
 
   let curbuf = bufnr('%')
+  let curpos = getpos('.')
 
   for i in range(1, bufnr('$'))
     let winnr = bufwinnr(i)
@@ -930,6 +931,7 @@ function! myutils#CloseAllOtherWindows() "{{{
   let winnr = bufwinnr(curbuf)
   if (winnr != -1)
     exe winnr . "wincmd w"
+    call setpos('.', curpos)
   endif
 endfunction
 "}}}
