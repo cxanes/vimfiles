@@ -7,3 +7,4 @@ histwin-0.12.vba: call delete('C:\Program Files\Vim\vimfiles/plugin/histwinPlugi
 supertab.vba: call delete('C:\Program Files\Vim\vimfiles/doc/supertab.txt')|call delete('C:\Program Files\Vim\vimfiles/plugin/supertab.vim')
 mark.vba: call delete('C:\Program Files (x86)\Vim\vimfiles/autoload/mark.vim')|call delete('C:\Program Files (x86)\Vim\vimfiles/plugin/mark.vim')|call delete('C:\Program Files (x86)\Vim\vimfiles/doc/mark.txt')
 LargeFile.vba: call delete('C:\Program Files (x86)\Vim\vimfiles/plugin/LargeFile.vim')|call delete('C:\Program Files (x86)\Vim\vimfiles/doc/LargeFile.txt')
+histwin-0.23.vba: call delete('C:\Program Files\Vim\vimfiles/plugin/histwinPlugin.vim')|call delete('C:\Program Files\Vim\vimfiles/autoload/histwin.vim')|call delete('C:\Program Files\Vim\vimfiles/doc/histwin.txt')
