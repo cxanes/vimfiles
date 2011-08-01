@@ -22,18 +22,6 @@ function! s:FnameEscape(fname)
   return escape(a:fname, " \t\n*?[{`$\\%#'\"|!<")
 endfunction
 
-" Gundo : Visualize your undo tree
-" http://www.vim.org/scripts/script.php?script_id=3304 {{{
-if !exists('loaded_gundo') && globpath(&rtp, 'autoload/gundo.vim') != ''
-  function! s:GundoLoadAndRun()
-    delcommand GundoToggle
-    ru autoload/gundo.vim
-    GundoToggle
-  endfunction
-
-  command! -nargs=0 GundoToggle call s:GundoLoadAndRun()
-endif
-"}}}
 " CCTree : C Call-Tree Explorer
 " http://www.vim.org/scripts/script.php?script_id=2368 {{{
 if !exists('loaded_cctree') && globpath(&rtp, 'autoload/cctree.vim') != ''

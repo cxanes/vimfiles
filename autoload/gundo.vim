@@ -11,11 +11,6 @@
 
 "{{{ Init
 
-if !exists('g:gundo_debug') && (exists('g:gundo_disable') || exists('loaded_gundo') || &cp)"{{{
-    finish
-endif
-let loaded_gundo = 1"}}}
-
 if v:version < '703'"{{{
     function! s:GundoDidNotLoad()
         echohl WarningMsg|echomsg "Gundo unavailable: requires Vim 7.3+"|echohl None
@@ -394,8 +389,19 @@ endfunction"}}}
 "}}}
 
 "{{{ Misc
-command! -nargs=0 GundoToggle call s:GundoToggle()
-command! -nargs=0 GundoRenderGraph call s:GundoRenderGraph()
-autocmd BufNewFile __Gundo__ call s:GundoSettingsGraph()
-autocmd BufNewFile __Gundo_Preview__ call s:GundoSettingsPreview()
+
+function! gundo#GundoToggle()"{{{
+    call s:GundoToggle()
+endfunction"}}}
+
+function! gundo#GundoRenderGraph()"{{{
+    call s:GundoRenderGraph()
+endfunction"}}}
+
+augroup GundoAug
+    autocmd!
+    autocmd BufNewFile __Gundo__ call s:GundoSettingsGraph()
+    autocmd BufNewFile __Gundo_Preview__ call s:GundoSettingsPreview()
+augroup END
+
 "}}}
