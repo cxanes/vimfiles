@@ -2,6 +2,8 @@
 "===================================================================
 " Setting 
 "-------------------------------------------------------------------
+let b:surround_{char2nr('0')} = "#if 0\n\r\n#endif"
+
 " compiler gcc
 setl errorformat&
 if isdirectory($HOME . '/local/include')
