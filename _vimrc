@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-07-08 22:05:13
+" Last Modified: 2011-10-03 10:19:19
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -381,6 +381,69 @@ endif
 " let &statusline = '%<%f%( %{OptModifiedFlag(1)}%y%w%r%)%=%-16.( %l/%L,%c%V%) '
 let &statusline = '%<%f%( %{OptModifiedFlag(1)}%{ManBufInfo()}%y%w%r%)'
       \ . '%( %{OptSetInfo()}%) %k%=%-14.( %l/%L,%c%V%) '
+"}}}
+" Set 'tabline' {{{
+function! GetTabLabel(n) "{{{
+  let buflist = tabpagebuflist(a:n)
+  let winnr = tabpagewinnr(a:n)
+  let bufnr = buflist[winnr - 1]
+  let label = bufname(bufnr)
+  let buftype = getbufvar(bufnr, '&buftype')
+
+  if label == ''
+    if buftype  == 'quickfix'
+      let label = '[Quickfix List]'
+    elseif buftype == 'nofile'
+      let label = '[Scratch]'
+    else
+      let label = '[No Name]'
+    endi
+  else
+    if buftype == 'help'
+      let label = fnamemodify(label, ':t')
+    else
+      if exists('*pathshorten')
+        let label = pathshorten(label)
+      else
+        let label = substitute(label, '\([~.]*[^:/]\)\%([^:/]\)*/', '\1/', 'g')
+      endif
+    endif
+  endif
+  return label
+endfunction
+"}}}
+function! ShowTabLine() "{{{
+  let s = ''
+
+  for i in range(1, tabpagenr('$'))
+    " select the highlighting
+    if i == tabpagenr()
+      let hl = '%#TabLineSel#'
+    else
+      let hl = '%#TabLine#'
+    endif
+
+    let s .= hl
+
+    " set the tab page number (for mouse clicks)
+    let s .= '%' . i . 'T'
+
+    " the label is made by GetTabLabel()
+    let s .= ' %1*' . i . hl . ' %{GetTabLabel(' . i . ')} '
+  endfor
+
+  " after the last tab fill with TabLineFill and reset tab page nr
+  let s .= '%#TabLineFill#%T'
+
+  " right-align the label to close the current tab page
+  if tabpagenr('$') > 1
+    let s .= '%=%#TabLine#%999XX'
+  endif
+
+  return s
+endfunction
+"}}}
+let &tabline = '%!ShowTabLine()'
 "}}}
 " Make <M-...> almost work in xterm {{{
 " 
