@@ -194,6 +194,7 @@ Csetfmtvar	pyclewn.txt	/*Csetfmtvar*
 Csymcompletion	pyclewn.txt	/*Csymcompletion*
 Cthreadstack	pyclewn.txt	/*Cthreadstack*
 DBI	dbext.txt	/*DBI*
+DrawIt.txt	DrawIt.txt	/*DrawIt.txt*
 EnhComm-Bugs	EnhancedCommentify.txt	/*EnhComm-Bugs*
 EnhComm-Credits	EnhancedCommentify.txt	/*EnhComm-Credits*
 EnhComm-EnhCommentify	EnhancedCommentify.txt	/*EnhComm-EnhCommentify*
@@ -1951,6 +1952,7 @@ drawit-b	DrawIt.txt	/*drawit-b*
 drawit-brush	DrawIt.txt	/*drawit-brush*
 drawit-c	DrawIt.txt	/*drawit-c*
 drawit-contents	DrawIt.txt	/*drawit-contents*
+drawit-dbl	DrawIt.txt	/*drawit-dbl*
 drawit-drawing	DrawIt.txt	/*drawit-drawing*
 drawit-e	DrawIt.txt	/*drawit-e*
 drawit-erase	DrawIt.txt	/*drawit-erase*
@@ -1967,11 +1969,12 @@ drawit-protect	DrawIt.txt	/*drawit-protect*
 drawit-s	DrawIt.txt	/*drawit-s*
 drawit-setbrush	DrawIt.txt	/*drawit-setbrush*
 drawit-setdrawit	DrawIt.txt	/*drawit-setdrawit*
+drawit-sngl	DrawIt.txt	/*drawit-sngl*
 drawit-start	DrawIt.txt	/*drawit-start*
 drawit-stop	DrawIt.txt	/*drawit-stop*
+drawit-tip	DrawIt.txt	/*drawit-tip*
 drawit-usage	DrawIt.txt	/*drawit-usage*
 drawit-visblock	DrawIt.txt	/*drawit-visblock*
-drawit.txt	DrawIt.txt	/*drawit.txt*
 drv-dtArrayInit	crefvim.txt	/*drv-dtArrayInit*
 drv-dtIncompleteArrayDecl	crefvim.txt	/*drv-dtIncompleteArrayDecl*
 ds	surround.txt	/*ds*
