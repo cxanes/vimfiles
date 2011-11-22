@@ -32,6 +32,7 @@ $cdir	pyclewn.txt	/*$cdir*
 .snippets	snipMate.txt	/*.snippets*
 /MyProjectDir/	dbext.txt	/*\/MyProjectDir\/*
 /MyProjectDir/	dbext.txt	/*\/MyProjectDir\/*
+:AlignMapsClean	Align.txt	/*:AlignMapsClean*
 :CVSEdit	vcscommand.txt	/*:CVSEdit*
 :CVSEditors	vcscommand.txt	/*:CVSEditors*
 :CVSUnedit	vcscommand.txt	/*:CVSUnedit*
@@ -509,6 +510,7 @@ align-usage	Align.txt	/*align-usage*
 align-userguide	Align.txt	/*align-userguide*
 align-utf	Align.txt	/*align-utf*
 align-utf8	Align.txt	/*align-utf8*
+align-xstrlen	Align.txt	/*align-xstrlen*
 align.txt	Align.txt	/*align.txt*
 alignctrl	Align.txt	/*alignctrl*
 alignctrl-	Align.txt	/*alignctrl-*
@@ -522,8 +524,11 @@ alignctrl-C	Align.txt	/*alignctrl-C*
 alignctrl-I	Align.txt	/*alignctrl-I*
 alignctrl-P	Align.txt	/*alignctrl-P*
 alignctrl-W	Align.txt	/*alignctrl-W*
+alignctrl-alignskip	Align.txt	/*alignctrl-alignskip*
 alignctrl-c	Align.txt	/*alignctrl-c*
 alignctrl-g	Align.txt	/*alignctrl-g*
+alignctrl-init	Align.txt	/*alignctrl-init*
+alignctrl-initialization	Align.txt	/*alignctrl-initialization*
 alignctrl-l	Align.txt	/*alignctrl-l*
 alignctrl-m	Align.txt	/*alignctrl-m*
 alignctrl-no-option	Align.txt	/*alignctrl-no-option*
@@ -531,6 +536,7 @@ alignctrl-p	Align.txt	/*alignctrl-p*
 alignctrl-r	Align.txt	/*alignctrl-r*
 alignctrl-separators	Align.txt	/*alignctrl-separators*
 alignctrl-settings	Align.txt	/*alignctrl-settings*
+alignctrl-star	Align.txt	/*alignctrl-star*
 alignctrl-v	Align.txt	/*alignctrl-v*
 alignctrl-w	Align.txt	/*alignctrl-w*
 alignman	Align.txt	/*alignman*
@@ -2058,6 +2064,7 @@ fuf-vimrc-example	fuf.txt	/*fuf-vimrc-example*
 fuf.txt	fuf.txt	/*fuf.txt*
 fuzzyfinder	fuf.txt	/*fuzzyfinder*
 g%	matchit.txt	/*g%*
+g:AlignSkip	Align.txt	/*g:AlignSkip*
 g:SuperTabCompletionContexts	supertab.txt	/*g:SuperTabCompletionContexts*
 g:SuperTabContextDefaultCompletionType	supertab.txt	/*g:SuperTabContextDefaultCompletionType*
 g:SuperTabCrMapping	supertab.txt	/*g:SuperTabCrMapping*
@@ -2070,6 +2077,8 @@ g:SuperTabMappingTabLiteral	supertab.txt	/*g:SuperTabMappingTabLiteral*
 g:SuperTabNoCompleteAfter	supertab.txt	/*g:SuperTabNoCompleteAfter*
 g:SuperTabNoCompleteBefore	supertab.txt	/*g:SuperTabNoCompleteBefore*
 g:SuperTabRetainCompletionDuration	supertab.txt	/*g:SuperTabRetainCompletionDuration*
+g:alignmaps_euronumber	Align.txt	/*g:alignmaps_euronumber*
+g:alignmaps_usanumber	Align.txt	/*g:alignmaps_usanumber*
 g:bufExplorerChgWin	bufexplorer.txt	/*g:bufExplorerChgWin*
 g:bufExplorerDefaultHelp	bufexplorer.txt	/*g:bufExplorerDefaultHelp*
 g:bufExplorerDetailedHelp	bufexplorer.txt	/*g:bufExplorerDetailedHelp*
