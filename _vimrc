@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-12-01 01:45:28
+" Last Modified: 2011-12-01 01:47:51
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1175,7 +1175,7 @@ endif
 for s:script in [
       \          'Ar30', 'ImageBrowser', 'JpPronunciation',
       \          'AutoCorrect', 'ropevim',
-      \          'dbext', 'FlyMake',
+      \          'FlyMake',
       \          'codeintel', 'vstplugin', 'Dict',
       \          'Project', 'imaps', 'SourceNavigator',
       \          'KillRing', 'Stickies'
@@ -1918,13 +1918,6 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " file named by the variable 'g:proj_filename' in the current directory if it
   " exists, otherwise $HOME/.vimprojects is used.
   let g:proj_filename = '.vimproject'
-  "}}}2
-  "----------------------------------------------------------{{{2
-  " dbext.vim
-  " <http://www.vim.org/scripts/script.php?script_id=356>
-  "--------------------------------------------------------------
-  let g:dbext_sql_history = $HOME.'/dbext_sql_history.txt'
-  let g:dbext_default_menu_mode = 3
   "}}}2
   "----------------------------------------------------------{{{2
   " xmledit
