@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-12-01 01:36:11
+" Last Modified: 2011-12-01 01:45:28
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1174,7 +1174,7 @@ endif
 " Tools {{{
 for s:script in [
       \          'Ar30', 'ImageBrowser', 'JpPronunciation',
-      \          'AutoCorrect', 'eclim', 'ropevim',
+      \          'AutoCorrect', 'ropevim',
       \          'dbext', 'FlyMake',
       \          'codeintel', 'vstplugin', 'Dict',
       \          'Project', 'imaps', 'SourceNavigator',
