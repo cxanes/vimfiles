@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-10-03 10:19:19
+" Last Modified: 2011-12-01 01:36:11
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -2178,41 +2178,6 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
     endif
   endfunction
   let g:calendar_action = "CalendarInsertDate"
-  "}}}2
-  "----------------------------------------------------------{{{2
-  " eclim.vim
-  " <http://eclim.sourceforge.net/>
-  "--------------------------------------------------------------
-  " Currently Eclipse is intalled only on MSWIN
-  if !s:MSWIN
-    let g:EclimDisabled = 1
-  endif
-
-  let g:EclimBaseDir = escape(substitute(s:RUNTIME_DIR, '\\', '/', 'g'), ' ')
-
-  let g:taglisttoo_disabled = 1
-  let g:EclimTemplatesDisabled = 1
-  let g:EclimBrowser = 'firefox'
-  let g:EclimShowQuickfixSigns = 0
-
-  let g:EclimShowCurrentError = 0
-  let g:EclimShowCurrentErrorBalloon = 0
-  let g:EclimMakeLCD = 0
-  let g:EclimMakeQfFilter = 0
-
-  let g:EclimAntValidate = 0
-  let g:EclimCssValidate = 0
-  let g:EclimDtdValidate = 0
-  let g:EclimHtmlValidate = 0
-  let g:EclimJavaSrcValidate = 0
-  let g:EclimJavascriptValidate = 0
-  let g:EclimLog4jValidate = 0
-  let g:EclimPhpValidate = 0
-  let g:EclimPythonValidate = 0
-  let g:EclimWebXmlValidate = 0
-  let g:EclimWsdlValidate = 0
-  let g:EclimXmlValidate = 0
-  let g:EclimXsdValidate = 0
   "}}}2
 " }}}1
 "============================================================{{{1
