@@ -74,10 +74,10 @@ $cdir	pyclewn.txt	/*$cdir*
 :FufTag	fuf.txt	/*:FufTag*
 :FufTagWithCursorWord	fuf.txt	/*:FufTagWithCursorWord*
 :FufTaggedFile	fuf.txt	/*:FufTaggedFile*
+:HistID	histwin.txt	/*:HistID*
 :Histwin	histwin.txt	/*:Histwin*
 :I	visincr.txt	/*:I*
 :IA	visincr.txt	/*:IA*
-:ID	histwin.txt	/*:ID*
 :ID	visincr.txt	/*:ID*
 :II	visincr.txt	/*:II*
 :IIO	visincr.txt	/*:IIO*
