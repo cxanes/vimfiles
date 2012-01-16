@@ -31,25 +31,32 @@ syn region vimExecute	oneline excludenl matchgroup=vimCommand start="\<exe\%[cut
 " Embedded Syntax {{{1
 " ===============
 " The original vim syntax script has some problems for embedded script highlighting
-if !hlexists('vimPythonRegion')
-  let s:pythonpath= split(globpath(&rtp,"syntax/python.vim"), "\n")
-  if (g:vimsyn_embed =~ 'P' && has("python")) && !empty(s:pythonpath) && filereadable(s:pythonpath[0])
-    unlet! b:current_syntax
-    exe "syn include @vimPythonScript ".fnameescape(s:pythonpath[0])
-    let b:current_syntax = 'vim'
-    if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'P'
-      syn region vimPythonRegion fold matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*\z(.*\)$+ end=+^\z1$+	contains=@vimPythonScript
-      syn region vimPythonRegion fold matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*$+ end=+\.$+		contains=@vimPythonScript
+let s:pythonpath= fnameescape(expand("<sfile>:p:h")."/python.vim")
+if !filereadable(s:pythonpath)
+ let s:pythonpath= fnameescape(globpath(&rtp,"syntax/python.vim"))
+endif
+if g:vimsyn_embed =~ 'P' && has("python")
+  if !filereadable(s:pythonpath)
+    unlet s:pythonpath
+    let s:pythonpath= split(globpath(&rtp,"syntax/python.vim"), "\n")
+    if (g:vimsyn_embed =~ 'P' && has("python")) && !empty(s:pythonpath) && filereadable(s:pythonpath[0])
+      unlet! b:current_syntax
+      exe "syn include @vimPythonScript ".fnameescape(s:pythonpath[0])
+      let b:current_syntax = 'vim'
+      if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'P'
+        syn region vimPythonRegion fold matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*\z(.*\)$+ end=+^\z1$+	contains=@vimPythonScript
+        syn region vimPythonRegion fold matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*$+ end=+\.$+		contains=@vimPythonScript
+      else
+        syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*\z(.*\)$+ end=+^\z1$+		contains=@vimPythonScript
+        syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*$+ end=+\.$+		contains=@vimPythonScript
+      endif
+      syn cluster vimFuncBodyList	add=vimPythonRegion
     else
-      syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*\z(.*\)$+ end=+^\z1$+		contains=@vimPythonScript
-      syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]3\=\s*<<\s*$+ end=+\.$+		contains=@vimPythonScript
+      syn region vimEmbedError start=+py\%[thon]3\=\s*<<\s*\z(.*\)$+ end=+^\z1$+
+      syn region vimEmbedError start=+py\%[thon]3\=\s*<<\s*$+ end=+\.$+
     endif
-    syn cluster vimFuncBodyList	add=vimPythonRegion
-  else
-    syn region vimEmbedError start=+py\%[thon]3\=\s*<<\s*\z(.*\)$+ end=+^\z1$+
-    syn region vimEmbedError start=+py\%[thon]3\=\s*<<\s*$+ end=+\.$+
+    unlet s:pythonpath
   endif
-  unlet s:pythonpath
 endif
 
 if hlexists('vimPythonRegion')
