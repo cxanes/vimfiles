@@ -1289,6 +1289,87 @@ endfunction
 "}}}
 "}}}
 "==========================================================}}}1
+" {{{1 OpenMRUList()
+"--------------------------------------------------------------
+let s:bufexplorer_SID = -1
+function! s:OpenMRUList_OpenFile() "{{{
+  let idx = line('.')-1
+  if idx >= len(b:mru_list)
+    echom "buffer not found"
+    return
+  endif
+
+  let bufnr = b:mru_list[idx]
+
+  wincmd p
+  exec 'b' bufnr
+endfunction
+"}}}
+function! s:OpenMRUList_Init() "{{{
+  exec 'resize' max([&lines/4, 10])
+  setl cursorline nowrap wfh noma
+  nnoremap <buffer> <silent> <CR> :<C-U>call <SID>OpenMRUList_OpenFile()<CR>
+endfunction
+"}}}
+function! s:OpenMRUList_Update(mru_list) "{{{
+  setl ma
+  let b:mru_list = filter(copy(a:mru_list), '!empty(bufname(v:val)) && buflisted(v:val)')
+  call setline(1, map(copy(b:mru_list), 'bufname(v:val)'))
+  setl noma
+endfunction
+"}}}
+function! myutils#GetMRUList() "{{{
+  if s:bufexplorer_SID == -1
+    redir => l:scriptnames
+    silent scriptnames
+    redir END
+
+    for name in split(l:scriptnames, "\n")
+      let m = matchstr(name, '^\s*\zs\d\+\ze:.\{-}[\\/]bufexplorer\.vim')
+      if !empty(m)
+        let s:bufexplorer_SID = m
+        break
+      endif
+    endfor
+  endif
+
+  if s:bufexplorer_SID == -1
+    echom "plugin bufexplorer not found"
+    return []
+  endif
+
+  redir => l:mru_list
+  silent call call(printf("<SNR>%d_BEMRUListShow", s:bufexplorer_SID), [])
+  redir END
+
+  for item in split(l:mru_list, "\n")
+    let m = matchstr(item, '\[[^]]*\]')
+    if !empty(m)
+      unlet l:mru_list
+      let l:mru_list = eval(m)
+    endif
+  endfor
+
+  if type(l:mru_list) != type([])
+    echom "MRUList not found"
+    return []
+  endif
+
+  return l:mru_list
+endfunction
+"}}}
+function! myutils#OpenMRUList() "{{{
+  let mru_list = myutils#GetMRUList()
+  if empty(mru_list)
+    echom "MRUList not found"
+    return
+  endif
+  let winnum = CreateSharedTempBuffer('_MRU_Files_', '<SNR>'.s:SID().'_OpenMRUList_Init')
+  exe winnum . 'wincmd w'
+  call s:OpenMRUList_Update(mru_list)
+endfunction
+"}}}
+"==========================================================}}}1
 "==============================================================
 " Restore {{{
 let &cpo = s:save_cpo

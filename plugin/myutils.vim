@@ -234,6 +234,10 @@ vnoremap <silent> <Leader>ej :<C-U>call myutils#VEvalVim('j')<CR>
 vnoremap <silent> <Leader>er :<C-U>call myutils#VEvalVim('r')<CR>
 "}}}
 "==========================================================}}}1
+" {{{1 OpenMRUList(): Open a window to show the MRU list (use bufexplorer).
+"--------------------------------------------------------------
+command! OpenMRUList call myutils#OpenMRUList()
+"==========================================================}}}1
 "==============================================================
 " Restore {{{
 let &cpo = s:save_cpo
