@@ -24,16 +24,54 @@ endfunction
 
 " CCTree : C Call-Tree Explorer
 " http://www.vim.org/scripts/script.php?script_id=2368 {{{
+function! s:CCTreeAutoLoadDB() 
+  if filereadable('ccglue.out')
+    CCTreeLoadXRefDBFromDisk ccglue.out
+  elseif filereadable('cscope.out')
+    if executable('ccglue')
+      silent !ccglue
+      if filereadable('ccglue.out')
+        CCTreeLoadXRefDBFromDisk ccglue.out
+        return
+      endif
+    endif
+    CCTreeLoadDB cscope.out
+  else
+    echohl WarningMsg
+    echom 'cscope.out not found'
+    echohl None
+  endif
+endfunction
+
+if globpath(&rtp, 'plugin/cctree.vim') != ''
+  command! CCTreeAutoLoadDB  call s:CCTreeAutoLoadDB()
+endif
+
 if !exists('loaded_cctree') && globpath(&rtp, 'autoload/cctree.vim') != ''
   function! s:CCTreeLoadAndRun(cmd, args)
-    delcommand CCTreeLoadDB
+    exec 'delcommand' a:cmd
     ru autoload/cctree.vim
     exec a:cmd s:FnameEscape(a:args)
+  endfunction
+
+  function! s:CCTreeLoadAndRun(cmd, args)
+    exec 'delcommand' a:cmd
+    ru autoload/cctree.vim
+    exec a:cmd s:FnameEscape(a:args)
+  endfunction
+
+  function! s:CCTreeLoadAndAutoLoadDB()
+    delcommand CCTreeAutoLoadDB
+    ru autoload/cctree.vim
+    command! CCTreeAutoLoadDB  call s:CCTreeAutoLoadDB()
+    CCTreeAutoLoadDB
   endfunction
 
   command! -nargs=? -complete=file CCTreeLoadDB  call s:CCTreeLoadAndRun('CCTreeLoadDB', <q-args>)
   command! -nargs=? -complete=file CCTreeLoadXRefDB  call s:CCTreeLoadAndRun('CCTreeLoadXRefDB', <q-args>)
   command! -nargs=? -complete=file CCTreeLoadXRefDBFromDisk  call s:CCTreeLoadAndRun('CCTreeLoadXRefDBFromDisk', <q-args>)
+
+  command! CCTreeAutoLoadDB  call s:CCTreeLoadAndAutoLoadDB()
 
   function! s:CCTreeLoadOnce() 
     ru autoload/cctree.vim
