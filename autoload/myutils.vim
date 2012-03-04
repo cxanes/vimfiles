@@ -938,7 +938,7 @@ endfunction
 " }}}
 " {{{1 Build Tags
 "--------------------------------------------------------------
-function! myutils#Cscope(args, default) "{{{
+function! myutils#Cscope(args, default, try_flist_name) "{{{
   if !executable('cscope')
     call mylib#ShowMesg('ErrorMsg', 'cscope: command not find', 1)
     return
@@ -950,11 +950,15 @@ function! myutils#Cscope(args, default) "{{{
     let cmd .= '-Rq '
   endif
 
+  if a:try_flist_name && exists('g:flist_name') && filereadable(g:flist_name)
+    let cmd .= '-i ' . mylib#Shellescape(g:flist_name) . ' '
+  endif
+
   exe cmd . a:args
   redraw!
 endfunction
 "}}}
-function! myutils#Ctags(args, default) "{{{
+function! myutils#Ctags(args, default, try_flist_name) "{{{
   if !executable('ctags')
     call mylib#ShowMesg('ErrorMsg', 'ctags: command not find', 1)
     return
@@ -966,11 +970,16 @@ function! myutils#Ctags(args, default) "{{{
     let cmd .= '-R '
   endif
 
+  if a:try_flist_name && exists('g:flist_name') && filereadable(g:flist_name)
+    let cmd .= '-L ' . mylib#Shellescape(g:flist_name) . ' '
+  endif
+
   exe cmd . a:args
   redraw!
 endfunction
 "}}}
-function! myutils#SimpleRetag(dir) "{{{
+function! myutils#SimpleRetag(...) "{{{
+  let try_flist_name = a:0 ? a:1 : 0
   try
     cs kill 0
   catch /^Vim\%((\a\+)\)\=:E261/
@@ -979,12 +988,12 @@ function! myutils#SimpleRetag(dir) "{{{
   echohl MoreMsg
   echo "Rebuild cscope database..."
   echohl None
-  call myutils#Cscope(a:dir, 1)
+  call myutils#Cscope('', 1, try_flist_name)
 
   echohl MoreMsg
   echo "Rebuild ctags..."
   echohl None
-  call myutils#Ctags(a:dir, 1)
+  call myutils#Ctags('', 1, try_flist_name)
 
   if filereadable('cscope.out')
     cs add cscope.out

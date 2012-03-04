@@ -155,9 +155,9 @@ nnoremap <silent> <C-W>o :<C-U>call myutils#CloseAllOtherWindows()<CR>
 "==========================================================}}}1
 " {{{1 Build Tags
 "--------------------------------------------------------------
-command! -nargs=* -bang         Cscope       call myutils#Cscope(<q-args>, expand('<bang>') == '!')
-command! -nargs=* -bang         Ctags        call myutils#Ctags(<q-args>, expand('<bang>') == '!')
-command! -nargs=? -complete=dir SimpleRetag  call myutils#SimpleRetag(<q-args>)
+command! -nargs=* -bang Cscope      call myutils#Cscope(<q-args>, expand('<bang>') == '!')
+command! -nargs=* -bang Ctags       call myutils#Ctags(<q-args>, expand('<bang>') == '!')
+command! -nargs=0 -bang SimpleRetag call myutils#SimpleRetag(expand('<bang>') != '!')
 "==========================================================}}}1
 " {{{1 Text objects selection
 "--------------------------------------------------------------
