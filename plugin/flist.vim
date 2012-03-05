@@ -16,6 +16,10 @@ if !exists('g:flist_name')
   let g:flist_name = 'filelist.out'
 endif
 
+if !exists('g:flist_option')
+  let g:flist_option = { 'default_pattern': '!cscope.*:!tags' }
+endif
+
 command! -narg=1 -complete=custom,flist#ListType FlistOpen call flist#Open(<q-args>)
 command! FlistUpdate call flist#Update()
 

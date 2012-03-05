@@ -63,7 +63,7 @@ function! s:GetConfig(...)
       let pattern = a:2
     endif
   elseif exists('g:flist_pattern')
-    if type([]) != type('g:flist_pattern')
+    if type([]) != type(g:flist_pattern)
       call s:ShowMesg('g:flist_pattern must be list')
     else
       let pattern = g:flist_pattern
@@ -72,13 +72,13 @@ function! s:GetConfig(...)
 
   let option = {}
   if a:0 > 2
-    if type([]) != type(a:3)
+    if type({}) != type(a:3)
       call s:ShowMesg('option must be dict')
     else
       let option = a:3
     endif
-  elseif exists('g:flist_pattern')
-    if type([]) != type('g:flist_option')
+  elseif exists('g:flist_option')
+    if type({}) != type(g:flist_option)
       call s:ShowMesg('g:flist_option must be dict')
     else
       let option = g:flist_option

@@ -336,8 +336,15 @@ def _create_pattern():
 _default_option = {
     'max_depth':        '-1',
     'manual_update':     '0',
-    'search_dot_files': ' 0',
+    'search_dot_files':  '0',
+    'default_pattern':   '',
 }
+
+def _parse_default_pattern(pattern):
+    pattern = _strip(pattern)
+    if len(pattern) == 0:
+        return []
+    return [ re.sub('^\s+|\s+$', '', pat) for pat in pattern.split(':') ]
 
 def get_fname(name, fname_type):
     suffix = { 'option': '.ini', 'pattern' : '.pat' }
@@ -366,6 +373,7 @@ class Flist:
         self._default_option = _default_option.copy()
         if option:
             self._default_option.update(option)
+        print(str(self._default_option))
         self._root = os.getcwd()
         self._dirty = 0
         self.load()
@@ -455,8 +463,12 @@ class Flist:
             self._dirty = self._dirty | _dirty_flag['pattern'] | _dirty_flag['update'] | _dirty_flag['filelist']
             self._raw_pattern = []
             self._pattern = { 'include': _create_pattern(), 'exclude': _create_pattern() }
+
             if not self._option.getint('DEFAULT', 'search_dot_files'):
                 _add_pattern(self._pattern, '!.*')
+
+            for pat in _parse_default_pattern(self._option.get('DEFAULT', 'default_pattern')):
+                _add_pattern(self._pattern, pat)
 
         if pattern is None:
             self._dirty = self._dirty | _dirty_flag['pattern'] | _dirty_flag['update'] | _dirty_flag['filelist']
