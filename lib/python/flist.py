@@ -373,7 +373,6 @@ class Flist:
         self._default_option = _default_option.copy()
         if option:
             self._default_option.update(option)
-        print(str(self._default_option))
         self._root = os.getcwd()
         self._dirty = 0
         self.load()
