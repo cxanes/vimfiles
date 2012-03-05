@@ -8,9 +8,10 @@ import platform
 
 import finder
 
+libfzmatch_default = 'libfzmatch64.so' if platform.architecture()[0] == '64bit' else 'libfzmatch.so'
 fzmatch_path = { 'Windows': 'fzmatch.dll' }
 fzmatch = ctypes.CDLL(os.path.join(os.path.dirname(os.path.realpath( __file__ )),
-                         fzmatch_path.get(platform.system(), 'libfzmatch.so')))
+                         fzmatch_path.get(platform.system(), libfzmatch_default)))
 fzmatch.get_score.restype = ctypes.c_double
 
 class _Option(ctypes.Structure):
