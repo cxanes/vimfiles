@@ -115,7 +115,7 @@ function! s:Open(type, retry, ...)
     return
   endif
 
-  if a:retry >= 10
+  if a:retry >= s:max_retry
     call s:ShowMesg('cannot open ' + fname)
     return
   endif

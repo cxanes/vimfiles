@@ -410,8 +410,10 @@ class Flist:
         except IOError:
             self._dirty = self._dirty | _dirty_flag['option']
         else:
-            self._option.read(f)
+            self._option.readfp(f)
             f.close()
+
+        print(self._option.getint('DEFAULT', 'manual_update'))
 
         if os.path.exists(self.get_fname('filelist')):
             mtime = os.path.getmtime(self.get_fname('filelist'))
@@ -439,8 +441,9 @@ class Flist:
         if 'filelist' in dump_types:
             self.update()
             if self._dirty & _dirty_flag['filelist']:
-                with open(self.get_fname('filelist'), "wb") as f:
-                    f.writelines([line + '\n' for line in self._file_list])
+                if not self._option.getint('DEFAULT', 'manual_update'):
+                    with open(self.get_fname('filelist'), "wb") as f:
+                        f.writelines([line + '\n' for line in self._file_list])
                 self._dirty = self._dirty & ~_dirty_flag['filelist']
 
         if 'pattern' in dump_types and self._dirty & _dirty_flag['pattern']:
