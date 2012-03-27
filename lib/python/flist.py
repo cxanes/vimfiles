@@ -413,8 +413,6 @@ class Flist:
             self._option.readfp(f)
             f.close()
 
-        print(self._option.getint('DEFAULT', 'manual_update'))
-
         if os.path.exists(self.get_fname('filelist')):
             mtime = os.path.getmtime(self.get_fname('filelist'))
             try:
