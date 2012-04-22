@@ -20,7 +20,6 @@ import flist
 
 def FlistUpdate(config, name_type = None):
   f = flist.Flist(config['name'], config['option'])
-  f.add_pattern(config['pattern'])
   f.dump(name_type)
 
 EOF
@@ -55,27 +54,12 @@ function! s:GetConfig(...)
     endif
   endif
 
-  let pattern = []
-  if a:0 > 1
-    if type([]) != type(a:2)
-      call s:ShowMesg('pattern must be list')
-    else
-      let pattern = a:2
-    endif
-  elseif exists('g:flist_pattern')
-    if type([]) != type(g:flist_pattern)
-      call s:ShowMesg('g:flist_pattern must be list')
-    else
-      let pattern = g:flist_pattern
-    endif
-  endif
-
   let option = {}
-  if a:0 > 2
-    if type({}) != type(a:3)
+  if a:0 > 1
+    if type({}) != type(a:2)
       call s:ShowMesg('option must be dict')
     else
-      let option = a:3
+      let option = a:2
     endif
   elseif exists('g:flist_option')
     if type({}) != type(g:flist_option)
@@ -85,7 +69,7 @@ function! s:GetConfig(...)
     endif
   endif
 
-  return { 'name': name, 'pattern': pattern, 'option': option }
+  return { 'name': name, 'option': option }
 endfunction
 
 function! flist#Update(...)

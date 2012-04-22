@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-from __future__ import print_function
-
 import re
 import os
 import os.path
@@ -15,300 +13,350 @@ import ConfigParser
 import fnmatch2
 # import fnmatch as fnmatch2
 
-_MUST_BE_DIR = {}
+def print_func(s):
+    print s
 
+class Node(object):
+    __slots__ = [ 'exact', 'wildcard', 'recursive', 'terminal' ]
 
-def _strip(line):
-    return re.sub(r'^\s+|\s*\r?\n', '', line)
+    _MUST_BE_DIR = {}
 
-def _get_escaped_str(string):
-    return re.sub(r'\\(.)', r'\1', string)
+    def __init__(self, terminal = None):
+        self.exact     = None
+        self.wildcard  = None
+        self.recursive = None
+        self.terminal  = terminal
 
-def _has_wildcard(string):
-    return re.search(r'\A(?:\\.|[^\\*[?])*\Z', string) == None
+    def __setitem__(self, key, value):
+        self.__setattr__(key, value)
 
-def _create_dir_node():
-    return { 'exact': {}, 'wildcard': {}, 'recursive': None }
+    def __getitem__(self, key):
+        return self.__getattribute__(key)
 
-def _get_name_type(name):
-    if name == '**'       : return 'recursive'
-    if _has_wildcard(name): return 'wildcard'
-    return 'exact'
+    def __repr__(self):
+        return "{'exact': %s, 'wildcard': %s, 'recursive': %s, 'terminal': %s}" % (
+                str(self.exact), str(self.wildcard), str(self.recursive),
+                ('MUST_BE_DIR' if self.must_be_dir() else str(self.terminal)))
 
-def _add_recursive_dir_node(root, parts, must_be_dir, callback):
-    if not parts:
-        return
+    def must_be_dir(self):
+        return self.terminal is Node._MUST_BE_DIR
 
-    parts.pop(0)
+    def is_terminal(self):
+        return self.terminal is not None
 
-    if root['recursive'] is None:
-        new_node = _create_dir_node()
-        root['recursive'] = new_node
+    def has_child(self):
+        return self.exact     is not None \
+            or self.wildcard  is not None \
+            or self.recursive is not None
 
-    callback(root['recursive'], parts, must_be_dir)
+    def copy(self):
+        return Node().update(self)
 
-def _add_dir_node_directly(root, parts, must_be_dir):
-    if root is None or not parts:
-        return
+    def update(self, node):
+        if node is None:
+            return self
 
-    part = parts[0]
-    name_type = _get_name_type(part)
+        for t in ('wildcard', 'exact', 'recursive'):
+            if node[t] is None:
+                continue
 
-    if name_type == 'recursive':
-        _add_recursive_dir_node(root, parts, must_be_dir, _add_dir_node_directly)
-        return
+            if self[t] is None:
+                self[t] = Node() if t == 'recursive' else {}
 
-    part = parts.pop(0)
+            self[t].update(node[t])
 
-    if parts:
-        new_node = _create_dir_node()
-        root[name_type][_get_escaped_str(part)] = new_node
-        _add_dir_node_directly(new_node, parts, must_be_dir)
-    else:
-        root[name_type][_get_escaped_str(part)] = _MUST_BE_DIR if must_be_dir else None
+        if node.is_terminal():
+            if not self.is_terminal() or (node.must_be_dir() and not self.must_be_dir()):
+                self.terminal = node.terminal
 
-def _add_dir_node_internal(root, parts, must_be_dir):
-    if root is None or not parts:
-        return
+        return self
 
-    part = parts[0]
-    name_type = _get_name_type(part)
+    @staticmethod
+    def get_escaped_str(string):
+        return re.sub(r'\\(.)', r'\1', string)
 
-    if name_type == 'recursive':
-        _add_recursive_dir_node(root, parts, must_be_dir, _add_dir_node_internal)
-        return
+    @staticmethod
+    def has_wildcard(string):
+        return re.search(r'\A(?:\\.|[^\\*[?])*\Z', string) == None
 
-    part = _get_escaped_str(part)
+    @staticmethod
+    def get_name_type(name):
+        if name == '**'           : return 'recursive'
+        if Node.has_wildcard(name): return 'wildcard'
+        return 'exact'
 
-    if part not in root[name_type]:
-        _add_dir_node_directly(root, parts, must_be_dir)
-        return
+    @staticmethod
+    def add(root, parts, must_be_dir):
+        while parts:
+            name_type = Node.get_name_type(parts[0])
 
-    root = root[name_type]
+            if name_type == 'recursive':
+                return Node._add_recursive(root, parts, must_be_dir)
 
-    if not parts:
-        root[part] = _MUST_BE_DIR if must_be_dir else None
-    else:
+            part = Node.get_escaped_str(parts.pop(0))
+
+            if root[name_type] is None:
+                root[name_type] = { part: Node() }
+            elif part not in root[name_type]:
+                root[name_type][part] = Node()
+
+            root = root[name_type][part]
+
+        root.terminal = Node._MUST_BE_DIR if must_be_dir else True
+
+    @staticmethod
+    def _add_recursive(root, parts, must_be_dir):
+        if len(parts) < 2:
+            return
+
         parts.pop(0)
-        _add_dir_node_internal(root[part], parts, must_be_dir)
 
-def _add_dir_node(root, parts, must_be_dir):
-    if not parts:
-        return
+        if root['recursive'] is None:
+            root['recursive'] = Node()
 
-    part = parts[0]
-    name_type = _get_name_type(part)
+        return Node.add(root['recursive'], parts, must_be_dir)
 
-    if name_type == 'recursive':
-        _add_recursive_dir_node(root, parts, must_be_dir, _add_dir_node)
-        return
+class Pattern(object):
+    @staticmethod
+    def _create():
+        return { 'dir': None, 'wildcard' : set(), 'exact' : set() }
 
-    if _get_escaped_str(part) not in root[name_type]:
-        _add_dir_node_directly(root, parts, must_be_dir)
-    else:
-        _add_dir_node_internal(root, parts, must_be_dir)
+    def __init__(self):
+        self.include = Pattern._create()
+        self.exclude = Pattern._create()
 
-def _add_pattern(_pattern, pattern):
-    pat = _pattern['include']
+    def __repr__(self):
+        return "{'include': %s, 'exclude': %s}" % (
+                str(self.include), str(self.exclude))
 
-    if pattern.startswith('!'):
-        pat = _pattern['exclude']
-        pattern = re.sub(r'\A!\s*', '', pattern)
-
-    if '/' in pattern:
-        must_be_dir = pattern.endswith('/') 
-        pattern = posixpath.normpath(pattern)
+    def add(self, pattern):
+        select = self.include
 
         if pattern == '.' or pattern == '/':
             return
         elif pattern == '..' or pattern.startswith('../'):
-            print("warning: spec is outside of root dir, ignore", file = sys.stderr)
+            print >> sys.stderr, "warning: spec is outside of root dir, ignore"
             return
 
-        if pattern.startswith('/'):
-            pattern = pattern[1:]
+        if pattern.startswith('!'):
+            select = self.exclude
+            pattern = re.sub(r'\A!\s*', '', pattern)
 
-        parts = pattern.split('/')
+        if '/' in pattern:
+            must_be_dir = pattern.endswith('/') 
+            pattern = posixpath.normpath(pattern)
 
-        if pat['dir'] is None:
-            pat['dir'] = _create_dir_node()
+            if pattern.startswith('/'):
+                pattern = pattern[1:]
 
-        _add_dir_node(pat['dir'], parts, must_be_dir)
-    else:
-        if pattern == '**':
-            return
+            parts = pattern.split('/')
 
-        pat[_get_name_type(pattern)].add(_get_escaped_str(pattern))
+            if select['dir'] is None:
+                select['dir'] = Node()
 
-def _file_match(pattern, name, pattern_type):
-    if not pattern[pattern_type]['exact'] and not pattern[pattern_type]['wildcard']:
-        return pattern_type == 'include'
+            Node.add(select['dir'], parts, must_be_dir)
+        else:
+            name_type = Node.get_name_type(pattern)
 
-    if name in pattern[pattern_type]['exact']:
-        return True
+            if name_type == 'recursive':
+                return
 
-    for p in pattern[pattern_type]['wildcard']:
-        if fnmatch2.fnmatch(name, p):
+            select[name_type].add(Node.get_escaped_str(pattern))
+
+    def _match_name(self, name, include):
+        select = self.include if include else self.exclude
+
+        if not select['exact'] and not select['wildcard']:
+            return bool(include)
+
+        if name in select['exact']:
             return True
 
-    return False
+        for pat in select['wildcard']:
+            if fnmatch2.fnmatch(name, pat):
+                return True
 
-def _match(name, pattern, is_dir):
-    new_pattern = None
-    should_copy = True
-    matched = False
+        return False
 
-    if pattern['recursive'] is not None:
-        new_pattern = _create_dir_node()
-        should_copy = False
+    def walk(self, root, callback = print_func, onerror = None, level = -1):
+        matched = self.include['dir'] is None
+        self._walk(root, self.include['dir'], self.exclude['dir'], matched, callback, onerror, level)
 
-        new_pattern['recursive'] = pattern['recursive'].copy()
-        matched, next_pattern = _match(name, new_pattern['recursive'], is_dir)
-        if matched and next_pattern:
-            new_pattern['wildcard'].update(next_pattern['wildcard'])
-            new_pattern['exact'].update(next_pattern['exact'])
-            if next_pattern['recursive'] is not None:
-                new_pattern['recursive'].update(next_pattern['recursive'])
+    @staticmethod
+    def _match(name, pattern, is_dir):
+        if pattern is None:
+            return None
 
-        matched = True
+        new_pattern = None
 
-    for p in pattern['wildcard']:
-        if not fnmatch2.fnmatch(name, p):
-            continue
+        if pattern['recursive'] is not None:
+            new_pattern = Node()
+            new_pattern['recursive'] = pattern['recursive'].copy()
+            new_pattern.update(Pattern._match(name, new_pattern['recursive'], is_dir))
 
-        matched = True
+        if pattern['wildcard'] is not None:
+            for pat in pattern['wildcard']:
+                if not fnmatch2.fnmatch(name, pat):
+                    continue
 
-        next_pattern = pattern['wildcard'][p]
+                next_pattern = pattern['wildcard'][pat]
 
-        if not next_pattern:
-            if is_dir or next_pattern is not _MUST_BE_DIR:
-                return matched, new_pattern
-            else:
+                if next_pattern.is_terminal():
+                    if not is_dir and next_pattern.must_be_dir():
+                        continue
+
+                if new_pattern is None:
+                    new_pattern = next_pattern.copy()
+                else:
+                    new_pattern.update(next_pattern)
+
+        if pattern['exact'] is not None:
+            if name in pattern['exact']:
+                next_pattern = pattern['exact'][name]
+
+                if next_pattern.is_terminal():
+                    if not is_dir and next_pattern.must_be_dir():
+                        return new_pattern
+
+                if new_pattern is None:
+                    new_pattern = next_pattern.copy()
+                else:
+                    new_pattern.update(next_pattern)
+
+        return new_pattern
+
+    def _walk(self, root, include, exclude, matched, callback, onerror, level):
+        if level == 0:
+            return
+        if level > 0:
+            level = level - 1
+
+        if root == "":
+            root = '.'
+
+        try:
+            names = os.listdir(root)
+        except os.error as err:
+            if onerror is not None:
+                onerror(err)
+            return
+
+        for name in names:
+            path = name if root == '.' else posixpath.join(root, name)
+
+            is_file, is_dir = posixpath.isfile(path), posixpath.isdir(path)
+
+            if not (is_file or is_dir):
                 continue
 
-        if new_pattern is None:
-            new_pattern = next_pattern
-        elif should_copy == True:
-            new_pattern2 = _create_dir_node()
-            new_pattern2['wildcard'].update(next_pattern['wildcard'])
-            new_pattern2['exact'].update(next_pattern['exact'])
-            if next_pattern['recursive'] is not None:
-                if new_pattern2['recursive'] is None:
-                    new_pattern2['recursive'] = _create_dir_node()
-                new_pattern2['recursive'].update(next_pattern['recursive'])
-            new_pattern = new_pattern2
-            should_copy = False
-        else:
-            new_pattern['wildcard'].update(next_pattern['wildcard'])
-            new_pattern['exact'].update(next_pattern['exact'])
-            if next_pattern['recursive'] is not None:
-                if new_pattern['recursive'] is None:
-                    new_pattern['recursive'] = _create_dir_node()
-                new_pattern['recursive'].update(next_pattern['recursive'])
-
-    if name in pattern['exact']:
-        matched = True
-
-        next_pattern = pattern['exact'][name]
-
-        if not next_pattern:
-            if is_dir or next_pattern is not _MUST_BE_DIR:
-                return matched, new_pattern
-        else:
-            if new_pattern is None:
-                new_pattern = next_pattern
-            elif should_copy == True:
-                new_pattern2 = _create_dir_node()
-                new_pattern2['wildcard'].update(next_pattern['wildcard'])
-                new_pattern2['exact'].update(next_pattern['exact'])
-                if next_pattern['recursive'] is not None:
-                    new_pattern2['recursive'].update(next_pattern['recursive'])
-                new_pattern = new_pattern2
-                should_copy = False
-            else:
-                new_pattern['wildcard'].update(next_pattern['wildcard'])
-                new_pattern['exact'].update(next_pattern['exact'])
-                if next_pattern['recursive'] is not None:
-                    if new_pattern['recursive'] is None:
-                        new_pattern['recursive'] = _create_dir_node()
-                    new_pattern['recursive'].update(next_pattern['recursive'])
-
-    return matched, new_pattern
-
-def _walk(root, include, exclude, pattern, callback = print, onerror = None, level = -1):
-    if root == "":
-        root = '.'
-
-    try:
-        names = os.listdir(root)
-    except os.error, err:
-        if onerror is not None:
-            onerror(err)
-        return
-
-    if level > 0:
-        level = level - 1
-
-    for name in names:
-        path = name if root == '.' else posixpath.join(root, name)
-
-        is_file, is_dir = posixpath.isfile(path), posixpath.isdir(path)
-
-        if not is_file and not is_dir:
-            continue
-
-        if _file_match(pattern, name, 'exclude') \
-                or (is_file and not _file_match(pattern, name, 'include')):
-            continue
-
-        new_exclude, new_include = None, None
-
-        if exclude is not None:
-            should_exclude, new_exclude = _match(name, exclude, is_dir)
-            if should_exclude:
+            if self._match_name(name, include = False):
                 continue
 
-        if include is not None:
-            should_include, new_include = _match(name, include, is_dir)
-            if not should_include:
+            if is_file:
+                if not self._match_name(name, include = True):
+                    continue
+
+                if not matched or posixpath.islink(path):
+                    if include is None:
+                        continue
+                    new_include = Pattern._match(name, include, is_dir)
+                    if new_include is None or (not new_include.is_terminal() or new_include.must_be_dir()):
+                        continue
+                elif matched and exclude is not None:
+                    new_exclude = Pattern._match(name, exclude, is_dir)
+                    if new_exclude is not None and (new_exclude.is_terminal() and not new_exclude.must_be_dir()):
+                        continue
+
+                callback(path)
                 continue
-        elif posixpath.islink(path):
-            continue
 
-        if is_dir:
-            if level != 0:
-                _walk(path, new_include, new_exclude, pattern, callback, onerror, level)
-        else:
-            callback(path)
+            new_exclude, new_include, new_matched = None, None, matched
 
+            if include is not None:
+                if include.has_child():
+                    new_include = Pattern._match(name, include, is_dir)
+                    if new_include is None:
+                        continue
+            elif posixpath.islink(path):
+                continue
 
-def _path_match(path, include, exclude, pattern):
-    if path.startswith('/'):
-        path = path[1:]
-    elif path.startswith('./'):
-        path = path[2:]
+            if exclude is not None and exclude.has_child():
+                new_exclude = Pattern._match(name, exclude, is_dir)
 
-    parts = path.split('/')
+            if new_include is not None and new_include.is_terminal():
+                new_matched = True
 
-    while parts:
-        name = parts.pop(0)
+            if new_exclude is not None and new_exclude.is_terminal():
+                if new_include is not None and new_include.has_child():
+                    new_matched = False
+                else:
+                    continue
 
-        is_dir = len(parts) != 0
+            if not new_matched and (new_include is None or not new_include.has_child()):
+                continue
 
-        if len(parts) == 0 and (_file_match(pattern, name, 'exclude') or not _file_match(pattern, name, 'include')):
-            return False
+            self._walk(path, new_include, new_exclude, new_matched, callback, onerror, level)
 
-        if exclude is not None:
-            should_exclude, exclude = _match(name, exclude, is_dir)
-            if should_exclude:
+    def match_path(self, path):
+        include = self.include['dir']
+        exclude = self.exclude['dir']
+        matched = include is None
+
+        if path.startswith('/'):
+            path = path[1:]
+        elif path.startswith('./'):
+            path = path[2:]
+
+        parts = path.split('/')
+
+        while parts:
+            name = parts.pop(0)
+
+            if self._match_name(name, include = False):
                 return False
 
-        if include is not None:
-            should_include, include = _match(name, include, is_dir)
-            if not should_include:
+            if len(parts) == 0:
+                if not self._match_name(name, include = True):
+                    return False
+
+                if not matched:
+                    if include is None:
+                        return False
+                    include = Pattern._match(name, include, False)
+                    if include is None or (not include.is_terminal() or include.must_be_dir()):
+                        return False
+                elif matched and exclude is not None:
+                    exclude = Pattern._match(name, exclude, False)
+                    if exclude is not None and (exclude.is_terminal() and not exclude.must_be_dir()):
+                        return False
+
+                return True
+
+            if include is not None:
+                if include.has_child():
+                    include = Pattern._match(name, include, True)
+                    if include is None:
+                        return False
+
+            if exclude is not None and exclude.has_child():
+                exclude = Pattern._match(name, exclude, True)
+
+            if include is not None and include.is_terminal():
+                matched = True
+
+            if exclude is not None and exclude.is_terminal():
+                if include is not None and include.has_child():
+                    matched = False
+                else:
+                    return False
+
+            if not matched and (include is None or not include.has_child()):
                 return False
 
-    return True
+        return True
+
+def _strip(line):
+    return re.sub(r'^\s+|\s*\r?\n', '', line)
 
 def _get_pattern(pattern_fname):
     if not pattern_fname:
@@ -329,9 +377,6 @@ def _get_pattern(pattern_fname):
 
     pattern.sort()
     return pattern
-
-def _create_pattern():
-    return { 'dir': None, 'wildcard' : set(), 'exact' : set() }
 
 _default_option = {
     'max_depth':        '-1',
@@ -456,19 +501,21 @@ class Flist:
 
     def import_pattern(self, pattern_fname = None, preserve = False):
         self.add_pattern(_get_pattern(pattern_fname), preserve)
+        if not preserve:
+            self._dirty = self._dirty & ~_dirty_flag['pattern']
         return self
 
     def add_pattern(self, pattern, preserve = True):
         if not preserve:
             self._dirty = self._dirty | _dirty_flag['pattern'] | _dirty_flag['update'] | _dirty_flag['filelist']
             self._raw_pattern = []
-            self._pattern = { 'include': _create_pattern(), 'exclude': _create_pattern() }
+            self._pattern = Pattern()
 
             if not self._option.getint('DEFAULT', 'search_dot_files'):
-                _add_pattern(self._pattern, '!.*')
+                self._pattern.add('!.*')
 
             for pat in _parse_default_pattern(self._option.get('DEFAULT', 'default_pattern')):
-                _add_pattern(self._pattern, pat)
+                self._pattern.add(pat)
 
         if pattern is None:
             self._dirty = self._dirty | _dirty_flag['pattern'] | _dirty_flag['update'] | _dirty_flag['filelist']
@@ -479,11 +526,11 @@ class Flist:
 
         if isinstance(pattern, str):
             self._raw_pattern.append(pattern)
-            _add_pattern(self._pattern, pattern)
+            self._pattern.add(pattern)
         else:
             for item in pattern:
                 self._raw_pattern.append(item)
-                _add_pattern(self._pattern, item)
+                self._pattern.add(item)
 
         self._dirty = self._dirty | _dirty_flag['pattern'] | _dirty_flag['update'] | _dirty_flag['filelist']
         return self
@@ -499,15 +546,13 @@ class Flist:
         if path and platform.system() == 'Windows':
             path = re.sub(r'\\', '/', path)
 
-        return _path_match(path, self._pattern['include']['dir'], self._pattern['exclude']['dir'], self._pattern)
+        return self._pattern.match_path(path)
 
-    def walk(self, root, callback = print, onerror = None):
+    def walk(self, root, callback = print_func, onerror = None):
         if root and platform.system() == 'Windows':
             root = re.sub(r'\\', '/', root)
 
-        _walk(root, self._pattern['include']['dir'], self._pattern['exclude']['dir'],
-              self._pattern, callback, onerror,
-              self._option.getint('DEFAULT', 'max_depth'))
+        self._pattern.walk(root, callback, onerror, self._option.getint('DEFAULT', 'max_depth'))
 
     def get(self):
         self.update()
