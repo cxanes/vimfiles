@@ -436,7 +436,6 @@ class Flist:
     def load(self):
         self._init_config()
         self.import_pattern(self.get_fname('pattern'))
-        self._dirty = 0
 
         if not self._name:
             self._dirty = self._dirty | _dirty_flag['update']
@@ -500,8 +499,9 @@ class Flist:
             self._dirty = self._dirty & ~_dirty_flag['option']
 
     def import_pattern(self, pattern_fname = None, preserve = False):
-        self.add_pattern(_get_pattern(pattern_fname), preserve)
-        if not preserve:
+        pattern = _get_pattern(pattern_fname)
+        self.add_pattern(pattern, preserve)
+        if not preserve and pattern is not None:
             self._dirty = self._dirty & ~_dirty_flag['pattern']
         return self
 
