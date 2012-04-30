@@ -184,8 +184,14 @@ endfunction
 let s:_bufnr = { 'result': -1, 'query': -1 }
 
 function! s:CloseGoToFileWindow()
-  for bufnum in values(s:_bufnr)
+  for [type, bufnum] in items(s:_bufnr)
     if bufnum == -1
+      continue
+    endif
+
+    let s:_bufnr[type] = -1
+
+    if bufnr('%') == bufnum
       continue
     endif
 
