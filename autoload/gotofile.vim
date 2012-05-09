@@ -22,11 +22,11 @@ import finder
 import flist
 
 def gotofile_open_file(f, t):
-  if t == 1:
+  if t == 1 :
     edit = 'split'
   else:
     edit = 'drop' if vim.eval('has("gui")') == '1' else 'hide edit'
-    if t == 2: edit = 'tab ' + edit
+    if t == 2 : edit = 'tab ' + edit
 
   vim.command("exec '%s' fnameescape('%s')" % (edit, re.sub(r"'", r"''", f)))
 
@@ -35,7 +35,7 @@ def gotofile_set_items(win):
   if vim.eval("exists('g:flist_name') && filereadable(g:flist_name)") != '0':
     filelist = flist.Flist(vim.eval('g:flist_name'))
     win.set_items(filelist.get())
-    if vim.eval("exists('g:gotofile_flist_auto_dump') && g:gotofile_flist_auto_dump") != '0':
+    if vim.eval("exists('g:gotofile_flist_auto_update') && g:gotofile_flist_auto_update") != '0':
       filelist.dump('filelist')
     vim.command('let g:_goto_file_window_filelist_mtime = getftime(g:flist_name)')
   else:
@@ -141,20 +141,27 @@ _goto_file_window = GoToFileWindow()
 
 EOF
 
-if !exists('g:gotofile_flist_auto_dump')
-  let g:gotofile_flist_auto_dump = 1
+if !exists('g:gotofile_flist_auto_update')
+  let g:gotofile_flist_auto_update = 1
 endif
+
+if !exists('g:gotofile_preserve_abbrev')
+  let g:gotofile_preserve_abbrev = 1
+endif
+
+let s:gotofile_abbrev = ""
 
 function! s:SID()
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
 
 function s:ResultWindowUpdate(force)
-  py if _goto_file_window: _goto_file_window.search(vim.eval("getline('.')"), int(vim.eval('a:force')))
+  let s:gotofile_abbrev = getline('.')
+  py if _goto_file_window: _goto_file_window.search(vim.eval("s:gotofile_abbrev"), int(vim.eval('a:force')))
 endfunction
 
 function! s:EnterQueryWindow(motion, append)
-  let bufnum = s:_bufnr['query']
+  let bufnum = s:gotofile_bufnr['query']
   if bufnum == -1 | return | endif
 
   let winnum = bufwinnr(bufnum)
@@ -172,7 +179,7 @@ function! s:EnterQueryWindow(motion, append)
 endfunction
 
 function! s:EnterResultWindow()
-  let bufnum = s:_bufnr['result']
+  let bufnum = s:gotofile_bufnr['result']
   if bufnum == -1 | return | endif
 
   let winnum = bufwinnr(bufnum)
@@ -181,15 +188,15 @@ function! s:EnterResultWindow()
   exec winnum . "wincmd w"
 endfunction
 
-let s:_bufnr = { 'result': -1, 'query': -1 }
+let s:gotofile_bufnr = { 'result': -1, 'query': -1 }
 
 function! s:CloseGoToFileWindow()
-  for [type, bufnum] in items(s:_bufnr)
+  for [type, bufnum] in items(s:gotofile_bufnr)
     if bufnum == -1
       continue
     endif
 
-    let s:_bufnr[type] = -1
+    let s:gotofile_bufnr[type] = -1
 
     if bufnr('%') == bufnum
       continue
@@ -326,7 +333,7 @@ endfunction
 
 function! gotofile#CreateGoToFileWindow() 
   let curbuf = bufnr('%')
-  if curbuf != s:_bufnr['result'] && curbuf != s:_bufnr['query']
+  if curbuf != s:gotofile_bufnr['result'] && curbuf != s:gotofile_bufnr['query']
     let g:_goto_file_window_prev_buf = curbuf
   endif
 
@@ -342,14 +349,19 @@ function! gotofile#CreateGoToFileWindow()
     py gotofile_set_items(_goto_file_window)
   endif
 
-  let s:_bufnr['result'] = winbufnr(winnum)
+  let s:gotofile_bufnr['result'] = winbufnr(winnum)
 
   let curwinnum = winnr()
   let winnum = CreateSharedTempBuffer('_GoToFile_', '<SNR>'.s:SID().'_QueryWindowInit')
   exe winnum . 'wincmd w'
 
-  let s:_bufnr['query'] = winbufnr(winnum)
+  let s:gotofile_bufnr['query'] = winbufnr(winnum)
 
+  if g:gotofile_preserve_abbrev
+    call setline(1, s:gotofile_abbrev)
+  else
+    call setline(1, '')
+  endif
   call s:ResultWindowUpdate(1)
   startinsert!
 endfunction
