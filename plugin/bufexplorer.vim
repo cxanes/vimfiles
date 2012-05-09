@@ -696,7 +696,7 @@ endfunction
 function! s:BESelectBuffer(...)
   " Sometimes messages are not cleared when we get here so it looks like an error has
   " occurred when it really has not.
-  echo ""
+  "echo ""
 
   " Are we on a line with a file name?
   if line('.') < s:firstBufferLine
@@ -762,6 +762,12 @@ function! s:BESelectBuffer(...)
         if tabNbr != 0
           " The buffer is located in a tab. Go to that tab number.
           exec tabNbr . "tabnext"
+
+          " Go to the right window
+          let winNbr= bufwinnr(_bufNbr)
+          if winNbr != -1 && winNbr != winnr()
+            exe winNbr . "wincmd w"
+          endif
         else
           " Nope, the buffer is not in a tab, simple switch to that buffer.
           let bufname = expand("#"._bufNbr.":p")
