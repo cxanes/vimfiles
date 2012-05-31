@@ -174,6 +174,11 @@ class Pattern(object):
 
         for pat in select['wildcard']:
             if fnmatch2.fnmatch(name, pat):
+                # the name which matches exactly has higher priority
+                select = self.exclude if include else self.include
+                if select['exact'] and name in select['exact']:
+                    return False
+
                 return True
 
         return False
