@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2011-12-01 01:47:51
+" Last Modified: 2012-06-01 22:03:22
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1867,6 +1867,8 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
 	let g:Tlist_WinWidth = 24
   let g:Tlist_Enable_Fold_Column = 0
   let g:Tlist_Ctags_Cmd = 'ctags'
+  let g:Tlist_Show_One_File = 1
+  let Tlist_Use_Right_Window = 1
   "}}}2
   "----------------------------------------------------------{{{2
   " CRefVim
