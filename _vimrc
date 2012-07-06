@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2012-06-01 22:03:22
+" Last Modified: 2012-07-06 21:25:14
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -2006,6 +2006,12 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   "--------------------------------------------------------------
   if has('gui_running') && has('clientserver')
     silent! ru macros/editexisting.vim
+  else
+    try
+      au! SwapExists * let v:swapchoice = 'o'
+    catch
+      " Without SwapExists we don't do anything for ":edit" commands
+    endtry
   endif
   "}}}2
   "----------------------------------------------------------{{{2
