@@ -268,10 +268,10 @@ function! s:FileWindowInit()
 
   nmap     <buffer> <silent> <2-LeftMouse> <CR>
 
-  command! -nargs=+ -bang PF    call s:P4(<q-bang> == '!', <f-args>)
-  command! -nargs=0 PFRevert    call s:P4Revert()
-  command! -nargs=0 PFRevertAll call s:P4RevertAll()
-  command! -nargs=+ PFRevertSel call s:P4RevertSel(<f-args>)
+  command! -nargs=+ -buffer -bang PF    call s:P4(<q-bang> == '!', <f-args>)
+  command! -nargs=0 -buffer PFRevert    call s:P4Revert()
+  command! -nargs=0 -buffer PFRevertAll call s:P4RevertAll()
+  command! -nargs=+ -buffer PFRevertSel call s:P4RevertSel(<f-args>)
 endfunction
 
 function! s:ShowFileWindow(files, rev)
