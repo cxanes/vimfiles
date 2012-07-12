@@ -758,8 +758,12 @@ function! s:BESelectBuffer(...)
         " Get the tab number where this buffer is located at.
         let tabNbr = s:BEGetTabNbr(_bufNbr)
 
+        " Always open file in current window
+        if 1
+          let bufname = expand("#"._bufNbr.":p")
+          exec bufname ? "hide edit ".escape(bufname, " ") : "buffer "._bufNbr
         " Was the tab found?
-        if tabNbr != 0
+        elseif tabNbr != 0
           " The buffer is located in a tab. Go to that tab number.
           exec tabNbr . "tabnext"
 
