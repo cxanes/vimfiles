@@ -303,17 +303,15 @@ function! s:P4Diff(...)
 
   redraw
   echohl WarningMsg | echo 'Processing...' | echohl None
-  let files = s:GetDiffFiles(opts, file)
-  if empty(files)
-    echohl WarningMsg | echo 'No modified files found' | echohl None
-    return
-  endif
 
+  let files = s:GetDiffFiles(opts, file)
   let rev = s:GetRevision(file)
 
   call s:ShowFileWindow(files, rev)
+
   redraw
   echo ''
+
   let t:_p4_diff_cur_args = args
 endfunction
 
