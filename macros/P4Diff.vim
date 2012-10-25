@@ -71,10 +71,10 @@ function! s:ParseDiffArgs(args)
   for arg in a:args
     if len(arg) == 0
       continue
-    elseif arg !~ '^-'
+    elseif arg =~ '^-'
       let opts = add(opts, arg)
     else
-      if len(arg) != 0
+      if len(file) != 0
         echohl WarningMsg | echo 'Can specify only one file' | echohl None
         return [ opts, file ]
       endif
@@ -112,7 +112,7 @@ function! s:GotoOtherWindow()
   new
 endfunction
 
-function s:P4DiffOff()
+function! s:P4DiffOff()
   silent! diffoff!
 
   if exists('t:_p4_diff_bufnr') && bufexists(t:_p4_diff_bufnr)
