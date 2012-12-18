@@ -33,10 +33,13 @@ augroup filetypedetect
   au BufNewFile,BufRead *.eyp       setf eyapp 
 
   " GLSL: http://www.opengl.org/documentation/glsl/
-  au BufNewFile,BufRead *.frag,*.vert,*.fp,*.fs,*.vp,*.vs,*.glsl,*.vsh,*.fsh setf glsl | setl cin
+  au BufNewFile,BufRead *.frag,*.vert,*.fp,*.fs,*.vp,*.vs,*.glsl,*.vsh,*.fsh setf c | sy clear | ru syntax/glsl.vim
 
   " Emacs Org-Mode <http://orgmode.org/>
   au BufNewFile,BufRead *.org       setf org
+
+  " OpenCL
+  au BufNewFile,BufRead *.cl setf c | sy clear | ru syntax/opencl.vim
 augroup END
 
 " copy from filetype.vim
