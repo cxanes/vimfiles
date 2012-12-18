@@ -226,8 +226,8 @@ if &ft != 'c'
 endif
 
 try
-  call mylib#AddOptFiles('tags', 'tags/cstd.tags')
-  call mylib#AddOptFiles('tags', 'tags/lsb32.tags')
+  call mylib#AddOptFiles('tags', 'tags/uclibc.tags')
+  call mylib#AddOptFiles('tags', 'tags/lsb.tags')
 
   if !exists('g:opengl_headers')
     " possible headers: opengl-1.1, opengles-1.1, opengles2, glew 

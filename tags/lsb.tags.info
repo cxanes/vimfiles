@@ -1,0 +1,16 @@
+Linux Standard Base (LSB) Specifications
+
+Version 4.1
+
+Resource: (lsb-sdk-4.1.5-1.ia32.tar.gz)
+
+    http://www.linuxfoundation.org/collaborate/workgroups/lsb/download
+
+Command: 
+
+    tar xzf lsb-sdk-4.1.5-1.ia32.tar.gz
+    cd lsb-sdk
+    rpm2cpio lsb-build-base-4.1.18-3.i486.rpm | cpio -idmv
+    cd opt/lsb/include
+    ctags -R -f ~/lsb.tags --c++-kinds=+p --fields=+iaS --extra=+q .
+

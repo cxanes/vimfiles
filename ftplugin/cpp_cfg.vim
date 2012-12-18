@@ -3,8 +3,9 @@
 " Setting {{{
 "-------------------------------------------------------------------
 try
+  call mylib#AddOptFiles('tags', 'tags/uclibc.tags')
   call mylib#AddOptFiles('tags', 'tags/stl.tags')
-  call mylib#AddOptFiles('tags', 'tags/lsb32.tags')
+  call mylib#AddOptFiles('tags', 'tags/lsb.tags')
   call mylib#AddOptFiles('tags', 'tags/wx.tags')
 
   if !exists('g:opengl_headers')
