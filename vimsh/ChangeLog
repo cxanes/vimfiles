@@ -271,3 +271,21 @@
 				      * Changed all old adelphia contact info to my new contact info.
 					  * Only handle EOF (default ctrl-d) on non Windows platforms.
 					  * Fixed up handling of 'exit'.  There were some race conditions w/ waitpid.
+
+     11/15/12 - 0.22   
+
+					  * Fixed reverse logic for sending EOF.
+                      * Fixed logic bug w/ setting IGNBRK.
+                      * Added new keymaping for 'Enter' in normal mode.  This
+                        also pages output ala F5 does by default.
+                      * Added <silent> to all mappings to surpress echo'ing of
+                        execution of map in ex window.
+                      * Changed tabstop to 8 which seems to be the default for bash.
+                      * Cleaned up Win32 ^M handling.
+                      * Correctly handle output from programs ending with
+                        multiple ^M.  On Windows > 1 is ignored, pty all are
+                        honored.
+                      * Fixed the handling of the sometimes echo'ed executed
+                        command on Win32.
+                      * Workaround warning now shows actual mapped keys for
+                        page_output and new_prompt.

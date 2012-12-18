@@ -21,7 +21,7 @@
 
         python enabled vim ( +python )
         operating system that supports pty (unix) -or- popen/pipes (Windows)
-	    Tested w/ Python 2.2 and 2.3, 2.4, and 2.5.
+	    Tested w/ Python 2.2 and 2.3, 2.4, and 2.5, and 2.6.
 
         For Debian, the vim-python package is required to use vimsh.
 
@@ -37,7 +37,7 @@
 
     vimsh also requires that your operating system supports
     either pty ( pseudo ttys ) -or- the popen family of calls.
-    Most unix variants have support for pty in one form or another
+    Most UNIX variants have support for pty in one form or another
     and most other platforms, for instance Windows, support popen.
 
     I have tested vimsh on the following configurations, newer releases
@@ -45,6 +45,7 @@
 
         vim 7.x     / Windows Vista       / python 2.5
         vim 7.x     / Ubuntu Linux        / python 2.5
+        vim 7.x     / Mac OS X            / python 2.5
         vim 6.0-6.4 / Gentoo Linux        / python 2.3.3, 2.4.2
         vim 6.0-6.2 / Slackware Linux 8.0 / python 2.2b2, 2.2.3, 2.3.X
         vim 6.0-6.2 / WinNT 4.0           / Activestate Python 2.2
@@ -112,7 +113,7 @@
 
     pty:
 
-        The best support and formatting.  Most unix platforms support ptys.
+        The best support and formatting.  Most UNIX platforms support ptys.
         You can run interactive line based commands like ftp, telnet, rm,
         ping, cp, ssh, etc.  
         
@@ -142,7 +143,7 @@
 
         Also commands that wait on standard input currently cannot
         be interrupted w/ ctrl-c.  i.e. running 'findstr foo', since
-        there is no file spec the command will wait and hang the shell
+        there is no file specified the command will wait and hang the shell
         session within vim.  Just delete the buffer if this happens (:bd).
 
 :: vimsh customization ::

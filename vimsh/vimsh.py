@@ -6,8 +6,8 @@
 # author:   brian m sturk   bsturk@comcast.net,
 #                           http://home.comcast.net/~bsturk/vim.html
 # created:  12/02/01
-# last_mod: 02/08/10
-# version:  0.21
+# last_mod: 02/13/10
+# version:  0.22
 #
 # usage, etc:   see README
 # history:      see CHANGELOG
@@ -15,41 +15,41 @@
 #
 ###############################################################################
 
-
 ##  NOTE: If you're having a problem running vimsh, please
 ##        change the 0 to a 1 for _DEBUG_ and send me an email
 ##        of the output.
 
 _DEBUG_   = 0
-_BUFFERS_ = []
-init_ok   = 0
+
+g_buffers = []
+g_init_ok = 0
+g_use_pty = 1
 
 ################################################################################
 
 try:
-    import vim, sys, os, string, signal, re, time
+    import vim, sys, os, string, re, time
 
     if sys.platform == 'win32':
 
-        import popen2, msvcrt, win32con
-        from win32file import ReadFile, WriteFile
-        from win32pipe import PeekNamedPipe
-        from win32api  import GenerateConsoleCtrlEvent, OpenProcess
-        from ctypes    import *
+        import msvcrt, win32process
 
-        use_pty = 0
+        from win32file  import ReadFile, WriteFile
+        from win32pipe  import PeekNamedPipe
+        from subprocess import *
+
+        g_use_pty = 0
 
     else:
-        import pty, tty, select
-        use_pty = 1
+        import pty, tty, select, signal
 
     vim.command( 'let g:vimsh_loaded_ok = "1"' )
-    init_ok = 1
+    g_init_ok = 1
 
 except ImportError, e:
 
     vim.command( 'let g:vimsh_load_error = "' + str( e ) + '"' )
-    init_ok = 0
+    g_init_ok = 0
 
 ################################################################################
 ##                             class vimsh                                    ##
@@ -58,9 +58,9 @@ except ImportError, e:
 class vimsh:
     def __init__( self, _sh, _arg, _filename ):
 
-        self.sh        = _sh
-        self.arg       = _arg
-        self.filename  = _filename
+        self.sh       = _sh
+        self.arg      = _arg
+        self.filename = _filename
 
         self.prompt_line, self.prompt_cursor = self.get_vim_cursor_pos()
 
@@ -68,10 +68,11 @@ class vimsh:
                                   'password:',             ##  ???, seen this somewhere
                                   'Password required' ]    ##  other ftp clients
 
-        self.shell_exited          = 0
-        self.last_cmd_executed     = 'foobar'
-        self.keyboard_interrupt    = 0
-        self.buffer                = vim.current.buffer
+        self.shell_exited       = 0
+        self.last_cmd_executed  = 'foobar'
+        self.buffer             = vim.current.buffer
+        self.eof_key            = ''
+        self.intr_key           = ''
 
 ################################################################################
 
@@ -105,7 +106,7 @@ class vimsh:
             self.master, pty_name = pty.master_open()
             dbg_print ( 'setup_pty: slave pty name is ' + pty_name )
 
-            self.pid, self.fd = pty.fork()
+            self.pid, self.fd = pty.fork()      ##  pid and fd are of child shell
 
             self.outd = self.fd
             self.ind  = self.fd
@@ -115,31 +116,29 @@ class vimsh:
 
             if self.pid == 0:
 
-                ##  In spawned shell process, NOTE: any 'print'ing done within
-                ##  here will corrupt vim.
+                ##  In spawned shell process.  NOTE: any 'print'ing done within here will corrupt vim.
 
                 attrs = tty.tcgetattr( 1 )
 
                 attrs[ 6 ][ tty.VMIN ]  = 1
                 attrs[ 6 ][ tty.VTIME ] = 0
                 attrs[ 0 ] = attrs[ 0 ] | tty.BRKINT
-                attrs[ 0 ] = attrs[ 0 ] & tty.IGNBRK
+                attrs[ 0 ] = attrs[ 0 ] | tty.IGNBRK
                 attrs[ 3 ] = attrs[ 3 ] & ~tty.ICANON & ~tty.ECHO
 
                 tty.tcsetattr( 1, tty.TCSANOW, attrs )
 
                 try:
 
-                    if self.arg != '':
-                        os.execv( self.sh, [ self.sh, self.arg ] )
+                    args = [ self.sh ]
 
-                    else:
-                        os.execv( self.sh, [ self.sh, ] )
+                    if self.arg != '':
+                        args.append( self.arg )
+
+                    os.execv( self.sh, args )
 
                 except:
-
                     print( 'setup_pty: Couldn\'t start specified shell ' + self.sh )
-                    return
 
             else:
 
@@ -147,35 +146,32 @@ class vimsh:
                     attrs = tty.tcgetattr( 1 )
                     termios_keys = attrs[ 6 ]
 
+                    ##  Get *real* key-sequence for standard input keys, i.e. EOF
+
+                    self.intr_key = termios_keys[ tty.VINTR ]
+                    self.eof_key  = termios_keys[ tty.VEOF ]
+
                 except:
                     dbg_print ( 'setup_pty: tcgetattr failed' )
-                    return
-
-                ##  Get *real* key-sequence for standard input keys, i.e. EOF
-
-                self.eof_key   = termios_keys[ tty.VEOF ]
-                self.intr_key  = termios_keys[ tty.VINTR ]
 
         else:
 
             ##  Use pipes on Win32. not as reliable/nice. works OK but with limitations.
 
             self.delay = 0.2
-            self.stdout, self.stdin, self.stderr = popen2.popen3( self.sh + ' ' + self.arg, -1, 'b' )
+
+            p = Popen( self.sh + ' ' + self.arg, shell = False, bufsize = 32, stdin = PIPE, stdout = PIPE, stderr = PIPE, creationflags = win32process.CREATE_NO_WINDOW | win32process.CREATE_NEW_PROCESS_GROUP )
+            ( self.stdin, self.stdout, self.stderr ) = ( p.stdin, p.stdout, p.stderr )
 
             self.outd = self.stdout.fileno()
             self.ind  = self.stdin.fileno ()
             self.errd = self.stderr.fileno()
+            self.pid  = p.pid
 
             dbg_print ( 'setup_pty: self.outd: ' + str( self.outd ) )
             dbg_print ( 'setup_pty: self.ind:  ' + str( self.ind ) )
             dbg_print ( 'setup_pty: self.errd: ' + str( self.errd ) )
-
-            self.eof_key  = ''
-            self.intr_key = ''
-
-            windll.kernel32.AttachConsole( -1 )     ##  ATTACH_PARENT_PROCESS 
-            self.pid = os.getpid()
+            dbg_print ( 'setup_pty: pid is     ' + str( self.pid ) )
 
 ################################################################################
 
@@ -185,18 +181,9 @@ class vimsh:
 
         dbg_print ( 'execute_cmd: Entered cmd is ' + str( _cmd ) )
 
-        if self.keyboard_interrupt:
-
-            dbg_print( 'execute_cmd: keyboard interrupt earlier, cleaning up' )
-
-            self.page_output( 1 )
-            self.keyboard_interrupt = 0
-
-            return
-
-        ##  This is the main worker function
-
         try:
+
+            ##  This is the main worker function
 
             print ''            ##  Clears the ex command window
 
@@ -235,24 +222,16 @@ class vimsh:
                     else:
                         self.write( c )
 
+                self.last_cmd_executed = _cmd[0]
+
                 self.end_exe_line()
                 vim.command( 'startinsert!' )
 
-            self.last_cmd_executed = _cmd[0]
-
         except KeyboardInterrupt:
 
-            dbg_print( 'execute_cmd: in keyboard interrupt exception, sending SIGINT' )
+            dbg_print( 'execute_cmd: in keyboard interrupt exception, got SIGINT' )
 
-            self.keyboard_interrupt = 1
-
-            ##  TODO: Sending Ctrl-C isn't working on Windows yet, so
-            ##        executing something like 'findstr foo' will hang.
-
-            if not self.using_pty:
-                self.send_intr()
-
-        except Exception, e:            
+        except:            
 
             ##  Anything else is the shell exiting
 
@@ -317,34 +296,36 @@ class vimsh:
 
             for file_iter in r:
 
-                lines = ''
+                output = ''
 
                 if self.using_pty:
-                    lines = os.read( self.outd, 32 )
+                    output = os.read( self.outd, 32 )
 
                 else:
-                    lines = self.pipe_read( self.outd, 2048 )
+                    output = self.pipe_read( self.outd, 32 )
 
-                if lines == '':
+                if output == '':
+
                     dbg_print( 'read: No more data on stdout pipe_read' )
 
                     r = []          ##  sentinel, end of data to read
                     break
 
-                any_lines_read  = 1 
+                any_output_read = 1 
                 num_iterations += 1
 
-                lines = self.process_read( lines )
-                self.print_lines( lines, _buffer )
+                output = self.process_read( output )
+                self.print_lines( output, _buffer )
 
                 ##  Give vim a little cpu time, so programs that spit
                 ##  output or are long operations seem more responsive
 
                 if not num_iterations % iters_before_redraw:
                     dbg_print( 'read: Letting vim redraw' )
-                    vim.command( 'call VimShRedraw()' )
+                    vim.command( 'redraw' )
 
             if r == []:
+
                 dbg_print( 'read: end of data to self.read()' )
                 self.end_read( any_lines_read )
 
@@ -352,20 +333,29 @@ class vimsh:
 
 ################################################################################
 
-    def process_read( self, _lines ):
+    def process_read( self, _output ):
 
         dbg_print( 'process_read: Raw lines read from stdout:' )
-        dbg_print( _lines )
+        dbg_print( _output )
 
-        lines_to_print = string.split( _lines, '\n' )
+        lines_to_print = string.split( _output, '\n' )
 
         ##  On windows cmd is "echoed" and output sometimes has leading empty line
 
         if not self.using_pty:
+
+            dbg_print( 'last cmd executed is ' + self.last_cmd_executed )
+
             m = re.search( re.escape( self.last_cmd_executed.strip() ), lines_to_print[ 0 ] )
 
-            if m != None or lines_to_print[ 0 ] == '':
-                dbg_print( 'process_read: Win32, removing leading blank line' )
+            if m != None: 
+                
+                dbg_print( 'process_read: Win32, removing echo\'ed cmd' )
+                lines_to_print = lines_to_print[ 1: ]
+
+            elif lines_to_print[ 0 ] == '':
+
+                dbg_print( 'process_read: Win32, removing leading empty line' )
                 lines_to_print = lines_to_print[ 1: ]
 
         num_lines = len( lines_to_print )
@@ -398,14 +388,19 @@ class vimsh:
 
             dbg_print( 'print_lines: Current line is --> %s' % line_iter )
 
-            m = None
+            newlines_removed = 0
 
-            while re.search( '\r$', line_iter ):
+            exp = [ '\r$', '\n$' ]
 
-                dbg_print( 'print_lines: removing trailing ^M' )
+            for e in exp:
 
-                line_iter = line_iter[ :-1 ]   #  Force it
-                m = True
+                while re.search( e, line_iter ):
+
+                    newlines_removed += 1
+
+                    dbg_print( 'print_lines: removing trailing ^M' )
+
+                    line_iter = line_iter[ :-1 ]   #  Force it
 
             ##  Jump to the position of the last insertion to the buffer
             ##  if it was a new line it should be 1, if it wasn't
@@ -419,12 +414,14 @@ class vimsh:
             dbg_print( 'print_lines: Pasting ' + line_iter + ' to current line' )
             _buffer[ cur_line - 1 ] += line_iter
 
-            ##  If there's a '\n' or using pipes and it's not the last line
+            if self.using_pty:
+                for i in range( newlines_removed ):
+                    _buffer.append( '' )
 
-            if not self.using_pty or m != None:
-
-                dbg_print( 'print_lines: Appending new line since ^M or not using pty' )
-                _buffer.append( '' )
+            else:
+                ##  Windows eats ^M^M and just prints ^M
+                if ( newlines_removed ):
+                    _buffer.append( '' )
 
             vim.command( 'normal G$' )
             vim.command( 'startinsert!' )
@@ -498,37 +495,36 @@ class vimsh:
 
 ################################################################################
 
+    def win32_sig_handler( self, _signal ):
+
+        print 'Got ctrl-c'
+        print
+
+################################################################################
+
     def send_intr( self ):
 
         dbg_print( 'send_intr: enter' )
 
         if show_workaround_msgs == '1':
-            print 'If you do NOT see a prompt in the vimsh buffer, press F5 or go into insert mode and press Enter'
-            print 'If you need a new prompt press F4'
+            print 'If you do NOT see a prompt in the vimsh buffer, press ' + page_output_key + ' or Enter'
+            print 'If you need a new prompt press ' + new_prompt_key
             print 'NOTE: To disable this help message set \'g:vimsh_show_workaround_msgs\' to 0 in your .vimrc'
 
         ##  This triggers another KeyboardInterrupt async
 
+        dbg_print( 'send_intr: sending SIGINT' )
+
+        if self.using_pty:
+            self.write( self.intr_key )
+
         try:
-
-            dbg_print( 'send_intr: writing intr_key' )
-
-            if self.using_pty:
-                os.kill( self.pid, signal.SIGINT )
-
-            ##  TODO: For this to work, I need to use CreateProcess or subprocess module
-            #else:
-            #    handle = OpenProcess( win32con.PROCESS_ALL_ACCESS, 0, self.pid )
-            #    GenerateConsoleCtrlEvent( win32con.CTRL_C_EVENT, handle )
-
-            #self.write( self.intr_key )
 
             self.page_output( 1 )
 
         except KeyboardInterrupt:
 
             dbg_print( 'send_intr: caught KeyboardInterrupt in send_intr' )
-            pass
 
 ################################################################################
 
@@ -815,12 +811,10 @@ def dbg_print( _str ):
 
 def new_buf( _filename ):
 
-    ##  If a buffer named vimsh doesn't exist create it, if it
-    ##  does, switch to it.  Use the config options for splitting etc.
-
     filename = _filename
 
     try:
+
         vim.command( 'let dummy = buflisted( "' + filename + '" )' )
         exists = vim.eval( 'dummy' )
 
@@ -836,7 +830,7 @@ def new_buf( _filename ):
             vim.command( 'setlocal buftype=nofile' )
             vim.command( 'setlocal bufhidden=hide' )
             vim.command( 'setlocal noswapfile' )
-            vim.command( 'setlocal tabstop=4' )
+            vim.command( 'setlocal tabstop=8' )
             vim.command( 'setlocal modifiable' )
             vim.command( 'setlocal nowrap' )
             vim.command( 'setlocal textwidth=999' )
@@ -844,26 +838,28 @@ def new_buf( _filename ):
 
             vim.command( 'au BufDelete ' + filename + ' :python lookup_buf( "' + filename + '" ).cleanup()' )
 
-            vim.command( 'inoremap <buffer> <CR>  <ESC>:python lookup_buf( "' + filename + '" ).execute_cmd()<CR>' )
+            ##  NOTE: This one does not have <silent> because it causes weird behavior w/ the cursor
+            vim.command( 'inoremap <buffer> <CR> <ESC>:python lookup_buf( "' + filename + '" ).execute_cmd()<CR>' )
 
-            vim.command( 'inoremap <buffer> ' + timeout_key + ' <ESC>:python lookup_buf( "' + filename + '" ).set_timeout()<CR>' )
-            vim.command( 'nnoremap <buffer> ' + timeout_key + ' :python lookup_buf( "' + filename + '" ).set_timeout()<CR>' )
+            vim.command( 'inoremap <silent> <buffer> ' + timeout_key + ' <ESC>:python lookup_buf( "' + filename + '" ).set_timeout()<CR>' )
+            vim.command( 'nnoremap <silent> <buffer> ' + timeout_key + ' :python lookup_buf( "' + filename + '" ).set_timeout()<CR>' )
 
-            vim.command( 'inoremap <buffer> ' + new_prompt_key + ' <ESC>:python lookup_buf ( "' + filename + '" ).new_prompt()<CR>' )
-            vim.command( 'nnoremap <buffer> ' + new_prompt_key + ' :python lookup_buf( "' + filename + '" ).new_prompt()<CR>' )
+            vim.command( 'inoremap <silent> <buffer> ' + new_prompt_key + ' <ESC>:python lookup_buf ( "' + filename + '" ).new_prompt()<CR>' )
+            vim.command( 'nnoremap <silent> <buffer> ' + new_prompt_key + ' :python lookup_buf( "' + filename + '" ).new_prompt()<CR>' )
 
-            vim.command( 'inoremap <buffer> ' + page_output_key + ' <ESC>:python lookup_buf ( "' + filename + '" ).page_output()<CR>' )
-            vim.command( 'nnoremap <buffer> ' + page_output_key + ' :python lookup_buf( "' + filename + '" ).page_output()<CR>' )
+            vim.command( 'inoremap <silent> <buffer> ' + page_output_key + ' <ESC>:python lookup_buf ( "' + filename + '" ).page_output()<CR>' )
+            vim.command( 'nnoremap <silent> <buffer> ' + page_output_key + ' :python lookup_buf( "' + filename + '" ).page_output()<CR>' )
+            vim.command( 'nnoremap <silent> <buffer> <CR> <ESC>:python lookup_buf( "' + filename + '" ).page_output()<CR>' )
 
-            vim.command( 'inoremap <buffer> ' + intr_signal_key + ' <ESC>:python lookup_buf ( "' + filename + '" ).send_intr()<CR>' )
-            vim.command( 'nnoremap <buffer> ' + intr_signal_key + ' :python lookup_buf( "' + filename + '" ).send_intr()<CR>' )
+            vim.command( 'inoremap <silent> <buffer> ' + intr_signal_key + ' <ESC>:python lookup_buf ( "' + filename + '" ).send_intr()<CR>' )
+            vim.command( 'nnoremap <silent> <buffer> ' + intr_signal_key + ' :python lookup_buf( "' + filename + '" ).send_intr()<CR>' )
 
-            vim.command( 'inoremap <buffer> ' + clear_key + ' <ESC>:python lookup_buf ( "' + filename + '" ).clear_screen( True )<CR>')
-            vim.command( 'nnoremap <buffer> ' + clear_key + ' :python lookup_buf( "' + filename + '").clear_screen( False )<CR>' )
+            vim.command( 'inoremap <silent> <buffer> ' + clear_key + ' <ESC>:python lookup_buf ( "' + filename + '" ).clear_screen( True )<CR>')
+            vim.command( 'nnoremap <silent> <buffer> ' + clear_key + ' :python lookup_buf( "' + filename + '").clear_screen( False )<CR>' )
 
-            if not self.using_pty:
-                vim.command( 'inoremap <buffer> ' + eof_signal_key + ' <ESC>:python lookup_buf ( "' + filename + '" ).send_eof()<CR>' )
-                vim.command( 'nnoremap <buffer> ' + eof_signal_key + ' :python lookup_buf( "' + filename + '" ).send_eof()<CR>' )
+            if g_use_pty:
+                vim.command( 'inoremap <silent> <buffer> ' + eof_signal_key + ' <ESC>:python lookup_buf ( "' + filename + '" ).send_eof()<CR>' )
+                vim.command( 'nnoremap <silent> <buffer> ' + eof_signal_key + ' :python lookup_buf( "' + filename + '" ).send_eof()<CR>' )
 
             return 0
 
@@ -875,6 +871,7 @@ def new_buf( _filename ):
             return 1
 
     except:
+
         dbg_print( 'new_buf: exception!' + str( sys.exc_info()[0] ) )
 
 ################################################################################
@@ -883,7 +880,7 @@ def spawn_buf( _filename ):
 
     exists = new_buf( _filename )
 
-    if not exists:
+    if not exists:      ##  has a shell been created for the buffer yet??
 
         dbg_print( 'spawn_buf: buffer doesn\'t exist so creating a new one' )
         
@@ -892,9 +889,9 @@ def spawn_buf( _filename ):
         ##  Make vimsh associate buffer with _filename and add to list of buffers
         vim_shell = vimsh( sh, arg, _filename )
 
-        _BUFFERS_.append( ( _filename, vim_shell ) )
+        g_buffers.append( ( _filename, vim_shell ) )
 
-        vim_shell.setup_pty( use_pty )
+        vim_shell.setup_pty( g_use_pty )
 
         vim_shell.read( cur )
         cur_line, cur_row = vim_shell.get_vim_cursor_pos()
@@ -914,7 +911,7 @@ def spawn_buf( _filename ):
 
 def lookup_buf( _filename ):
 
-    for key, val in _BUFFERS_:
+    for key, val in g_buffers:
 
         if key == _filename:
 
@@ -933,21 +930,21 @@ def remove_buf( _filename ):
 
     idx = 0
 
-    for key, val in _BUFFERS_:
+    for key, val in g_buffers:
 
         if key == _filename:
             break
 
         idx = idx + 1
 
-    if ( len( _BUFFERS_ ) >= idx ) and ( len( _BUFFERS_ ) != 0 ):
+    if ( len( g_buffers ) >= idx ) and ( len( g_buffers ) != 0 ):
 
         dbg_print ( 'remove_buf: removing buffer from list at index ' + str( idx ) )
-        del _BUFFERS_[ idx ]
+        del g_buffers[ idx ]
 
 ################################################################################
 
-if ( init_ok ):     ##  Only set this up if all modules were imported ok
+if ( g_init_ok ):     ##  Only set this up if all modules were imported ok
 
     ############################# customization ###################################
     #
@@ -972,7 +969,7 @@ if ( init_ok ):     ##  Only set this up if all modules were imported ok
     ##        an override prompt will not work.
     #
 
-    if use_pty:
+    if g_use_pty:
         if prompt_override:
             new_prompt = test_and_set( 'g:vimsh_prompt_pty', r'> ' )
 
