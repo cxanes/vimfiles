@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2012-07-06 21:25:14
+" Last Modified: 2012-12-19 23:03:04
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1953,6 +1953,7 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   " bufexplorer.vim <id=BufExplorer>
   " <http://www.vim.org/scripts/script.php?script_id=42>
   "--------------------------------------------------------------
+  let g:bufExplorerFindActive = 0
   nnoremap <silent> <F3> :<C-U>exec v:count == 0 ? 'BufExplorer' : v:count == 1 ? 'BufExplorerHorizontalSplit' : 'BufExplorerVerticalSplit'<CR>
   "}}}2
   "----------------------------------------------------------{{{2
