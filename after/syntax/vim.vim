@@ -35,7 +35,7 @@ let s:pythonpath= fnameescape(expand("<sfile>:p:h")."/python.vim")
 if !filereadable(s:pythonpath)
  let s:pythonpath= fnameescape(globpath(&rtp,"syntax/python.vim"))
 endif
-if g:vimsyn_embed =~ 'P' && has("python")
+if exists("g:vimsyn_embed") && g:vimsyn_embed =~ 'P' && has("python")
   if !filereadable(s:pythonpath)
     unlet s:pythonpath
     let s:pythonpath= split(globpath(&rtp,"syntax/python.vim"), "\n")
