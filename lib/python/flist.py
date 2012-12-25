@@ -34,9 +34,14 @@ class Node(object):
         return self.__getattribute__(key)
 
     def __repr__(self):
+        def terminal_str():
+            if self.must_be_dir():
+                return 'MUST_BE_DIR'
+            else:
+                return str(self.terminal)
+
         return "{'exact': %s, 'wildcard': %s, 'recursive': %s, 'terminal': %s}" % (
-                str(self.exact), str(self.wildcard), str(self.recursive),
-                ('MUST_BE_DIR' if self.must_be_dir() else str(self.terminal)))
+                str(self.exact), str(self.wildcard), str(self.recursive), terminal_str())
 
     def must_be_dir(self):
         return self.terminal is Node._MUST_BE_DIR
@@ -61,7 +66,10 @@ class Node(object):
                 continue
 
             if self[t] is None:
-                self[t] = Node() if t == 'recursive' else {}
+                if t == 'recursive':
+                    self[t] = Node()
+                else:
+                    self[t] = {}
 
             self[t].update(node[t])
 
@@ -102,7 +110,10 @@ class Node(object):
 
             root = root[name_type][part]
 
-        root.terminal = Node._MUST_BE_DIR if must_be_dir else True
+        if must_be_dir:
+            root.terminal = Node._MUST_BE_DIR
+        else:
+            root.terminal = True
 
     @staticmethod
     def _add_recursive(root, parts, must_be_dir):
@@ -164,7 +175,10 @@ class Pattern(object):
             select[name_type].add(Node.get_escaped_str(pattern))
 
     def _match_name(self, name, include):
-        select = self.include if include else self.exclude
+        if include:
+            select = self.include
+        else:
+            select = self.exclude
 
         if not select['exact'] and not select['wildcard']:
             return bool(include)
@@ -175,7 +189,10 @@ class Pattern(object):
         for pat in select['wildcard']:
             if fnmatch2.fnmatch(name, pat):
                 # the name which matches exactly has higher priority
-                select = self.exclude if include else self.include
+                if include:
+                    select = self.exclude
+                else:
+                    select = self.include
                 if select['exact'] and name in select['exact']:
                     return False
 
@@ -241,13 +258,16 @@ class Pattern(object):
 
         try:
             names = os.listdir(root)
-        except os.error as err:
+        except os.error, err:
             if onerror is not None:
                 onerror(err)
             return
 
         for name in names:
-            path = name if root == '.' else posixpath.join(root, name)
+            if root == '.':
+                path = name
+            else:
+                path = posixpath.join(root, name)
 
             is_file, is_dir = posixpath.isfile(path), posixpath.isdir(path)
 
@@ -371,14 +391,18 @@ def _get_pattern(pattern_fname):
 
     try:
         f = open(pattern_fname, "rb")
-
-        can_skip = lambda line: re.match(r"\s*#|\s*$", line) != None
-
-        pattern = [ _strip(line) for line in f.readlines() if not can_skip(line) ]
     except IOError:
         return None
     else:
-        f.close()
+        try:
+            try:
+                can_skip = lambda line: re.match(r"\s*#|\s*$", line) != None
+
+                pattern = [ _strip(line) for line in f.readlines() if not can_skip(line) ]
+            except:
+                return None
+        finally:
+            f.close()
 
     pattern.sort()
     return pattern
@@ -448,19 +472,23 @@ class Flist:
 
         try:
             f = open(self.get_fname('filelist'), "rb")
-        except IOError as e:
+        except IOError, e:
             self._dirty = self._dirty | _dirty_flag['filelist'] | _dirty_flag['update']
         else:
-            self._file_list = [ _strip(line) for line in f.readlines() ]
-            f.close()
+            try:
+                self._file_list = [ _strip(line) for line in f.readlines() ]
+            finally:
+                f.close()
 
         try:
             f = open(self.get_fname('option'), "rb")
         except IOError:
             self._dirty = self._dirty | _dirty_flag['option']
         else:
-            self._option.readfp(f)
-            f.close()
+            try:
+                self._option.readfp(f)
+            finally:
+                f.close()
 
         if os.path.exists(self.get_fname('filelist')):
             mtime = os.path.getmtime(self.get_fname('filelist'))
@@ -489,18 +517,33 @@ class Flist:
             self.update()
             if self._dirty & _dirty_flag['filelist']:
                 if not self._option.getint('DEFAULT', 'manual_update'):
-                    with open(self.get_fname('filelist'), "wb") as f:
+                    # with open(self.get_fname('filelist'), "wb") as f:
+                    #     f.writelines([line + '\n' for line in self._file_list])
+                    f = open(self.get_fname('filelist'), "wb")
+                    try:
                         f.writelines([line + '\n' for line in self._file_list])
+                    finally:
+                        f.close()
                 self._dirty = self._dirty & ~_dirty_flag['filelist']
 
         if 'pattern' in dump_types and self._dirty & _dirty_flag['pattern']:
-            with open(self.get_fname('pattern'), "wb") as f:
+            # with open(self.get_fname('pattern'), "wb") as f:
+            #     f.writelines([line + '\n' for line in self._raw_pattern])
+            f = open(self.get_fname('pattern'), "wb")
+            try:
                 f.writelines([line + '\n' for line in self._raw_pattern])
+            finally:
+                f.close()
             self._dirty = self._dirty & ~_dirty_flag['pattern']
 
         if 'option' in dump_types and self._dirty & _dirty_flag['option']:
-            with open(self.get_fname('option'), "wb") as f:
+            # with open(self.get_fname('option'), "wb") as f:
+            #     self._option.write(f)
+            f = open(self.get_fname('option'), "wb")
+            try:
                 self._option.write(f)
+            finally:
+                f.close()
             self._dirty = self._dirty & ~_dirty_flag['option']
 
     def import_pattern(self, pattern_fname = None, preserve = False):

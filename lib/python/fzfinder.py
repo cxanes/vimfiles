@@ -8,7 +8,10 @@ import platform
 
 import finder
 
-libfzmatch_default = 'libfzmatch64.so' if platform.architecture()[0] == '64bit' else 'libfzmatch.so'
+if platform.architecture()[0] == '64bit':
+    libfzmatch_default = 'libfzmatch64.so'
+else:
+    libfzmatch_default = 'libfzmatch.so'
 fzmatch_path = { 'Windows': 'fzmatch.dll' }
 fzmatch = ctypes.CDLL(os.path.join(os.path.dirname(os.path.realpath( __file__ )),
                          fzmatch_path.get(platform.system(), libfzmatch_default)))
@@ -35,7 +38,10 @@ class FzFinder(finder.Finder):
 
         for item in self.items:
             item.score = fzmatch.get_score(item.name, abbrev, ctypes.byref(self.coption), ctypes.byref(pos))
-            item.pos = None if item.score == 0 else list(pos)
+            if item.score == 0:
+                item.pos = None
+            else:
+                item.pos = list(pos)
 
         matched_items = [item for item in self.items if item.score != 0]
         matched_items.sort(key = lambda item: item.score, reverse = True)

@@ -25,7 +25,12 @@ class Finder(object):
             self.option.update(dict(option))
 
     def set_items(self, items):
-        self.items = [item if isinstance(item, Item) else Item(item) for item in items]
+        def create_item(item):
+            if isinstance(item, Item):
+                return item
+            else:
+                return Item(item)
+        self.items = [create_item(item) for item in items]
 
     def get_items(self):
         for item in self.items:
@@ -49,7 +54,10 @@ class Finder(object):
             match = pattern.search(item.name)
             if match is None:
                 item.score = 0
-                item.pos = None if item.score == 0 else list(pos)
+                if item.score == 0:
+                    item.pos = None
+                else:
+                    item.pos = list(pos)
             else:
                 item.score = 1
                 item.pos = range(match.start(), match.end())

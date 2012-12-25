@@ -25,7 +25,10 @@ def gotofile_open_file(f, t):
   if t == 1 :
     edit = 'split'
   else:
-    edit = 'drop' if vim.eval('has("gui")') == '1' else 'hide edit'
+    if vim.eval('has("gui")') == '1':
+      edit = 'drop'
+    else:
+      edit = 'hide edit'
     if t == 2 : edit = 'tab ' + edit
 
   vim.command("exec '%s' fnameescape('%s')" % (edit, re.sub(r"'", r"''", f)))
@@ -123,8 +126,13 @@ class GoToFileWindow:
         self.matched_items = self.finder.search(abbrev)
         self.buffer[:] = [ self._highlight(item.name, item.pos) for item in self.matched_items ]
         vim.command("call setbufvar(%d, '&ma', 0)" % (self.bufnr, ))
+
+        if self.filter_enabled:
+          filter_enabled = 'on'
+        else:
+          filter_enabled = 'off'
         vim.command("call setbufvar(%d, '&stl', '%5d file(s) found [filter:%s]')" \
-                    % (self.bufnr, len(self.matched_items), 'on' if self.filter_enabled else 'off'))
+                    % (self.bufnr, len(self.matched_items), filter_enabled))
         self.abbrev = abbrev
 
     def open(self, file_indexes, open_type):
