@@ -56,15 +56,15 @@ syn keyword clType              cl_image_format
 
 syn keyword clCast              vec_type_hint work_group_size_hint aligned packed endian
 
-syn match clCast                "as_\(uchar\|char\|ushort\|short\|uint\|int\|ulong\|long\|float\|double\)("
+syn match clCast                "\<as_\(uchar\|char\|ushort\|short\|uint\|int\|ulong\|long\|float\|double\)\>"
 
-syn match clCast                "as_\(uchar\|char\|ushort\|short\|uint\|int\|ulong\|long\|float\|double\)\(2\|3\|4\|8\|16\)("
+syn match clCast                "\<as_\(uchar\|char\|ushort\|short\|uint\|int\|ulong\|long\|float\|double\)\(2\|3\|4\|8\|16\)\>"
 
-syn match clCast                "convert_\(uchar\|char\|ushort\|short\|uint\|int\|ulong\|long\|float\|double\))\(2\|3\|4\|8\|16\)("
+syn match clCast                "\<convert_\(uchar\|char\|ushort\|short\|uint\|int\|ulong\|long\|float\|double\))\(2\|3\|4\|8\|16\)\>"
 
-syn match clCast                "convert_\(uchar\|char\|ushort\|short\|uint\|int\|ulong\|long\|float\|double\))\(2\|3\|4\|8\|16\)_sat("
+syn match clCast                "\<convert_\(uchar\|char\|ushort\|short\|uint\|int\|ulong\|long\|float\|double\))\(2\|3\|4\|8\|16\)_sat>"
 
-syn match clCast                "convert_\(uchar\|char\|ushort\|short\|uint\|int\|ulong\|long\|float\|double\))\(2\|3\|4\|8\|16\)_sat_\(rte\|rtz\|rtp\|rtn\)("
+syn match clCast                "\<convert_\(uchar\|char\|ushort\|short\|uint\|int\|ulong\|long\|float\|double\))\(2\|3\|4\|8\|16\)_sat_\(rte\|rtz\|rtp\|rtn\)\>"
 
 " work item functions
 syn keyword clFunction          get_work_dim get_global_size get_global_id get_local_size get_local_id get_num_groups get_group_id get_global_offset
@@ -105,21 +105,21 @@ syn keyword clFunction          isequal isnotequal isgreater isgreaterequal isle
 
 " vector data load and store functions
 syn keyword clFunction          vload_half vstore_half
-syn match clFunction            "vload\(2\|3\|4\|8\|16\)("
-syn match clFunction            "vload_half\(2\|3\|4\|8\|16\)("
-syn match clFunction            "vloada_half\(2\|3\|4\|8\|16\)("
-syn match clFunction            "vloada_half\(2\|3\|4\|8\|16\)_\(rte\|rtz\|rtp\)("
-syn match clFunction            "vstore\(2\|3\|4\|8\|16\)("
-syn match clFunction            "vstore\(rte\|rtz\|rtp\|rtn\)("
-syn match clFunction            "vstore_half\(2\|3\|4\|8\|16\)("
-syn match clFunction            "vstore_half_\(rte\|rtz\|rtp\|rtn\)("
-syn match clFunction            "vstore_half\(2\|3\|4\|8\|16\)_\(rte\|rtz\|rtp\|rtn\)("
-syn match clFunction            "vstorea_half\(2\|3\|4\|8\|16\)("
-syn match clFunction            "vstorea_half\(2\|3\|4\|8\|16\)_\(rte\|rtz\|rtp\|rtn\)("
+syn match clFunction            "\<vload\(2\|3\|4\|8\|16\)\>"
+syn match clFunction            "\<vload_half\(2\|3\|4\|8\|16\)\>"
+syn match clFunction            "\<vloada_half\(2\|3\|4\|8\|16\)\>"
+syn match clFunction            "\<vloada_half\(2\|3\|4\|8\|16\)_\(rte\|rtz\|rtp\)\>"
+syn match clFunction            "\<vstore\(2\|3\|4\|8\|16\)\>"
+syn match clFunction            "\<vstore\(rte\|rtz\|rtp\|rtn\)\>"
+syn match clFunction            "\<vstore_half\(2\|3\|4\|8\|16\)\>"
+syn match clFunction            "\<vstore_half_\(rte\|rtz\|rtp\|rtn\)\>"
+syn match clFunction            "\<vstore_half\(2\|3\|4\|8\|16\)_\(rte\|rtz\|rtp\|rtn\)\>"
+syn match clFunction            "\<vstorea_half\(2\|3\|4\|8\|16\)\>"
+syn match clFunction            "\<vstorea_half\(2\|3\|4\|8\|16\)_\(rte\|rtz\|rtp\|rtn\)\>"
 
 " image read and write functions
-syn match clFunction            "read_image\(f\|i\|ui\|h\)("
-syn match clFunction            "write_image\(f\|i\|ui\|h\)("
+syn match clFunction            "\<read_image\(f\|i\|ui\|h\)\>"
+syn match clFunction            "\<write_image\(f\|i\|ui\|h\)\>"
 syn keyword clFunction          get_image_width get_image_height get_image_depth get_image_channel_data_type get_image_channel_order get_image_dim
 
 " explicit memory fence functions
@@ -129,7 +129,7 @@ syn keyword clFunction          barrier mem_fence read_mem_fence write_mem_fence
 syn keyword clFunction          async_work_group_copy async_work_group__strided_copy wait_group_events prefetch
 
 " atomic functions
-syn match clFunction            "atom_\(add\|sub\|xchg\|inc\|dec\|cmpxchg\|min\|max\|and\|or\|xor\)("
+syn match clFunction            "\<atom_\(add\|sub\|xchg\|inc\|dec\|cmpxchg\|min\|max\|and\|or\|xor\)>"
 
 syn keyword clConstant          MAXFLOAT HUGE_VALF INFINITY NAN
 syn keyword clConstant          FLT_DIG FLT_MANT_DIG FLT_MAX_10_EXP FLT_MAX_EXP FLT_MIN_10_EXP FLT_MIN_EXP FLT_RADIX FLT_MAX FLT_MIN FLT_EPSILON
