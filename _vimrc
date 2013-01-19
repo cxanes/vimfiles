@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2012-12-19 23:03:04
+" Last Modified: 2013-01-19 04:00:09
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1859,6 +1859,17 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:OmniCpp_MayCompleteScope    = 0
   let g:OmniCpp_SelectFirstItem     = 0
   let g:OmniCpp_LocalSearchDecl     = 0
+  "}}}2
+  "----------------------------------------------------------{{{2
+  " clang_complete
+  " <http://www.vim.org/scripts/script.php?script_id=3302>
+  "--------------------------------------------------------------
+  let g:clang_auto_select = 2
+  let g:clang_complete_auto = 0
+  let g:clang_snippets_engine = 'snipmate'
+  if !s:MSWIN
+    let g:clang_library_path = '/usr/lib/llvm'
+  endif
   "}}}2
   "----------------------------------------------------------{{{2
   " taglist.vim
