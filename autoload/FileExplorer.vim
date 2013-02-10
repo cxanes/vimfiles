@@ -728,7 +728,7 @@ function! s:OpenFile(file, type, focus) " focus on new file window {{{
   "   0: open in previous window
   "   1: open in split window
   "   2: open in new tabpage
-  let file = escape(a:file, ' ')
+  let file = s:Fnameescape(a:file)
   if a:type == 2
     tabnew
     exec (has('gui') ? 'drop' : 'hide edit') . ' ' . file
