@@ -216,6 +216,10 @@ function! s:CloseGoToFileWindow()
       silent! close!
     endif
   endfor
+
+  if exists("g:_goto_file_window_opt_paste")
+    let &paste = g:_goto_file_window_opt_paste
+  endif
 endfunction
 
 " type:
@@ -371,6 +375,12 @@ function! gotofile#CreateGoToFileWindow()
     call setline(1, '')
   endif
   call s:ResultWindowUpdate(1)
+
+  let g:_goto_file_window_opt_paste = &paste
+
+  " the option 'paste' must be turned off, otherwise all user mappings in insert mode would not work
+  let &paste = 0
+
   startinsert!
 endfunction
 
