@@ -1,7 +1,7 @@
 " File: myutils.vim
 " Author: Frank Chang (frank.nevermind AT gmail.com)
 " Version: 1.0
-" Last Modified: 2008-07-28 20:08:04
+" Last Modified: 2013-05-30 19:30:39
 "
 " My own defined functions and mappings.
 "
@@ -43,6 +43,9 @@ command! -bang -range -complete=buffer -nargs=1 Inject
 
 command! -range -nargs=1 -bang ScreenInject 
       \ call myutils#ScreenInject(<q-bang> != '!', <q-args>, mylib#GetSelection())
+
+command! -range -nargs=1 -bang TmuxInject 
+      \ call myutils#TmuxInject(<q-bang> != '!', <q-args>, mylib#GetSelection())
 "==========================================================}}}1
 " {{{1 Filter
 "--------------------------------------------------------------

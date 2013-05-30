@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2013-01-19 04:00:09
+" Last Modified: 2013-05-30 18:37:52
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -140,6 +140,9 @@ let no_buffers_menu = 1
 
 if &term == 'screen'
   set term=xterm
+elseif &term == 'screen-256color'
+  set term=xterm
+  set t_Co=256
 endif
 
 " Encoding {{{

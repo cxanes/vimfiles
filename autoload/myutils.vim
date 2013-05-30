@@ -1,7 +1,7 @@
 " File: autoload/myutils.vim
 " Author: Frank Chang (frank.nevermind AT gmail.com)
 " Version: 1.0
-" Last Modified: 2010-09-21 13:56:38
+" Last Modified: 2013-05-30 19:30:29
 "
 " My own defined functions and mappings (autoload)
 "
@@ -270,6 +270,28 @@ function! myutils#ScreenInject(other, winID, text) "{{{
   exec printf(cmd, tmpfile, a:winID)
   call delete(tmpfile)
 endfunction
+"}}}
+function! myutils#TmuxInject(other, targetPane, text) "{{{
+  if !executable('tmux')
+    call mylib#ShowMesg('ErrorMsg', 'tmux command not find')
+    return
+  endif
+
+  let tmpfile = tempname()
+  let lines = split(a:text, '\n')
+  call writefile(lines, tmpfile)
+  let cmd = "silent !tmux loadb \"%s\" \\; pasteb -t \"%s\" \\; deleteb"
+  if a:other
+    exec printf(cmd, tmpfile, a:targetPane)
+  else
+    let targetWindow = substitute(a:targetPane, '\.[^.]\+$', '', '')
+    let cmd .= " \\; selectw -t \"%s\" \\; selectp -t \"%s\""
+    exec printf(cmd, tmpfile, a:targetPane, targetWindow, a:targetPane)
+  end
+  call delete(tmpfile)
+  redraw!
+endfunction
+
 "}}}
 "==========================================================}}}1
 " {{{1 Filter
