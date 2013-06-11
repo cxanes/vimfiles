@@ -39,7 +39,11 @@ hi StatusLine guibg=White guifg=Sienna4 cterm=NONE ctermfg=Black ctermbg=Brown
 endif
 hi StatusLineNC gui=NONE guifg=Black guibg=Gray ctermbg=Black ctermfg=Gray
 hi VertSplit guifg=Gray
+if !has('gui_running') && &t_Co == 256
+hi Search guibg=Gold3 ctermfg=Blue ctermbg=226
+else
 hi Search guibg=Gold3 ctermfg=Blue
+endif
 hi Type gui=NONE guifg=DarkSeaGreen2
 hi Statement gui=NONE guifg=Gold3
 hi FoldColumn guibg=#1f0f0f ctermfg=Cyan ctermbg=Black
@@ -47,6 +51,14 @@ hi Folded guibg=grey20 ctermfg=Cyan ctermbg=Black
 
 if !has('gui_running') && &t_Co == 256
 hi Visual cterm=NONE ctermbg=66
+endif
+
+if !has('gui_running') && &t_Co == 256
+hi SpecialKey term=bold ctermfg=DarkBlue
+hi Special ctermfg=Red
+hi Type ctermfg=Green
+hi Underlined term=underline ctermfg=DarkBlue
+hi Todo ctermbg=226
 endif
 
 if version >= 700
