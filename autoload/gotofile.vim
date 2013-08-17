@@ -80,8 +80,12 @@ class GoToFileWindow:
     def set_buffer(self):
         if vim.eval("has('conceal')") == "1":
             vim.command('setl conceallevel=3 concealcursor=nvic')
-            vim.command(r'syn match GoToFilePlaceHolder "\%x00" conceal')
-            vim.command(r'syn match GoToFileHighlight "\%x00\@<=[^\x00]"')
+            if int(vim.eval("v:version")) < 704:
+              vim.command(r'syn match GoToFilePlaceHolder "\%x00" conceal')
+              vim.command(r'syn match GoToFileHighlight "\%x00\@<=[^\x00]"')
+            else:
+              vim.command(r'syn match GoToFilePlaceHolder "\%#=1\%x00" conceal')
+              vim.command(r'syn match GoToFileHighlight "\%#=1\%x00\@<=[^\x00]"')
 
         self.buffer = vim.current.buffer
         self.bufnr = int(vim.eval("bufnr('%')"))
