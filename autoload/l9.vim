@@ -4,10 +4,10 @@
 "=============================================================================
 " LOAD GUARD {{{1
 
-if exists('g:loaded_autoload_l9')
-  finish
-endif
-let g:loaded_autoload_l9 = 1
+" if exists('g:loaded_autoload_l9')
+"   finish
+" endif
+" let g:loaded_autoload_l9 = 1
 
 " }}}1
 "=============================================================================
