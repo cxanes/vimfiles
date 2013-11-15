@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2013-11-16 04:59:27
+" Last Modified: 2013-11-16 06:27:11
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -818,9 +818,17 @@ cnoremap <Leader><C-A> <C-A>
 " Map: <M-*> {{{
 nnoremap <M-q> gqap
 
-" Shortcut to moving to buffer 1 to 9: <M-#> -> :b#
+" Shortcut to moving to buffer/tabpage 1 to 9: <M-#> -> :b#
+function! <SID>SelectBufOrTab(nr)
+  if tabpagenr('$') > 1
+    exec "tabnext" a:nr
+  else
+    exec "buffer" a:nr
+  endif
+endfunction
+
 for s:i in range(1, 9)
-  exe 'nnoremap <silent> <M-'. s:i . '>  :<C-U>silent! ' . s:i . 'b<CR>'
+  exe 'nnoremap <silent> <M-'. s:i . '>  :<C-U>call <SID>SelectBufOrTab(' . s:i . ')<CR>'
 endfor
 unlet! s:i
 
@@ -1277,16 +1285,29 @@ unlet! s:script
   endfunction
   "}}}2
   "----------------------------------------------------------{{{2
-  " Buffer-related Functions
+  " Buffer/Tabpage-related Functions
   "--------------------------------------------------------------
   " Move to the next or previous modifiable buffer. <id=MoveToBuf>
   nnoremap <silent> gb        :<C-U>call <SID>MoveToBuf(1, v:count)<CR>
   nnoremap <silent> gB        :<C-U>call <SID>MoveToBuf(0, v:count)<CR>
   nnoremap <silent> <M-Right> :<C-U>call <SID>MoveToBuf(1)<CR>
   nnoremap <silent> <M-Left>  :<C-U>call <SID>MoveToBuf(0)<CR>
-  nnoremap <silent> <M-l>     :<C-U>call <SID>MoveToBuf(1)<CR>
-  nnoremap <silent> <M-h>     :<C-U>call <SID>MoveToBuf(0)<CR>
 
+  nnoremap <silent> <M-l>     :<C-U>call <SID>MoveToBufOrTab(1)<CR>
+  nnoremap <silent> <M-h>     :<C-U>call <SID>MoveToBufOrTab(0)<CR>
+
+  nnoremap <silent> g6        :<C-U>call <SID>MoveToPrevTab()<CR>
+
+  augroup Vimrc
+    autocmd TabLeave * silent! let g:prev_tabpage = tabpagenr()
+  augroup END
+
+  function! <SID>MoveToPrevTab() " {{{
+    if exists('g:prev_tabpage')
+      exec "tabnext" g:prev_tabpage
+    endif
+  endfunction
+  " }}}
   function! <SID>MoveToBuf(forward, ...) " {{{
     if a:0 > 0 && a:1 > 0
       exec 'buffer' a:1
@@ -1301,6 +1322,15 @@ unlet! s:script
       exe cmd
       let i += 1
     endwhile
+  endfunction
+  " }}}
+  function! <SID>MoveToBufOrTab(forward) " {{{
+    if tabpagenr('$') > 1
+      let cmd = a:forward == 1 ? 'tabnext' : 'tabprevious'
+      exe cmd
+    else
+      call <SID>MoveToBuf(a:forward)
+    endif
   endfunction
   " }}}
 
