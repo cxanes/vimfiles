@@ -1,5 +1,5 @@
 " FileExplorer.vim
-" Last Modified: 2010-09-02 05:45:13
+" Last Modified: 2013-11-16 03:42:57
 "        Author: Frank Chang <frank.nevermind AT gmail.com>
 "
 " A tree view file browser.
@@ -1340,17 +1340,32 @@ function! s:InitHighlight() "{{{
   let prefix_space = printf('^%s\%%(%s\)*', repeat(' ', s:INDENT-1), repeat(' ', s:INDENT))
 
   syntax clear
-  syntax match TreeLeaf '^.*'
-  exe 'syntax match TreeNode ''' . prefix_space . '[-+].*'' contains=TreeIcon'
 
-  syntax match TreeRoot '[^ ].*'
+  if v:version < 704
+    syntax match TreeLeaf '^.*'
+    exe 'syntax match TreeNode ''' . prefix_space . '[-+].*'' contains=TreeIcon'
 
-  syntax match FileExplorerHelp '^".*'
-  exe 'syntax match TreeIcon contained ''\%(' . prefix_space . '\)\@<=[-+]'''
+    syntax match TreeRoot '[^ ].*'
 
-  exe 'syntax match FileSymlink contained ''\%(' . prefix_space . '[-+]\)\@<=.\{-1,}\%( ->\)\@='' containedin=TreeNode,TreeRoot,TreeLeaf'
+    syntax match FileExplorerHelp '^".*'
+    exe 'syntax match TreeIcon contained ''\%(' . prefix_space . '\)\@<=[-+]'''
 
-  exe 'syntax match FileSymlink contained ''\%(^\%(' . repeat(' ', s:INDENT) . '\)\+\)\@<=[^ ].\{-}\%( ->\)\@='' containedin=TreeNode,TreeRoot,TreeLeaf'
+    exe 'syntax match FileSymlink contained ''\%(' . prefix_space . '[-+]\)\@<=.\{-1,}\%( ->\)\@='' containedin=TreeNode,TreeRoot,TreeLeaf'
+
+    exe 'syntax match FileSymlink contained ''\%(^\%(' . repeat(' ', s:INDENT) . '\)\+\)\@<=[^ ].\{-}\%( ->\)\@='' containedin=TreeNode,TreeRoot,TreeLeaf'
+  else
+    syntax match TreeLeaf '\%#=1^.*'
+    exe 'syntax match TreeNode ''\%#=1' . prefix_space . '[-+].*'' contains=TreeIcon'
+
+    syntax match TreeRoot '\%#=1[^ ].*'
+
+    syntax match FileExplorerHelp '\%#=1^".*'
+    exe 'syntax match TreeIcon contained ''\%#=1\%(' . prefix_space . '\)\@<=[-+]'''
+
+    exe 'syntax match FileSymlink contained ''\%#=1\%(' . prefix_space . '[-+]\)\@<=.\{-1,}\%( ->\)\@='' containedin=TreeNode,TreeRoot,TreeLeaf'
+
+    exe 'syntax match FileSymlink contained ''\%#=1\%(^\%(' . repeat(' ', s:INDENT) . '\)\+\)\@<=[^ ].\{-}\%( ->\)\@='' containedin=TreeNode,TreeRoot,TreeLeaf'
+  endif
 
 	highlight default link TreeRoot Define
 	highlight default link TreeNode Label
