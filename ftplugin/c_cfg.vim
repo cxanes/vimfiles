@@ -30,6 +30,24 @@ try
   call mapping#Enter('{', '}')
 catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
 endtry
+
+function! s:CRefVimKeyMapping()
+  vmap <silent> <buffer> <Leader>cr <Plug>CRV_CRefVimVisual
+  nmap <silent> <buffer> <Leader>cr <Plug>CRV_CRefVimNormal
+  map  <silent> <buffer> <Leader>caa <Plug>CRV_CRefVimAsk
+  map  <silent> <buffer> <Leader>ci <Plug>CRV_CRefVimInvoke
+endfunction
+
+if !exists("loaded_crefvim")
+  if empty(globpath(&rtp, "autoload/crefvim.vim"))
+    let loaded_crefvim = 0
+  else
+    call s:CRefVimKeyMapping()
+    ru autoload/crefvim.vim
+  endif
+elseif loaded_crefvim == 1
+  call s:CRefVimKeyMapping()
+endif
 " 
 "===================================================================
 " Functions 

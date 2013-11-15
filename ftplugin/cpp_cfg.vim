@@ -29,6 +29,25 @@ try
   call IndentForComment#IndentForCommentMapping(['//', ['/*', '*/']], [30, 45, 60])
 catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
 endtry
+
+function! s:StlRefVimKeyMapping()
+  vmap <silent> <buffer> <Leader>tr <Plug>StlRefVimVisual
+  nmap <silent> <buffer> <Leader>tr <Plug>StlRefVimNormal
+  map  <silent> <buffer> <Leader>taa <Plug>StlRefVimAsk
+  map  <silent> <buffer> <Leader>ti <Plug>StlRefVimInvoke
+  map  <silent> <buffer> <Leader>te <Plug>StlRefVimExample
+endfunction
+
+if !exists("loaded_stlrefvim")
+  if empty(globpath(&rtp, "autoload/stlrefvim.vim"))
+    let loaded_stlrefvim = 0
+  else
+    call s:StlRefVimKeyMapping()
+    ru autoload/stlrefvim.vim
+  endif
+elseif loaded_stlrefvim == 1
+  call s:StlRefVimKeyMapping()
+endif
 " }}}
 "===================================================================
 " vim: fdm=marker :

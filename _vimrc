@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2013-05-30 18:37:52
+" Last Modified: 2013-11-16 04:25:47
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -1883,20 +1883,6 @@ command! -nargs=? -complete=file -bang Log  call PIM#Log#Open((empty(<q-args>) ?
   let g:Tlist_Ctags_Cmd = 'ctags'
   let g:Tlist_Show_One_File = 1
   let Tlist_Use_Right_Window = 1
-  "}}}2
-  "----------------------------------------------------------{{{2
-  " CRefVim
-  " <http://www.vim.org/scripts/script.php?script_id=614>
-  "--------------------------------------------------------------
-  map <silent> <Leader>ci  <Plug>CRV_CRefVimInvoke
-  map <silent> <Leader>caa <Plug>CRV_CRefVimAsk
-  "}}}2
-  "----------------------------------------------------------{{{2
-  " stlrefvim
-  " <http://www.vim.org/scripts/script.php?script_id=2353>
-  "--------------------------------------------------------------
-  map <silent> <Leader>ti  <Plug>StlRefVimInvoke
-  map <silent> <Leader>taa <Plug>StlRefVimAsk
   "}}}2
   "----------------------------------------------------------{{{2
   " surround.vim
