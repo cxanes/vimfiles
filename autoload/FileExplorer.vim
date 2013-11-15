@@ -1,5 +1,5 @@
 " FileExplorer.vim
-" Last Modified: 2013-11-16 03:42:57
+" Last Modified: 2013-11-16 06:43:56
 "        Author: Frank Chang <frank.nevermind AT gmail.com>
 "
 " A tree view file browser.
@@ -925,6 +925,8 @@ function! FileExplorer#Open(dir, ...) " ... = max_level [0:Max_Create_Level], ot
     if exists('+rnu')
       setlocal nornu
     endif
+
+    let &l:statusline='%<%f%=  %l/%L,%c%V '
 
     if !exists('b:_FileExplorer_show_help')
       let b:_FileExplorer_show_help = 0
