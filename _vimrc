@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2013-11-16 06:27:11
+" Last Modified: 2013-11-16 06:58:16
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -860,6 +860,14 @@ cnoremap <M-w> <C-\>e RemoveLastPathComponent()<CR>
 function! RemoveLastPathComponent() "{{{
   return substitute(getcmdline(), '\%(\\ \|[\\/]\@!\f\)\+[\\/]\=$\|.$', '', '')
 endfunction
+"}}}
+
+cnoremap <M-i> <C-\>e <SID>InsertLastSearchPattern()<CR>
+function! <SID>InsertLastSearchPattern() "{{{
+  let cmd = getcmdline() . substitute(getreg('/'),'^\\<\|\\>$','','g')
+  call setcmdpos(strlen(cmd) + 1)
+  return cmd
+endfunc
 "}}}
 "}}}
 " Map: <C-*> {{{
