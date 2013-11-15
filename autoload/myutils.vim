@@ -976,6 +976,10 @@ function! myutils#Cscope(args, default, try_flist_name) "{{{
     let cmd .= '-i ' . mylib#Shellescape(g:flist_name) . ' '
   endif
 
+  if exists('g:cscope_default_args')
+    let cmd .= g:cscope_default_args
+  endif
+
   exe cmd . a:args
   redraw!
 endfunction
@@ -994,6 +998,10 @@ function! myutils#Ctags(args, default, try_flist_name) "{{{
 
   if a:try_flist_name && exists('g:flist_name') && filereadable(g:flist_name)
     let cmd .= '-L ' . mylib#Shellescape(g:flist_name) . ' '
+  endif
+
+  if exists('g:ctags_default_args')
+    let cmd .= g:ctags_default_args
   endif
 
   exe cmd . a:args
