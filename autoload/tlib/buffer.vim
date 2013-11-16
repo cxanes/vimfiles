@@ -3,8 +3,13 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-06-30.
-" @Last Change: 2010-03-29.
-" @Revision:    0.0.315
+" @Last Change: 2013-09-25.
+" @Revision:    0.0.352
+
+
+" Where to display the line when using |tlib#buffer#ViewLine|.
+" For possible values for position see |scroll-cursor|.
+TLet g:tlib_viewline_position = 'zz'
 
 
 let s:bmru = []
@@ -28,6 +33,17 @@ function! s:BMRU_Push(bnr) "{{{3
         call remove(s:bmru, i)
     endif
     call insert(s:bmru, a:bnr)
+endf
+
+
+function! s:CompareBuffernameByBasename(a, b) "{{{3
+    let rx = '"\zs.\{-}\ze" \+\S\+ \+\d\+$'
+    let an = matchstr(a:a, rx)
+    let an = fnamemodify(an, ':t')
+    let bn = matchstr(a:b, rx)
+    let bn = fnamemodify(bn, ':t')
+    let rv = an == bn ? 0 : an > bn ? 1 : -1
+    return rv
 endf
 
 
@@ -119,8 +135,16 @@ endf
 
 
 " :def: function! tlib#buffer#GetList(?show_hidden=0, ?show_number=0, " ?order='bufnr')
+" Possible values for the "order" argument:
+"   bufnr    :: Default behaviour
+"   mru      :: Sort buffers according to most recent use
+"   basename :: Sort by the file's basename (last component)
+"
+" NOTE: MRU order works on second invocation only. If you want to always 
+" use MRU order, call tlib#buffer#EnableMRU() in your ~/.vimrc file.
 function! tlib#buffer#GetList(...)
     TVarArg ['show_hidden', 0], ['show_number', 0], ['order', '']
+    " TLogVAR show_hidden, show_number, order
     let ls_bang = show_hidden ? '!' : ''
     redir => bfs
     exec 'silent ls'. ls_bang
@@ -133,6 +157,8 @@ function! tlib#buffer#GetList(...)
         else
             call sort(buffer_list, function('s:CompareBufferNrByMRU'))
         endif
+    elseif order == 'basename'
+        call sort(buffer_list, function('s:CompareBuffernameByBasename'))
     endif
     let buffer_nr = map(copy(buffer_list), 'matchstr(v:val, ''\s*\zs\d\+\ze'')')
     " TLogVAR buffer_list, buffer_nr
@@ -178,6 +204,7 @@ function! s:UndoHighlightLine() "{{{3
     3match none
     autocmd! TLib CursorMoved,CursorMovedI <buffer>
     autocmd! TLib CursorHold,CursorHoldI <buffer>
+    autocmd! TLib InsertEnter,InsertChange,InsertLeave <buffer>
     autocmd! TLib BufLeave,BufWinLeave,WinLeave,BufHidden <buffer>
 endf
 
@@ -189,7 +216,8 @@ function! tlib#buffer#HighlightLine(...) "{{{3
     call tlib#autocmdgroup#Init()
     exec 'autocmd TLib CursorMoved,CursorMovedI <buffer> if line(".") != '. line .' | call s:UndoHighlightLine() | endif'
     autocmd TLib CursorHold,CursorHoldI <buffer> call s:UndoHighlightLine()
-    autocmd TLib BufLeave,BufWinLeave,WinLeave,BufHidden <buffer> call s:UndoHighlightLine()
+    autocmd TLib InsertEnter <buffer> call s:UndoHighlightLine()
+    " autocmd TLib BufLeave,BufWinLeave,WinLeave,BufHidden <buffer> call s:UndoHighlightLine()
 endf
 
 
@@ -328,6 +356,7 @@ function! tlib#buffer#InsertText(text, ...) "{{{3
             exec 'norm! '. posshift .'h'
         endif
     endif
+    " TLogDBG getline(lineno)
     " TLogDBG string(getline(1, '$'))
     return grow
 endf

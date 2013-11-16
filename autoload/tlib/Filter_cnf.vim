@@ -3,23 +3,38 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2008-11-25.
-" @Last Change: 2010-03-22.
-" @Revision:    0.0.66
-
-let s:save_cpo = &cpo
-set cpo&vim
-
+" @Last Change: 2013-09-25.
+" @Revision:    0.0.92
 
 let s:prototype = tlib#Object#New({'_class': ['Filter_cnf'], 'name': 'cnf'}) "{{{2
+let s:prototype.highlight = g:tlib#input#higroup
 
 " The search pattern for |tlib#input#List()| is in conjunctive normal 
 " form: (P1 OR P2 ...) AND (P3 OR P4 ...) ...
 " The pattern is a '/\V' very no-'/magic' regexp pattern.
 "
+" Pressing <space> joins two patterns with AND.
+" Pressing | joins two patterns with OR.
+" I.e. In order to get "lala AND (foo OR bar)", you type 
+" "lala foo|bar".
+"
 " This is also the base class for other filters.
 function! tlib#Filter_cnf#New(...) "{{{3
     let object = s:prototype.New(a:0 >= 1 ? a:1 : {})
     return object
+endf
+
+
+" :nodoc:
+function! s:prototype.Init(world) dict "{{{3
+endf
+
+
+" :nodoc:
+function! s:prototype.Help(world) dict "{{{3
+    call a:world.PushHelp(
+                \ printf('"%s", "%s", "%sWORD"', g:tlib#input#and, g:tlib#input#or, g:tlib#input#not),
+                \ 'AND, OR, NOT')
 endf
 
 
@@ -79,18 +94,22 @@ function! s:prototype.Match(world, text) dict "{{{3
     "     set smartcase
     " endif
     " try
+    if !empty(a:world.filter_neg)
         for rx in a:world.filter_neg
             " TLogVAR rx
             if a:text =~ rx
                 return 0
             endif
         endfor
+    endif
+    if !empty(a:world.filter_pos)
         for rx in a:world.filter_pos
             " TLogVAR rx
             if a:text !~ rx
                 return 0
             endif
         endfor
+    endif
     " finally
     "     let &smartcase = sc
     "     let &ignorecase = ic
@@ -102,8 +121,15 @@ endf
 " :nodoc:
 function! s:prototype.DisplayFilter(filter) dict "{{{3
     let filter1 = deepcopy(a:filter)
-    call map(filter1, '"(". join(reverse(v:val), " OR ") .")"')
+    call map(filter1, '"(". join(reverse(self.Pretty(v:val)), " OR ") .")"')
     return join(reverse(filter1), ' AND ')
+endf
+
+
+function! s:prototype.Pretty(filter) dict "{{{3
+    " call map(a:filter, 'substitute(v:val, ''\\\.\\{-}'', ''=>'', ''g'')')
+    call map(a:filter, 'self.CleanFilter(v:val)')
+    return a:filter
 endf
 
 
@@ -136,6 +162,3 @@ function! s:prototype.CleanFilter(filter) dict "{{{3
     return a:filter
 endf
 
-
-let &cpo = s:save_cpo
-unlet s:save_cpo
