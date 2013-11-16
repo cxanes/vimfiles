@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2013-11-16 08:29:41
+" Last Modified: 2013-11-16 08:44:42
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -973,24 +973,24 @@ inoremap <C-Z> <C-\><C-O>u
 "}}}
 " Map: <F*> {{{
 " Quick save & quit <id=Save> <id=Quit>
-map  <silent> <F2> :<C-U>up<CR>
-imap <silent> <F2> <C-\><C-O>:up<CR>
-map  <silent> <F4> :<C-U>q<CR>
-imap <silent> <F4> <C-\><C-O>:q<CR>
+noremap  <silent> <F2> :<C-U>up<CR>
+imap     <silent> <F2> <C-\><C-O><F2>
+noremap  <silent> <F4> :<C-U>q<CR>
+imap     <silent> <F4> <C-\><C-O><F4>
 
 " Quick save all & quit all
-map  <silent> <S-F2> :<C-U>wa<CR>
-imap <silent> <S-F2> <C-\><C-O>:wa<CR>
-map  <silent> <S-F4> :<C-U>qa<CR>
-imap <silent> <S-F4> <C-\><C-O>:qa<CR>
+noremap  <silent> <S-F2> :<C-U>wa<CR>
+imap     <silent> <S-F2> <C-\><C-O><S-F2>
+noremap  <silent> <S-F4> :<C-U>qa<CR>
+imap     <silent> <S-F4> <C-\><C-O><S-F4>
 
 " Wipe out the highlight of the matching strings. <id=Search>
-imap <silent> <F11> <C-\><C-O>:let @/ = ''<CR>
-nmap <silent> <F11> :<C-U>let @/ = ''<CR>
+nnoremap <silent> <F11> :<C-U>let @/ = ''<CR>
+imap <silent> <F11> <C-\><C-O><F11>
 
 " Toggle Spellcheck <id=Spell>
-map  <silent> <F12> :<C-U>setlocal spell! spelllang=en_us<Bar>setlocal spell?<CR>
-imap <silent> <F12> <C-\><C-O>:setlocal spell! spelllang=en_us<Bar>setlocal spell?<CR>
+noremap  <silent> <F12> :<C-U>setlocal spell! spelllang=en_us<Bar>setlocal spell?<CR>
+imap <silent> <F12> <C-\><C-O><F12>
 
 "}}}
 " Map: Others {{{
@@ -1031,8 +1031,8 @@ nnoremap <silent> <Leader>gO O<ESC>"_S<ESC>
 " Map arrow keys to display line movements
 nnoremap <silent> <Up>   gk
 nnoremap <silent> <Down> gj
-inoremap <silent> <Up>   <C-\><C-O>gk
-inoremap <silent> <Down> <C-\><C-O>gj
+imap     <silent> <Up>   <C-\><C-O><Up>
+imap     <silent> <Down> <C-\><C-O><Down>
 
 nnoremap <silent> gK     :<C-U>exec 'help '.expand('<cword>')<CR>
 nnoremap <silent> <Leader>tn :<C-U>tabnew<CR>
