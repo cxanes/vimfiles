@@ -142,6 +142,7 @@ $cdir	pyclewn.txt	/*$cdir*
 :VCSUnlock	vcscommand.txt	/*:VCSUnlock*
 :VCSUpdate	vcscommand.txt	/*:VCSUpdate*
 :VCSVimDiff	vcscommand.txt	/*:VCSVimDiff*
+<C-k1>	mark.txt	/*<C-k1>*
 <Leader>#	mark.txt	/*<Leader>#*
 <Leader>/	mark.txt	/*<Leader>\/*
 <Leader>?	mark.txt	/*<Leader>?*
@@ -149,6 +150,7 @@ $cdir	pyclewn.txt	/*$cdir*
 <Leader>n	mark.txt	/*<Leader>n*
 <Leader>r	mark.txt	/*<Leader>r*
 <Leader>star	mark.txt	/*<Leader>star*
+<k1>	mark.txt	/*<k1>*
 AN	alternate.txt	/*AN*
 AS	alternate.txt	/*AS*
 AT	alternate.txt	/*AT*
@@ -2232,6 +2234,7 @@ g:fuf_useMigemo	fuf.txt	/*g:fuf_useMigemo*
 g:mwAutoLoadMarks	mark.txt	/*g:mwAutoLoadMarks*
 g:mwAutoSaveMarks	mark.txt	/*g:mwAutoSaveMarks*
 g:mwDefaultHighlightingPalette	mark.txt	/*g:mwDefaultHighlightingPalette*
+g:mwDirectGroupJumpMappingNum	mark.txt	/*g:mwDirectGroupJumpMappingNum*
 g:mwHistAdd	mark.txt	/*g:mwHistAdd*
 g:mwIgnoreCase	mark.txt	/*g:mwIgnoreCase*
 g:snippets_dir	snipMate.txt	/*g:snippets_dir*
@@ -2363,6 +2366,7 @@ mark-ideas	mark.txt	/*mark-ideas*
 mark-information	mark.txt	/*mark-information*
 mark-installation	mark.txt	/*mark-installation*
 mark-integration	mark.txt	/*mark-integration*
+mark-keypad-searching	mark.txt	/*mark-keypad-searching*
 mark-known-problems	mark.txt	/*mark-known-problems*
 mark-limitations	mark.txt	/*mark-limitations*
 mark-mappings	mark.txt	/*mark-mappings*
