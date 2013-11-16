@@ -2,6 +2,48 @@
 " Keymappings and Commands
 "================================================================
 " Commands {{{
+
+" Wiki-related commands (rst)
+let g:rst_wiki = 1
+let g:WikiHomeDir = s:MSWIN ? 'E:/Wiki/Notes' : ($HOME . '/wiki')
+command! -bang -nargs=? -complete=custom,s:ListWikiLinks Wiki call s:Wiki(<q-bang> == '!', <q-args>)
+function! s:ListWikiLinks(A, L, P) "{{{
+  if !exists('g:WikiHomeDir')
+    return ''
+  endif
+
+  let links = split(globpath(g:WikiHomeDir, '*.rst'), "\n")
+  if empty(links)
+    return ''
+  endif
+
+  let pat = '^\V' . escape(g:WikiHomeDir, '\') . '\%(\[\\/]\)\?\|\.rst\$'
+  echom pat
+  call map(links, 'substitute(v:val, pat, "", "g")')
+  return join(links, "\n")
+endfunction
+"}}}
+function! s:Wiki(newtab, link) "{{{
+  if a:link =~ '^[A-Za=z]:|^[\\/]'
+    echohl ErrorMsg | echo 'Wiki: link cannot be fullpath' | echohl None
+    return
+  endif
+
+  let link = simplify(g:WikiHomeDir . '/' . (empty(a:link) ? 'index' : a:link))
+  if link !~ '\.rst$'
+    let link .= '.rst'
+  endif
+
+  if isdirectory(link)
+    echohl ErrorMsg | echo 'Wiki: link is directory' | echohl None
+    return
+  endif
+
+  exec (a:newtab ? 'tabe' : 'e') fnameescape(link)
+  exec 'lcd!' fnameescape(g:WikiHomeDir)
+endfunction
+"}}}
+
 if s:MSWIN
   " Update runtime files: "{{{
   " Ref: http://www.vim.org/runtime.php
