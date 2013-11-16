@@ -30,6 +30,8 @@ $cdir	pyclewn.txt	/*$cdir*
 ,w	camelcasemotion.txt	/*,w*
 .snippet	snipMate.txt	/*.snippet*
 .snippets	snipMate.txt	/*.snippets*
+:Align	Align.txt	/*:Align*
+:AlignCtrl	Align.txt	/*:AlignCtrl*
 :AlignMapsClean	Align.txt	/*:AlignMapsClean*
 :CVSEdit	vcscommand.txt	/*:CVSEdit*
 :CVSEditors	vcscommand.txt	/*:CVSEditors*
