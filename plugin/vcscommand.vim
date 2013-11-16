@@ -378,31 +378,21 @@ endfunction
 " command line on Windows systems.
 
 function! s:VCSCommandUtility.system(...)
-	if (has("win32") || has("win64")) && &sxq !~ '"'
-		let save_sxq = &sxq
-		set sxq=\"
-	endif
-	try
-		let output = call('system', a:000)
-		if exists('*iconv') && has('multi_byte')
-			if(strlen(&tenc) && &tenc != &enc)
-				let output = iconv(output, &tenc, &enc)
-			else
-				let originalBuffer = VCSCommandGetOriginalBuffer(VCSCommandGetOption('VCSCommandEncodeAsFile', 0))
-				if originalBuffer
-					let fenc = getbufvar(originalBuffer, '&fenc')
-					if fenc != &enc
-						let output = iconv(output, fenc, &enc)
-					endif
+	let output = call('system', a:000)
+	if exists('*iconv') && has('multi_byte')
+		if(strlen(&tenc) && &tenc != &enc)
+			let output = iconv(output, &tenc, &enc)
+		else
+			let originalBuffer = VCSCommandGetOriginalBuffer(VCSCommandGetOption('VCSCommandEncodeAsFile', 0))
+			if originalBuffer
+				let fenc = getbufvar(originalBuffer, '&fenc')
+				if fenc != &enc
+					let output = iconv(output, fenc, &enc)
 				endif
 			endif
+		endif
 
-		endif
-	finally
-		if exists("save_sxq")
-			let &sxq = save_sxq
-		endif
-	endtry
+	endif
 	return output
 endfunction
 
@@ -818,6 +808,7 @@ function! s:VCSAnnotate(bang, ...)
 			if splitRegex == ''
 				return annotateBuffer
 			endif
+			wincmd J
 			let originalFileType = getbufvar(originalBuffer, '&ft')
 			let annotateFileType = getbufvar(annotateBuffer, '&ft')
 
@@ -1032,8 +1023,7 @@ function! s:VCSVimDiff(...)
 				let b:VCSCommandCommand = 'vimdiff'
 				diffthis
 				let t:vcsCommandVimDiffScratchList = [resultBuffer]
-				" If no split method is defined, cheat, and set it to vertical.
-				call s:VCSCommandUtility.pushContext({'VCSCommandSplit': orientation})
+				call s:VCSCommandUtility.pushContext({'VCSCommandEdit': 'split', 'VCSCommandSplit': orientation})
 				try
 					let resultBuffer = s:VCSReview(a:2)
 				finally
@@ -1047,7 +1037,6 @@ function! s:VCSVimDiff(...)
 				diffthis
 				let t:vcsCommandVimDiffScratchList += [resultBuffer]
 			else
-				" Add new buffer.  Force splitting behavior, otherwise why use vimdiff?
 				call s:VCSCommandUtility.pushContext({'VCSCommandEdit': 'split', 'VCSCommandSplit': orientation})
 				try
 					if(a:0 == 0)
@@ -1081,9 +1070,11 @@ function! s:VCSVimDiff(...)
 								\ . '|call setbufvar('.originalBuffer.', ''&foldmethod'', '''.getbufvar(originalBuffer, '&foldmethod').''')'
 								\ . '|call setbufvar('.originalBuffer.', ''&foldlevel'', '''.getbufvar(originalBuffer, '&foldlevel').''')'
 								\ . '|call setbufvar('.originalBuffer.', ''&scrollbind'', '.getbufvar(originalBuffer, '&scrollbind').')'
-								\ . '|call setbufvar('.originalBuffer.', ''&cursorbind'', '.getbufvar(originalBuffer, '&cursorbind').')'
 								\ . '|call setbufvar('.originalBuffer.', ''&wrap'', '.getbufvar(originalBuffer, '&wrap').')'
-								\ . '|if &foldmethod==''manual''|execute ''normal! zE''|endif'
+					if has('cursorbind')
+						let t:vcsCommandVimDiffRestoreCmd .= '|call setbufvar('.originalBuffer.', ''&cursorbind'', '.getbufvar(originalBuffer, '&cursorbind').')'
+					endif
+					let t:vcsCommandVimDiffRestoreCmd .= '|if &foldmethod==''manual''|execute ''normal! zE''|endif'
 					diffthis
 					wincmd w
 				else
