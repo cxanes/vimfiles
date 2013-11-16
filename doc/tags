@@ -192,7 +192,6 @@ Cquit	pyclewn.txt	/*Cquit*
 Csetfmtvar	pyclewn.txt	/*Csetfmtvar*
 Csymcompletion	pyclewn.txt	/*Csymcompletion*
 Cthreadstack	pyclewn.txt	/*Cthreadstack*
-DrawIt.txt	DrawIt.txt	/*DrawIt.txt*
 EnhComm-Bugs	EnhancedCommentify.txt	/*EnhComm-Bugs*
 EnhComm-Credits	EnhancedCommentify.txt	/*EnhComm-Credits*
 EnhComm-EnhCommentify	EnhancedCommentify.txt	/*EnhComm-EnhCommentify*
@@ -1927,6 +1926,12 @@ doxygen-syntax	doxygen.txt	/*doxygen-syntax*
 doxygen.vim	doxygen.txt	/*doxygen.vim*
 draft	latexhelp.txt	/*draft*
 drawit	DrawIt.txt	/*drawit*
+drawit-DIdbl	DrawIt.txt	/*drawit-DIdbl*
+drawit-DInrml	DrawIt.txt	/*drawit-DInrml*
+drawit-DIsngl	DrawIt.txt	/*drawit-DIsngl*
+drawit-DIstart	DrawIt.txt	/*drawit-DIstart*
+drawit-DrawIt	DrawIt.txt	/*drawit-DrawIt*
+drawit-\di	DrawIt.txt	/*drawit-\\di*
 drawit-a	DrawIt.txt	/*drawit-a*
 drawit-b	DrawIt.txt	/*drawit-b*
 drawit-brush	DrawIt.txt	/*drawit-brush*

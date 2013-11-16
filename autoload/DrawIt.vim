@@ -1,10 +1,10 @@
 " DrawIt.vim: a simple way to draw things in Vim
 "
-" Maintainer:	Charles E. Campbell, Jr.
-" Authors:	Charles E. Campbell, Jr. <NdrOchipS@PcampbellAfamily.Mbiz> - NOSPAM
-"   		Sylvain Viart (molo@multimania.com)
-" Version:	11q	ASTRO-ONLY
-" Date:		Nov 16, 2011
+" Maintainer:	Charles E. Campbell
+" Authors:		Charles E. Campbell <NdrOchipS@PcampbellAfamily.Mbiz> - NOSPAM
+"   			Sylvain Viart (molo@multimania.com)
+" Version:		12
+" Date:			Mar 12, 2013
 "
 " Quick Setup: {{{1
 "              tar -oxvf DrawIt.tar
@@ -18,7 +18,7 @@
 "             You may also use visual-block mode to select endpoints and
 "             draw lines, arrows, and ellipses.
 "
-" Copyright:    Copyright (C) 1999-2011 Charles E. Campbell, Jr. {{{1
+" Copyright:    Copyright (C) 1999-2012 Charles E. Campbell {{{1
 "               Permission is hereby granted to use and distribute this code,
 "               with or without modifications, provided that this copyright
 "               notice is copied with it. Like anything else that's free,
@@ -41,7 +41,7 @@
 if &cp || exists("g:loaded_DrawIt")
  finish
 endif
-let g:loaded_DrawIt= "v11q"
+let g:loaded_DrawIt= "v12"
 if v:version < 700
  echohl WarningMsg
  echo "***warning*** this version of DrawIt needs vim 7.0"
@@ -55,7 +55,11 @@ scriptencoding utf-8
 " ---------------------------------------------------------------------
 "  Script Variables: {{{1
 if !exists("g:drawit_xstrlen")
- if &enc == "latin1" || $LANG == "en_US.UTF-8" || !has("multi_byte")
+ if exists("g:Align_xstrlen")
+  let g:drawit_xstrlen= g:Align_xstrlen
+ elseif exists("g:netrw_xstrlen")
+  let g:drawit_xstrlen= g:netrw_xstrlen
+ elseif &enc == "latin1" || !has("multi_byte")
   let g:drawit_xstrlen= 0
  else
   let g:drawit_xstrlen= 1
@@ -70,30 +74,30 @@ endif
 "DechoTabOn
 
 " =====================================================================
-" DrawIt Functions: (by Charles E. Campbell, Jr.) {{{1
+" DrawIt Functions: (by Charles E. Campbell) {{{1
 " =====================================================================
 
 " ---------------------------------------------------------------------
-" DrawIt#StartDrawIt: this function maps the cursor keys, sets up default {{{2
+" DrawIt#DrawItStart: this function maps the cursor keys, sets up default {{{2
 "              drawing characters, and makes some settings
-fun! DrawIt#StartDrawIt(...)
-"  call Dfunc("StartDrawIt()")
+fun! DrawIt#DrawItStart(...)
+"  call Dfunc("DrawItStart()")
 
   if a:0 > 0
-   if a:1 == 'S' || a:1 == 's'
+   if     exists("bz:di_gfxchr") && b:di_gfxchr && (a:1 == 'S' || a:1 == 's')
 	DIsngl
-   elseif a:1 == 'D' || a:1 == 'd'
+   elseif exists("bz:di_gfxchr") && b:di_gfxchr && (a:1 == 'D' || a:1 == 'd')
 	DIdbl
    elseif !exists("g:drawit_mode")
-	let g:drawit_mode= 0
+	let g:drawit_mode= 'N'
    endif
   endif
 
-  " StartDrawIt: report on [DrawIt] mode {{{3
+  " DrawItStart: report on [DrawIt] mode {{{3
   if exists("b:dodrawit") && b:dodrawit == 1
    " already in DrawIt mode
     echo "[DrawIt] (already on, use ".((exists("mapleader") && mapleader != "")? mapleader : '\')."ds to stop)"
-"   call Dret("StartDrawIt")
+"   call Dret("DrawItStart")
    return
   endif
   let b:dodrawit= 1
@@ -101,27 +105,17 @@ fun! DrawIt#StartDrawIt(...)
   " indicate in DrawIt mode
   echo "[DrawIt]"
 
-  " StartDrawIt: turn on mouse {{{3
+  " DrawItStart: turn on mouse {{{3
   if !exists("b:drawit_keep_mouse")
    let b:drawit_keep_mouse= &mouse
   endif
   setlocal mouse=a
 
-  " StartDrawIt: set up type of strlen() calculation that's needed {{{3
-  if !exists("g:drawit_xstrlen")
-   if exists("g:Align_xstrlen")
-    let g:drawit_xstrlen= g:Align_xstrlen
-   endif
-   if !exists("g:drawit_xstrlen")
-    let g:drawit_xstrlen= 1
-   endif
-  endif
-
-  " StartDrawIt: set up DrawIt commands {{{3
+  " DrawItStart: set up DrawIt commands {{{3
   com! -nargs=1 -range SetBrush <line1>,<line2>call DrawIt#SetBrush(<q-args>)
   com! -count Canvas call s:Spacer(line("."),line(".") + <count> - 1,0)
 
-  " StartDrawIt: set up default drawing characters {{{3
+  " DrawItStart: set up default drawing characters {{{3
   if !exists("b:di_vert")   |let b:di_vert    = "|" |endif
   if !exists("b:di_horiz")  |let b:di_horiz   = "-" |endif
   if !exists("b:di_plus")   |let b:di_plus    = "+" |endif
@@ -130,6 +124,7 @@ fun! DrawIt#StartDrawIt(...)
   if !exists("b:di_cross")  |let b:di_cross   = "X" |endif
   if !exists("b:di_ellipse")|let b:di_ellipse = '*' |endif
 
+  let b:di_gfxchr= 1
   if &enc == 'utf-8'
    " Box drawing characters using utf-8
    " │ ─ ┌ ┐ └ ┘ ┬ ┴ ├ ┤ ┼ ╱ ╲ ╳
@@ -236,12 +231,14 @@ fun! DrawIt#StartDrawIt(...)
    if !exists("b:di_cSrDu")| let b:di_cSrDu= nr2char(211)| endif    " ╙
    if !exists("b:di_cDlSu")| let b:di_cDlSu= nr2char(190)| endif    " ╛
    if !exists("b:di_cSlDu")| let b:di_cSlDu= nr2char(189)| endif    " ╜
+  else
+   let b:di_gfxchr= 0
   endif
 
   " set up initial DrawIt behavior (as opposed to erase behavior)
   let b:di_erase     = 0
 
-  " StartDrawIt: option recording {{{3
+  " DrawItStart: option recording {{{3
   let b:di_aikeep    = &l:ai
   let b:di_cinkeep   = &l:cin
   let b:di_cpokeep   = &l:cpo
@@ -261,7 +258,7 @@ fun! DrawIt#StartDrawIt(...)
   setlocal fo-=a
   setlocal remap magic
 
-  " StartDrawIt: save and unmap user maps {{{3
+  " DrawItStart: save and unmap user maps {{{3
   let b:lastdir    = 1
   if exists("mapleader")
    let usermaplead  = mapleader
@@ -369,31 +366,31 @@ fun! DrawIt#StartDrawIt(...)
   endif
   call SaveUserMaps("bn","",":\<c-v>","DrawIt")
 
-  " StartDrawIt: DrawIt maps (Charles Campbell) {{{3
-  nmap <silent> <buffer> <script> <left>     :set lz<CR>:silent! call <SID>DrawLeft()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <right>    :set lz<CR>:silent! call <SID>DrawRight()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <up>       :set lz<CR>:silent! call <SID>DrawUp()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <down>     :set lz<CR>:silent! call <SID>DrawDown()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <s-left>   :set lz<CR>:silent! call <SID>MoveLeft()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <s-right>  :set lz<CR>:silent! call <SID>MoveRight()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <s-up>     :set lz<CR>:silent! call <SID>MoveUp()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <s-down>   :set lz<CR>:silent! call <SID>MoveDown()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <space>    :set lz<CR>:silent! call <SID>DrawErase()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> >          :set lz<CR>:silent! call <SID>DrawSpace('>',1)<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <          :set lz<CR>:silent! call <SID>DrawSpace('<',2)<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> ^          :set lz<CR>:silent! call <SID>DrawSpace('^',3)<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> v          :set lz<CR>:silent! call <SID>DrawSpace('v',4)<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <home>     :set lz<CR>:silent! call <SID>DrawSlantUpLeft()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <end>      :set lz<CR>:silent! call <SID>DrawSlantDownLeft()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <pageup>   :set lz<CR>:silent! call <SID>DrawSlantUpRight()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <pagedown> :set lz<CR>:silent! call <SID>DrawSlantDownRight()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <Leader>>	:set lz<CR>:silent! call <SID>DrawFatRArrow()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <Leader><	:set lz<CR>:silent! call <SID>DrawFatLArrow()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <Leader>^	:set lz<CR>:silent! call <SID>DrawFatUArrow()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <Leader>v	:set lz<CR>:silent! call <SID>DrawFatDArrow()<CR>:set nolz<CR>
-  nmap <silent> <buffer> <script> <Leader>f  :call <SID>Flood()<cr>
+  " DrawItStart: DrawIt maps (Charles Campbell) {{{3
+  nmap <silent> <buffer> <script> <left>		:set lz<CR>:silent! call <SID>DrawLeft()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <right>		:set lz<CR>:silent! call <SID>DrawRight()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <up>			:set lz<CR>:silent! call <SID>DrawUp()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <down>		:set lz<CR>:silent! call <SID>DrawDown()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <s-left>		:set lz<CR>:silent! call <SID>MoveLeft()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <s-right>		:set lz<CR>:silent! call <SID>MoveRight()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <s-up>		:set lz<CR>:silent! call <SID>MoveUp()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <s-down>		:set lz<CR>:silent! call <SID>MoveDown()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <space>		:set lz<CR>:silent! call <SID>DrawErase()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> >				:set lz<CR>:silent! call <SID>DrawSpace('>',1)<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <				:set lz<CR>:silent! call <SID>DrawSpace('<',2)<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> ^				:set lz<CR>:silent! call <SID>DrawSpace('^',3)<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> v				:set lz<CR>:silent! call <SID>DrawSpace('v',4)<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <home>		:set lz<CR>:silent! call <SID>DrawSlantUpLeft()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <end>			:set lz<CR>:silent! call <SID>DrawSlantDownLeft()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <pageup>		:set lz<CR>:silent! call <SID>DrawSlantUpRight()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <pagedown>	:set lz<CR>:silent! call <SID>DrawSlantDownRight()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <Leader>>		:set lz<CR>:silent! call <SID>DrawFatRArrow()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <Leader><		:set lz<CR>:silent! call <SID>DrawFatLArrow()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <Leader>^		:set lz<CR>:silent! call <SID>DrawFatUArrow()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <Leader>v		:set lz<CR>:silent! call <SID>DrawFatDArrow()<CR>:set nolz<CR>
+  nmap <silent> <buffer> <script> <Leader>f		:call <SID>Flood()<cr>
 
-  " StartDrawIt: Set up insertmode maps {{{3
+  " DrawItStart: Set up insertmode maps {{{3
   if exists("g:drawit_insertmode") && g:drawit_insertmode
    imap <silent> <buffer> <script> <left>     <Esc><left>a
    imap <silent> <buffer> <script> <right>    <Esc><right>a
@@ -409,7 +406,7 @@ fun! DrawIt#StartDrawIt(...)
    imap <silent> <buffer> <script> <pagedown> <Esc><pagedown>a
   endif
 
-  " StartDrawIt: set up drawing mode mappings (Sylvain Viart) {{{3
+  " DrawItStart: set up drawing mode mappings (Sylvain Viart) {{{3
   nnoremap <silent> <buffer> <script> <c-v>      :call <SID>LeftStart()<CR><c-v>
   vmap     <silent> <buffer> <script> <Leader>a  :<c-u>call <SID>CallBox('Arrow')<CR>
   vmap     <silent> <buffer> <script> <Leader>b  :<c-u>call <SID>CallBox('DrawBox')<cr>
@@ -417,7 +414,7 @@ fun! DrawIt#StartDrawIt(...)
   vmap     <silent> <buffer> <script> <Leader>l  :<c-u>call <SID>CallBox('DrawPlainLine')<CR>
   vmap     <silent> <buffer> <script> <Leader>s  :<c-u>call <SID>Spacer(line("'<"), line("'>"),0)<cr>
 
-  " StartDrawIt: set up drawing mode mappings (Charles Campbell) {{{3
+  " DrawItStart: set up drawing mode mappings (Charles Campbell) {{{3
   " \pa ... \pz : blanks are transparent
   " \ra ... \rz : blanks copy over
   vmap <buffer> <silent> <Leader>e   :<c-u>call <SID>CallBox('DrawEllipse')<CR>
@@ -430,19 +427,19 @@ fun! DrawIt#StartDrawIt(...)
    let allreg= strpart(allreg,1)
   endwhile
 
-  " StartDrawIt: mouse maps  (Sylvain Viart) {{{3
+  " DrawItStart: mouse maps  (Sylvain Viart) {{{3
   " start visual-block with leftmouse
   nnoremap <silent> <buffer> <script> <leftmouse>    <leftmouse>:call <SID>LeftStart()<CR><c-v>
   vnoremap <silent> <buffer> <script> <rightmouse>   <leftmouse>:<c-u>call <SID>RightStart(1)<cr>
   vnoremap <silent> <buffer> <script> <middlemouse>  <leftmouse>:<c-u>call <SID>RightStart(0)<cr>
   vnoremap <silent> <buffer> <script> <c-leftmouse>  <leftmouse>:<c-u>call <SID>CLeftStart()<cr>
 
-  " StartDrawIt: mouse maps (Charles Campbell) {{{3
+  " DrawItStart: mouse maps (Charles Campbell) {{{3
   " Draw with current brush
   nnoremap <silent> <buffer> <script> <s-leftmouse>  <leftmouse>:call <SID>SLeftStart()<CR><c-v>
   nnoremap <silent> <buffer> <script> <c-leftmouse>  <leftmouse>:call <SID>CLeftStart()<CR><c-v>
 
- " StartDrawIt: Menu support {{{3
+ " DrawItStart: Menu support {{{3
  if has("gui_running") && has("menu") && &go =~# 'm'
   exe 'menu '.g:DrChipTopLvlMenu.'DrawIt.Stop\ \ DrawIt<tab>\\ds				<Leader>ds'
   exe 'menu '.g:DrChipTopLvlMenu.'DrawIt.Toggle\ Erase\ Mode<tab><space>	<space>'
@@ -455,22 +452,22 @@ fun! DrawIt#StartDrawIt(...)
   exe 'menu '.g:DrChipTopLvlMenu.'DrawIt.Append\ Blanks<tab>\\s				<Leader>s'
   exe 'silent! unmenu '.g:DrChipTopLvlMenu.'DrawIt.Start\ DrawIt'
  endif
-" call Dret("StartDrawIt")
+" call Dret("DrawItStart")
 endfun
 
 " ---------------------------------------------------------------------
-" DrawIt#StopDrawIt: this function unmaps the cursor keys and restores settings {{{2
-fun! DrawIt#StopDrawIt()
-"  call Dfunc("StopDrawIt()")
+" DrawIt#DrawItStop: this function unmaps the cursor keys and restores settings {{{2
+fun! DrawIt#DrawItStop()
+"  call Dfunc("DrawItStop()")
  
-  " StopDrawIt: report on [DrawIt off] mode {{{3
+  " DrawItStop: report on [DrawIt off] mode {{{3
   if !exists("b:dodrawit")
    echo "[DrawIt off]"
-"   call Dret("StopDrawIt")
+"   call Dret("DrawItStop")
    return
   endif
 
-  " StopDrawIt: restore mouse {{{3
+  " DrawItStop: restore mouse {{{3
   if exists("b:drawit_keep_mouse")
    let &mouse= b:drawit_keep_mouse
    unlet b:drawit_keep_mouse
@@ -479,26 +476,26 @@ fun! DrawIt#StopDrawIt()
   echo "[DrawIt off]"
 
   if exists("b:drawit_canvas_used")
-   " StopDrawIt: clean up trailing white space {{{3
+   " DrawItStop: clean up trailing white space {{{3
    call s:SavePosn()
    silent! %s/\s\+$//e
    unlet b:drawit_canvas_used
    call s:RestorePosn()
   endif
 
-  " StopDrawIt: remove drawit commands {{{3
+  " DrawItStop: remove drawit commands {{{3
   delc SetBrush
 
-  " StopDrawIt: insure that erase mode is off {{{3
+  " DrawItStop: insure that erase mode is off {{{3
   " (thanks go to Gary Johnson for this)
   if b:di_erase == 1
   	call s:DrawErase()
   endif
 
-  " StopDrawIt: restore user map(s), if any {{{3
+  " DrawItStop: restore user map(s), if any {{{3
   call RestoreUserMaps("DrawIt")
 
-  " StopDrawIt: restore user's options {{{3
+  " DrawItStop: restore user's options {{{3
   let &l:ai     = b:di_aikeep
   let &l:cin    = b:di_cinkeep
   let &l:cpo    = b:di_cpokeep
@@ -526,7 +523,7 @@ fun! DrawIt#StopDrawIt()
   unlet b:di_stakeep 
   unlet b:di_vekeep  
 
- " StopDrawIt: DrChip menu support: {{{3
+ " DrawItStop: DrChip menu support: {{{3
  if has("gui_running") && has("menu") && &go =~# 'm'
   exe 'menu   '.g:DrChipTopLvlMenu.'DrawIt.Start\ DrawIt<tab>\\di		<Leader>di'
   exe 'unmenu '.g:DrChipTopLvlMenu.'DrawIt.Stop\ \ DrawIt'
@@ -539,24 +536,33 @@ fun! DrawIt#StopDrawIt()
   exe 'unmenu '.g:DrChipTopLvlMenu.'DrawIt.Make\ Blank\ Zone'
   exe 'unmenu '.g:DrChipTopLvlMenu.'DrawIt.Append\ Blanks'
  endif
-" call Dret("StopDrawIt")
+" call Dret("DrawItStop")
 endfun
 
 " ---------------------------------------------------------------------
 " DrawIt#SetMode: sets normal, single, double drawing mode, and ensures that DrawIt mode is on {{{2
 fun! DrawIt#SetMode(mode)
 "  call Dfunc("DrawIt#SetMode(mode=".a:mode.")")
-  if &enc != 'utf-8' && &enc != 'cp437'
-   let g:drawit_mode= 0
-  elseif a:mode == 's'
+  if &enc == 'utf-8' || &enc == 'cp437'
+   let b:di_gfxchr= 1
+  else
+   let b:di_gfxchr= 0
+  endif
+  if b:di_gfxchr == 0
+   let g:drawit_mode= 'N'
+  elseif &enc != 'utf-8' && &enc != 'cp437'
+   let g:drawit_mode = 'N'
+   let b:di_gfxchr   = 0
+  elseif a:mode =~ '^[sS]$'
    let g:drawit_mode= 'S'
-  elseif a:mode == 'd'
+  elseif a:mode =~ '^[dD]$'
    let g:drawit_mode= 'D'
   else
-   let g:drawit_mode= a:mode
+   let g:drawit_mode = 'N'
+   let b:di_gfxchr   = 0
   endif
   if !exists("b:dodrawit") || b:dodrawit == 0
-   call DrawIt#StartDrawIt()
+   call DrawIt#DrawItStart()
   endif
 "  call Dret("DrawIt#SetMode")
 endfun
@@ -1330,9 +1336,16 @@ endfun
 " s:IsDrawItH: moving horizontally {{{2
 fun! s:IsDrawItH(chr)
 "  call Dfunc("s:IsDrawItH(chr<".a:chr.">)")
+   if a:chr == b:di_vert     || a:chr == b:di_plus
+"    call Dret("s:IsDrawItH 1")
+    return 1
+   endif
+   if b:di_gfxchr == 0
+"    call Dret("s:IsDrawItH 0")
+    return 0
+   endif
    if  a:chr == b:di_Svert   || a:chr == b:di_Dvert
   \ || a:chr == b:di_Splus   || a:chr == b:di_Dplus
-  \ || a:chr == b:di_vert    || a:chr == b:di_plus
   \ || a:chr == b:di_Surcorn || a:chr == b:di_Durcorn
   \ || a:chr == b:di_Slrcorn || a:chr == b:di_Dlrcorn
   \ || a:chr == b:di_Sllcorn || a:chr == b:di_Dllcorn
@@ -1365,8 +1378,15 @@ endfun
 " s:IsDrawItV: moving vertically  {{{2
 fun! s:IsDrawItV(chr)
 "  call Dfunc("s:IsDrawItV(chr<".a:chr.">)")
+   if a:chr == b:di_horiz   || a:chr == b:di_plus
+"    call Dret("s:IsDrawItH 1")
+    return 1
+   endif
+   if b:di_gfxchr == 0
+"    call Dret("s:IsDrawItH 0")
+    return 0
+   endif
    if  a:chr == b:di_Shoriz  || a:chr == b:di_Dhoriz
-  \ || a:chr == b:di_horiz   || a:chr == b:di_plus
   \ || a:chr == b:di_Splus   || a:chr == b:di_Dplus
   \ || a:chr == b:di_Surcorn || a:chr == b:di_Durcorn
   \ || a:chr == b:di_Slrcorn || a:chr == b:di_Dlrcorn
@@ -1401,16 +1421,18 @@ endfun
 fun! s:IsDnS(chr)
 "  call Dfunc("s:IsDnS(chr<".a:chr.">)")
   let ret= 0
-  if     a:chr == b:di_Svert  |let ret= 1
-  elseif a:chr == b:di_Sulcorn|let ret= 1
-  elseif a:chr == b:di_Surcorn|let ret= 1
-  elseif a:chr == b:di_Splus  |let ret= 1
-  elseif a:chr == b:di_Sdnplus|let ret= 1
-  elseif a:chr == b:di_Slplus |let ret= 1
-  elseif a:chr == b:di_Srplus |let ret= 1
-  elseif a:chr == b:di_SdDh   |let ret= 1
-  elseif a:chr == b:di_cDlSd  |let ret= 1
-  elseif a:chr == b:di_cSdDr  |let ret= 1
+  if b:di_gfxchr
+   if     a:chr == b:di_Svert  |let ret= 1
+   elseif a:chr == b:di_Sulcorn|let ret= 1
+   elseif a:chr == b:di_Surcorn|let ret= 1
+   elseif a:chr == b:di_Splus  |let ret= 1
+   elseif a:chr == b:di_Sdnplus|let ret= 1
+   elseif a:chr == b:di_Slplus |let ret= 1
+   elseif a:chr == b:di_Srplus |let ret= 1
+   elseif a:chr == b:di_SdDh   |let ret= 1
+   elseif a:chr == b:di_cDlSd  |let ret= 1
+   elseif a:chr == b:di_cSdDr  |let ret= 1
+   endif
   endif
 "  call Dret("s:IsDnS ".ret)
   return ret
@@ -1421,17 +1443,19 @@ endfun
 fun! s:IsDnD(chr)
 "  call Dfunc("s:IsDnD(chr<".a:chr.">)")
   let ret= 0
-  if     a:chr == b:di_Dvert  |let ret= 1
-  elseif a:chr == b:di_Dulcorn|let ret= 1
-  elseif a:chr == b:di_Durcorn|let ret= 1
-  elseif a:chr == b:di_Dplus  |let ret= 1
-  elseif a:chr == b:di_Ddnplus|let ret= 1
-  elseif a:chr == b:di_Dlplus |let ret= 1
-  elseif a:chr == b:di_Drplus |let ret= 1
-  elseif a:chr == b:di_cDdSr  |let ret= 1
-  elseif a:chr == b:di_cSlDd  |let ret= 1
+  if b:di_gfxchr
+   if     a:chr == b:di_Dvert  |let ret= 1
+   elseif a:chr == b:di_Dulcorn|let ret= 1
+   elseif a:chr == b:di_Durcorn|let ret= 1
+   elseif a:chr == b:di_Dplus  |let ret= 1
+   elseif a:chr == b:di_Ddnplus|let ret= 1
+   elseif a:chr == b:di_Dlplus |let ret= 1
+   elseif a:chr == b:di_Drplus |let ret= 1
+   elseif a:chr == b:di_cDdSr  |let ret= 1
+   elseif a:chr == b:di_cSlDd  |let ret= 1
+   endif
   endif
-"  call Dret("s:IsDnD ".ret)
+"   call Dret("s:IsDnD ".ret)
   return ret
 endfun
 
@@ -1440,18 +1464,20 @@ endfun
 fun! s:IsUpS(chr)
 "  call Dfunc("s:IsUpS(chr<".a:chr.">)")
   let ret= 0
-  if     a:chr == b:di_Svert  |let ret= 1
-  elseif a:chr == b:di_Sllcorn|let ret= 1
-  elseif a:chr == b:di_Slrcorn|let ret= 1
-  elseif a:chr == b:di_Splus  |let ret= 1
-  elseif a:chr == b:di_Supplus|let ret= 1
-  elseif a:chr == b:di_Slplus |let ret= 1
-  elseif a:chr == b:di_Srplus |let ret= 1
-  elseif a:chr == b:di_SuDh   |let ret= 1
-  elseif a:chr == b:di_cDrSu  |let ret= 1
-  elseif a:chr == b:di_cDlSu  |let ret= 1
+  if b:di_gfxchr
+   if     a:chr == b:di_Svert  |let ret= 1
+   elseif a:chr == b:di_Sllcorn|let ret= 1
+   elseif a:chr == b:di_Slrcorn|let ret= 1
+   elseif a:chr == b:di_Splus  |let ret= 1
+   elseif a:chr == b:di_Supplus|let ret= 1
+   elseif a:chr == b:di_Slplus |let ret= 1
+   elseif a:chr == b:di_Srplus |let ret= 1
+   elseif a:chr == b:di_SuDh   |let ret= 1
+   elseif a:chr == b:di_cDrSu  |let ret= 1
+   elseif a:chr == b:di_cDlSu  |let ret= 1
+   endif
   endif
-"  call Dret("s:IsUpS ".ret)
+"   call Dret("s:IsUpS ".ret)
   return ret
 endfun
 
@@ -1460,15 +1486,17 @@ endfun
 fun! s:IsUpD(chr)
 "  call Dfunc("s:IsUpD(chr<".a:chr.">)")
   let ret= 0
-  if     a:chr == b:di_Dvert  |let ret= 1
-  elseif a:chr == b:di_Dllcorn|let ret= 1
-  elseif a:chr == b:di_Dlrcorn|let ret= 1
-  elseif a:chr == b:di_Dplus  |let ret= 1
-  elseif a:chr == b:di_Dupplus|let ret= 1
-  elseif a:chr == b:di_Dlplus |let ret= 1
-  elseif a:chr == b:di_Drplus |let ret= 1
-  elseif a:chr == b:di_cSrDu  |let ret= 1
-  elseif a:chr == b:di_cSlDu  |let ret= 1
+  if b:di_gfxchr
+   if     a:chr == b:di_Dvert  |let ret= 1
+   elseif a:chr == b:di_Dllcorn|let ret= 1
+   elseif a:chr == b:di_Dlrcorn|let ret= 1
+   elseif a:chr == b:di_Dplus  |let ret= 1
+   elseif a:chr == b:di_Dupplus|let ret= 1
+   elseif a:chr == b:di_Dlplus |let ret= 1
+   elseif a:chr == b:di_Drplus |let ret= 1
+   elseif a:chr == b:di_cSrDu  |let ret= 1
+   elseif a:chr == b:di_cSlDu  |let ret= 1
+   endif
   endif
 "  call Dret("s:IsUpD ".ret)
   return ret
@@ -1479,15 +1507,17 @@ endfun
 fun! s:IsLeftS(chr)
 "  call Dfunc("s:IsLeftS(chr<".a:chr.">)")
   let ret= 0
-  if     a:chr == b:di_Shoriz  |let ret= 1
-  elseif a:chr == b:di_Surcorn |let ret= 1
-  elseif a:chr == b:di_Slrcorn |let ret= 1
-  elseif a:chr == b:di_Splus   |let ret= 1
-  elseif a:chr == b:di_Sdnplus |let ret= 1
-  elseif a:chr == b:di_Supplus |let ret= 1
-  elseif a:chr == b:di_Slplus  |let ret= 1
-  elseif a:chr == b:di_cSlDd   |let ret= 1
-  elseif a:chr == b:di_cSlDu   |let ret= 1
+  if b:di_gfxchr
+   if     a:chr == b:di_Shoriz  |let ret= 1
+   elseif a:chr == b:di_Surcorn |let ret= 1
+   elseif a:chr == b:di_Slrcorn |let ret= 1
+   elseif a:chr == b:di_Splus   |let ret= 1
+   elseif a:chr == b:di_Sdnplus |let ret= 1
+   elseif a:chr == b:di_Supplus |let ret= 1
+   elseif a:chr == b:di_Slplus  |let ret= 1
+   elseif a:chr == b:di_cSlDd   |let ret= 1
+   elseif a:chr == b:di_cSlDu   |let ret= 1
+   endif
   endif
 "  call Dret("s:IsLeftS ".ret)
   return ret
@@ -1498,15 +1528,17 @@ endfun
 fun! s:IsLeftD(chr)
 "  call Dfunc("s:IsLeftD(chr<".a:chr.">)")
   let ret= 0
-  if     a:chr == b:di_Dhoriz  |let ret= 1
-  elseif a:chr == b:di_Durcorn |let ret= 1
-  elseif a:chr == b:di_Dlrcorn |let ret= 1
-  elseif a:chr == b:di_Dplus   |let ret= 1
-  elseif a:chr == b:di_Ddnplus |let ret= 1
-  elseif a:chr == b:di_Dupplus |let ret= 1
-  elseif a:chr == b:di_Dlplus  |let ret= 1
-  elseif a:chr == b:di_cDlSd   |let ret= 1
-  elseif a:chr == b:di_cDlSu   |let ret= 1
+  if b:di_gfxchr
+   if     a:chr == b:di_Dhoriz  |let ret= 1
+   elseif a:chr == b:di_Durcorn |let ret= 1
+   elseif a:chr == b:di_Dlrcorn |let ret= 1
+   elseif a:chr == b:di_Dplus   |let ret= 1
+   elseif a:chr == b:di_Ddnplus |let ret= 1
+   elseif a:chr == b:di_Dupplus |let ret= 1
+   elseif a:chr == b:di_Dlplus  |let ret= 1
+   elseif a:chr == b:di_cDlSd   |let ret= 1
+   elseif a:chr == b:di_cDlSu   |let ret= 1
+   endif
   endif
 "  call Dret("s:IsLeftD ".ret)
   return ret
@@ -1517,15 +1549,17 @@ endfun
 fun! s:IsRightS(chr)
 "  call Dfunc("s:IsRightS(chr<".a:chr.">)")
   let ret= 0
-  if     a:chr == b:di_Shoriz  |let ret= 1
-  elseif a:chr == b:di_Sulcorn |let ret= 1
-  elseif a:chr == b:di_Sllcorn |let ret= 1
-  elseif a:chr == b:di_Splus   |let ret= 1
-  elseif a:chr == b:di_Sdnplus |let ret= 1
-  elseif a:chr == b:di_Supplus |let ret= 1
-  elseif a:chr == b:di_Srplus  |let ret= 1
-  elseif a:chr == b:di_cDdSr   |let ret= 1
-  elseif a:chr == b:di_cSrDu   |let ret= 1
+  if b:di_gfxchr
+   if     a:chr == b:di_Shoriz  |let ret= 1
+   elseif a:chr == b:di_Sulcorn |let ret= 1
+   elseif a:chr == b:di_Sllcorn |let ret= 1
+   elseif a:chr == b:di_Splus   |let ret= 1
+   elseif a:chr == b:di_Sdnplus |let ret= 1
+   elseif a:chr == b:di_Supplus |let ret= 1
+   elseif a:chr == b:di_Srplus  |let ret= 1
+   elseif a:chr == b:di_cDdSr   |let ret= 1
+   elseif a:chr == b:di_cSrDu   |let ret= 1
+   endif
   endif
 "  call Dret("s:IsRightS ".ret)
   return ret
@@ -1536,15 +1570,17 @@ endfun
 fun! s:IsRightD(chr)
 "  call Dfunc("s:IsRightD(chr<".a:chr.">)")
   let ret= 0
-  if     a:chr == b:di_Dhoriz  |let ret= 1
-  elseif a:chr == b:di_Dulcorn |let ret= 1
-  elseif a:chr == b:di_Dllcorn |let ret= 1
-  elseif a:chr == b:di_Dplus   |let ret= 1
-  elseif a:chr == b:di_Ddnplus |let ret= 1
-  elseif a:chr == b:di_Dupplus |let ret= 1
-  elseif a:chr == b:di_Drplus  |let ret= 1
-  elseif a:chr == b:di_cSdDr   |let ret= 1
-  elseif a:chr == b:di_cDrSu   |let ret= 1
+  if b:di_gfxchr
+   if     a:chr == b:di_Dhoriz  |let ret= 1
+   elseif a:chr == b:di_Dulcorn |let ret= 1
+   elseif a:chr == b:di_Dllcorn |let ret= 1
+   elseif a:chr == b:di_Dplus   |let ret= 1
+   elseif a:chr == b:di_Ddnplus |let ret= 1
+   elseif a:chr == b:di_Dupplus |let ret= 1
+   elseif a:chr == b:di_Drplus  |let ret= 1
+   elseif a:chr == b:di_cSdDr   |let ret= 1
+   elseif a:chr == b:di_cDrSu   |let ret= 1
+   endif
   endif
 "  call Dret("s:IsRightD ".ret)
   return ret
@@ -1728,8 +1764,19 @@ fun! s:ReplaceDownLeft()
   if curcol != virtcol("$")
    norm! vy
    let curchar= @@
-   if curchar == b:di_upleft  || curchar == b:di_cross
- \ || curchar == b:di_Supleft || curchar == b:di_Scross
+
+   " determine if curchr needs to be changed to an "X"
+   let chg2cross = 0
+   if curchar == b:di_upleft   || curchar == b:di_cross
+    let chg2cross = 1
+   elseif b:di_gfxchr
+	" performing following test only if gfx drawing characters exist
+    if curchar == b:di_Supleft || curchar == b:di_Scross
+     let chg2cross = 1
+    endif
+   endif
+
+   if chg2cross
     if g:drawit_mode == 'S'
      exe "norm! r".b:di_Scross
     else
@@ -1763,8 +1810,19 @@ fun! s:ReplaceDownRight()
    norm! vy
    let curchar= @@
 "   call Decho("case curcol#".curcol." == virtcol($)  drawit_mode<".g:drawit_mode.">  curchar<".curchar.">")
-   if curchar == b:di_upright  || curchar == b:di_cross
- \ || curchar == b:di_Supright || curchar == b:di_Scross
+
+   " determine if curchr needs to be changed to an "X"
+   let chg2cross = 0
+   if curchar == b:di_upright   || curchar == b:di_cross
+    let chg2cross = 1
+   elseif b:di_gfxchr
+	" performing following test only if gfx drawing characters exist
+    if curchar == b:di_Supright || curchar == b:di_Scross
+     let chg2cross = 1
+    endif
+   endif
+
+   if chg2cross
     if g:drawit_mode == 'S'
      exe "norm! r".b:di_Scross
     else
@@ -1793,10 +1851,15 @@ endfun
 " s:DrawFatRArrow: ----|> {{{2
 fun! s:DrawFatRArrow()
 "  call Dfunc("s:DrawFatRArrow()")
-  call s:MoveRight()
-  norm! r|
-  call s:MoveRight()
-  norm! r>
+  if g:drawit_mode == 'N' || &enc != 'utf-8'
+   call s:MoveRight()
+   norm! r|
+   call s:MoveRight()
+   norm! r>
+  else
+   call s:MoveRight()
+   norm! r▶
+  endif
 "  call Dret("s:DrawFatRArrow")
 endfun
 
@@ -1804,10 +1867,15 @@ endfun
 " s:DrawFatLArrow: <|---- {{{2
 fun! s:DrawFatLArrow()
 "  call Dfunc("s:DrawFatLArrow()")
-  call s:MoveLeft()
-  norm! r|
-  call s:MoveLeft()
-  norm! r<
+  if g:drawit_mode == 'N' || &enc != 'utf-8'
+   call s:MoveLeft()
+   norm! r|
+   call s:MoveLeft()
+   norm! r<
+  else
+   call s:MoveLeft()
+   norm! r◀
+  endif
 "  call Dret("s:DrawFatLArrow")
 endfun
 
@@ -1817,16 +1885,21 @@ endfun
 "                 |
 fun! s:DrawFatUArrow()
 "  call Dfunc("s:DrawFatUArrow()")
-  call s:MoveUp()
-  norm! r_
-  call s:MoveRight()
-  norm! r\
-  call s:MoveLeft()
-  call s:MoveLeft()
-  norm! r/
-  call s:MoveRight()
-  call s:MoveUp()
-  norm! r.
+  if g:drawit_mode == 'N' || &enc != 'utf-8'
+   call s:MoveUp()
+   norm! r_
+   call s:MoveRight()
+   norm! r\
+   call s:MoveLeft()
+   call s:MoveLeft()
+   norm! r/
+   call s:MoveRight()
+   call s:MoveUp()
+   norm! r.
+  else
+   call s:MoveUp()
+   norm! r▲
+  endif
 "  call Dret("s:DrawFatUArrow")
 endfun
 
@@ -1836,19 +1909,24 @@ endfun
 "                   '
 fun! s:DrawFatDArrow()
 "  call Dfunc("s:DrawFatDArrow()")
-  call s:MoveRight()
-  norm! r_
-  call s:MoveLeft()
-  call s:MoveLeft()
-  norm! r_
-  call s:MoveDown()
-  norm! r\
-  call s:MoveRight()
-  call s:MoveRight()
-  norm! r/
-  call s:MoveDown()
-  call s:MoveLeft()
-  norm! r'
+  if g:drawit_mode == 'N' || &enc != 'utf-8'
+   call s:MoveRight()
+   norm! r_
+   call s:MoveLeft()
+   call s:MoveLeft()
+   norm! r_
+   call s:MoveDown()
+   norm! r\
+   call s:MoveRight()
+   call s:MoveRight()
+   norm! r/
+   call s:MoveDown()
+   call s:MoveLeft()
+   norm! r'
+  else
+   call s:MoveDown()
+   norm! r▼
+  endif
 "  call Dret("s:DrawFatDArrow")
 endfun
 
@@ -1990,6 +2068,10 @@ fun! s:Flood()
 "  call Dfunc("s:Flood()")
 
   let s:bndry  = b:di_vert.b:di_horiz.b:di_plus.b:di_upright.b:di_upleft.b:di_cross.b:di_ellipse
+  if &enc == 'utf-8' || &enc == 'cp437'
+   let s:bndry= s:bndry.b:di_Svert.b:di_Dvert.b:di_Shoriz.b:di_Dhoriz.b:di_Sulcorn.b:di_Dulcorn.b:di_Surcorn.b:di_Durcorn.b:di_Sllcorn.b:di_Dllcorn.b:di_Slrcorn.b:di_Dlrcorn.b:di_Splus.b:di_Dplus.b:di_Sdnplus.b:di_Ddnplus.b:di_Supplus.b:di_Dupplus.b:di_Slplus.b:di_Dlplus.b:di_Srplus.b:di_Drplus.b:di_Supright.b:di_Supleft.b:di_Scross
+   let s:bndry= s:bndry.b:di_DhSd.b:di_DhSu.b:di_DuSl.b:di_DuSlr.b:di_DuSr.b:di_ShDd.b:di_ShDu.b:di_SuDl.b:di_SuDlr.b:di_SdDh.b:di_SuDh.b:di_SuDr.b:di_cSdDr.b:di_cDdSr.b:di_cDlSd.b:di_cSlDd.b:di_cDrSu.b:di_cSrDu.b:di_cDlSu.b:di_cSlDu
+  endif
   let row      = line(".")
   let col      = virtcol(".")
   let athold   = @0
@@ -2003,6 +2085,7 @@ fun! s:Flood()
   let s:fillchar= input("Enter fill character: ")
   call inputrestore()
   let s:bndry= "[".escape(s:bndry.s:fillchar,'\-]^')."]"
+"  call Decho("s:bndry<".s:bndry.">")
   if s:Strlen(s:fillchar) > 1
    let s:fillchar= strpart(s:fillchar,0,1)
   endif
@@ -2302,11 +2385,16 @@ fun! s:Strlen(x)
    call setline(line("."),a:x)
    let ret= virtcol("$") - 1
    d
+   keepj norm! k
    let &l:mod= modkeep
 
   else
    " at least give a decent default
-   let ret= strlen(a:x)
+   if v:version >= 703
+	let ret= strdisplaywidth(a:x)
+   else
+    let ret= strlen(a:x)
+   endif
   endif
 
 "  call Dret("s:Strlen ".ret)
@@ -2339,7 +2427,7 @@ endf
 "                  <=0: to textwidth (if nonzero), otherwise
 "                       to display width (&columns)
 fun! s:Spacer(debut, fin, cols) range
-"  call Dfunc("s:Spacer(debut=".a:debut." fin=".a:fin." cols=".a:cols.")")
+"  call Dfunc("s:Spacer(debut=".a:debut." fin=".a:fin." cols=".a:cols.") textwidth=".&textwidth)
   call s:SavePosn()
 
   if a:cols <= 0
@@ -2408,25 +2496,56 @@ endf
 " ---------------------------------------------------------------------
 " s:DrawBox: {{{2
 fun! s:DrawBox(x0, y0, x1, y1)
-"  call Dfunc("s:DrawBox(xy0[".a:x0.",".a:y0." xy1[".a:x1.",".a:y1."])")
+"  call Dfunc("s:DrawBox(xy0[".a:x0.",".a:y0." xy1[".a:x1.",".a:y1."]) g:drawit_mode=".g:drawit_mode)
   " loop each line
   let x0= (a:x1 > a:x0)? a:x0 : a:x1
   let x1= (a:x1 > a:x0)? a:x1 : a:x0
   let y0= (a:y1 > a:y0)? a:y0 : a:y1
   let y1= (a:y1 > a:y0)? a:y1 : a:y0
+"  call Decho('x0='.x0.' y0='.y0)
+"  call Decho('x1='.x1.' y1='.y1)
   let l = y0
   while l <= y1
    let c = x0
    while c <= x1
+	let remp= '.'
     if l == y0 || l == y1
-	 let remp = b:di_horiz
-     if c == x0 || c == x1
-	  let remp = b:di_plus
-     endif
+	 if     g:drawit_mode == 's' || g:drawit_mode == 'S'
+	  let remp = b:di_Shoriz
+	 elseif g:drawit_mode == 'd' || g:drawit_mode == 'D'
+	  let remp = b:di_Dhoriz
+	 else
+	  let remp = b:di_horiz
+	 endif
+	 if g:drawit_mode =~ '[sSdD]'
+	  if     c == x0 && l == y0
+	   let remp= (g:drawit_mode == 's' || g:drawit_mode == 'S')? b:di_Sulcorn : b:di_Dulcorn
+"	   call Decho('x0,y0: ulcorn<'.remp.'>')
+	  elseif c == x1 && l == y0
+	   let remp= (g:drawit_mode == 's' || g:drawit_mode == 'S')? b:di_Surcorn : b:di_Durcorn
+"	   call Decho('x0,y1: ulcorn<'.remp.'>')
+	  elseif c == x0 && l == y1
+	   let remp= (g:drawit_mode == 's' || g:drawit_mode == 'S')? b:di_Sllcorn : b:di_Dllcorn
+"	   call Decho('x1,y0: ulcorn<'.remp.'>')
+	  elseif c == x1 && l == y1
+	   let remp= (g:drawit_mode == 's' || g:drawit_mode == 'S')? b:di_Slrcorn : b:di_Dlrcorn
+"	   call Decho('x1,y1: ulcorn<'.remp.'>')
+	  endif
+	 else
+      if c == x0 || c == x1
+	    let remp = b:di_plus
+      endif
+	 endif
     else
-	 let remp = b:di_vert
+	 if     g:drawit_mode == 's' || g:drawit_mode == 'S'
+	  let remp = b:di_Svert
+	 elseif g:drawit_mode == 'd' || g:drawit_mode == 'D'
+	  let remp = b:di_Dvert
+	 else
+	  let remp = b:di_vert
+	 endif
      if c != x0 && c != x1
-      let remp = '.'
+       let remp = '.'
      endif
     endif
 
@@ -2442,26 +2561,16 @@ fun! s:DrawBox(x0, y0, x1, y1)
 endf
 
 " ---------------------------------------------------------------------
-" s:SetCharAt: set the character at the specified position (must exist) {{{2
-fun! s:SetCharAt(char, x, y)
-"  call Dfunc("s:SetCharAt(char<".a:char."> xy[".a:x.",".a:y."])")
+" s:SetCharAt: set the character at the specified position (something must pre-exist at the pos'n) {{{2
+fun! s:SetCharAt(chr, x, y)
+"  call Dfunc("s:SetCharAt(chr<".a:chr."> xy[".a:x.",".a:y."])")
 
-  let content = getline(a:y)
-  if g:drawit_xstrlen == 0
-   let long    = strlen(content)
-   let deb     = strpart(content, 0, a:x - 1)
-   let fin     = strpart(content, a:x, long)
+  exe a:y
+  if a:x <= 1
+   exe "norm! 0r".a:chr
   else
-   let long    = s:Strlen(content)
-   let xm1  = a:x - 1
-   let extra= 0
-   while s:Strlen(strpart(content,0,xm1+extra)) < xm1
-	let extra= extra + 1
-   endwhile
-   let deb     = strpart(content, 0, xm1 + extra)
-   let fin     = strpart(content, xm1 + extra + 1, long)
+   exe "norm! 0".(a:x-1)."lr".a:chr
   endif
-  call setline(a:y, deb.a:char.fin)
 
 "  call Dret("s:SetCharAt")
 endf
@@ -2504,19 +2613,29 @@ fun! s:DrawLine(x0, y0, x1, y1, horiz)
 
   let dy = 2*dy
   let dx = 2*dx
+  if a:horiz == '_'
+   let horiz= a:horiz
+  else
+   let horiz = (g:drawit_mode == 'N')? b:di_horiz : ((g:drawit_mode == 'S')? b:di_Shoriz : b:di_Dhoriz)
+  endif
+  if a:horiz == '|'
+   let vertline= a:vert
+  else
+   let vertline = (g:drawit_mode == 'N')? b:di_vert : ((g:drawit_mode == 'S')? b:di_Svert : b:di_Dvert)
+  endif
 
   if dx > dy
      " move under x
-     let char = a:horiz
+     let char = horiz
      call s:SetCharAt(char, x0, y0)
      let fraction = dy - (dx / 2)  " same as 2*dy - dx
      while x0 != x1
-        let char = a:horiz
+	   let char = horiz
         if fraction >= 0
            if stepx > 0
-			let char = b:di_upleft
+			let char = (g:drawit_mode == 'N')? b:di_upleft : b:di_Supleft
            else
-			let char = b:di_upright
+			let char = (g:drawit_mode == 'N')? b:di_upright : b:di_Supright
            endif
            let y0 = y0 + stepy
            let fraction = fraction - dx    " same as fraction -= 2*dx
@@ -2527,16 +2646,16 @@ fun! s:DrawLine(x0, y0, x1, y1, horiz)
      endw
   else
      " move under y
-	 let char = b:di_vert
+	 let char = vertline
      call s:SetCharAt(char, x0, y0)
      let fraction = dx - (dy / 2)
      while y0 != y1
-	    let char = b:di_vert
+		let char = (g:drawit_mode == 'N')? b:di_vert : ((g:drawit_mode == 'S')? b:di_Svert : b:di_Dvert)
         if fraction >= 0
            if stepy > 0 || stepx < 0
-			let char = b:di_upleft
+			let char = (g:drawit_mode == 'N')? b:di_upleft : b:di_Supleft
            else
-			let char = b:di_upright
+			let char = (g:drawit_mode == 'N')? b:di_upright : b:di_Supright
            endif
            let x0 = x0 + stepx
            let fraction = fraction - dy
@@ -2555,7 +2674,8 @@ endf
 fun! s:Arrow(x0, y0, x1, y1)
 "  call Dfunc("s:Arrow(xy0[".a:x0.",".a:y0."] xy1[".a:x1.",".a:y1."])")
 
-  call s:DrawLine(a:x0, a:y0, a:x1, a:y1,b:di_horiz)
+  let horiz = (g:drawit_mode == 'N')? b:di_horiz : ((g:drawit_mode == 'S')? b:di_Shoriz : b:di_Dhoriz)
+  call s:DrawLine(a:x0, a:y0, a:x1, a:y1,horiz)
   let dy = a:y1 - a:y0
   let dx = a:x1 - a:x0
   if s:Abs(dx) > <SID>Abs(dy)
