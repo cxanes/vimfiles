@@ -1194,7 +1194,7 @@ function! s:Chdir(dir) "{{{
   endif
   
   call s:PushHistory()
-  call s:FileExplorer(path)
+  call FileExplorer#Open(path)
 endfunction
 "}}}
 function! s:GetNodeFiletype(node) "{{{
