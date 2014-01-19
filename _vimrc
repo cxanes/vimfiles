@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2013-11-16 08:44:42
+" Last Modified: 2014-01-19 22:46:37
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -864,8 +864,18 @@ endfunction
 
 cnoremap <M-i> <C-\>e <SID>InsertLastSearchPattern()<CR>
 function! <SID>InsertLastSearchPattern() "{{{
-  let cmd = getcmdline() . substitute(getreg('/'),'^\\<\|\\>$','','g')
-  call setcmdpos(strlen(cmd) + 1)
+  let cmd = getcmdline()
+  let pos = getcmdpos()
+  let pattern = substitute(getreg('/'),'^\\<\|\\>$','','g')
+  if pos == 1
+    let cmd = pattern . cmd
+  elseif strlen(cmd) + 1 == pos
+    let cmd = cmd . pattern
+  else
+    let cmd = cmd[0 : pos-2] . pattern . cmd[pos-1 : ]
+  endif
+
+  call setcmdpos(pos + strlen(pattern))
   return cmd
 endfunc
 "}}}
