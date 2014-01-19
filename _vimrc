@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2014-01-19 22:46:37
+" Last Modified: 2014-01-19 22:57:26
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -224,6 +224,10 @@ set showbreak=>
 set diffopt+=vertical
 set display=lastline
 set list
+
+if exists('+re')
+  set re=1
+endif
 
 " Enable file type detection.
 filetype plugin indent on
