@@ -12,7 +12,10 @@ if platform.architecture()[0] == '64bit':
     libfzmatch_default = 'libfzmatch64.so'
 else:
     libfzmatch_default = 'libfzmatch.so'
-fzmatch_path = { 'Windows': 'fzmatch.dll' }
+fzmatch_path = {
+                 'Windows': 'fzmatch.dll',
+                 'Darwin' : 'libfzmatch_mac.so'
+               }
 fzmatch = ctypes.CDLL(os.path.join(os.path.dirname(os.path.realpath( __file__ )),
                          fzmatch_path.get(platform.system(), libfzmatch_default)))
 fzmatch.get_score.restype = ctypes.c_double
