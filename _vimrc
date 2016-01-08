@@ -1,7 +1,7 @@
 " .vimrc
 "
 " Author:        Frank Chang <frank.nevermind AT gmail.com>
-" Last Modified: 2014-01-19 22:57:26
+" Last Modified: 2015-12-04 23:07:50
 "
 " Prerequisite:  Vim >= 7.0
 "
@@ -532,6 +532,8 @@ if has('gui_running')
   if has('gui_win32')
     silent! set guifont=Consolas:h9:w5,courier_new:h10:w6
     " silent! set guifont=Monaco:h7.5:w5,courier_new:h10:w6
+  elseif has('gui_running')
+    silent! set guifont=Monaco\ 9
   else
     " silent! set guifont=Consolas\ 12,Courier\ 10\ Pitch\ 12
     silent! set guifont=Courier\ 10\ Pitch\ 10,Monospace\ 10
