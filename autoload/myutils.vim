@@ -1409,6 +1409,29 @@ function! myutils#OpenMRUList() "{{{
 endfunction
 "}}}
 "==========================================================}}}1
+" {{{1 CheckExpandTab()
+"--------------------------------------------------------------
+function! myutils#CheckExpandTab()
+  let has_syn_items = has('syntax_items')
+  let cur_pos = getpos('.')
+  call cursor(1, 1)
+
+  " It's just a heuristic guess: Once we find a line beginning with a tab,
+  " we consider the buffer is in 'noexpandtab' mode
+  " (the default is 'expandtab' mode)
+  let lnum = search('^\t', 'cW')
+  while lnum != 0
+    if !has_syn_items || synIDattr(synID(lnum, 1, 0), 'name') !~? 'string\|comment'
+      setl noet
+      call setpos('.', cur_pos)
+      return
+    endif
+
+    let lnum = search('^\t', 'W')
+  endwhile
+  call setpos('.', cur_pos)
+endfunction
+"==========================================================}}}1
 "==============================================================
 " Restore {{{
 let &cpo = s:save_cpo

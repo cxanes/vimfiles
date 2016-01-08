@@ -1,1 +1,0 @@
-call myutils#CppCompleteInit()
