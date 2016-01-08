@@ -1,7 +1,7 @@
 " Use vim-plug to manage plugins
 " <https://github.com/junegunn/vim-plug>
 
-call plug#begin('~/.vim-plugged')
+call plug#begin('~/.vim-plug')
 
 Plug 'ervandew/supertab'
 Plug 'hari-rangarajan/CCTree', { 'on': ['CCTreeAutoLoadDB', 'CCTreeLoadDB', 'CCTreeLoadXRefDB', 'CCTreeLoadXRefDBFromDisk'], 'for': ['c', 'cpp' ] }
