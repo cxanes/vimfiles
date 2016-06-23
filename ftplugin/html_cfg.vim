@@ -3,7 +3,7 @@
 " Settings {{{
 "-------------------------------------------------------------------
 if !exists('b:html_template_dir')
-  if !exists('g:html_template_dir')
+  if exists('g:html_template_dir')
     let b:html_template_dir = g:html_template_dir
   else
     let b:html_template_dir = ''
