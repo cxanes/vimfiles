@@ -28,7 +28,11 @@ Plug 'CRefVim', { 'for': ['c', 'cpp' ] }
 
 call plug#end()
 
-ru macro/matchit.vim
+if exists(':packadd')
+  packadd! matchit
+else
+  ru macro/matchit.vim
+endif
 
 "--------------------------------------------------------------
 " EnhCommentify.vim
@@ -149,7 +153,11 @@ let g:LargeFile= 10
 " editexisting.vim -> $VIMRUNTIME/macros/editexisting.vim
 "--------------------------------------------------------------
 if has('gui_running') && has('clientserver')
-  silent! ru macros/editexisting.vim
+  if exists(':packadd')
+    packadd! editexisting
+  else
+    silent! ru macros/editexisting.vim
+  endif
 else
   try
     au! SwapExists * let v:swapchoice = 'o'
