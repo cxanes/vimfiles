@@ -184,7 +184,7 @@ augroup END
 "--------------------------------------------------------------
 " .vimrc, .gvimrc
 "--------------------------------------------------------------
-command! -bang Vimrc  if <q-bang> == '!'|tabe $V/_vimrc |else|e $V/_vimrc |endif
+command! -bang Vimrc  if <q-bang> == '!'|tabe $V/_vimrc |else|e $V/_vimrc |lcd $V |endif
 
 augroup Vimrc
   au BufRead,BufNewFile .vimrc,_vimrc,.gvimrc,_gvimrc let b:UpdateModifiedTime = 1
