@@ -89,6 +89,7 @@ set showbreak=>
 set diffopt+=vertical
 set display=lastline
 set list
+set cmdheight=2
 
 if exists('+re')
   set re=1
