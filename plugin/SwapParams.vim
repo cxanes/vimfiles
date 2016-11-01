@@ -1,5 +1,5 @@
 " SwapParams.vim
-" Last Modified: 2008-05-05 14:46:56
+" Last Modified: 2016-11-02 00:38:35
 "        Author: Frank Chang <frank.nevermind AT gmail.com>
 "
 " Inspired by swap_parameters.vim without need for +python support
@@ -15,12 +15,20 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}
 " Mappings {{{
-if !hasmapto('<Plug>SwapForwardParam', 'n')
+if !hasmapto('<Plug>SwapDelimitForwardParam', 'n')
   nmap <silent> gs <Plug>SwapDelimitForwardParam
 endif
 
-if !hasmapto('<Plug>SwapBackwardParam', 'n')
+if !hasmapto('<Plug>SwapDelimitBackwardParam', 'n')
   nmap <silent> gS <Plug>SwapDelimitBackwardParam
+endif
+
+if !hasmapto('<Plug>SwapForwardParam', 'n')
+  nmap <silent> <Leader>gs <Plug>SwapForwardParam
+endif
+
+if !hasmapto('<Plug>SwapBackwardParam', 'n')
+  nmap <silent> <Leader>gS <Plug>SwapBackwardParam
 endif
 
 nnoremap <silent> <Plug>SwapDelimitForwardParam  :<C-U>call <SID>SwapDelimitParams(1, v:count1)<CR>
@@ -31,7 +39,7 @@ nnoremap <silent> <Plug>SwapBackwardParam :<C-U>call <SID>SwapParams(0, v:count1
 "}}}
 " Global variables {{{
 let s:delimit_default = ',=+-/|\~%^'
-let [s:delimit, s:leftBrackets, s:rightBrackets] = [s:delimit_default, '{([', ')]}']
+let [s:delimit, s:leftBrackets, s:rightBrackets] = [s:delimit_default, '{([', ')]}:;']
 "}}}
 function! s:CanIgnore(lnum, col) "{{{
   return has('syntax_items') && synIDattr(synID(a:lnum, a:col, 0), 'name') =~? 'string\|comment'
@@ -40,7 +48,7 @@ endfunction
 function! s:FindFirst(forward, lnum, col, delimit) "{{{
   let bracketCnt = 0
   let [openBracket, closeBracket] = a:forward
-        \ ? [s:leftBrackets, s:rightBrackets] 
+        \ ? [s:leftBrackets, s:rightBrackets]
         \ : [s:rightBrackets, s:leftBrackets]
 
   let line   = getline(a:lnum)
@@ -48,13 +56,13 @@ function! s:FindFirst(forward, lnum, col, delimit) "{{{
 
   let i = a:col - 1
 
-  if 0 <= i && i < strlen 
+  if 0 <= i && i < strlen
         \ && stridx(a:delimit,    line[i]) != -1
         \ && stridx(closeBracket, line[i]) != -1
     let i += a:forward ? 1 : -1
   endif
 
-  while 0 <= i && i < strlen 
+  while 0 <= i && i < strlen
     let ch = line[i]
     if stridx(a:delimit, ch) != -1 && bracketCnt <= 0 && !s:CanIgnore(a:lnum, i + 1)
       return i + 1
@@ -80,7 +88,7 @@ function! s:SkipBlank(forward, lnum, col) "{{{
   let line = getline(a:lnum)
   let strlen = strlen(line)
   let i = a:col - 1
-  while 0 <= i && i < strlen 
+  while 0 <= i && i < strlen
     let ch = line[i]
     if ch =~ '\S'
       return i + 1
@@ -123,8 +131,8 @@ function! s:SwapParamsPos(forward, lnum, col) "{{{
     return -1
   endif
 
-  let param1start = s:FindFirst(0, a:lnum, col, 
-        \ (inBrackets ? (s:leftBrackets . s:delimit) : (s:leftBrackets . ' ' . s:delimit))) 
+  let param1start = s:FindFirst(0, a:lnum, col,
+        \ (inBrackets ? (s:leftBrackets . s:delimit) : (s:leftBrackets . ' ' . s:delimit)))
 " echom 'param1start:' param1start
   if param1start == -1
     let param1start = 0
@@ -152,7 +160,7 @@ function! s:SwapParamsPos(forward, lnum, col) "{{{
     return -1
   endif
 
-  let param2end = s:FindFirst(1, a:lnum, param2start, 
+  let param2end = s:FindFirst(1, a:lnum, param2start,
         \ (inBrackets ? (s:rightBrackets . s:delimit) : (' ' . s:delimit)))
 " echom 'param2end:' param2end
   if param2end == -1
@@ -168,7 +176,7 @@ function! s:SwapParamsPos(forward, lnum, col) "{{{
 " echom 'param2end:' param2end
 
   let line = getline(a:lnum)
-  call setline(a:lnum, 
+  call setline(a:lnum,
         \    (param1start < 2 ? '' : line[ : param1start-2])
         \  . line[param2start-1 : param2end-1  ]
         \  . line[param1end     : param2start-2]
@@ -203,6 +211,11 @@ function! s:SwapDelimitParams(forward, cnt) "{{{
 endfunction
 "}}}
 function! s:SwapParams(forward, cnt) "{{{
+  let s:delimit = s:delimit_default
+  call s:SwapParamsInternal(a:forward, a:cnt)
+endfunction
+"}}}
+function! s:SwapParamsInternal(forward, cnt) "{{{
   let cnt = a:cnt <= 0 ? 1 : a:cnt
   let changedtick = b:changedtick
 
