@@ -290,5 +290,14 @@ let g:calendar_action = "CalendarInsertDate"
 let g:ycm_auto_trigger = 0
 let g:ycm_key_list_select_completion = ['<Down>']
 let g:ycm_key_list_previous_completion = ['<Up>']
+"--------------------------------------------------------------
+" scratch.vim
+"--------------------------------------------------------------
+let g:scratch_autohide = 0
+let g:scratch_insert_autohide = 0
+let g:scratch_height = 0.25
+let g:scratch_no_mappings = 1
+nmap <F8> <plug>(scratch-insert-reuse)
+xmap <F8> <plug>(scratch-selection-reuse)
 
 " vim: fdm=marker : ts=2 : sw=2 :
