@@ -79,6 +79,9 @@ function! EnhCommentifyCallback(ft) "{{{
   elseif a:ft ==? 'glsl'
     let b:ECcommentOpen = '//'
     let b:ECcommentClose = ''
+  elseif a:ft ==? 'cuda'
+    let b:ECcommentOpen = '//'
+    let b:ECcommentClose = ''
   endif
 endfunction
 "}}}
