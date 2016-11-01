@@ -240,7 +240,91 @@ vnoremap <silent> <Leader>er :<C-U>call myutils#VEvalVim('r')<CR>
 " {{{1 OpenMRUList(): Open a window to show the MRU list (use bufexplorer).
 "--------------------------------------------------------------
 command! OpenMRUList call myutils#OpenMRUList()
+"}}}
 "==========================================================}}}1
+" {{{1 UpdateModifiedTime()
+"--------------------------------------------------------------
+let g:UpdateModifiedTime = 0
+augroup Vimrc
+  au FileType    * let b:UpdateModifiedTime = 0
+  au BufWritePre * call <SID>UpdateModifiedTime()
+augroup END
+command! InsertModifiedTime call <SID>InsertModifiedTime()
+command! UpdateModifiedTime call <SID>UpdateModifiedTime(1)
+
+let s:timeformat = '%Y-%m-%d %H:%M:%S'
+let s:modifiedLabel = ['Last Modified:', 'Last Change:']
+
+function! s:InsertModifiedTime() "{{{
+  let modifiedLabel = ''
+  if type(s:modifiedLabel) == type([]) && !empty(s:modifiedLabel)
+    let modifiedLabel = s:modifiedLabel[0]
+  else
+    let modifiedLabel = s:modifiedLabel
+  endif
+  exe 'normal! i' . modifiedLabel . ' ' . strftime(s:timeformat, getftime(expand("%:p")))
+endfunction
+"}}}
+function! s:UpdateModifiedTime(...) "{{{
+  let force = a:0 > 0 ? !empty(a:1) : 0
+
+  if !force && !exists('b:UpdateModifiedTime')
+    let b:UpdateModifiedTime = exists('g:UpdateModifiedTime') ? g:UpdateModifiedTime : 0
+  endif
+
+  if force || (&mod && b:UpdateModifiedTime)
+    let modifiedLabel = ''
+    if type(s:modifiedLabel) == type([]) && !empty(s:modifiedLabel)
+      let modifiedLabel = '\%(' . join(s:modifiedLabel, '\|') . '\)'
+    else
+      let modifiedLabel = s:modifiedLabel
+    endif
+
+    let checklines = &modelines < 10 ? 10 : &modelines
+    let modifiedLabel_pat = '\<\('.substitute(modifiedLabel,'\s\+','\\s\\+','g').'\s*\)'
+
+    " Consider all '%x's to be numbers.
+    let timeformat_pat = substitute(s:timeformat,   '%\w', '\\d\\+', 'g')
+    let timeformat_pat = substitute(timeformat_pat, '\s\+', '\\s\\+', 'g')
+
+    let pattern = modifiedLabel_pat . timeformat_pat
+    let timestamp = escape(strftime(s:timeformat), '\&~')
+
+    for i in [0, 1]  " forward and backward searching
+      if i == 0
+        if (2 * checklines) > line('$')
+          let lnums = range(1, line('$'))
+        else
+          let lnums = range(1, checklines)
+        endif
+      else
+        if (2 * checklines) > line('$')
+          return
+        else
+          let lnums = range(line('$') - checklines + 1, line('$'))
+        endif
+      endif
+
+      for lnum in lnums
+        let col = match(getline(lnum), pattern) + 1
+        if col == 0 | continue | endif
+
+        " if has('syntax_items')
+        "   let name = synIDattr(synID(lnum, col, 0), 'name')
+        "   if name != '' && name !~? 'comment'
+        "     continue
+        "   endif
+        " endif
+
+        let line = getline(lnum)
+        call setline(lnum, (col - 2 < 0 ? '' : line[: (col-2)])
+              \ . substitute(line[(col-1) :], pattern, '\1' . timestamp, 'g'))
+      endfor
+    endfor
+  endif
+endfunction
+"}}}
+"}}}
 "==============================================================
 " Restore {{{
 let &cpo = s:save_cpo
