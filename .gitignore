@@ -3,3 +3,5 @@
 *.pyc
 .VimballRecord
 /.netrwhist
+/local/*
+!/local/setup.sh

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ -n "$VIM_RESOURCE_DIR" ] && [ -f "$VIM_RESOURCE_DIR/filelist.out" ]; then
+    cat $VIM_RESOURCE_DIR/filelist.out
+elif [ -f 'filelist.out' ]; then
+    cat filelist.out
+elif [ -e '.git' ]; then
+    git ls-files
+elif [ -e '.hg' ]; then
+    hg files
+else
+    find . -type f
+fi

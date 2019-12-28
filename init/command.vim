@@ -19,7 +19,7 @@ command! -bang Qa qa<bang>
 command! -nargs=* Set  set  <args>
 command! -nargs=1 Setf setf <args>
 
-exe 'command! UpdateDoc helptags ' . $MYVIMRUNTIME . '/doc'
+exe 'command! UpdateDoc helptags ' . g:MYVIMRUNTIME . '/doc'
 
 command! -complete=buffer -nargs=? Tbuffer tab sb <args>
 command! -nargs=? Tball tab sball <args>
@@ -34,15 +34,6 @@ endif
 
 command! -nargs=* -complete=file Tedit tabedit <args>
 
-" http://www.tpope.us/cgi-bin/cvsweb/tpope/.vimrc
-command! -bar -nargs=* -bang -complete=file Rename 
-      \ let v:errmsg = '' |
-      \ saveas<bang> <args> |
-      \ if v:errmsg == '' |
-      \   call delete(expand('#')) |
-      \   bw # |
-      \ endif
-
 command! -nargs=1 RFC call s:RFC(<q-args>)
 function! s:RFC(number) "{{{
   if a:number !~ '^\d\+$'
@@ -52,10 +43,6 @@ function! s:RFC(number) "{{{
   exec printf('e http://www.ietf.org/rfc/rfc%04d.txt', a:number)
 endfunction
 "}}}
-
-if exists("*mkdir")
-  command! -nargs=1 -bang Mkdir call mkdir(<q-args>, <q-bang> == '!' ? 'p' : '')
-endif
 
 command -nargs=? -complete=file OpenProject call Project#Open(<q-args>)
 command -nargs=? -complete=file ProjectOpen call Project#Open(<q-args>)
@@ -67,10 +54,8 @@ endif
 " Tools
 for s:script in [
       \          'Ar30', 'ImageBrowser', 'JpPronunciation',
-      \          'AutoCorrect', 'ropevim',
-      \          'FlyMake',
-      \          'codeintel', 'vstplugin', 'Dict',
-      \          'Project', 'imaps', 'SourceNavigator',
+      \          'AutoCorrect', 'FlyMake',
+      \          'vstplugin', 'Dict', 'SourceNavigator',
       \          'KillRing', 'Stickies'
       \ ]
   if globpath(&rtp, printf('macros/%s.vim', s:script)) != ''

@@ -208,7 +208,7 @@ let s:loaded_python = 0
 let s:MSWIN =  has('win32') || has('win32unix') || has('win64')
           \ || has('win95') || has('win16')
 if has('python') && !s:MSWIN "{{{
-py << END_PY
+py3 << END_PY
 try:
   import vim
   import subprocess
@@ -227,7 +227,7 @@ function! s:System(expr, ...) "{{{
   endif
 
   let output = ''
-py << END_PY
+py3 << END_PY
 try:
   if int(vim.eval('a:0')) > 0:
     vim.command("let output = '%s'" % (subprocess.Popen(vim.eval('a:expr'), stdout=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate(vim.eval('a:1'))[0].replace("'", "''"), ))

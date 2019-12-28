@@ -61,13 +61,15 @@ endfunction
 "
 " e.g. ( => ()
 function! mapping#CompleteParen(plist, ...) "{{{
-  let plist = substitute(a:plist, '[^[:punct:]]\+', '', 'g')
   let b:CompleteParenMapEscapePat = a:0 == 0 ? '\w' : a:1
-  for ch in split(plist, '\zs')
-    exe printf('inoremap <silent> <buffer> <Leader>%s %s', ch, ch)
-    exe printf('inoremap <silent> <buffer> %s %s<C-R>=myutils#CompleteParen(''%s'')<CR>'
-          \ , ch, ch, substitute(ch, "'", "''", 'g'))
-  endfor
+  if !exists('g:AutoPairsLoaded')
+    let plist = substitute(a:plist, '[^[:punct:]]\+', '', 'g')
+    for ch in split(plist, '\zs')
+      exe printf('inoremap <silent> <buffer> <Leader>%s %s', ch, ch)
+      exe printf('inoremap <silent> <buffer> %s %s<C-R>=myutils#CompleteParen(''%s'')<CR>'
+            \ , ch, ch, substitute(ch, "'", "''", 'g'))
+    endfor
+  endif
 endfunction
 "}}}
 "}}}

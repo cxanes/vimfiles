@@ -9,6 +9,8 @@
 " others' scripts. Many thanks to them!
 "
 " Reference:
+"   - http://www.skywind.me/blog/archives/2084
+"   - https://juejin.im/post/5cdc396af265da03576ee968
 "   - $VIMRUNTIME/vimrc_example.vim
 "   - $VIMRUNTIME/gvimrc_example.vim
 "   - $VIMRUNTIME/mswin.vim
@@ -37,16 +39,17 @@ ru init/user_info.vim
 let g:MSWIN =  has('win32') || has('win32unix') || has('win64')
           \ || has('win95') || has('win16')
 
-let s:RUNTIME_DIRS = [($HOME . '/.vim'), ($VIM  . '/vimfiles')]
-if !isdirectory(s:RUNTIME_DIRS[g:MSWIN])
-      \ && isdirectory(s:RUNTIME_DIRS[!g:MSWIN])
-  let $MYVIMRUNTIME = s:RUNTIME_DIRS[!g:MSWIN]
+let s:runtime_dirs = [($HOME . '/.vim'), ($VIM  . '/vimfiles')]
+if !isdirectory(s:runtime_dirs[g:MSWIN])
+      \ && isdirectory(s:runtime_dirs[!g:MSWIN])
+  let g:MYVIMRUNTIME = s:runtime_dirs[!g:MSWIN]
 else
-  let $MYVIMRUNTIME = s:RUNTIME_DIRS[g:MSWIN]
+  let g:MYVIMRUNTIME = s:runtime_dirs[g:MSWIN]
 end
-unlet s:RUNTIME_DIRS
+unlet s:runtime_dirs
 
-let $V = $MYVIMRUNTIME
+let g:vim_resources_dir = '.vim-resources'
+let $VIM_RESOURCE_DIR = g:vim_resources_dir
 
 ru init/env.vim
 ru init/setting.vim

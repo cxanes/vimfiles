@@ -22,7 +22,7 @@ hi NonText guibg=#1f0f0f guifg=Brown2 ctermfg=3 ctermbg=Black
 else
 hi NonText guibg=#1f0f0f guifg=Brown2 ctermfg=Brown ctermbg=Black
 endif
-hi LineNr guibg=#1f0f0f guifg=Brown2
+hi LineNr guibg=#1f0f0f guifg=Brown2 ctermfg=DarkGray
 hi DiffDelete guibg=DarkRed guifg=White ctermbg=DarkRed ctermfg=White
 hi DiffAdd guibg=DarkGreen guifg=White ctermbg=DarkGreen ctermfg=White
 hi DiffText gui=NONE guibg=DarkCyan guifg=Yellow ctermbg=DarkCyan ctermfg=Yellow
@@ -69,3 +69,5 @@ else
 endif
   hi PmenuSel guibg=Grey         gui=NONE ctermfg=Black ctermbg=LightGreen cterm=NONE 
 endif
+
+hi spellBad      term=reverse      cterm=underline ctermbg=darkred

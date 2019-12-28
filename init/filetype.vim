@@ -184,7 +184,7 @@ augroup END
 "--------------------------------------------------------------
 " .vimrc, .gvimrc
 "--------------------------------------------------------------
-command! -bang Vimrc  if <q-bang> == '!'|tabe $V/_vimrc |else|e $V/_vimrc |lcd $V |endif
+command! -bang Vimrc  if <q-bang> == '!'|exe "tabe" g:MYVIMRUNTIME . "/_vimrc"|else|exe 'e' g:MYVIMRUNTIME . '/_vimrc' |exe 'lcd' g:MYVIMRUNTIME |endif
 
 augroup Vimrc
   au BufRead,BufNewFile .vimrc,_vimrc,.gvimrc,_gvimrc let b:UpdateModifiedTime = 1
@@ -223,11 +223,7 @@ augroup END
 "--------------------------------------------------------------
 " quickfix
 "--------------------------------------------------------------
-if version >= 703
-  augroup Vimrc
-    au FileType qf setl stl=%q%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}%=%-14.(\ %l/%L,%c%V%)
-  augroup END
-endif
+let g:qf_disable_statusline = 1
 "--------------------------------------------------------------
 " shell
 "--------------------------------------------------------------

@@ -75,9 +75,9 @@ set history=100
 set cino=>s,e0,n0,f0,{0,}0,^0,:s,=s,l1,b0,g0,hs,ps,t0,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,m0,j0,)20,*30
 set matchpairs=(:),{:},[:],<:>
 set whichwrap+=<,>,[,]
-set updatetime=2500
+set updatetime=500
 set selection=exclusive
-set listchars=tab:>-,trail:-,precedes:<,extends:>,nbsp:%
+set listchars=tab:\|-,trail:-,precedes:<,extends:>,nbsp:%
 set winaltkeys=no
 set complete+=k
 set laststatus=2
@@ -90,6 +90,16 @@ set diffopt+=vertical
 set display=lastline
 set list
 set cmdheight=2
+
+if exists('g:vim_resources_dir') && !empty(g:vim_resources_dir)
+  let &tags .= printf(',%s/tags', g:vim_resources_dir)
+  if has('emacs_tags')
+    let &tags .= printf(',%s/TAGS', g:vim_resources_dir)
+  endif
+  let &grepprg = 'grep -nH -I --exclude-dir=.svn --exclude-dir=.git --exclude=cscope.out --exclude=tags --exclude-dir=' . g:vim_resources_dir . ' $*'
+else
+  set grepprg=grep\ -nH\ -I\ --exclude-dir=.svn\ --exclude-dir=.git\ --exclude=cscope.out\ --exclude=tags\ $*
+endif
 
 if exists('+re')
   set re=1
@@ -243,6 +253,19 @@ function! ManBufInfo() "{{{
 endfunction
 "}}}
 
+" for myutils#CloseAllOtherWindows()
+function! MyCloseAllOtherWindowsReserveHandler() "{{{
+  let fname = expand('%')
+  if fname == '__vista__' || ('' == fname && &ft == 'yggdrasil')
+    return 1
+  else
+    " fallback to default handler
+    return -1
+  endif
+endfunction
+"}}}
+let g:CloseAllOtherWindowsReserveHandler = 'MyCloseAllOtherWindowsReserveHandler'
+
 set title
 if !g:MSWIN
   let &titleold  = s:GetLoginInfo().':'.expand('%:p:~:h')
@@ -253,7 +276,7 @@ if has('clientserver')
 endif
 
 " let &statusline = '%<%f%( %{OptModifiedFlag(1)}%y%w%r%)%=%-16.( %l/%L,%c%V%) '
-let &statusline = '%<%f%( %{OptModifiedFlag(1)}%{ManBufInfo()}%y%w%r%)'
+let &statusline = '%<%f%( %{OptModifiedFlag(1)}%{ManBufInfo()}%y%w%r[%{&fenc!=#""?&fenc:&enc}][%{&ff}]%)'
       \ . '%( %{OptSetInfo()}%) %k%=%-14.( %l/%L,%c%V%) '
 
 " Set 'tabline'
@@ -399,7 +422,7 @@ if has('gui_running')
     silent! set guifont=Consolas:h9:w5,courier_new:h10:w6
     " silent! set guifont=Monaco:h7.5:w5,courier_new:h10:w6
   elseif has('gui_running')
-    silent! set guifont=Monaco\ 9
+    silent! set guifont=Monaco\ 10
   else
     " silent! set guifont=Consolas\ 12,Courier\ 10\ Pitch\ 12
     silent! set guifont=Courier\ 10\ Pitch\ 10,Monospace\ 10

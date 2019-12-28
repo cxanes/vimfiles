@@ -27,7 +27,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}
 let s:import_error = ''
-python << EOF
+python3 << EOF
 try:
   import vim
   from Inflector.Inflector import Inflector

@@ -1,38 +1,71 @@
 " Use vim-plug to manage plugins
 " <https://github.com/junegunn/vim-plug>
 
+let s:enable_coc = executable('node') && executable('ccls')
+let s:root_pattern = ['.ccls', '.project', '.root', '.svn', '.git', '.hg']
+
 call plug#begin('~/.vim-plug')
 
+Plug 'itchyny/lightline.vim'
+
 Plug 'ervandew/supertab'
-Plug 'hari-rangarajan/CCTree', { 'on': ['CCTreeAutoLoadDB', 'CCTreeLoadDB', 'CCTreeLoadXRefDB', 'CCTreeLoadXRefDBFromDisk'], 'for': ['c', 'cpp' ] }
-Plug 'will133/vim-dirdiff', { 'on': 'DirDiff' }
-Plug 'mattn/calendar-vim', { 'on': ['Calendar', 'CalendarH'] }
+Plug 'will133/vim-dirdiff'
 Plug 'jlanzarotta/bufexplorer'
-Plug 'Shougo/unite.vim'
-Plug 'bkad/CamelCaseMotion'
-Plug 'hrp/EnhancedCommentify'
 Plug 'sjl/gundo.vim'
-Plug 'jreybert/vim-largefile'
 Plug 'dimasg/vim-mark'
 Plug 'mtth/scratch.vim'
+Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-vinegar'
+Plug 'mhinz/vim-signify'
+Plug 'jiangmiao/auto-pairs'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer' }
+if g:MSWIN
+  Plug 'Yggdroot/LeaderF'
+else
+  Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+endif
+Plug 'Yggdroot/indentLine'
+Plug 'hrp/EnhancedCommentify'
+Plug 'skywind3000/asyncrun.vim'
+Plug 'bkad/CamelCaseMotion'
 
-Plug 'taglist.vim'
-Plug 'DrawIt'
-Plug 'Align'
-Plug 'Visincr'
-Plug 'CRefVim', { 'for': ['c', 'cpp' ] }
+Plug 'sheerun/vim-polyglot'
+Plug 'lervag/vimtex'
+
+if s:enable_coc
+Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+Plug 'm-pilia/vim-ccls'
+endif
+
+Plug 'rhysd/vim-clang-format'
+Plug 'dense-analysis/ale'
+Plug 'ludovicchabant/vim-gutentags', { 'on': 'GutentagsToggleEnabled' }
+Plug 'Shougo/echodoc.vim'
+
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-indent'
+Plug 'kana/vim-textobj-syntax'
+Plug 'kana/vim-textobj-function', { 'for':['c', 'cpp', 'vim', 'java'] }
+Plug 'sgur/vim-textobj-parameter'
+
+Plug 'liuchengxu/vista.vim'
+Plug 'vim-scripts/taglist.vim'
+Plug 'vim-scripts/CRefVim', { 'for': ['c', 'cpp' ] }
 
 call plug#end()
 
-if exists(':packadd')
+if exists(':packadd') && !has('nvim')
   packadd! matchit
 else
   ru macro/matchit.vim
+endif
+
+if exists(':packadd') && has('terminal')
+  packadd termdebug
 endif
 
 "--------------------------------------------------------------
@@ -87,10 +120,6 @@ function! EnhCommentifyCallback(ft) "{{{
 endfunction
 "}}}
 "--------------------------------------------------------------
-" DrawIt.vim
-"--------------------------------------------------------------
-let g:DrChipTopLvlMenu = '&Plugin.'
-"--------------------------------------------------------------
 " |pi_netrw.txt|
 "--------------------------------------------------------------
 let g:netrw_home = $HOME
@@ -101,7 +130,7 @@ let g:netrw_liststyle = 3
 "--------------------------------------------------------------
 " taglist.vim
 "--------------------------------------------------------------
-  let g:Tlist_WinWidth = 24
+let g:Tlist_WinWidth = 34
 let g:Tlist_Enable_Fold_Column = 0
 let g:Tlist_Ctags_Cmd = 'ctags'
 let g:Tlist_Show_One_File = 1
@@ -128,31 +157,15 @@ endif
 let g:bufExplorerFindActive = 0
 nnoremap <silent> <F3> :<C-U>exec v:count == 0 ? 'BufExplorer' : v:count == 1 ? 'BufExplorerHorizontalSplit' : 'BufExplorerVerticalSplit'<CR>
 "--------------------------------------------------------------
-" cctree.vim
-"--------------------------------------------------------------
-command! -nargs=? CTLoadDB exec 'CCTreeLoadDB' (empty(<q-args>) ? 'cscope.out' : <q-args>)
-let g:CCTreeWindowWidth = 24
-
-au BufRead,BufNewFile CCTree-View 
-      \ nnoremap <silent> <buffer> <Leader>h :<C-U>CCTreeOptsToggle DynamicTreeHiLights<CR>
-
-highlight CCTreeMarkers guifg=DarkGray ctermfg=DarkGray
-highlight link CCTreeHiMarkers PmenuSel
-let g:CCTreeKeyHilightTree = '<F3>'
-"--------------------------------------------------------------
 " DirDiff.vim
 "--------------------------------------------------------------
 let g:DirDiffExcludes = ".git,*.class,*.exe,.*.sw?,*.py[cod]"
 "--------------------------------------------------------------
-" LargeFile.vim
-"--------------------------------------------------------------
-let g:LargeFile= 10
-"--------------------------------------------------------------
 " mark.vim
 "--------------------------------------------------------------
-  nmap <unique> <silent> <Leader>im <Plug>MarkRegex
-  vmap <unique> <silent> <Leader>im <Plug>MarkRegex
-  nmap <unique> <silent> <Leader>cm <Plug>MarkClear
+nmap <unique> <silent> <Leader>im <Plug>MarkRegex
+vmap <unique> <silent> <Leader>im <Plug>MarkRegex
+nmap <unique> <silent> <Leader>cm <Plug>MarkClear
 "--------------------------------------------------------------
 " editexisting.vim -> $VIMRUNTIME/macros/editexisting.vim
 "--------------------------------------------------------------
@@ -168,47 +181,6 @@ else
   catch
     " Without SwapExists we don't do anything for ":edit" commands
   endtry
-endif
-"--------------------------------------------------------------
-" LaTeX-Suite (Slight modification)
-"--------------------------------------------------------------
-" Add option '-file-line-error' to command 'latex', and add
-"
-"    setlocal efm+=%E%f:%l:\ %m
-"
-" to compiler/tex.vim, so 'efm' can easily identify the file
-" containing the error.
-"
-" See: http://article.gmane.org/gmane.comp.editors.vim.latex.devel/172
-
-let g:Tex_MenuPrefix = 'Te&X.'
-let g:Tex_GotoError = 0
-let g:Tex_ShowErrorContext = 0
-
-" IMPORTANT: win32 users will need to have 'shellslash' set so that latex
-" can be called correctly.
-set shellslash
-" let g:Tex_DefaultTargetFormat  = 'ps'
-let g:Tex_DefaultTargetFormat  = 'pdf'
-
-let g:Tex_CompileRule_dvi = 'latex -file-line-error -interaction=batchmode $*'
-let g:Tex_CompileRule_pdf = 'pdflatex -file-line-error -interaction=batchmode $*'
-
-let g:Tex_FormatDependency_pdf = 'pdf'
-let g:Tex_FormatDependency_ps  = 'dvi,ps'
-
-let g:Tex_PromptedEnvironments =
-      \ 'eqnarray*,eqnarray,equation,equation*,\[,$$,align,align*'
-      \ .',enumerate,itemize,thebibliography'
-
-" IMPORTANT: grep will sometimes skip displaying the file name if you
-" search in a singe file. This will confuse latex-suite. Set your grep
-" program to alway generate a file-name.
-set grepprg=grep\ -nH\ -I\ --exclude-dir=.svn\ --exclude-dir=.git\ --exclude=cscope.out\ --exclude=tags\ $*
-
-if g:MSWIN
-  let g:Tex_ViewRule_ps =  'gsview32'
-  let g:Tex_ViewRule_pdf = 'AcroRd32'
 endif
 "--------------------------------------------------------------
 " supertab.vim <id=SuperTab>
@@ -228,7 +200,7 @@ endif
 " FileExplorer.vim (My works)
 "--------------------------------------------------------------
 function! FileExplorer_OpenFunc(file) "{{{
-  	if a:file =~? '\.\%(jpg\|bmp\|png\|gif\)$'
+  if a:file =~? '\.\%(jpg\|bmp\|png\|gif\)$'
     try
       if myutils#OpenFile(a:file) == 0
         return 1
@@ -237,19 +209,20 @@ function! FileExplorer_OpenFunc(file) "{{{
       endif
     catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
     endtry
-  	elseif a:file =~? '\.\%(pdf\|docx\?\|xls\|odt\)$'
+  elseif a:file =~? '\.\%(pdf\|docx\?\|xls\|odt\)$'
     try
       call myutils#OpenFile(a:file)
       return 1
     catch /^Vim\%((\a\+)\)\=:E\%(117\|107\)/
     endtry
-  	endif
+  endif
 endfunction
 "}}}
 let g:FileExplorer_OpenHandler = 'FileExplorer_OpenFunc'
 if g:MSWIN
   let g:FileExplorer_Encoding  = 'big5'
 endif
+let g:FileExplorer_WinWidth = 34
 "--------------------------------------------------------------
 " Dict.vim (My works)
 "--------------------------------------------------------------
@@ -266,31 +239,6 @@ let g:flymake_ballooneval = 1
 "--------------------------------------------------------------
 let g:Bookmarks_menu = 0
 "--------------------------------------------------------------
-" calendar.vim
-"--------------------------------------------------------------
-inoremap <silent> <Leader>tic <C-\><C-O>:CalendarH<CR>
-
-function! CalendarInsertDate(day, month, year, week, dir) "{{{
-  let date = printf('%04d/%02d/%02d', a:year, a:month, a:day)
-  exe "norm q"
-  if col("'^") != col('$')
-    exe "norm! i" . date
-    exe "norm! l"
-    startinsert
-  else
-    exe "norm! a" . date
-    startinsert!
-  endif
-endfunction
-"}}}
-let g:calendar_action = "CalendarInsertDate"
-"--------------------------------------------------------------
-" YouCompleteMe
-"--------------------------------------------------------------
-let g:ycm_auto_trigger = 0
-let g:ycm_key_list_select_completion = ['<Down>']
-let g:ycm_key_list_previous_completion = ['<Up>']
-"--------------------------------------------------------------
 " scratch.vim
 "--------------------------------------------------------------
 let g:scratch_autohide = 0
@@ -299,5 +247,264 @@ let g:scratch_height = 0.25
 let g:scratch_no_mappings = 1
 nmap <F8> <plug>(scratch-insert-reuse)
 xmap <F8> <plug>(scratch-selection-reuse)
+"--------------------------------------------------------------
+" lightline
+"--------------------------------------------------------------
+" mode is shown in statusline
+set noshowmode
+" g:lightline {{{
+let g:lightline = {
+  \   'colorscheme': has('gui_running') ? 'wombat' : &term == 'win32' ? 'default' : 'ChocolateLiquor',
+  \   'active': {
+  \     'left': [['mymode'], ['myfilename', 'readonly', 'mymodified']],
+  \     'right': [['mylineinfo'], ['mysetinfo'], ['myplugininfo']]
+  \   },
+  \   'component': {
+  \     'mylineinfo': '%4l/%L,%-5.(%c%V%)'
+  \   },
+  \   'component_function': {
+  \     'mymode': 'LightlineMode',
+  \     'myfilename': 'LightlineFilename',
+  \     'mytabinfo': 'LightlineTabInfo',
+  \     'mymodified': 'LightlineModified',
+  \     'mysetinfo': 'LightlineSetInfo',
+  \     'myplugininfo': 'LightlinePluginInfo',
+  \     'mycocstatus': 'LightlineCocStatus',
+  \   },
+  \   'enable': { 'tabline': 0 },
+  \ }
+"}}}
+if s:enable_coc
+  call add(g:lightline.active.left[1], 'mycocstatus')
+endif
+let g:lightline.inactive = g:lightline.active
+function! LightlineCocStatus() "{{{
+  return g:actual_curbuf == bufnr("%") ? coc#status() : ''
+endfunction
+"}}}
+function! LightlineFilename() "{{{
+  if &buftype == 'quickfix'
+    return exists('w:quickfix_title') ? w:quickfix_title : ''
+  endif
+  let fname = expand('%:t')
+  if '' == fname
+    return &ft == 'yggdrasil' ? '[TreeView]' : '[No Name]'
+  endif
+  return fname == '_GoToFile_Result_' ? lightline#concatenate([fname, gotofile#get_status_string()], 0) : expand('%')
+endfunction
+"}}}
+function! LightlineMode() "{{{
+  if &buftype == 'quickfix'
+    return getwininfo(win_getid(winnr()))[0].loclist != 0 ? 'Location List' : 'Quickfix List'
+  endif
+  return winwidth(0) < 40 || !&ma ? '' : lightline#mode()
+endfunction
+"}}}
+function! LightlineTabInfo() "{{{
+  return printf('%s:%d:%d%s', (&et?'spaces':'tabs'), &sw, &ts, (&sts?':'.&sts:''))
+endfunction
+"}}}
+function! LightlineModified() "{{{
+  return &mod && &bt != 'nowrite' && &bt != 'nofile' ? '[+]' : ''
+endfunction
+"}}}
+function! LightlineSetInfo() "{{{
+  if winwidth(0) < 40 || !&ma
+    return ''
+  endif
+
+  let info = []
+  for opt in ['spell', 'paste', 'list']
+    let val = eval('&'.opt)
+    if type(val) == type(0) && val == 1
+      call add(info, opt)
+    endif
+  endfor
+
+  for opt in ['wrap', 'hls', 'backup']
+    let val = eval('&'.opt)
+    if type(val) == type(0) && val == 0
+      call add(info, 'no'.opt)
+    endif
+  endfor
+
+  call add(info, LightlineTabInfo())
+
+  let enc = &fenc!=#""?&fenc:&enc
+  if winwidth(0) < 100
+    if &ff != 'unix'
+      call add(info, &ff)
+    endif
+
+    if enc != 'utf-8'
+      call add(info, enc)
+    endif
+
+    if &ft != ''
+      call add(info, &ft)
+    endif
+  else
+    call extend(info, [&ff, enc, &ft != '' ? &ft : 'no ft'])
+  endif
+
+  return lightline#concatenate(info, 1)
+endfunction
+"}}}
+function! LightlinePluginInfo() "{{{
+  if exists('*gutentags#statusline')
+    return gutentags#statusline('[updating:',  ']')
+  else
+    return ''
+  endif
+endfunction
+"}}}
+"
+if exists('*lightline#update')
+  augroup Vimrc
+    au FileType netrw call lightline#update()
+  augroup END
+endif
+"--------------------------------------------------------------
+" ultisnips
+"--------------------------------------------------------------
+let g:UltiSnipsListSnippets = "<Leader><Tab>"
+"--------------------------------------------------------------
+" leaderf
+"--------------------------------------------------------------
+let g:Lf_ShortcutF = 'g<F9>'
+let g:Lf_ShortcutB = 'g<F3>'
+let g:Lf_RootMarkers = s:root_pattern
+let g:Lf_CacheDirectory = expand('~/.vim-cache/leaderf')
+"--------------------------------------------------------------
+" gutentags
+" reference: http://www.skywind.me/blog/archives/2084
+"--------------------------------------------------------------
+let g:gutentags_enabled = 0
+let g:gutentags_modules = ['ctags', 'cscope']
+let g:gutentags_project_root = s:root_pattern
+let g:gutentags_exclude_filetypes = ['', 'vim', 'text']
+let g:gutentags_file_list_command = 'gutentags_show_file_list'
+if exists('g:vim_resources_dir') && !empty(g:vim_resources_dir)
+  let $VIM_RESOURCE_DIR = g:vim_resources_dir
+  let g:gutentags_cache_dir = expand(g:vim_resources_dir . '/tags')
+endif
+let g:gutentags_define_advanced_commands = 1
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+let g:gutentags_cscope_build_inverted_index = 1
+
+if exists('*lightline#update')
+  augroup MyGutentagsStatusLineRefresher
+    autocmd!
+    autocmd User GutentagsUpdating call lightline#update()
+    autocmd User GutentagsUpdated call lightline#update()
+  augroup END
+endif
+"--------------------------------------------------------------
+" indentLine
+"--------------------------------------------------------------
+let g:indentLine_bufTypeExclude = ['help', 'terminal', 'prompt', 'popup']
+let g:indentLine_bufNameExclude = ['[FileExplorer]<*>']
+"--------------------------------------------------------------
+" signify
+"--------------------------------------------------------------
+let g:signify_disable_by_default = 1
+autocmd User SignifySetup
+      \ exe 'au! signify' | au signify BufWritePost * call sy#start()
+"--------------------------------------------------------------
+" ale
+"--------------------------------------------------------------
+let g:ale_linters_explicit = 1
+let g:ale_linters = {
+      \  'c': ['cppcheck'],
+      \  'cpp': ['cppcheck'],
+      \ }
+" only run linters on save
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_enter = 0
+let g:ale_c_cppcheck_options = '--enable=all'
+let g:ale_cpp_cppcheck_options = '--enable=all'
+"--------------------------------------------------------------
+" asyncrun.vim
+"--------------------------------------------------------------
+let g:asyncrun_open = 6
+let g:asyncrun_bell = 1
+"--------------------------------------------------------------
+" coc.nvim
+"--------------------------------------------------------------
+if s:enable_coc
+	function! s:CocSetConfig()
+    let languageserver = {
+          \   "ccls": {
+          \     "command": "ccls",
+          \     "filetypes": ["c", "cpp", "objc", "objcpp"],
+          \     "rootPatterns": s:root_pattern,
+          \     "initializationOptions": {}
+          \   }
+          \ }
+    if exists('g:vim_resources_dir') && !empty(g:vim_resources_dir)
+      let languageserver.ccls.initializationOptions['cache'] = { "directory": expand(g:vim_resources_dir . '/ccls-cache') }
+    endif
+    " https://github.com/MaskRay/ccls/wiki/Install#clang-resource-directory
+    let clang_resources = glob(g:MYVIMRUNTIME . '/local/lib/clang/*', 0, 1)
+    if !empty(clang_resources)
+      let languageserver.ccls.initializationOptions['clang'] = { "resourceDir": expand(clang_resources[0]) }
+    endif
+    call coc#config('languageserver', languageserver)
+    call coc#config('suggest', { 'autoTrigger': 'trigger' })
+    call coc#config('coc.preferences', { 'rootPatterns': s:root_pattern })
+  endfunction
+
+  call s:CocSetConfig()
+
+  delfunction s:CocSetConfig
+endif
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+function! CocSettingInit()
+  if s:enable_coc
+    inoremap <silent> <buffer> <expr> <Leader><Tab>
+          \ pumvisible() ? "\<C-n>" :
+          \ <SID>check_back_space() ? "\<Tab>" :
+          \ coc#refresh()
+    nmap <silent> <buffer> gd <Plug>(coc-definition)
+    nmap <silent> <buffer> gD <Plug>(coc-declaration)
+    nmap <silent> <buffer> gi <Plug>(coc-implementation)
+    nmap <silent> <buffer> gy <Plug>(coc-type-definition)
+    nmap <silent> <buffer> gr <Plug>(coc-references)
+  endif
+endfunction
+"--------------------------------------------------------------
+" vista.nvim
+"--------------------------------------------------------------
+let g:vista_default_executive = 'ctags'
+if s:enable_coc
+  let g:vista_executive_for = {
+        \ 'cpp': 'coc',
+        \ 'c': 'coc',
+        \ 'python': 'coc',
+        \ }
+endif
+let g:vista_icon_indent = ["+", ""]
+let g:vista_fold_toggle_icons = ["+", "-"]
+let g:vista_sidebar_width = 34
+" ignore Unknown form COC
+let g:vista_ignore_kinds = ['Unknown']
+"--------------------------------------------------------------
+" ccls
+"--------------------------------------------------------------
+let g:ccls_size = 15
+let g:ccls_position = 'botright'
+let g:ccls_orientation = 'horizontal'
+augroup my_yggdrasil
+  autocmd!
+  autocmd FileType yggdrasil set cursorline
+augroup END
 
 " vim: fdm=marker : ts=2 : sw=2 :

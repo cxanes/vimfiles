@@ -12,7 +12,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}
 
-python << EOF
+python3 << EOF
 
 import re
 import os
@@ -58,6 +58,7 @@ class GoToFileWindow:
         self.filter = flist.Flist(option = {'search_dot_files': '1'})
         self.filter.add_pattern(filter_pattern)
         self.finder = finder(self._filter(self.items), self.option)
+        self.highlight = True
 
     def enable_filter(self):
         self.filter_enabled = True
@@ -66,6 +67,9 @@ class GoToFileWindow:
     def disable_filter(self):
         self.filter_enabled = False
         self.finder.set_items(self._filter(self.items))
+
+    def toggle_highlight(self):
+        self.highlight = not self.highlight
 
     def toggle_filter(self):
         self.filter_enabled = not self.filter_enabled
@@ -112,7 +116,7 @@ class GoToFileWindow:
 
     if vim.eval("has('conceal')") == "1":
         def _highlight(self, name, pos):
-            if not pos:
+            if not self.highlight or not pos:
               return name
             return "\0".join(name[start : end] for start, end in zip([0] + pos, pos + [len(name)]))
     else:
@@ -135,7 +139,7 @@ class GoToFileWindow:
           filter_enabled = 'on'
         else:
           filter_enabled = 'off'
-        vim.command("call setbufvar(%d, '&stl', '%5d file(s) found [filter:%s]')" \
+        vim.command("call setbufvar(%d, 'gotofile_status', '%d file(s) found [filter:%s]')" \
                     % (self.bufnr, len(self.matched_items), filter_enabled))
         self.abbrev = abbrev
 
@@ -163,13 +167,17 @@ endif
 
 let s:gotofile_abbrev = ""
 
+function! gotofile#get_status_string()
+  return exists('b:gotofile_status') ? b:gotofile_status : ''
+endfunction
+
 function! s:SID()
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
 
 function s:ResultWindowUpdate(force)
   let s:gotofile_abbrev = getline('.')
-  py if _goto_file_window: _goto_file_window.search(vim.eval("s:gotofile_abbrev"), int(vim.eval('a:force')))
+  py3 if _goto_file_window: _goto_file_window.search(vim.eval("s:gotofile_abbrev"), int(vim.eval('a:force')))
 endfunction
 
 function! s:EnterQueryWindow(motion, append)
@@ -197,7 +205,7 @@ function! s:EnterResultWindow()
   let winnum = bufwinnr(bufnum)
   if winnum == -1 | return | endif
 
-  exec winnum . "wincmd w"
+  call feedkeys(printf("%d\<C-W>\<C-W>", winnum), 'n')
 endfunction
 
 let s:gotofile_bufnr = { 'result': -1, 'query': -1 }
@@ -241,8 +249,8 @@ function! s:OpenFile(type) range
     endif
   end
 
-  py if not _goto_file_window: vim.command('return')
-  py _goto_file_window.open(range(int(vim.eval('a:firstline'))-1, int(vim.eval('a:lastline'))), int(vim.eval('a:type')))
+  py3 if not _goto_file_window: vim.command('return')
+  py3 _goto_file_window.open(range(int(vim.eval('a:firstline'))-1, int(vim.eval('a:lastline'))), int(vim.eval('a:type')))
 endfunction
 
 function s:QueryWindowInit()
@@ -251,34 +259,40 @@ function s:QueryWindowInit()
   setl wfh
   setl nowrap
 
-  setl statusline=[Go\ to\ File]
+  "setl statusline=[Go\ to\ File]
 
   if has("signs")
     sign define go_to_file_prompt text=: texthl=Label
     exe "sign place 1 line=1 name=go_to_file_prompt buffer=" . bufnr('%')
   endif
 
-  inoremap <buffer> <silent> <CR>  <ESC>:<C-U>call <SID>OpenFile(0)<CR>
+  inoremap <buffer> <silent> <CR>  <C-C>:<C-U>call <SID>OpenFile(0)<CR>
   nnoremap <buffer> <silent> <CR>  :<C-U>call <SID>OpenFile(0)<CR>
 
-  inoremap <buffer> <silent> <F3>  <ESC>:<C-U>call <SID>ShowFilterWindow()<CR>
+  inoremap <buffer> <silent> <F3>  <C-C>:<C-U>call <SID>ShowFilterWindow()<CR>
   nnoremap <buffer> <silent> <F3>  :<C-U>call <SID>ShowFilterWindow()<CR>
-  inoremap <buffer> <silent> <F2>  <ESC>:<C-U>call <SID>ToggleFilter(1)<CR>
+  inoremap <buffer> <silent> <F2>  <C-C>:<C-U>call <SID>ToggleFilter(1)<CR>
   nnoremap <buffer> <silent> <F2>  :<C-U>call <SID>ToggleFilter(1)<CR>
+  inoremap <buffer> <silent> <F5>  <C-C>:<C-U>call <SID>ToggleHighlight(1)<CR>
+  nnoremap <buffer> <silent> <F5>  :<C-U>call <SID>ToggleHighlight(1)<CR>
 
   inoremap <buffer> <silent> <C-A> <Home>
   inoremap <buffer> <silent> <C-E> <End>
 
   augroup GoToFileQueryWindow
     au!
-    au CursorMovedI <buffer> call s:ResultWindowUpdate(0)
+    if exists('*lightline#update')
+      au CursorMovedI <buffer> call s:ResultWindowUpdate(0) | call lightline#update()
+    else
+      au CursorMovedI <buffer> call s:ResultWindowUpdate(0)
+    endif
     au BufWinLeave <buffer> call s:CloseGoToFileWindow()
     au InsertLeave <buffer> call s:EnterResultWindow()
   augroup END
 endfunction
 
 function s:ResultWindowInit()
-  py _goto_file_window.set_buffer()
+  py3 _goto_file_window.set_buffer()
 
   setl nu
   setl cursorline
@@ -299,6 +313,7 @@ function s:ResultWindowInit()
 
   nnoremap <buffer> <silent> <F3>     :<C-U>call <SID>ShowFilterWindow()<CR>
   nnoremap <buffer> <silent> <F2>     :<C-U>call <SID>ToggleFilter(0)<CR>
+  nnoremap <buffer> <silent> <F5>     :<C-U>call <SID>ToggleHighlight(0)<CR>
 
   nnoremap <buffer> <silent> <CR>          :<C-U>call <SID>OpenFile(0)<CR>
   nnoremap <buffer> <silent> <2-LeftMouse> :<C-U>call <SID>OpenFile(0)<CR>
@@ -316,23 +331,31 @@ let g:_goto_file_window_prev_buf = -1
 let g:_goto_file_window_filelist_mtime = -1
 
 function! s:ToggleFilter(query_window) 
-  py _goto_file_window.toggle_filter()
-  py _goto_file_window.search(None, True)
+  py3 _goto_file_window.toggle_filter()
+  py3 _goto_file_window.search(None, True)
+  if a:query_window
+    silent call s:EnterQueryWindow('', 1)
+  endif
+endfunction
+
+function! s:ToggleHighlight(query_window) 
+  py3 _goto_file_window.toggle_highlight()
+  py3 _goto_file_window.search(None, True)
   if a:query_window
     silent call s:EnterQueryWindow('', 1)
   endif
 endfunction
 
 function! s:FilterWindowUpdate()
-  py _goto_file_window.set_filter_pattern(vim.current.buffer[:])
-  py _goto_file_window.search(None, True)
+  py3 _goto_file_window.set_filter_pattern(vim.current.buffer[:])
+  py3 _goto_file_window.search(None, True)
   setl nomodified
   " silent call s:EnterResultWindow()
 endfunction
 
 function! s:FilterWindowInit()
   setlocal bt=acwrite
-  py vim.current.buffer[:] = _goto_file_window.get_filter_pattern()
+  py3 vim.current.buffer[:] = _goto_file_window.get_filter_pattern()
   startinsert
 
   augroup GoToFileFilterWindow
@@ -343,7 +366,7 @@ endfunction
 
 function! s:ShowFilterWindow() 
   let s:curwinnum = winnr()
-  let winnum = CreateSharedTempBuffer('_GoToFile_Filter_', 'topleft', '<SNR>'.s:SID().'_FilterWindowInit')
+  let winnum = CreateSharedTempBuffer('[GoToFile Filter]', 'topleft', '<SNR>'.s:SID().'_FilterWindowInit')
   exe winnum . 'wincmd w'
 endfunction
 
@@ -354,21 +377,21 @@ function! gotofile#CreateGoToFileWindow()
   endif
 
   let curwinnum = winnr()
-  let winnum = CreateSharedTempBuffer('_GoToFile_Result_', '<SNR>'.s:SID().'_ResultWindowInit')
+  let winnum = CreateSharedTempBuffer('[GoToFile Result]', '<SNR>'.s:SID().'_ResultWindowInit')
   exe winnum . 'wincmd w'
 
   let cwd = getcwd()
   if g:_goto_file_window_cwd != cwd
-    py gotofile_set_items(_goto_file_window)
+    py3 gotofile_set_items(_goto_file_window)
     let g:_goto_file_window_cwd = cwd
   elseif exists('g:flist_name') && filereadable(g:flist_name) && getftime(g:flist_name) > g:_goto_file_window_filelist_mtime
-    py gotofile_set_items(_goto_file_window)
+    py3 gotofile_set_items(_goto_file_window)
   endif
 
   let s:gotofile_bufnr['result'] = winbufnr(winnum)
 
   let curwinnum = winnr()
-  let winnum = CreateSharedTempBuffer('_GoToFile_', '<SNR>'.s:SID().'_QueryWindowInit')
+  let winnum = CreateSharedTempBuffer('[GoToFile]', '<SNR>'.s:SID().'_QueryWindowInit')
   exe winnum . 'wincmd w'
 
   let s:gotofile_bufnr['query'] = winbufnr(winnum)

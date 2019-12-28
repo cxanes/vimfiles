@@ -849,8 +849,8 @@ function! s:FileCheck(file) "{{{
 endfunction
 "}}}
 function! s:GetBufname() "{{{
-  let name = '_FileExplorer_<%d>'
-  let name_pat = '^_FileExplorer_<\d\+>$'
+  let name = '[FileExplorer]<%d>'
+  let name_pat = '^\[FileExplorer\]<\d\+>$'
   for bufnr in tabpagebuflist()
     let bufname = bufname(bufnr)
     if bufname =~ name_pat
@@ -930,7 +930,7 @@ function! FileExplorer#Open(dir, ...) " ... = max_level [0:Max_Create_Level], ot
       setlocal nornu
     endif
 
-    let &l:statusline='%<%f%=  %l/%L,%c%V '
+    "let &l:statusline='%<%f%=  %l/%L,%c%V '
 
     if !exists('b:_FileExplorer_show_help')
       let b:_FileExplorer_show_help = 0

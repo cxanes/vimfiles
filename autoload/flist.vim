@@ -12,7 +12,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}
 
-python << EOF
+python3 << EOF
 
 import vim
 import re
@@ -26,6 +26,16 @@ EOF
 
 let s:flist_cwd = ''
 
+function! s:CheckDir(name) abort
+  let dir = fnamemodify(a:name, ':h')
+  if dir != '.' && empty(glob(dir))
+    call mkdir(dir, 'p')
+  elseif !isdirectory(dir)
+    call s:ShowMesg(dir . ' exists and is not directory')
+    throw 'error'
+  endif
+endfunction
+
 function! s:ShowMesg(mesg, ...)
   let hl = a:0 == 0 ? 'WarningMsg' : a:1
   exe 'echohl ' . hl
@@ -38,7 +48,7 @@ if exists('g:flist_name')
   let s:default_name = g:flist_name
 endif
 
-function! s:GetConfig(...)
+function! s:GetConfig(...) abort
   let name = s:default_name
   if a:0 > 0
     if type('') != type(a:1)
@@ -69,17 +79,19 @@ function! s:GetConfig(...)
     endif
   endif
 
+  call s:CheckDir(name)
+
   return { 'name': name, 'option': option }
 endfunction
 
-function! flist#Update(...)
+function! flist#Update(...) abort
   let config = call('s:GetConfig', a:000)
-  py FlistUpdate(vim.eval('config'))
+  py3 FlistUpdate(vim.eval('config'))
 endfunction
 
 let s:max_retry = 10
 
-function! s:Open(type, retry, ...)
+function! s:Open(type, retry, ...) abort
   if index(['pattern', 'option', 'filelist'], a:type) == -1
     call s:ShowMesg('invalid type: ' . string(a:type))
     return
@@ -92,7 +104,7 @@ function! s:Open(type, retry, ...)
     let name = g:flist_name
   endif
 
-  py vim.command("let fname = '%s'" % (re.sub(r"'", r"''", flist.get_fname(vim.eval('name'), vim.eval('a:type'))), ))
+  py3 vim.command("let fname = '%s'" % (re.sub(r"'", r"''", flist.get_fname(vim.eval('name'), vim.eval('a:type'))), ))
 
   if filereadable(fname)
     exec 'e' fnameescape(fname)
@@ -105,7 +117,7 @@ function! s:Open(type, retry, ...)
   endif
 
   let config = call('s:GetConfig', [name])
-  py FlistUpdate(vim.eval('config'), vim.eval('a:type'))
+  py3 FlistUpdate(vim.eval('config'), vim.eval('a:type'))
   call call('s:Open', [a:type, a:retry + 1] + a:000)
 endfunction
 

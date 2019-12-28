@@ -128,7 +128,7 @@ nnoremap <silent> <Leader>]   :<C-U>exec v:count1 . 'tn'<CR>
 nnoremap <silent> <Leader>tj  :<C-U>tj<CR>
 
 nnoremap <silent> <Leader>cw :<C-U>exec 'cwindow' (v:count ? v:count : '')<CR>
-nnoremap <silent> <Leader>co :<C-U>exec 'copen'   (v:count ? v:count : '')<CR>
+nnoremap <silent> <Leader>co :<C-U>exec 'bo copen'   (v:count ? v:count : '')<CR>
 nnoremap <silent> <Leader>cc :<C-U>cclose<CR>
 
 nnoremap <silent> <Leader>lw :<C-U>exec 'lwindow' (v:count ? v:count : '')<CR>
@@ -558,8 +558,10 @@ if has('cscope')
   " use quickfix window
   set csqf=s-,c-,d-,i-,t-,e-,g-
 
+  if exists('g:vim_resources_dir') && isdirectory(g:vim_resources_dir) && filereadable(g:vim_resources_dir . '/cscope.out')
+    exe 'cs add' g:vim_resources_dir . '/cscope.out'
   " add any database in current directory
-  if filereadable('cscope.out')
+  elseif filereadable('cscope.out')
       silent! cs add cscope.out
   " else add database pointed to by environment
   elseif $CSCOPE_DB != '' && filereadable($CSCOPE_DB)

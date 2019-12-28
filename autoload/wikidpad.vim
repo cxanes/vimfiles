@@ -63,7 +63,7 @@ else
   endfunction
 endif
 
-python <<EOF
+python3 <<EOF
 import xmlrpclib
 import vim
 
@@ -267,7 +267,7 @@ endfunction
 function! s:GetCompleteWords() 
   let line = col('.') == 1 ? '' : getline('.')[ : (col('.')-2)]
   let [tofind, words] = [0, []]
-python << EOF
+python3 << EOF
 [tofind, words] = WikidPad.GetCompleteWords(vim.eval('line'))
 if tofind != 0:
   vim.command("let tofind = %d" % tofind)

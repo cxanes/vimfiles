@@ -43,7 +43,7 @@ function! s:SetEnv()
     let cyg_perl    = 0
   end
 
-  let $PATH       = s:PrependEnv($PATH,       s:GetPath(['bin', (g:MSWIN ? 'bin/win' : 'bin/linux')]), -1)
+  let $PATH       = s:PrependEnv($PATH,       s:GetPath(['bin', (g:MSWIN ? 'bin/win' : 'bin/linux'), 'local/bin']), -1)
   let $RUBYLIB    = s:PrependEnv($RUBYLIB,    s:GetPath(['lib/ruby']),   cyg_ruby)
   let $PYTHONPATH = s:PrependEnv($PYTHONPATH, s:GetPath(['lib/python']), cyg_python)
   let $PERL5LIB   = s:PrependEnv($PERL5LIB,   s:GetPath(['lib/perl']),   cyg_perl)

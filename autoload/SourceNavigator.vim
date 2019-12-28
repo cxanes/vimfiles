@@ -18,14 +18,14 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}
 "========================================================
-python << PY_EOF
+python3 << PY_EOF
 import vim
 import socket
 _SN_Socket = None
 PY_EOF
 
 function! s:Send(string) "{{{
-python << PY_EOF
+python3 << PY_EOF
 if _SN_Socket is not None:
   _SN_Socket.send(vim.eval('a:string') + "\n")
 PY_EOF
@@ -44,7 +44,7 @@ function! SourceNavigator#Start(port) "{{{
     return
   endif
 
-python << PY_EOF
+python3 << PY_EOF
 if _SN_Socket is None:
   try:
     _SN_Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -61,7 +61,7 @@ PY_EOF
 endfunction
 "}}}
 function! SourceNavigator#Stop() "{{{
-python << PY_EOF
+python3 << PY_EOF
 if _SN_Socket is not None:
   _SN_Socket.close()
   _SN_Socket = None

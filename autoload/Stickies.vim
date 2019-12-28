@@ -33,7 +33,7 @@ let s:stickies_started = 0
 let g:current_sticky_id = ''
 let s:latest_reply = ''
 
-python <<EOF
+python3 <<EOF
 try:
   from stickies.Stickies import Stickies
   import vim

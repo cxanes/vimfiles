@@ -47,7 +47,7 @@ class Finder(object):
 
         try:
             pattern = re.compile(pattern)
-        except re.error, err:
+        except re.error as err:
             return []
 
         for item in self.items:

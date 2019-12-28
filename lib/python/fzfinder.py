@@ -40,7 +40,7 @@ class FzFinder(finder.Finder):
         pos = (ctypes.c_long * len(abbrev))()
 
         for item in self.items:
-            item.score = fzmatch.get_score(item.name, abbrev, ctypes.byref(self.coption), ctypes.byref(pos))
+            item.score = fzmatch.get_score(item.name.encode('ascii'), abbrev.encode('ascii'), ctypes.byref(self.coption), ctypes.byref(pos))
             if item.score == 0:
                 item.pos = None
             else:
@@ -69,5 +69,5 @@ if __name__ == '__main__':
     finder = FzFinder(file_list)
 
     for item in finder.search("foobar"):
-        print _highlight(item.name, item.pos), item.name, item.pos, item.score
+        print(_highlight(item.name, item.pos), item.name, item.pos, item.score)
 

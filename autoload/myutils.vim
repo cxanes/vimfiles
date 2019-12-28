@@ -766,7 +766,7 @@ function! myutils#ShowMatch(all_buffers, ...) "{{{
   endif
 
   let curwinnum = winnr()
-  let winnum = CreateTempBuffer('-MatchPreview-')
+  let winnum = CreateTempBuffer('[MatchPreview]')
 
   exe winnum . 'wincmd w'
 
@@ -875,7 +875,7 @@ endfunction "}}}
 "==========================================================}}}1
 " {{{1 CloseAllOtherWindows(): Close all windows except current and reserved windows
 "--------------------------------------------------------------
-function! s:MatchPattern(str, patterns) "{{{
+function! myutils#MatchPattern(str, patterns) "{{{
   for pattern in a:patterns
     if a:str =~ pattern
       return 1
@@ -915,19 +915,15 @@ function! s:CloseBuffer(buf, left) "{{{
   endwhile
 endfunction
 "}}}
-let s:default_reserved_window_patterns = [ '^__Tag_List__$', '^_FileExplorer_\%(<\d\+>\)\?$', '^CCTree-View$']
+let s:default_reserved_window_patterns = [ '^__Tag_List__$', '^\[FileExplorer\]\%(<\d\+>\)\?$', '^CCTree-View$', '^NERD_tree_\d\+$']
+function! s:WindowShouldReserved() "{{{
+  if exists('g:CloseAllOtherWindowsReserveHandler')
+    let result = call(g:CloseAllOtherWindowsReserveHandler, [])
+    return result == -1 ? myutils#MatchPattern(bufname('%'), s:default_reserved_window_patterns) : result
+endfunction
+"}}}
 function! myutils#CloseAllOtherWindows() "{{{
-  if exists('g:reserved_window_patterns')
-    if type('') == type(g:reserved_window_patterns)
-      let reserved_window_patterns = [ g:reserved_window_patterns ]
-    else
-      let reserved_window_patterns = g:reserved_window_patterns
-    endif
-  else
-    let reserved_window_patterns = s:default_reserved_window_patterns
-  endif
-
-  if s:MatchPattern(bufname('%'), reserved_window_patterns)
+  if s:WindowShouldReserved()
     return
   endif
 
@@ -945,7 +941,7 @@ function! myutils#CloseAllOtherWindows() "{{{
 
     if buf == curbuf
       call s:CloseBuffer(buf, 1)
-    elseif !s:MatchPattern(bufname('%'), reserved_window_patterns)
+    elseif !s:WindowShouldReserved()
       call s:CloseBuffer(buf, 0)
     endif
   endfor
@@ -965,15 +961,15 @@ function! myutils#Cscope(args, default, try_flist_name) "{{{
     call mylib#ShowMesg('ErrorMsg', 'cscope: command not find', 1)
     return
   endif
-  
-  let cmd = 'silent !cscope -b ' 
+
+  let cmd = 'silent !cscope -b '
 
   if a:default
     let cmd .= '-Rq '
   endif
 
   if a:try_flist_name && exists('g:flist_name') && filereadable(g:flist_name)
-    let cmd .= '-i ' . mylib#Shellescape(g:flist_name) . ' '
+    let cmd .= '-i ' . mylib#Shellescape(l:flist_name) . ' '
   endif
 
   if exists('g:cscope_default_args')
@@ -981,6 +977,21 @@ function! myutils#Cscope(args, default, try_flist_name) "{{{
   endif
 
   exe cmd . a:args
+
+  if exists('g:vim_resources_dir') && !empty(g:vim_resources_dir)
+    if empty(glob(g:vim_resources_dir))
+      call mkdir(g:vim_resources_dir, 'p')
+    endif
+
+    if isdirectory(g:vim_resources_dir)
+      let files = glob('cscope.*', 0, 1)
+      if (!empty(files))
+        let move = g:MSWIN ? "move" : "mv"
+        exe 'silent !'.move join(files) mylib#Shellescape(g:vim_resources_dir)
+      endif
+    endif
+  endif
+
   redraw!
 endfunction
 "}}}
@@ -997,7 +1008,15 @@ function! myutils#Ctags(args, default, try_flist_name) "{{{
   endif
 
   if a:try_flist_name && exists('g:flist_name') && filereadable(g:flist_name)
-    let cmd .= '-L ' . mylib#Shellescape(g:flist_name) . ' '
+    let cmd .= '-L ' . mylib#Shellescape(l:flist_name) . ' '
+  endif
+
+  if exists('g:vim_resources_dir') && !empty(g:vim_resources_dir)
+    if empty(glob(g:vim_resources_dir))
+      call mkdir(g:vim_resources_dir, 'p')
+    endif
+
+    let cmd .= '--tag-relative=yes -f ' . mylib#Shellescape(g:vim_resources_dir . '/tags')
   endif
 
   if exists('g:ctags_default_args')
@@ -1005,6 +1024,7 @@ function! myutils#Ctags(args, default, try_flist_name) "{{{
   endif
 
   exe cmd . a:args
+
   redraw!
 endfunction
 "}}}
@@ -1025,7 +1045,9 @@ function! myutils#SimpleRetag(...) "{{{
   echohl None
   call myutils#Ctags('', 1, try_flist_name)
 
-  if filereadable('cscope.out')
+  if exists('g:vim_resources_dir') && isdirectory(g:vim_resources_dir) && filereadable(g:vim_resources_dir . '/cscope.out')
+    exe 'cs add' g:vim_resources_dir . '/cscope.out'
+  elseif filereadable('cscope.out')
     cs add cscope.out
   endif
 

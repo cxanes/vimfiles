@@ -9,12 +9,12 @@ import stat
 import platform
 import gzip
 import pickle
-import ConfigParser
+import configparser
 import fnmatch2
 # import fnmatch as fnmatch2
 
 def print_func(s):
-    print s
+    print(s)
 
 class Node(object):
     __slots__ = [ 'exact', 'wildcard', 'recursive', 'terminal' ]
@@ -146,7 +146,7 @@ class Pattern(object):
         if pattern == '.' or pattern == '/':
             return
         elif pattern == '..' or pattern.startswith('../'):
-            print >> sys.stderr, "warning: spec is outside of root dir, ignore"
+            print("warning: spec is outside of root dir, ignore", file = sys.stderr)
             return
 
         if pattern.startswith('!'):
@@ -258,7 +258,7 @@ class Pattern(object):
 
         try:
             names = os.listdir(root)
-        except os.error, err:
+        except os.error as err:
             if onerror is not None:
                 onerror(err)
             return
@@ -390,17 +390,14 @@ def _get_pattern(pattern_fname):
     pattern = []
 
     try:
-        f = open(pattern_fname, "rb")
+        f = open(pattern_fname, "r")
     except IOError:
         return None
     else:
         try:
-            try:
-                can_skip = lambda line: re.match(r"\s*#|\s*$", line) != None
+            can_skip = lambda line: re.match(r"\s*#|\s*$", line) != None
 
-                pattern = [ _strip(line) for line in f.readlines() if not can_skip(line) ]
-            except:
-                return None
+            pattern = [ _strip(line) for line in f.readlines() if not can_skip(line) ]
         finally:
             f.close()
 
@@ -453,7 +450,7 @@ class Flist:
 
     def _init_config(self):
         self._dirty = 0
-        self._option = ConfigParser.ConfigParser(self._default_option)
+        self._option = configparser.ConfigParser(self._default_option)
         self._file_list = []
 
     def get_fname(self, fname_type):
@@ -471,8 +468,8 @@ class Flist:
             return
 
         try:
-            f = open(self.get_fname('filelist'), "rb")
-        except IOError, e:
+            f = open(self.get_fname('filelist'), "r")
+        except IOError as e:
             self._dirty = self._dirty | _dirty_flag['filelist'] | _dirty_flag['update']
         else:
             try:
@@ -481,7 +478,7 @@ class Flist:
                 f.close()
 
         try:
-            f = open(self.get_fname('option'), "rb")
+            f = open(self.get_fname('option'), "r")
         except IOError:
             self._dirty = self._dirty | _dirty_flag['option']
         else:
@@ -517,33 +514,18 @@ class Flist:
             self.update()
             if self._dirty & _dirty_flag['filelist']:
                 if not self._option.getint('DEFAULT', 'manual_update'):
-                    # with open(self.get_fname('filelist'), "wb") as f:
-                    #     f.writelines([line + '\n' for line in self._file_list])
-                    f = open(self.get_fname('filelist'), "wb")
-                    try:
+                    with open(self.get_fname('filelist'), "w") as f:
                         f.writelines([line + '\n' for line in self._file_list])
-                    finally:
-                        f.close()
                 self._dirty = self._dirty & ~_dirty_flag['filelist']
 
         if 'pattern' in dump_types and self._dirty & _dirty_flag['pattern']:
-            # with open(self.get_fname('pattern'), "wb") as f:
-            #     f.writelines([line + '\n' for line in self._raw_pattern])
-            f = open(self.get_fname('pattern'), "wb")
-            try:
+            with open(self.get_fname('pattern'), "w") as f:
                 f.writelines([line + '\n' for line in self._raw_pattern])
-            finally:
-                f.close()
             self._dirty = self._dirty & ~_dirty_flag['pattern']
 
         if 'option' in dump_types and self._dirty & _dirty_flag['option']:
-            # with open(self.get_fname('option'), "wb") as f:
-            #     self._option.write(f)
-            f = open(self.get_fname('option'), "wb")
-            try:
+            with open(self.get_fname('option'), "w") as f:
                 self._option.write(f)
-            finally:
-                f.close()
             self._dirty = self._dirty & ~_dirty_flag['option']
 
     def import_pattern(self, pattern_fname = None, preserve = False):

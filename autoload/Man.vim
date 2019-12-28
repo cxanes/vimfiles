@@ -21,7 +21,7 @@ set cpo&vim
 let s:has_python = 0
 if has('python') && (has('win32') || has('win32unix') || has('win64') || has('win95') || has('win16'))
   let s:has_python = 1
-python <<EOF
+python3 <<EOF
 import vim, os
 def ManSystem(cmd):
   try:
