@@ -297,7 +297,7 @@ function! LightlineMode() "{{{
   if &buftype == 'quickfix'
     return getwininfo(win_getid(winnr()))[0].loclist != 0 ? 'Location List' : 'Quickfix List'
   endif
-  return winwidth(0) < 40 || !&ma ? '' : lightline#mode()
+  return winwidth(0) < 40 || (!&ma && &bt != 'terminal') ? '' : lightline#mode()
 endfunction
 "}}}
 function! LightlineTabInfo() "{{{
@@ -305,7 +305,7 @@ function! LightlineTabInfo() "{{{
 endfunction
 "}}}
 function! LightlineModified() "{{{
-  return &mod && &bt != 'nowrite' && &bt != 'nofile' ? '[+]' : ''
+  return &mod && &bt != 'nowrite' && &bt != 'nofile' && &bt != 'terminal' ? '[+]' : ''
 endfunction
 "}}}
 function! LightlineSetInfo() "{{{
