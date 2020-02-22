@@ -849,8 +849,8 @@ function! s:FileCheck(file) "{{{
 endfunction
 "}}}
 function! s:GetBufname() "{{{
-  let name = '[FileExplorer]<%d>'
-  let name_pat = '^\[FileExplorer\]<\d\+>$'
+  let name = '[FileExplorer][%d]'
+  let name_pat = '^\[FileExplorer\]\[\d\+\]$'
   for bufnr in tabpagebuflist()
     let bufname = bufname(bufnr)
     if bufname =~ name_pat

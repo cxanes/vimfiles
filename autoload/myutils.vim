@@ -200,7 +200,7 @@ function! myutils#Run(contain_command, args) "{{{
   endif
 
   let curwinnum = winnr()
-  let winnum = CreateTempBuffer('-OutputPreview-')
+  let winnum = CreateTempBuffer('_OutputPreview_')
   exe winnum . 'wincmd w'
   silent %d _
 
@@ -311,7 +311,7 @@ function! myutils#Filter(...) range " ... = filtcmd {{{
   endif
 
   let curwinnum = winnr()
-  let winnum = CreateTempBuffer('-OutputPreview-')
+  let winnum = CreateTempBuffer('_OutputPreview_')
 
   " Get a copy of the selected lines
   let keepa = @a
@@ -915,7 +915,7 @@ function! s:CloseBuffer(buf, left) "{{{
   endwhile
 endfunction
 "}}}
-let s:default_reserved_window_patterns = [ '^__Tag_List__$', '^\[FileExplorer\]\%(<\d\+>\)\?$', '^CCTree-View$', '^NERD_tree_\d\+$']
+let s:default_reserved_window_patterns = [ '^__Tag_List__$', '^\[FileExplorer\]\%(\[\d\+\]\)\?$']
 function! s:WindowShouldReserved() "{{{
   if exists('g:CloseAllOtherWindowsReserveHandler')
     let result = call(g:CloseAllOtherWindowsReserveHandler, [])

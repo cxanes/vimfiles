@@ -124,7 +124,7 @@ endfunction
 "}}}
 function! s:IsTempBufName(bufname, temp_bufname, shared) "{{{
   return a:bufname =~ printf('^\V%s%s\$', 
-        \ escape(a:temp_bufname, '\'), (a:shared ? '' : '<\d\+>'))
+        \ escape(a:temp_bufname, '\'), (a:shared ? '' : '\[\d\+\]'))
 endfunction
 "}}}
 function! s:ClearUnusedTempBuf(bufname, shared) "{{{
@@ -207,7 +207,7 @@ function! s:SetTempBufName(bufname, shared) "{{{
   if a:shared
     silent exec printf('f %s', escape(a:bufname, ' '))
   else
-    silent exec printf('f %s<%d>', escape(a:bufname, ' '), s:new_temp_buf_id)
+    silent exec printf('f %s\[%d\]', escape(a:bufname, ' '), s:new_temp_buf_id)
     let s:new_temp_buf_id += 1
   endif
 endfunction
