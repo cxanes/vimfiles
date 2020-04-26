@@ -65,7 +65,7 @@ set guioptions-=T         " Exclude Toolbar.
 set guioptions-=e         " Non-GUI tab pages
 set shortmess+=I          " Don't give the intro message when starting Vim
 set formatoptions=tcroqnB " See |fo-table|
-set ambiwidth=double      " Handle the width of the CJK font
+"set ambiwidth=double      " Handle the width of the CJK font
 set backspace=2           " Allow backspacing over everything in insert mode
 set ruler                 " Show the cursor position all the time
 set showcmd               " Display incomplete commands
