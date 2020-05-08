@@ -54,10 +54,10 @@ hi Visual cterm=NONE ctermbg=66
 endif
 
 if !has('gui_running') && &t_Co == 256
-hi SpecialKey term=bold ctermfg=DarkBlue
+"hi SpecialKey term=bold ctermfg=DarkBlue
 hi Special ctermfg=Red
 hi Type ctermfg=Green
-hi Underlined term=underline ctermfg=DarkBlue
+"hi Underlined term=underline ctermfg=DarkBlue
 hi Todo ctermbg=226
 endif
 
