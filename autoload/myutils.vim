@@ -969,7 +969,7 @@ function! myutils#Cscope(args, default, try_flist_name) "{{{
   endif
 
   if a:try_flist_name && exists('g:flist_name') && filereadable(g:flist_name)
-    let cmd .= '-i ' . mylib#Shellescape(l:flist_name) . ' '
+    let cmd .= '-i ' . mylib#Shellescape(g:flist_name) . ' '
   endif
 
   if exists('g:cscope_default_args')
@@ -1001,14 +1001,14 @@ function! myutils#Ctags(args, default, try_flist_name) "{{{
     return
   endif
 
-  let cmd =  'silent !ctags --c++-kinds=+p --fields=+iaS --extra=+q '
+  let cmd =  'silent !ctags --c++-kinds=+p --fields=+iaS --extras=+q '
 
   if a:default
     let cmd .= '-R '
   endif
 
   if a:try_flist_name && exists('g:flist_name') && filereadable(g:flist_name)
-    let cmd .= '-L ' . mylib#Shellescape(l:flist_name) . ' '
+    let cmd .= '-L ' . mylib#Shellescape(g:flist_name) . ' '
   endif
 
   if exists('g:vim_resources_dir') && !empty(g:vim_resources_dir)
