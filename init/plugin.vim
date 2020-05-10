@@ -2,7 +2,7 @@
 " <https://github.com/junegunn/vim-plug>
 
 let s:enable_coc = executable('node') && executable('ccls')
-let s:root_pattern = ['.ccls', '.project', '.root', '.svn', '.git', '.hg']
+let s:root_pattern = ['.ccls', '.project', '.root', '.svn', '.git', '.hg', 'compile_commands.json']
 
 call plug#begin('~/.vim-plug')
 
@@ -478,6 +478,9 @@ function! CocSettingInit()
     nmap <silent> <buffer> gi <Plug>(coc-implementation)
     nmap <silent> <buffer> gy <Plug>(coc-type-definition)
     nmap <silent> <buffer> gr <Plug>(coc-references)
+    nmap <silent> <buffer> gI <Plug>(coc-diagnostic-info)
+    nmap <silent> <buffer> gn <Plug>(coc-diagnostic-next-error)
+    nmap <silent> <buffer> gN <Plug>(coc-diagnostic-prev-error)
   endif
 endfunction
 "--------------------------------------------------------------
