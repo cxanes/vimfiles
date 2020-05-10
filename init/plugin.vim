@@ -290,7 +290,7 @@ function! LightlineFilename() "{{{
   if '' == fname
     return &ft == 'yggdrasil' ? '[TreeView]' : '[No Name]'
   endif
-  return fname == '_GoToFile_Result_' ? lightline#concatenate([fname, gotofile#get_status_string()], 0) : expand('%')
+  return fname == '_GoToFile_Result_' ? lightline#concatenate([fname, gotofile#get_status_string()], 0) : expand('%:~:.')
 endfunction
 "}}}
 function! LightlineMode() "{{{
