@@ -14,8 +14,10 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}
 
+augroup MyFileExplorer
+au BufNew * silent! let b:_FileExplorer_path = [ getcwd(), expand("%") ]
+augroup END
 command! -nargs=? -bar -count=0 -complete=dir -bang FileExplorer call FileExplorer#Open(<q-args>, <count>, <q-bang> == '!')
-
 
 " Restore {{{
 let &cpo = s:save_cpo

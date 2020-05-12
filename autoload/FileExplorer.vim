@@ -1,5 +1,5 @@
 " FileExplorer.vim
-" Last Modified: 2013-11-16 06:43:56
+" Last Modified: 2020-05-12 00:28:51
 "        Author: Frank Chang <frank.nevermind AT gmail.com>
 "
 " A tree view file browser.
@@ -1381,26 +1381,20 @@ function! s:InitHighlight() "{{{
   highlight default link FileExplorerHelp Comment
 endfunction
 "}}}
-function! s:FindFile(path) "{{{
+function! s:FindFileInternal(path, show_error) "{{{
   if !exists('b:_FileExplorer_root')
-    return
+    return 1
   endif
 
   let root_path = b:_FileExplorer_root.nodeValue
 
-  if (empty(a:path))
-    let curwin = winnr()
-    wincmd p
-    let path = s:Fullpath(expand('%'))
-    exe curwin . 'wincmd w'
-  else
-    let path = s:Fullpath(a:path)
-  endif
-
+  let path = a:path
   let index = matchend(path, '^\V' . escape(root_path, '\'))
   if index == -1
-    call s:ShowMessage('FileExplorer: Cannot find file under current root')
-    return
+    if a:show_error
+      call s:ShowMessage('FileExplorer: Cannot find file under current root')
+    endif
+    return 0
   endif
 
   let tail = path[index : ]
@@ -1421,7 +1415,7 @@ function! s:FindFile(path) "{{{
             let pos[1] += b:_FileExplorer_help_endlnum
           endif
           call setpos('.', pos)
-          return
+          return 1
         endif
 
         call s:OpenFold(child)
@@ -1432,10 +1426,45 @@ function! s:FindFile(path) "{{{
     endfor
 
     if found == 0
-      call s:ShowMessage('FileExplorer: Cannot show given path (nonexistent or hidden)')
-      return
+      if a:show_error
+        call s:ShowMessage('FileExplorer: Cannot show given path (nonexistent or hidden)')
+      endif
+      return 0
     endif
   endfor
+  return 1
+endfunction
+"}}}
+function! s:IsFullPath(path) "{{{
+  return a:path =~ '^[A-Z]:\|^/'
+endfunction
+"}}}
+function! s:FindFile(path) "{{{
+  if !exists('b:_FileExplorer_root')
+    return
+  endif
+
+  if !empty(a:path)
+    call s:FindFileInternal(s:Fullpath(a:path), 1)
+    return
+  endif
+
+  let curwin = winnr()
+  wincmd p
+  let path = [ s:Fullpath(expand('%')) ]
+  if exists('b:_FileExplorer_path') && !s:IsFullPath(b:_FileExplorer_path[1])
+    let fullpath = s:Fullpath(join(b:_FileExplorer_path, '/'))
+    if fullpath != path[0]
+      call add(path, fullpath)
+    endif
+  endif
+  exe curwin . 'wincmd w'
+  while !empty(path)
+    let fullpath = remove(path, 0)
+    if s:FindFileInternal(fullpath, empty(path)) != 0
+      return
+    endif
+  endwhile
 endfunction
 "}}}
 "========================================================
