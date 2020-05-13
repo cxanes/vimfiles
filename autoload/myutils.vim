@@ -778,6 +778,8 @@ function! myutils#ShowMatch(all_buffers, ...) "{{{
   endfor
   silent 1d _
 
+  let b:tempbuffer_title = 'Pattern: ' . pattern
+
   setl cursorline
   setl nowrap
 

@@ -289,8 +289,11 @@ function! LightlineFilename() "{{{
   let fname = expand('%:t')
   if '' == fname
     return &ft == 'yggdrasil' ? '[TreeView]' : '[No Name]'
+  elseif &buftype == 'nofile' && exists('b:tempbuffer_title')
+    return lightline#concatenate([fname, b:tempbuffer_title], 0)
+  else
+    return fname == '_GoToFile_Result_' ? lightline#concatenate([fname, gotofile#get_status_string()], 0) : expand('%:~:.')
   endif
-  return fname == '_GoToFile_Result_' ? lightline#concatenate([fname, gotofile#get_status_string()], 0) : expand('%:~:.')
 endfunction
 "}}}
 function! LightlineMode() "{{{
