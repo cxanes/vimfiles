@@ -207,7 +207,7 @@ function! s:SetTempBufName(bufname, shared) "{{{
   if a:shared
     silent exec printf('f %s', escape(a:bufname, ' '))
   else
-    silent exec printf('f %s\[%d\]', escape(a:bufname, ' '), s:new_temp_buf_id)
+    silent exec printf('f %s[%d]', escape(a:bufname, ' '), s:new_temp_buf_id)
     let s:new_temp_buf_id += 1
   endif
 endfunction
