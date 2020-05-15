@@ -34,6 +34,15 @@ endif
 
 command! -nargs=* -complete=file Tedit tabedit <args>
 
+" http://www.tpope.us/cgi-bin/cvsweb/tpope/.vimrc
+command! -bar -nargs=* -bang -complete=file Saveas
+      \ let v:errmsg = '' |
+      \ saveas<bang> <args> |
+      \ if v:errmsg == '' |
+      \   call delete(expand('#')) |
+      \   bw # |
+      \ endif
+
 command! -nargs=1 RFC call s:RFC(<q-args>)
 function! s:RFC(number) "{{{
   if a:number !~ '^\d\+$'
