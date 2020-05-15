@@ -39,7 +39,7 @@ ru init/user_info.vim
 let g:MSWIN =  has('win32') || has('win32unix') || has('win64')
           \ || has('win95') || has('win16')
 
-let s:runtime_dirs = [($HOME . '/.vim'), ($VIM  . '/vimfiles')]
+let s:runtime_dirs = [($HOME . '/.vim'), ($HOME  . '/vimfiles')]
 if !isdirectory(s:runtime_dirs[g:MSWIN])
       \ && isdirectory(s:runtime_dirs[!g:MSWIN])
   let g:MYVIMRUNTIME = s:runtime_dirs[!g:MSWIN]
