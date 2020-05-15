@@ -18,6 +18,7 @@ set cpo&vim
 let s:INDENT = 2
 let s:MSWIN  = has('win32') || has('win32unix') || has('win64')
           \ || has('win95') || has('win16')
+let s:SEP = (!s:MSWIN || (exists('+shellslash') && &ssl)) ? '/' : '\'
 "}}}
 " Options {{{
 let s:DEFAULT_OPTION = {
@@ -89,7 +90,7 @@ endfunction
 function! s:Fullpath(path) "{{{
   let path = a:path
   if s:MSWIN && path =~ '^[A-Za-z]:$'
-    let path .= '/'
+    let path .= s:SEP
   endif
   let path = fnamemodify(path, ':p')
   if path =~ '[^\\/][\\/]\+$'
@@ -127,7 +128,7 @@ endfunction
 "}}}
 function! s:GetFiles(dir) "{{{
   if s:MSWIN && a:dir =~ '^[a-zA-Z]:$'
-    let dir = a:dir . '/'
+    let dir = a:dir . s:SEP
   else
     let dir = fnamemodify(a:dir, ':p')
   endif
@@ -618,8 +619,8 @@ function! s:GetDescription(node) "{{{
     let description = s:Basename(a:node.nodeValue)
     let link = ' -> ' . substitute(link, '[\\/]$', '', '')
     if s:MSWIN
-      if exists('+shellslash') && &ssl
-        let link = substitute(link, '\\', '/', 'g')
+      if s:SEP == '/'
+        let link = substitute(link, '\\', s:SEP, 'g')
       endif
       let description = substitute(description, '\.lnk$', '', '')
     endif
@@ -718,7 +719,7 @@ function! s:ShowTree(root, ...) " ... = lnum (put cursor on line 'lnum') or file
   if exists('b:_FileExplorer_root')
     let dir = s:Fnameescape(s:GetFilename(b:_FileExplorer_root))
     if s:MSWIN && dir =~ '^[A-Za-z]:'
-      let dir .= exists('+shellslash') && &ssl ? '/' : '\'
+      let dir .= s:SEP
     endif
     exec 'lcd' dir
   endif
@@ -1402,8 +1403,8 @@ function! s:FindFileInternal(path, show_error) "{{{
   let node = b:_FileExplorer_root
   let path = root_path
 
-  for term in split(tail, '/')
-    let path .= '/' . term
+  for term in split(tail, s:SEP)
+    let path .= s:SEP . term
 
     let found = 0
     for child in node.childNodes
@@ -1453,7 +1454,7 @@ function! s:FindFile(path) "{{{
   wincmd p
   let path = [ s:Fullpath(expand('%')) ]
   if exists('b:_FileExplorer_path') && !s:IsFullPath(b:_FileExplorer_path[1])
-    let fullpath = s:Fullpath(join(b:_FileExplorer_path, '/'))
+    let fullpath = s:Fullpath(join(b:_FileExplorer_path, s:SEP))
     if fullpath != path[0]
       call add(path, fullpath)
     endif
