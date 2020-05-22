@@ -21,6 +21,9 @@ if (g:MSWIN && executable('makeprg.bat')) || executable('makeprg')
   endfunction
   "}}}
   function! SetMakeprg(...) "{{{
+    if &makeprg != 'make'
+      return
+    endif
     let args = a:0 > 0 ? a:1 : ''
     if args !~ '^\s*$'
       let args = escape(' ' . args, ' \|"')
