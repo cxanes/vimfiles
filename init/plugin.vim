@@ -463,6 +463,8 @@ if s:enable_coc
   call s:CocSetConfig()
 
   delfunction s:CocSetConfig
+
+  highlight link CocUnderline Underlined
 endif
 
 function! s:check_back_space() abort
