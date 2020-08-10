@@ -101,10 +101,6 @@ else
   set grepprg=grep\ -nH\ -I\ --exclude-dir=.svn\ --exclude-dir=.git\ --exclude=cscope.out\ --exclude=tags\ $*
 endif
 
-if exists('+re')
-  set re=1
-endif
-
 " Enable file type detection.
 filetype plugin indent on
 
