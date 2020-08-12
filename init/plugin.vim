@@ -413,7 +413,7 @@ let g:indentLine_bufNameExclude = ['[FileExplorer]<*>']
 " signify
 "--------------------------------------------------------------
 let g:signify_disable_by_default = 1
-autocmd User SignifySetup
+autocmd User SignifyAutocmds
       \ exe 'au! signify' | au signify BufWritePost * call sy#start()
 "--------------------------------------------------------------
 " ale
