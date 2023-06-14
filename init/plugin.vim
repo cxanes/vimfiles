@@ -61,6 +61,11 @@ Plug 'vim-scripts/CRefVim', { 'for': ['c', 'cpp' ] }
 " see: https://github.com/iamcco/markdown-preview.nvim/issues/50
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
+" neovim removes cscope support in 0.9, so we need to bring it back
+if has('nvim-0.9')
+  Plug 'dhananjaylatkar/cscope_maps.nvim' " cscope keymaps
+endif
+
 call plug#end()
 
 if exists(':packadd') && !has('nvim')
@@ -519,5 +524,23 @@ augroup my_yggdrasil
   autocmd!
   autocmd FileType yggdrasil set cursorline
 augroup END
+"--------------------------------------------------------------
+" cscope_maps
+"--------------------------------------------------------------
+if has('nvim-0.9')
+lua << EOF
+function _G.has_cscope_maps()
+  local ok, _ = pcall(require, "cscope_maps")
+  return ok
+end
+
+local ok, cscope_maps = pcall(require, "cscope_maps")
+if ok then
+  cscope_maps.setup({
+    disable_maps = false
+  })
+end
+EOF
+endif
 
 " vim: fdm=marker : ts=2 : sw=2 :

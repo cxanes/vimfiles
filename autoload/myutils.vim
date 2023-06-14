@@ -1032,10 +1032,12 @@ endfunction
 "}}}
 function! myutils#SimpleRetag(...) "{{{
   let try_flist_name = a:0 ? a:1 : 0
-  try
-    cs kill 0
-  catch /^Vim\%((\a\+)\)\=:E261/
-  endtry
+  if has('cscope')
+    try
+      cs kill 0
+    catch /^Vim\%((\a\+)\)\=:E261/
+    endtry
+  endif
 
   echohl MoreMsg
   echo "Rebuild cscope database..."
@@ -1047,10 +1049,18 @@ function! myutils#SimpleRetag(...) "{{{
   echohl None
   call myutils#Ctags('', 1, try_flist_name)
 
+  let cscope_out = ''
   if exists('g:vim_resources_dir') && isdirectory(g:vim_resources_dir) && filereadable(g:vim_resources_dir . '/cscope.out')
-    exe 'cs add' g:vim_resources_dir . '/cscope.out'
+    let cscope_out = g:vim_resources_dir . '/cscope.out'
   elseif filereadable('cscope.out')
-    cs add cscope.out
+    let cscope_out = 'cscope.out'
+  endif
+  if !empty(cscope_out)
+    if has('cscope')
+      exe 'cs add' g:vim_resources_dir . '/cscope.out'
+    elseif has('nvim-0.9') && v:lua.has_cscope_maps()
+      let g:cscope_maps_db_file = cscope_out
+    endif
   endif
 
   redraw

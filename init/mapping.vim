@@ -544,6 +544,19 @@ endfunction
 "--------------------------------------------------------------
 " The usage of cscope
 "--------------------------------------------------------------
+function! s:GetCscopeOut()
+  if exists('g:vim_resources_dir') && isdirectory(g:vim_resources_dir) && filereadable(g:vim_resources_dir . '/cscope.out')
+    return g:vim_resources_dir . '/cscope.out'
+  elseif filereadable('cscope.out')
+    return 'cscope.out'
+  " else add database pointed to by environment
+  elseif $CSCOPE_DB != '' && filereadable($CSCOPE_DB)
+    return $CSCOPE_DB
+  endif
+
+  return ''
+endfunction
+
 if has('cscope')
   command! -nargs=+ CFind cs find <args>
 
@@ -558,15 +571,12 @@ if has('cscope')
   " use quickfix window
   set csqf=s-,c-,d-,i-,t-,e-,g-
 
-  if exists('g:vim_resources_dir') && isdirectory(g:vim_resources_dir) && filereadable(g:vim_resources_dir . '/cscope.out')
-    exe 'cs add' g:vim_resources_dir . '/cscope.out'
-  " add any database in current directory
-  elseif filereadable('cscope.out')
-      silent! cs add cscope.out
-  " else add database pointed to by environment
-  elseif $CSCOPE_DB != '' && filereadable($CSCOPE_DB)
-      silent! cs add $CSCOPE_DB
+  let s:cscope_out = s:GetCscopeOut()
+  if !empty(s:cscope_out)
+    exe 'silent! cs add' s:cscope_out
   endif
+  unlet s:cscope_out
+
   set csverb
 
   nmap <C-_>s :<C-U>cs find s <C-R>=expand('<cword>')<CR><CR>
@@ -601,6 +611,24 @@ if has('cscope')
   nmap <C-\><C-\>e :<C-U>vert scs find e <C-R>=expand('<cword>')<CR><CR>
   nmap <C-\><C-\>i :<C-U>vert scs find i ^<C-R>=expand('<cfile>')<CR>$<CR>
   nmap <C-\><C-\>d :<C-U>vert scs find d <C-R>=expand('<cword>')<CR><CR>
+elseif has('nvim-0.9') && v:lua.has_cscope_maps()
+  command! -nargs=+ CFind Cscope find <args>
+
+  nnoremap <Leader>cf :<C-U>Cscope find 
+  inoremap <Leader>cf <C-C>:<C-U>Cscope find 
+
+  let g:cscope_maps_db_file = s:GetCscopeOut()
+
+  nmap <C-_>s :<C-U>Cscope find s <C-R>=expand('<cword>')<CR><CR>
+  nmap <C-_>g :<C-U>Cscope find g <C-R>=expand('<cword>')<CR><CR>
+  nmap <C-_>c :<C-U>Cscope find c <C-R>=expand('<cword>')<CR><CR>
+  nmap <C-_>t :<C-U>Cscope find t <C-R>=tolower(expand('<cword>'))<CR><CR>
+  nmap <C-_>e :<C-U>Cscope find e <C-R>=expand('<cword>')<CR><CR>
+  nmap <C-_>f :<C-U>Cscope find f <C-R>=expand('<cfile>')<CR><CR>
+  nmap <C-_>i :<C-U>Cscope find i ^<C-R>=expand('<cfile>')<CR>$<CR>
+  nmap <C-_>d :<C-U>Cscope find d <C-R>=expand('<cword>')<CR><CR>
 endif
+
+delfunction s:GetCscopeOut
 
 " vim: fdm=marker : ts=2 : sw=2 :

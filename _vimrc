@@ -53,10 +53,10 @@ let $VIM_RESOURCE_DIR = g:vim_resources_dir
 
 ru init/env.vim
 ru init/setting.vim
-ru init/mapping.vim
 ru init/command.vim
 ru init/filetype.vim
 ru init/plugin.vim
+ru init/mapping.vim
 ru init/misc.vim
 ru init/gvim.vim
 
