@@ -16,8 +16,12 @@ export PATH="$ROOT/bin:$PATH"
 #fi
 
 PACKAGES="$ROOT/packages"
-LLVM=clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04
-LLVM_RESOURCE=lib/clang/8.0.0
+# LLVM=clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04
+# HOST=http://releases.llvm.org/8.0.0
+# LLVM_RESOURCE=lib/clang/8.0.0
+LLVM=clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
+LLVM_RESOURCE=lib/clang/12.0.0
+HOST=https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0
 
 # Install ccls
 # https://github.com/MaskRay/ccls/wiki/Build
@@ -27,7 +31,7 @@ LLVM_RESOURCE=lib/clang/8.0.0
         git clone --depth=1 --recursive https://github.com/MaskRay/ccls
         cd ccls
         echo "Download LLVM binary..."
-        wget -cqO- http://releases.llvm.org/8.0.0/$LLVM.tar.xz | tar xJf -
+        wget -cqO- $HOST/$LLVM.tar.xz | tar xJf -
         cmake -H. -BRelease -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PWD/$LLVM
         cmake --build Release -- -j8 && mkdir -p "$ROOT/bin" && cp Release/ccls "$ROOT/bin"
         # https://github.com/MaskRay/ccls/wiki/Install#clang-resource-directory
