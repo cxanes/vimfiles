@@ -4,11 +4,13 @@ endif
 let did_install_syntax_menu = 1
 let no_buffers_menu = 1
 
-if &term == 'screen'
-  set term=xterm
-elseif &term == 'screen-256color'
-  set term=xterm
-  set t_Co=256
+if !has('nvim')
+  if &term == 'screen'
+    set term=xterm
+  elseif &term == 'screen-256color'
+    set term=xterm
+    set t_Co=256
+  endif
 endif
 
 " Encoding
