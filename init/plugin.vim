@@ -56,6 +56,11 @@ Plug 'liuchengxu/vista.vim'
 Plug 'vim-scripts/taglist.vim'
 Plug 'vim-scripts/CRefVim', { 'for': ['c', 'cpp' ] }
 
+" If you don't have nodejs and yarn
+" use pre build, add 'vim-plug' to the filetype list so vim-plug can update this plugin
+" see: https://github.com/iamcco/markdown-preview.nvim/issues/50
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
 call plug#end()
 
 if exists(':packadd') && !has('nvim')

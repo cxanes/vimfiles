@@ -277,5 +277,10 @@ function! s:BinaryMode(pattern) "{{{
 endfunction
 "}}}
 command! BinaryMode call <SID>BinaryMode('<lt>buffer>')|e
+"--------------------------------------------------------------
+" markdown
+"--------------------------------------------------------------
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_conceal_code_blocks = 0
 
 " vim: fdm=marker : ts=2 : sw=2 :
