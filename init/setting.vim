@@ -418,7 +418,7 @@ if has('gui_running')
     silent! set guifont=Consolas:h9:w5,courier_new:h10:w6
     " silent! set guifont=Monaco:h7.5:w5,courier_new:h10:w6
   elseif has('gui_running')
-    silent! set guifont=Monaco\ 10
+    silent! set guifont=Hack\ 10,Monaco\ 10
   else
     " silent! set guifont=Consolas\ 12,Courier\ 10\ Pitch\ 12
     silent! set guifont=Courier\ 10\ Pitch\ 10,Monospace\ 10
