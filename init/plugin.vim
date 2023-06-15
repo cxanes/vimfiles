@@ -542,5 +542,40 @@ if ok then
 end
 EOF
 endif
+"--------------------------------------------------------------
+" Markdown Preview
+"--------------------------------------------------------------
+if exists('g:mkdp_host_ip') && execute ('lemonade')
+  function! g:OpenBrowser(url)
+    silent exe '!lemonade --host=' . g:mkdp_host_ip 'open' a:url
+  endfunction
+  let g:mkdp_browserfunc = 'g:OpenBrowser'
+endif
+let g:mkdp_preview_options = {
+    \ 'mkit': {},
+    \ 'katex': {},
+    \ 'uml': { 'server': (exists('g:mkdp_uml_server') ? g:mkdp_uml_server : ''), 'imageFormat': 'png' },
+    \ 'maid': {},
+    \ 'disable_sync_scroll': 0,
+    \ 'sync_scroll_type': 'middle',
+    \ 'hide_yaml_meta': 1,
+    \ 'sequence_diagrams': {},
+    \ 'flowchart_diagrams': {},
+    \ 'content_editable': v:false,
+    \ 'disable_filename': 0,
+    \ 'toc': {}
+    \ }
+
+function! s:MarkdownPreviewToggle()
+  MarkdownPreviewToggle
+  sleep 1
+  redraw!
+endfunction
+
+augroup my_mkdp_init
+  autocmd!
+  autocmd FileType markdown nnoremap <buffer> <silent> <F6> :<C-U>call <SID>MarkdownPreviewToggle()<CR>
+  autocmd FileType markdown imap <buffer> <silent> <F6> <C-\><C-O><F6>
+augroup END
 
 " vim: fdm=marker : ts=2 : sw=2 :
