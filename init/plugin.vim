@@ -545,7 +545,7 @@ endif
 "--------------------------------------------------------------
 " Markdown Preview
 "--------------------------------------------------------------
-if exists('g:mkdp_host_ip') && execute ('lemonade')
+if exists('g:mkdp_host_ip') && executable('lemonade')
   function! g:OpenBrowser(url)
     silent exe '!lemonade --host=' . g:mkdp_host_ip 'open' a:url
   endfunction
