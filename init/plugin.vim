@@ -24,10 +24,11 @@ Plug 'mhinz/vim-signify'
 Plug 'jiangmiao/auto-pairs'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 if g:MSWIN
-  Plug 'Yggdroot/LeaderF'
+  Plug 'junegunn/fzf'
 else
-  Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 endif
+Plug 'junegunn/fzf.vim'
 Plug 'Yggdroot/indentLine'
 Plug 'hrp/EnhancedCommentify'
 Plug 'skywind3000/asyncrun.vim'
@@ -61,9 +62,22 @@ Plug 'vim-scripts/CRefVim', { 'for': ['c', 'cpp' ] }
 " see: https://github.com/iamcco/markdown-preview.nvim/issues/50
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
-" neovim removes cscope support in 0.9, so we need to bring it back
-if has('nvim-0.9')
-  Plug 'dhananjaylatkar/cscope_maps.nvim' " cscope keymaps
+Plug 'preservim/nerdtree'
+Plug 'dhruvasagar/vim-table-mode'
+
+if has('nvim')
+  " neovim removes cscope support in 0.9, so we need to bring it back
+  if has('nvim-0.9')
+    Plug 'dhananjaylatkar/cscope_maps.nvim' " cscope keymaps
+  endif
+
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'nvim-orgmode/orgmode'
+  " my own fork form 3rd/image.nvim, which fixes some issues
+  Plug 'cxanes/image.nvim'
+  Plug 'mfussenegger/nvim-dap'
+  Plug 'rcarriga/nvim-dap-ui'
+  Plug 'theHamsta/nvim-dap-virtual-text'
 endif
 
 call plug#end()
@@ -240,11 +254,6 @@ if !g:MSWIN && $USER == 'root'
   let g:loaded_Dict_plugin = 1
 endif
 "--------------------------------------------------------------
-" FlyMake.vim (My works)
-"--------------------------------------------------------------
-let g:flymake_compiler = { 'python': 'py-compile' }
-let g:flymake_ballooneval = 1
-"--------------------------------------------------------------
 " Bookmarks.vim (My works, modified for NavMenu.vim)
 "--------------------------------------------------------------
 let g:Bookmarks_menu = 0
@@ -382,13 +391,6 @@ endif
 "--------------------------------------------------------------
 let g:UltiSnipsListSnippets = "<Leader><Tab>"
 "--------------------------------------------------------------
-" leaderf
-"--------------------------------------------------------------
-let g:Lf_ShortcutF = 'g<F9>'
-let g:Lf_ShortcutB = 'g<F3>'
-let g:Lf_RootMarkers = s:root_pattern
-let g:Lf_CacheDirectory = expand('~/.vim-cache/leaderf')
-"--------------------------------------------------------------
 " gutentags
 " reference: http://www.skywind.me/blog/archives/2084
 "--------------------------------------------------------------
@@ -525,6 +527,19 @@ augroup my_yggdrasil
   autocmd FileType yggdrasil set cursorline
 augroup END
 "--------------------------------------------------------------
+" fzf
+"--------------------------------------------------------------
+function! s:FindFile(opts, bang)
+  if exists('g:flist_name') && filereadable(g:flist_name)
+    let opts = copy(a:opts)
+    let opts['source'] = printf('cat %s', g:flist_name)
+    call fzf#run(fzf#wrap(opts), a:bang)
+  else
+    call fzf#vim#files('', a:opts, a:bang)
+  endif
+endfunction
+command! -bang FindFile call <SID>FindFile(fzf#vim#with_preview(), <bang>0)
+"--------------------------------------------------------------
 " cscope_maps
 "--------------------------------------------------------------
 if has('nvim-0.9')
@@ -577,5 +592,39 @@ augroup my_mkdp_init
   autocmd FileType markdown nnoremap <buffer> <silent> <F6> :<C-U>call <SID>MarkdownPreviewToggle()<CR>
   autocmd FileType markdown imap <buffer> <silent> <F6> <C-\><C-O><F6>
 augroup END
+"--------------------------------------------------------------
+" image.nvim
+"--------------------------------------------------------------
+if has('nvim')
+lua << EOF
+package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua;"
+package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua;"
+
+require("image").setup({
+  backend = "kitty",
+  integrations = {
+    markdown = {
+      enabled = true,
+      sizing_strategy = "auto",
+      download_remote_images = true,
+      clear_in_insert_mode = true,
+    },
+    neorg = {
+      enabled = true,
+      download_remote_images = true,
+      clear_in_insert_mode = true,
+    },
+  },
+  max_width = nil,
+  max_height = nil,
+  max_width_window_percentage = nil,
+  max_height_window_percentage = 50,
+  kitty_method = "normal",
+  kitty_tmux_write_delay = 10, -- makes rendering more reliable with Kitty+Tmux
+  window_overlap_clear_enabled = false, -- toggles images when windows are overlapped
+  window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+})
+EOF
+endif
 
 " vim: fdm=marker : ts=2 : sw=2 :
