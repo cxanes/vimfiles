@@ -733,8 +733,12 @@ function! s:OpenFile(file, type, focus) " focus on new file window {{{
   "   0: open in previous window
   "   1: open in split window
   "   2: open in new tabpage
+  "   3: diff
   let file = s:Fnameescape(a:file)
-  if a:type == 2
+  if a:type == 3
+    wincmd p
+    exec 'diffsplit  ' . file
+  elseif a:type == 2
     tabnew
     exec (has('gui') ? 'drop' : 'hide edit') . ' ' . file
     if a:focus
@@ -1285,6 +1289,8 @@ function! s:InitMappings() "{{{
   nnoremap <buffer> <silent> g<Tab> :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 1, 0)<CR>
   nnoremap <buffer> <silent> t      :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 2, 1)<CR>
   nnoremap <buffer> <silent> T      :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 2, 0)<CR>
+  nnoremap <buffer> <silent> d      :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 3, 1)<CR>
+  nnoremap <buffer> <silent> gd     :<C-U>call <SID>OnClick(<SID>GetNode(line('.')), 3, 0)<CR>
 
   nnoremap <buffer> <silent> F      :<C-U>call <SID>FindFile('')<CR>
 
