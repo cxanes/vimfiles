@@ -336,6 +336,16 @@ function! LightlineSetInfo() "{{{
   endif
 
   let info = []
+  if &iminsert == 1
+    if exists('b:keymap_name') && !empty(b:keymap_name)
+      call add(info, printf('<%s>', b:keymap_name))
+    elseif !empty(&keymap)
+      call add(info, printf('<%s>', &keymap)
+    else
+      call add(info, '<lang>')
+    endif
+  endif
+
   for opt in ['spell', 'paste', 'list']
     let val = eval('&'.opt)
     if type(val) == type(0) && val == 1
