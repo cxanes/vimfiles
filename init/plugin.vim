@@ -610,30 +610,40 @@ lua << EOF
 package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua;"
 package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua;"
 
-require("image").setup({
-  backend = "kitty",
-  integrations = {
-    markdown = {
-      enabled = true,
-      sizing_strategy = "auto",
-      download_remote_images = true,
-      clear_in_insert_mode = true,
-    },
-    neorg = {
-      enabled = true,
-      download_remote_images = true,
-      clear_in_insert_mode = true,
-    },
-  },
-  max_width = nil,
-  max_height = nil,
-  max_width_window_percentage = nil,
-  max_height_window_percentage = 50,
-  kitty_method = "normal",
-  kitty_tmux_write_delay = 10, -- makes rendering more reliable with Kitty+Tmux
-  window_overlap_clear_enabled = false, -- toggles images when windows are overlapped
-  window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
-})
+local has_kitty_graphics_protocol_support = function()
+  return vim.env.WEZTERM_EXECUTABLE ~= nil or vim.env.KITTY_PID ~= nil or
+    (vim.env.KONSOLE_VERSION ~= nil and tonumber(vim.env.KONSOLE_VERSION) >= 220400)
+end
+
+if has_kitty_graphics_protocol_support() then
+  local ok, image = pcall(require, "image")
+  if ok then
+    image.setup({
+      backend = "kitty",
+      integrations = {
+        markdown = {
+          enabled = true,
+          sizing_strategy = "auto",
+          download_remote_images = true,
+          clear_in_insert_mode = true,
+        },
+        neorg = {
+          enabled = true,
+          download_remote_images = true,
+          clear_in_insert_mode = true,
+        },
+      },
+      max_width = nil,
+      max_height = nil,
+      max_width_window_percentage = nil,
+      max_height_window_percentage = 50,
+      kitty_method = "normal",
+      kitty_tmux_write_delay = 10, -- makes rendering more reliable with Kitty+Tmux
+      window_overlap_clear_enabled = false, -- toggles images when windows are overlapped
+      window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+    })
+  end
+end
 EOF
 endif
 
