@@ -539,6 +539,14 @@ augroup END
 "--------------------------------------------------------------
 " fzf
 "--------------------------------------------------------------
+function! s:GetFindFileOpt(opts)
+  if exists('g:fzf_disable_preview') && !empty(g:fzf_disable_preview)
+    return a:opts
+  else
+    return fzf#vim#with_preview(a:opts)
+  endif
+endfunction
+
 function! s:FindFile(opts, bang)
   if exists('g:flist_name') && filereadable(g:flist_name)
     let opts = copy(a:opts)
@@ -548,7 +556,12 @@ function! s:FindFile(opts, bang)
     call fzf#vim#files('', a:opts, a:bang)
   endif
 endfunction
-command! -bang FindFile call <SID>FindFile(fzf#vim#with_preview(), <bang>0)
+command! -bang FindFile call <SID>FindFile(<SID>GetFindFileOpt({}), <bang>0)
+let g:fzf_layout = { 'down': '~40%' }
+nmap g<F9> <Plug>GoToFileWindow
+imap g<F9> <ESC><Plug>GoToFileWindow
+nmap <silent> <F9> :<C-U>FindFile<CR>
+imap <silent> <F9> <ESC>:<C-U>FindFile<CR>
 "--------------------------------------------------------------
 " cscope_maps
 "--------------------------------------------------------------
