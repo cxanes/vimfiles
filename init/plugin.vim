@@ -463,25 +463,30 @@ let g:asyncrun_bell = 1
 "--------------------------------------------------------------
 if s:enable_coc
 	function! s:CocSetConfig()
+    let cpp = 'clangd'
+    "let cpp = 'ccls'
     let languageserver = {
-          \   "ccls": {
-          \     "command": "ccls",
+          \   cpp: {
+          \     "command": cpp,
           \     "filetypes": ["c", "cpp", "objc", "objcpp"],
           \     "rootPatterns": s:root_pattern,
           \     "initializationOptions": {}
           \   }
           \ }
-    if exists('g:vim_resources_dir') && !empty(g:vim_resources_dir)
-      let languageserver.ccls.initializationOptions['cache'] = { "directory": expand(g:vim_resources_dir . '/ccls-cache') }
-    endif
-    " https://github.com/MaskRay/ccls/wiki/Install#clang-resource-directory
-    let clang_resources = glob(g:MYVIMRUNTIME . '/local/lib/clang/*', 0, 1)
-    if !empty(clang_resources)
-      let languageserver.ccls.initializationOptions['clang'] = { "resourceDir": expand(clang_resources[0]) }
+    if cpp == 'ccls'
+      if exists('g:vim_resources_dir') && !empty(g:vim_resources_dir)
+        let languageserver.ccls.initializationOptions['cache'] = { "directory": expand(g:vim_resources_dir . '/ccls-cache') }
+      endif
+      " https://github.com/MaskRay/ccls/wiki/Install#clang-resource-directory
+      let clang_resources = glob(g:MYVIMRUNTIME . '/local/lib/clang/*', 0, 1)
+      if !empty(clang_resources)
+        let languageserver.ccls.initializationOptions['clang'] = { "resourceDir": expand(clang_resources[0]) }
+      endif
     endif
     call coc#config('languageserver', languageserver)
     call coc#config('suggest', { 'autoTrigger': 'trigger' })
     call coc#config('coc.preferences', { 'rootPatterns': s:root_pattern })
+    call coc#config('inlayHint.display', v:false)
   endfunction
 
   call s:CocSetConfig()
@@ -489,6 +494,7 @@ if s:enable_coc
   delfunction s:CocSetConfig
 
   highlight link CocUnderline Underlined
+  highlight link CocInlayHint Comment
 endif
 
 function! s:check_back_space() abort
@@ -510,6 +516,7 @@ function! CocSettingInit()
     nmap <silent> <buffer> gI <Plug>(coc-diagnostic-info)
     nmap <silent> <buffer> gn <Plug>(coc-diagnostic-next-error)
     nmap <silent> <buffer> gN <Plug>(coc-diagnostic-prev-error)
+    nmap <silent> <buffer> ti <C-U>:CocCommand document.toggleInlayHint<CR>
   endif
 endfunction
 "--------------------------------------------------------------
