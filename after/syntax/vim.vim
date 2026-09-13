@@ -77,8 +77,8 @@ syn match vimFunc "\C\<[a-z]\+\ze\s*(" contains=vimFuncName,vimExecute,vimComman
 
 " Norm {{{1
 " ====
-syn clear vimNorm
-syn match vimNorm	"\<norm\%[al]!\=\>" skipwhite nextgroup=vimNormCmds
+" syn clear vimNorm
+" syn match vimNorm	"\<norm\%[al]!\=\>" skipwhite nextgroup=vimNormCmds
 
 " Substitutions: {{{1
 " =============
