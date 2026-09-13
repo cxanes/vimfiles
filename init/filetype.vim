@@ -2,9 +2,9 @@
 " *
 "--------------------------------------------------------------
 if (g:MSWIN && executable('makeprg.bat')) || executable('makeprg')
-  augroup Vimrc
-    au FileType * call <SID>SetMakeprgFT(expand('<amatch>'))
-  augroup END
+  "augroup Vimrc
+  "  au FileType * call <SID>SetMakeprgFT(expand('<amatch>'))
+  "augroup END
   command! -nargs=? SetMakeprg call SetMakeprg(<q-args>)
 
   function! s:SetMakeprgFT(ft) "{{{
