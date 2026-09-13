@@ -76,7 +76,7 @@ if has('nvim')
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-orgmode/orgmode'
   " my own fork form 3rd/image.nvim, which fixes some issues
-  Plug 'cxanes/image.nvim'
+  "Plug 'cxanes/image.nvim'
   Plug 'mfussenegger/nvim-dap'
   Plug 'rcarriga/nvim-dap-ui'
   Plug 'theHamsta/nvim-dap-virtual-text'
