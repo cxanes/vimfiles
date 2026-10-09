@@ -432,6 +432,8 @@ elseif &t_Co > 2
   " Changed the colors of grounps Pmenu and PmenuSel
   if &term == 'win32'
     silent! colors default2
+  elseif has('nvim')
+    silent! colors koehler2
   else
     silent! colors ChocolateLiquor2
   endif
