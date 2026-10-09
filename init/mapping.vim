@@ -629,6 +629,19 @@ elseif has('nvim-0.9') && v:lua.has_cscope_maps()
   nmap <C-_>d :<C-U>Cscope find d <C-R>=expand('<cword>')<CR><CR>
 endif
 
+if has('nvim')
+  tnoremap <C-W><C-W> <C-\><C-O><C-W><C-W>
+  tnoremap <C-W>: <C-\><C-O>:
+  tnoremap <C-W>. <C-W>
+  tnoremap <C-W><C-\> <C-\><C-\>
+  tnoremap <C-W>N <C-\><C-N>
+  tnoremap <expr> <C-W>" '<C-\><C-N>"'.nr2char(getchar()).'pi'
+  tnoremap <C-W>gt <C-\><C-O>gt
+  tnoremap <C-W>gT <C-\><C-O>gT
+endif
+
+inoremap <C-W><C-W> <C-\><C-O><C-W><C-W>
+
 delfunction s:GetCscopeOut
 
 " vim: fdm=marker : ts=2 : sw=2 :
