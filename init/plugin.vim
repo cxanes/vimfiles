@@ -8,9 +8,7 @@ call plug#begin('~/.vim-plug')
 
 Plug 'itchyny/lightline.vim'
 
-if !has('nvim')
-  Plug 'ervandew/supertab'
-endif
+Plug 'ervandew/supertab'
 Plug 'will133/vim-dirdiff'
 Plug 'jlanzarotta/bufexplorer'
 Plug 'sjl/gundo.vim'

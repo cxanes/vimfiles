@@ -638,6 +638,10 @@ if has('nvim')
   tnoremap <expr> <C-W>" '<C-\><C-N>"'.nr2char(getchar()).'pi'
   tnoremap <C-W>gt <C-\><C-O>gt
   tnoremap <C-W>gT <C-\><C-O>gT
+
+  " suppress error in plugin ervandew/supertab
+  iunmap <s-tab>
+  sunmap <s-tab>
 endif
 
 inoremap <C-W><C-W> <C-\><C-O><C-W><C-W>
